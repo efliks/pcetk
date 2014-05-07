@@ -1,0 +1,181 @@
+#!/usr/bin/python
+#-------------------------------------------------------
+# Generates file full.subst for the program state-energy
+# Input: Curves/ directory from GMCT
+#
+# Also generates files `replace` and `patches` for 
+# applying correct protonation states to PDB files
+#
+# M. Feliks 2013-02-11
+#-------------------------------------------------------
+
+from  sys  import argv
+from glob  import glob
+from   re  import search
+
+
+def LoadDatFile (f):
+  pH1  = 6.5
+  pH2  = 7.5
+  fl   = open (f).readlines ()
+  Prob = 0.
+  i    = 0
+  for l in fl:
+    pH, P = map (float, l.split ())
+    if pH > pH1 and pH < pH2:
+      Prob += P
+      i    += 1
+  Prob /= i
+  return Prob
+
+def ExtrResNum (f):
+  m    = search ("(?<=conf_)\w+", f)
+  t    = m.group (0)
+  m2   = search ("^[A-Z0-9][A-Z]+", t)
+  res  = m2.group (0)
+  m3   = search ("[0-9]+$", t)
+  num  = m3.group (0)
+  return  (res, num)
+#http://docs.python.org/2/library/re.html
+
+#^^^^^^^^^^^^^^^^^^^^^^^^^^
+# Non-histidines 
+Curves  = argv[1]
+T       = []
+FR      = []
+
+for r in  ("ARG", "ASP", "GLU", "LYS", "TYR", "CYS", "CRT"):
+ files = glob ("%s/conf_%s*-0_p.dat" %  (Curves, r))
+ FR.extend (files)
+
+for f in FR:
+  Prob = LoadDatFile (f)
+  if Prob > .5:
+    ps = "p"
+  else:
+    ps = "d"
+
+  res, num = ExtrResNum (f)
+
+  T.append ([int (num), res, ps])
+
+
+#^^^^^^^^^^^^^^^^^^^^^^^^^^
+# Histidines and the likes
+FH = []
+for fl in  ("HIS", "CRH"):
+  FH.extend (glob ("%s/conf_%s*-0_HSP.dat" %  (Curves, fl)))
+
+for f in FH:
+  Prob_HSP = LoadDatFile (f)
+
+  f = f.replace ("HSP", "HSD")
+  Prob_HSD = LoadDatFile (f)
+
+  f = f.replace ("HSD", "HSE")
+  Prob_HSE = LoadDatFile (f)
+
+  f = f.replace ("HSE", "full_deprot")
+  Prob_full_deprot = LoadDatFile (f)
+
+  P  = Prob_HSP
+  ps = "HSP"
+  if Prob_HSD > P:
+    P  = Prob_HSD
+    ps = "HSD"
+  if Prob_HSE > P:
+    P  = Prob_HSE
+    ps = "HSE"
+  if Prob_full_deprot > P:
+    P  = Prob_full_deprot
+    ps = "full_deprot" 
+
+  res, num = ExtrResNum (f)
+
+  T.append ([int (num), res, ps])
+
+
+#^^^^^^^^^^^^^^^^^^^^^^^^^^
+# Ligands 
+FL = glob ("%s/conf_4HP*-0_full_prot.dat" % Curves)
+
+for f in FL:
+  Prob_full_prot   = LoadDatFile (f)
+
+  f = f.replace ("full_prot", "carb_deprot")
+  Prob_carb_deprot = LoadDatFile (f)
+
+  f = f.replace ("carb_deprot", "hydr_deprot")
+  Prob_hydr_deprot = LoadDatFile (f)
+
+  f = f.replace ("hydr_deprot", "full_deprot")
+  Prob_full_deprot = LoadDatFile (f)
+
+  P  = Prob_full_prot
+  ps = "full_prot"
+  if Prob_carb_deprot > P:
+    P  = Prob_carb_deprot
+    ps = "carb_deprot"
+  if Prob_hydr_deprot > P:
+    P  = Prob_hydr_deprot
+    ps = "hydr_deprot"
+  if Prob_full_deprot > P:
+    P  = Prob_full_deprot
+    ps = "full_deprot"
+
+  res, num = ExtrResNum (f)
+
+  T.append ([int (num), res, ps])
+
+
+T.sort ()
+
+#^^^^^^^^^^^^^^^^^^^^^^^^^^
+#^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+# Save file full.subst
+
+fo = open ("full.subst", "w")
+for t in T:
+  rnumb, rname, pstat = t
+  fo.write ("%s%s-*    %s*\n" %  (rname, rnumb, pstat))
+fo.close ()
+
+
+# Save sed file - for histidines
+
+fo = open ("full.replace", "w")
+for t in T:
+  rnumb, rname, pstat = t
+  if rname == "HIS":
+    if pstat == "HSP": # Matthias` topology file
+      pstat = "HIS"
+    fo.write ("/%3s .%4s/  s/%3s/%s/\n" %  (rname, rnumb, rname, pstat)) 
+fo.close ()
+
+
+# Save CHARMM patches
+
+fo = open ("full.patches", "w")
+for t in T:
+  rnumb, rname, pstat = t
+  if rname == "GLU":
+    if pstat == "p":
+      fo.write ("patch GLUP PRTA %s setup\n" % rnumb)
+  if rname == "ASP":
+    if pstat == "p":
+      fo.write ("patch ASPP PRTA %s setup\n" % rnumb)
+fo.close ()
+
+
+# Warn if there are unusual protonation states
+
+for t in T:
+  rnumb, rname, pstat = t
+  if rname in  ("ARG", "LYS", "TYR", "CYS", "CRT"):
+    if pstat == "d":
+      print ("# %s %s is deprotonated!" %  (rname, rnumb))
+
+#^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+

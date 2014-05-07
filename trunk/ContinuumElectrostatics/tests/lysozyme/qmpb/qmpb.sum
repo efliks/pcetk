@@ -1,0 +1,760 @@
+LYS1-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 106.377
+Modelsite in TwoDielectric 102.789
+Difference 3.58799999999999
+
+Background Energy:
+Site in ThreeDielectric -0.53502
+Modelsite in TwoDielectric -0.883285
+Difference 0.348265
+
+Intrinsic Model Energy: -14.2665506152
+
+Sum of contributions: -10.3302856152
+############################################
+
+LYS1-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 21.0485
+Modelsite in TwoDielectric 21.028
+Difference 0.020500000000002
+
+Background Energy:
+Site in ThreeDielectric -0.278835
+Modelsite in TwoDielectric -0.263947
+Difference -0.014888
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: 0.00561200000000195
+############################################
+
+GLU7-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 181.303
+Modelsite in TwoDielectric 180.82
+Difference 0.483000000000004
+
+Background Energy:
+Site in ThreeDielectric 0.259127
+Modelsite in TwoDielectric 0.0130942
+Difference 0.2460328
+
+Intrinsic Model Energy: -6.0358483372
+
+Sum of contributions: -5.3068155372
+############################################
+
+GLU7-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 371.582
+Modelsite in TwoDielectric 367.483
+Difference 4.09899999999999
+
+Background Energy:
+Site in ThreeDielectric -0.985385
+Modelsite in TwoDielectric 0.0129245
+Difference -0.9983095
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: 3.10069049999999
+############################################
+
+LYS13-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 110.124
+Modelsite in TwoDielectric 107.918
+Difference 2.20599999999999
+
+Background Energy:
+Site in ThreeDielectric 0.380352
+Modelsite in TwoDielectric -0.93947
+Difference 1.319822
+
+Intrinsic Model Energy: -14.2665506152
+
+Sum of contributions: -10.7407286152
+############################################
+
+LYS13-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 23.5304
+Modelsite in TwoDielectric 23.5003
+Difference 0.0301000000000009
+
+Background Energy:
+Site in ThreeDielectric -0.244605
+Modelsite in TwoDielectric -0.195642
+Difference -0.048963
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: -0.0188629999999991
+############################################
+
+HIS15-0 HSP
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 345.047
+Modelsite in TwoDielectric 338.347
+Difference 6.70000000000005
+
+Background Energy:
+Site in ThreeDielectric -0.927588
+Modelsite in TwoDielectric 0.221658
+Difference -1.149246
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: 5.55075400000005
+############################################
+
+HIS15-0 HSD
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 343.908
+Modelsite in TwoDielectric 341.085
+Difference 2.82300000000004
+
+Background Energy:
+Site in ThreeDielectric -1.00603
+Modelsite in TwoDielectric 0.00873225
+Difference -1.01476225
+
+Intrinsic Model Energy: 9.602486
+
+Sum of contributions: 11.41072375
+############################################
+
+HIS15-0 HSE
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 294.536
+Modelsite in TwoDielectric 291.896
+Difference 2.63999999999999
+
+Background Energy:
+Site in ThreeDielectric 0.408486
+Modelsite in TwoDielectric -0.0208543
+Difference 0.4293403
+
+Intrinsic Model Energy: 9.05377
+
+Sum of contributions: 12.1231103
+############################################
+
+HIS15-0 full_deprot
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 439.482
+Modelsite in TwoDielectric 433.425
+Difference 6.05700000000002
+
+Background Energy:
+Site in ThreeDielectric -0.177887
+Modelsite in TwoDielectric -0.0935854
+Difference -0.0843016
+
+Intrinsic Model Energy: 27.434
+
+Sum of contributions: 33.4066984
+############################################
+
+ASP18-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 181.552
+Modelsite in TwoDielectric 180.956
+Difference 0.596000000000004
+
+Background Energy:
+Site in ThreeDielectric 0.547551
+Modelsite in TwoDielectric 0.412277
+Difference 0.135274
+
+Intrinsic Model Energy: -5.487134852
+
+Sum of contributions: -4.755860852
+############################################
+
+ASP18-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 413.402
+Modelsite in TwoDielectric 410.331
+Difference 3.07099999999997
+
+Background Energy:
+Site in ThreeDielectric -4.22212
+Modelsite in TwoDielectric -0.56931
+Difference -3.65281
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: -0.581810000000031
+############################################
+
+TYR20-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 124.161
+Modelsite in TwoDielectric 121.923
+Difference 2.238
+
+Background Energy:
+Site in ThreeDielectric -0.0031696
+Modelsite in TwoDielectric 0.277036
+Difference -0.2802056
+
+Intrinsic Model Energy: -13.1691236448
+
+Sum of contributions: -11.2113292448
+############################################
+
+TYR20-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 156.741
+Modelsite in TwoDielectric 153.858
+Difference 2.88300000000001
+
+Background Energy:
+Site in ThreeDielectric 0.656092
+Modelsite in TwoDielectric 0.720044
+Difference -0.063952
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: 2.81904800000001
+############################################
+
+TYR23-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 138.192
+Modelsite in TwoDielectric 137.593
+Difference 0.599000000000018
+
+Background Energy:
+Site in ThreeDielectric -0.322018
+Modelsite in TwoDielectric 0.579082
+Difference -0.9011
+
+Intrinsic Model Energy: -13.1691236448
+
+Sum of contributions: -13.4712236448
+############################################
+
+TYR23-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 165.68
+Modelsite in TwoDielectric 162.106
+Difference 3.57400000000001
+
+Background Energy:
+Site in ThreeDielectric -1.71853
+Modelsite in TwoDielectric 1.40931
+Difference -3.12784
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: 0.446160000000012
+############################################
+
+LYS33-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 108.949
+Modelsite in TwoDielectric 108.087
+Difference 0.861999999999995
+
+Background Energy:
+Site in ThreeDielectric -0.67909
+Modelsite in TwoDielectric -0.881508
+Difference 0.202418
+
+Intrinsic Model Energy: -14.2665506152
+
+Sum of contributions: -13.2021326152
+############################################
+
+LYS33-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 18.5544
+Modelsite in TwoDielectric 18.546
+Difference 0.00840000000000174
+
+Background Energy:
+Site in ThreeDielectric -0.245592
+Modelsite in TwoDielectric -0.217439
+Difference -0.028153
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: -0.0197529999999983
+############################################
+
+GLU35-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 161.138
+Modelsite in TwoDielectric 160.396
+Difference 0.742000000000019
+
+Background Energy:
+Site in ThreeDielectric -0.514857
+Modelsite in TwoDielectric 0.143938
+Difference -0.658795
+
+Intrinsic Model Energy: -6.0358483372
+
+Sum of contributions: -5.95264333719998
+############################################
+
+GLU35-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 330.671
+Modelsite in TwoDielectric 324.359
+Difference 6.31200000000001
+
+Background Energy:
+Site in ThreeDielectric -3.0909
+Modelsite in TwoDielectric 0.436289
+Difference -3.527189
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: 2.78481100000001
+############################################
+
+ASP48-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 184.74
+Modelsite in TwoDielectric 184.533
+Difference 0.207000000000022
+
+Background Energy:
+Site in ThreeDielectric -0.465169
+Modelsite in TwoDielectric -0.0974278
+Difference -0.3677412
+
+Intrinsic Model Energy: -5.487134852
+
+Sum of contributions: -5.64787605199998
+############################################
+
+ASP48-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 399.526
+Modelsite in TwoDielectric 395.908
+Difference 3.61799999999999
+
+Background Energy:
+Site in ThreeDielectric -3.98414
+Modelsite in TwoDielectric -0.319468
+Difference -3.664672
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: -0.0466720000000049
+############################################
+
+ASP52-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 223.014
+Modelsite in TwoDielectric 222.132
+Difference 0.882000000000005
+
+Background Energy:
+Site in ThreeDielectric -1.13511
+Modelsite in TwoDielectric 0.0566291
+Difference -1.1917391
+
+Intrinsic Model Energy: -5.487134852
+
+Sum of contributions: -5.796873952
+############################################
+
+ASP52-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 474.618
+Modelsite in TwoDielectric 469.885
+Difference 4.733
+
+Background Energy:
+Site in ThreeDielectric -3.17431
+Modelsite in TwoDielectric -0.170886
+Difference -3.003424
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: 1.729576
+############################################
+
+TYR53-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 126.813
+Modelsite in TwoDielectric 123.599
+Difference 3.214
+
+Background Energy:
+Site in ThreeDielectric 1.30057
+Modelsite in TwoDielectric 0.48786
+Difference 0.81271
+
+Intrinsic Model Energy: -13.1691236448
+
+Sum of contributions: -9.1424136448
+############################################
+
+TYR53-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 115.915
+Modelsite in TwoDielectric 109.687
+Difference 6.22800000000001
+
+Background Energy:
+Site in ThreeDielectric -2.56865
+Modelsite in TwoDielectric 1.31673
+Difference -3.88538
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: 2.34262000000001
+############################################
+
+ASP66-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 155.019
+Modelsite in TwoDielectric 154.128
+Difference 0.89100000000002
+
+Background Energy:
+Site in ThreeDielectric -1.54978
+Modelsite in TwoDielectric 0.225234
+Difference -1.775014
+
+Intrinsic Model Energy: -5.487134852
+
+Sum of contributions: -6.37114885199998
+############################################
+
+ASP66-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 322.675
+Modelsite in TwoDielectric 311.767
+Difference 10.908
+
+Background Energy:
+Site in ThreeDielectric -15.4304
+Modelsite in TwoDielectric -1.08035
+Difference -14.35005
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: -3.44204999999999
+############################################
+
+ASP87-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 193.09
+Modelsite in TwoDielectric 192.995
+Difference 0.0949999999999989
+
+Background Energy:
+Site in ThreeDielectric -0.686311
+Modelsite in TwoDielectric 0.0323763
+Difference -0.7186873
+
+Intrinsic Model Energy: -5.487134852
+
+Sum of contributions: -6.110822152
+############################################
+
+ASP87-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 409.825
+Modelsite in TwoDielectric 408.537
+Difference 1.28800000000001
+
+Background Energy:
+Site in ThreeDielectric -4.49606
+Modelsite in TwoDielectric -0.558412
+Difference -3.937648
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: -2.64964799999999
+############################################
+
+LYS96-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 125.239
+Modelsite in TwoDielectric 120.549
+Difference 4.69
+
+Background Energy:
+Site in ThreeDielectric -2.21156
+Modelsite in TwoDielectric -0.649072
+Difference -1.562488
+
+Intrinsic Model Energy: -14.2665506152
+
+Sum of contributions: -11.1390386152
+############################################
+
+LYS96-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 29.9691
+Modelsite in TwoDielectric 29.9253
+Difference 0.0438000000000009
+
+Background Energy:
+Site in ThreeDielectric -0.254872
+Modelsite in TwoDielectric -0.211921
+Difference -0.042951
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: 0.00084900000000096
+############################################
+
+LYS97-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 115.255
+Modelsite in TwoDielectric 114.967
+Difference 0.287999999999997
+
+Background Energy:
+Site in ThreeDielectric -0.264502
+Modelsite in TwoDielectric -0.463475
+Difference 0.198973
+
+Intrinsic Model Energy: -14.2665506152
+
+Sum of contributions: -13.7795776152
+############################################
+
+LYS97-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 19.8896
+Modelsite in TwoDielectric 19.887
+Difference 0.00260000000000105
+
+Background Energy:
+Site in ThreeDielectric -0.0861227
+Modelsite in TwoDielectric -0.0923522
+Difference 0.0062295
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: 0.00882950000000104
+############################################
+
+ASP101-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 173.244
+Modelsite in TwoDielectric 172.918
+Difference 0.325999999999993
+
+Background Energy:
+Site in ThreeDielectric 1.18138
+Modelsite in TwoDielectric -0.0887059
+Difference 1.2700859
+
+Intrinsic Model Energy: -5.487134852
+
+Sum of contributions: -3.89104895200001
+############################################
+
+ASP101-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 371.359
+Modelsite in TwoDielectric 367.306
+Difference 4.053
+
+Background Energy:
+Site in ThreeDielectric 4.0396
+Modelsite in TwoDielectric -0.608434
+Difference 4.648034
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: 8.701034
+############################################
+
+LYS116-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 120.702
+Modelsite in TwoDielectric 117.115
+Difference 3.587
+
+Background Energy:
+Site in ThreeDielectric -2.16279
+Modelsite in TwoDielectric -0.845186
+Difference -1.317604
+
+Intrinsic Model Energy: -14.2665506152
+
+Sum of contributions: -11.9971546152
+############################################
+
+LYS116-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 18.3097
+Modelsite in TwoDielectric 18.2865
+Difference 0.0231999999999992
+
+Background Energy:
+Site in ThreeDielectric -0.299226
+Modelsite in TwoDielectric -0.234512
+Difference -0.064714
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: -0.0415140000000008
+############################################
+
+ASP119-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 233.526
+Modelsite in TwoDielectric 233.438
+Difference 0.0880000000000223
+
+Background Energy:
+Site in ThreeDielectric -1.959
+Modelsite in TwoDielectric -0.211186
+Difference -1.747814
+
+Intrinsic Model Energy: -5.487134852
+
+Sum of contributions: -7.14694885199998
+############################################
+
+ASP119-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 383.08
+Modelsite in TwoDielectric 380.758
+Difference 2.322
+
+Background Energy:
+Site in ThreeDielectric -10.5452
+Modelsite in TwoDielectric -0.0682614
+Difference -10.4769386
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: -8.1549386
+############################################
+

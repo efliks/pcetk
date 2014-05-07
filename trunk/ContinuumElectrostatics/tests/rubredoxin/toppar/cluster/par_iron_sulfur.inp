@@ -1,0 +1,15 @@
+* Taken from iron-sulfur cluster (GMU)
+*
+
+BOND
+FE   S         50.0       1.98
+NR3  FE        65.000     2.20
+
+ANGL
+S    FE   S    0.0   0.0
+FE   S    FE   0.0   0.0
+
+DIHE
+S    FE   S   FE   0.0  1 0.0
+
+END

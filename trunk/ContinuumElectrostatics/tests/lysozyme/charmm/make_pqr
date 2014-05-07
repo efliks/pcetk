@@ -1,0 +1,1 @@
+./crdpsf2pqr lysozyme.psf lysozyme.crd | grep -v HOH >lysozyme.pqr

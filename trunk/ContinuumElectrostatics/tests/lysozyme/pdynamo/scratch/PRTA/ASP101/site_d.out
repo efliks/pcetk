@@ -1,0 +1,92 @@
+Starting /home/mikolaj/local/bin//my_3diel_solver for molecule named scratch/PRTA/ASP101//site_d
+using the following physical conditions:
+Exterior dielectric constant, epsext = 80
+Solvent probe radius, solrad = 1.4
+Ion exclusion layer thickness, sterln = 2
+Temperature, T = 300
+Ionic strength, ionicstr = 0.1
+Hueckel factor (epsext*kappasq) = 0.843038
+Debye length 1/kappa = 9.7414
+ln(10) * kBolt * T = 0.00413389
+kBolt = 5.98442e-06
+conconv = 0.000602214
+econv = 332.063
+Bohr radius = 0.529177
+Proton Charge = 1
+elementary_charge = 1.60218e-19
+energy_unit = 2.30707e-18
+Avogadro_Number = 6.02214e+23
+voltconv = 14.3996
+pkconv = 241.903
+  Solute interior dielectric, epsin1 = 1
+  Protein interior dielectric constant, epsin2 = 4
+Vacuum dielectric constant, epsvac = 1
+
+No blab level set (so no blabbing)
+WARNING: SAVanal_calc: vertex found with count = 2
+WARNING: SAVanal_calc: vertex found with count = 1
+WARNING: SAVanal_calc: vertex found with count = 2
+WARNING: SAVanal_calc: vertex found with count = 2
+WARNING: SAVanal_calc: vertex found with count = 1
+WARNING: SAVanal_calc: vertex found with count = 2
+Using finite difference method with lattice levels:
+                   Centering Style   grid dimension    spacing
+Coarsest level: ON_GEOM_CENT resolved to (-0.664701, 20.5141, 19.0512)) 121 2
+Finer level:    (-3.24578, 23.8443, 32.2034) 101 1
+Finer level:    (-3.24578, 23.8443, 32.2034) 101 0.5
+Finest level:   (-3.24578, 23.8443, 32.2034) 101 0.25
+
+
+Self energy of scratch/PRTA/ASP101//site_d in three dielectric environment = 428.264
+(probably in kcal/mole, INCLUDING GRID ARTEFACTS)
+
+
+Interaction energy of scratch/PRTA/ASP101//site_d with background charge set in three dielectric environment = 3.9959
+(probably in kcal/mole)
+
+
+
+Interaction energies of scratch/PRTA/ASP101//site_d with charges of given instances of sites (probably in kcal/mole).
+Format: site instance energy
+
+0   0 : -0.00738707
+0   1 : 9.10182e-08
+1   0 : -0.000613319
+1   1 : 0.00678207
+2   0 : -0.0142651
+2   1 : -0.000417723
+3   0 : -0.0466926
+3   1 : -0.00375052
+3   2 : -0.0013501
+3   3 : 0.0373269
+4   0 : -0.00576706
+4   1 : 0.0240733
+5   0 : -0.0785815
+5   1 : 0.365879
+6   0 : 0.00232754
+6   1 : 0.152113
+7   0 : -0.00827314
+7   1 : -0.00034173
+8   0 : -0.00858038
+8   1 : 0.152661
+9   0 : 0.00907179
+9   1 : 0.113096
+10   0 : 0.0102508
+10   1 : 0.188791
+11   0 : -0.00732311
+11   1 : 0.0506212
+12   0 : -0.00237205
+12   1 : 0.0590051
+13   0 : -0.000270895
+13   1 : 0.0230611
+14   0 : -0.143678
+14   1 : -0.00390209
+15   0 : -0.531582
+15   1 : -0.00777815
+16   0 : 583.836
+16   1 : 856.525
+17   0 : -0.0585477
+17   1 : 0.00085531
+18   0 : -0.000216687
+18   1 : 0.00664271
+Total runtime: 16.76 s user 0.1 s system 
