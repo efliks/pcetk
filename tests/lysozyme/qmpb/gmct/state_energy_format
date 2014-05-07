@@ -1,0 +1,83 @@
+#!/usr/bin/python
+# chemical potential  -9.602486   vmemb 0.000000
+# ----------------------------------------------------
+# State            1    state energy = 4.775187e+02 kcal/mol
+# conf:   conf
+#                        ASP12-0                      p   1
+#                       HIS147-0                    HSP   2
+#                       ASP199-0                      p   1
+#                       ASP200-0                      p   1
+#                       HIS247-0                    HSP   2
+#                       ASP249-0                      p   1
+# ----------------------------------------------------
+from sys    import argv
+
+
+outputFile = open (argv[1]).readlines ()
+state      = []
+states     = []
+
+for line in outputFile[1:]:
+  if line.count ("---"):
+    if state:
+      states.append (state)
+      state = []
+  else:
+    state.append (line)
+
+if state:
+  states.append (state)
+
+
+#-----------------------------------------------------
+statesRef = []
+
+for state in states:
+  stateEnergy = float (state[0].split ()[5])
+  resTab      = []
+
+  for line in state[2:]:
+    residue, protState, nProt = line.split ()
+    nProt   = int (nProt)
+    residue = residue.replace ("-0", "")
+    resTab.append ([residue, protState, nProt])
+
+  statesRef.append ([stateEnergy, resTab])
+
+
+statesRef.sort ()
+zeroEnergy = statesRef[0][0]
+
+#-----------------------------------------------------
+charges = {
+"GLU" : {"p"   : 0, "d"   : -1},
+"ASP" : {"p"   : 0, "d"   : -1},
+"HIS" : {"HSD" : 0, "HSE" : 0, "HSP" : 1, "fd" : -1},
+}
+
+line = " " * 15
+
+for resCount, (residue, protState, nProt) in enumerate (statesRef[0][1]):
+  line = "%s%8s" % (line, residue.center (8))
+print line
+
+print "-" * (len (line) + 14)
+
+
+for stateCount, (stateEnergy, resTab) in enumerate (statesRef, 1):
+  line   = "%4d %8.2f  " % (stateCount, stateEnergy - zeroEnergy)
+  nProts = 0
+  charge = 0
+
+  for resCount, (residue, protState, nProt) in enumerate (resTab):
+    if protState == "full_deprot":
+      protState = "fd"
+    line = "%s%s" % (line, "%8s" % protState.center (8))
+
+    charge += charges[residue[:3]][protState]
+    nProts += nProt
+  line = "%s   %3d  %3d" % (line, nProts, charge)
+
+  print line
+
+

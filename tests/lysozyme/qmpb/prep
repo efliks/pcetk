@@ -1,0 +1,2 @@
+cp ../setup/lysozyme.pqr .
+./make_sites lysozyme.pqr >lysozyme.sites

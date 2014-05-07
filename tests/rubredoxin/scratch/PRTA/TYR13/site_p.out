@@ -1,0 +1,94 @@
+Starting /home/mikolaj/local/bin//my_3diel_solver for molecule named scratch/PRTA/TYR13//site_p
+using the following physical conditions:
+Exterior dielectric constant, epsext = 80
+Solvent probe radius, solrad = 1.4
+Ion exclusion layer thickness, sterln = 2
+Temperature, T = 300
+Ionic strength, ionicstr = 0.1
+Hueckel factor (epsext*kappasq) = 0.843038
+Debye length 1/kappa = 9.7414
+ln(10) * kBolt * T = 0.00413389
+kBolt = 5.98442e-06
+conconv = 0.000602214
+econv = 332.063
+Bohr radius = 0.529177
+Proton Charge = 1
+elementary_charge = 1.60218e-19
+energy_unit = 2.30707e-18
+Avogadro_Number = 6.02214e+23
+voltconv = 14.3996
+pkconv = 241.903
+  Solute interior dielectric, epsin1 = 1
+  Protein interior dielectric constant, epsin2 = 4
+Vacuum dielectric constant, epsvac = 1
+
+No blab level set (so no blabbing)
+Using finite difference method with lattice levels:
+                   Centering Style   grid dimension    spacing
+Coarsest level: ON_GEOM_CENT resolved to (13.319, 37.4012, 4.51304)) 121 2
+Finer level:    (14.4495, 34.4263, 7.81674) 101 1
+Finer level:    (14.4495, 34.4263, 7.81674) 101 0.5
+Finest level:   (14.4495, 34.4263, 7.81674) 101 0.25
+
+
+Self energy of scratch/PRTA/TYR13//site_p in three dielectric environment = 119.711
+(probably in kcal/mole, INCLUDING GRID ARTEFACTS)
+
+
+Interaction energy of scratch/PRTA/TYR13//site_p with background charge set in three dielectric environment = 1.47325
+(probably in kcal/mole)
+
+
+
+Interaction energies of scratch/PRTA/TYR13//site_p with charges of given instances of sites (probably in kcal/mole).
+Format: site instance energy
+
+0   0 : -0.0221839
+0   1 : -7.03799e-05
+1   0 : -0.000708192
+1   1 : 0.0296679
+2   0 : -0.00354755
+2   1 : -0.000160899
+3   0 : 0.0012553
+3   1 : 0.00600053
+4   0 : -0.0143784
+4   1 : -0.0330757
+5   0 : 239.453
+5   1 : 211.427
+6   0 : 0.00107281
+6   1 : 0.117049
+7   0 : -0.0251817
+7   1 : 0.149439
+8   0 : -0.00512354
+8   1 : 0.0421387
+9   0 : 0.184216
+9   1 : -0.22478
+10   0 : 0.0018225
+10   1 : -0.0127479
+11   0 : -0.0134647
+11   1 : -0.000886309
+12   0 : 0.00331108
+12   1 : 0.0394035
+13   0 : 0.0048321
+13   1 : 0.0490668
+14   0 : 0.000351919
+14   1 : 0.00194295
+15   0 : -0.000658409
+15   1 : -0.00892532
+16   0 : -5.96661e-05
+16   1 : 0.0167289
+17   0 : 0.000862973
+17   1 : 0.00387023
+18   0 : -0.0484369
+18   1 : -0.000511616
+19   0 : -0.000301505
+19   1 : 0.00249705
+20   0 : -0.000387367
+20   1 : 0.00374284
+21   0 : -0.0155419
+21   1 : -0.000572453
+22   0 : -8.44451e-05
+22   1 : 0.00582238
+23   0 : -7.27007e-05
+23   1 : 0.00150134
+Total runtime: 16.78 s user 0.17 s system 

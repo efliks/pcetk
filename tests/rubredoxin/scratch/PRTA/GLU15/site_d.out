@@ -1,0 +1,94 @@
+Starting /home/mikolaj/local/bin//my_3diel_solver for molecule named scratch/PRTA/GLU15//site_d
+using the following physical conditions:
+Exterior dielectric constant, epsext = 80
+Solvent probe radius, solrad = 1.4
+Ion exclusion layer thickness, sterln = 2
+Temperature, T = 300
+Ionic strength, ionicstr = 0.1
+Hueckel factor (epsext*kappasq) = 0.843038
+Debye length 1/kappa = 9.7414
+ln(10) * kBolt * T = 0.00413389
+kBolt = 5.98442e-06
+conconv = 0.000602214
+econv = 332.063
+Bohr radius = 0.529177
+Proton Charge = 1
+elementary_charge = 1.60218e-19
+energy_unit = 2.30707e-18
+Avogadro_Number = 6.02214e+23
+voltconv = 14.3996
+pkconv = 241.903
+  Solute interior dielectric, epsin1 = 1
+  Protein interior dielectric constant, epsin2 = 4
+Vacuum dielectric constant, epsvac = 1
+
+No blab level set (so no blabbing)
+Using finite difference method with lattice levels:
+                   Centering Style   grid dimension    spacing
+Coarsest level: ON_GEOM_CENT resolved to (13.319, 37.4012, 4.51304)) 121 2
+Finer level:    (17.8959, 32.0568, 4.26349) 101 1
+Finer level:    (17.8959, 32.0568, 4.26349) 101 0.5
+Finest level:   (17.8959, 32.0568, 4.26349) 101 0.25
+
+
+Self energy of scratch/PRTA/GLU15//site_d in three dielectric environment = 393.935
+(probably in kcal/mole, INCLUDING GRID ARTEFACTS)
+
+
+Interaction energy of scratch/PRTA/GLU15//site_d with background charge set in three dielectric environment = -7.8367
+(probably in kcal/mole)
+
+
+
+Interaction energies of scratch/PRTA/GLU15//site_d with charges of given instances of sites (probably in kcal/mole).
+Format: site instance energy
+
+0   0 : -0.360501
+0   1 : 0.0025683
+1   0 : -0.00119417
+1   1 : 0.204654
+2   0 : -0.0640082
+2   1 : -0.000915698
+3   0 : 0.00822861
+3   1 : 0.0664745
+4   0 : 0.0414341
+4   1 : 0.279943
+5   0 : 0.148993
+5   1 : 2.3655
+6   0 : 0.0785511
+6   1 : 0.954011
+7   0 : 529.788
+7   1 : 787.87
+8   0 : -0.030976
+8   1 : 0.663804
+9   0 : -0.0463729
+9   1 : 0.146266
+10   0 : -0.00122963
+10   1 : 0.0313492
+11   0 : -0.803807
+11   1 : -0.0357837
+12   0 : 0.301335
+12   1 : 2.18303
+13   0 : 0.007253
+13   1 : 0.449366
+14   0 : 0.0052547
+14   1 : 0.0788223
+15   0 : 0.00114656
+15   1 : 0.0367619
+16   0 : 0.00637988
+16   1 : 0.189406
+17   0 : 0.00841132
+17   1 : 0.0549087
+18   0 : -0.445469
+18   1 : -0.00247193
+19   0 : -0.00205483
+19   1 : 0.0408562
+20   0 : -0.0090574
+20   1 : 0.0730663
+21   0 : -1.29478
+21   1 : -0.0150208
+22   0 : 0.0158591
+22   1 : 0.361991
+23   0 : -0.00341272
+23   1 : 0.069979
+Total runtime: 16.44 s user 0.14 s system 

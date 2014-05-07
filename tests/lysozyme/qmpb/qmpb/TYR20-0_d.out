@@ -1,0 +1,86 @@
+Starting /home/mikolaj/local/bin/my_3diel_solver for molecule named TYR20-0_d
+using the following physical conditions:
+Exterior dielectric constant, epsext = 80
+Solvent probe radius, solrad = 1.4
+Ion exclusion layer thickness, sterln = 2
+Temperature, T = 300
+Ionic strength, ionicstr = 0.1
+Hueckel factor (epsext*kappasq) = 0.843038
+Debye length 1/kappa = 9.7414
+ln(10) * kBolt * T = 0.00413389
+kBolt = 5.98442e-06
+conconv = 0.000602214
+econv = 332.063
+Bohr radius = 0.529177
+Proton Charge = 1
+elementary_charge = 1.60218e-19
+energy_unit = 2.30707e-18
+Avogadro_Number = 6.02214e+23
+voltconv = 14.3996
+pkconv = 241.903
+  Solute interior dielectric, epsin1 = 1
+  Protein interior dielectric constant, epsin2 = 4
+Vacuum dielectric constant, epsvac = 1
+
+No blab level set (so no blabbing)
+Using finite difference method with lattice levels:
+                   Centering Style   grid dimension    spacing
+Coarsest level: ON_GEOM_CENT resolved to (-0.919373, 20.3963, 19.0418)) 121 2
+Finer level:    (-12.656, 20.962, 24.889) 101 1
+Finer level:    (-12.656, 20.962, 24.889) 101 0.5
+Finest level:   (-12.656, 20.962, 24.889) 101 0.25
+
+
+Self energy of TYR20-0_d in three dielectric environment = 156.741
+(probably in kcal/mole, INCLUDING GRID ARTEFACTS)
+
+
+Interaction energy of TYR20-0_d with background charge set in three dielectric environment = 0.656092
+(probably in kcal/mole)
+
+
+
+Interaction energies of TYR20-0_d with charges of given instances of sites (probably in kcal/mole).
+Format: site instance energy
+
+0   0 : -0.0188763
+0   1 : 0.00017555
+1   0 : -0.00207219
+1   1 : 0.0170651
+2   0 : -0.0752399
+2   1 : -0.00272262
+3   0 : -0.188538
+3   1 : -0.0259974
+3   2 : -0.0104555
+3   3 : 0.129499
+4   0 : -0.0386473
+4   1 : 0.128725
+5   0 : 209.618
+5   1 : 313.483
+6   0 : 0.0124039
+6   1 : 0.228933
+7   0 : -0.00839685
+7   1 : -0.000340705
+8   0 : -0.00902542
+8   1 : 0.0667917
+9   0 : 0.00156002
+9   1 : 0.0196292
+10   0 : -0.00067712
+10   1 : 0.0439666
+11   0 : -0.0016445
+11   1 : 0.0221112
+12   0 : -0.00141182
+12   1 : 0.0199927
+13   0 : 0.001844
+13   1 : 0.0585843
+14   0 : -1.0773
+14   1 : -0.0765954
+15   0 : -0.348458
+15   1 : -0.0116362
+16   0 : 0.0302284
+16   1 : 0.36291
+17   0 : -0.0382833
+17   1 : 5.37016e-05
+18   0 : -0.000476048
+18   1 : 0.0119706
+Total runtime: 7.34 s user 0.07 s system 

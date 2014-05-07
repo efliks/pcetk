@@ -1,0 +1,2155 @@
+1
+                 Chemistry at HARvard Macromolecular Mechanics
+                   (CHARMM) - Developmental Version 28a3     August 15, 2000   
+       Copyright(c) 1984,1992  President and Fellows of Harvard College
+                              All Rights Reserved
+      Current operating system: Linux-3.2.0-29-generic(x86_64)@gre039853
+                 Created on  2/ 6/14 at 17:22:13 by user: mikolaj     
+
+            Maximum number of ATOMS:    240480, and RESidues:       72000
+            Current HEAP size:        10240000, and STACK size:   2000000
+
+ RDTITL> * MAKE PSF AND PDB FILES
+ RDTITL> *
+  
+ CHARMM>     
+  
+ CHARMM>    set mol     rubr
+ Parameter: MOL <- "RUBR"
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    !###############################################
+ CHARMM>    !#                Topology files               #
+ CHARMM>    !###############################################
+ CHARMM>    open  read unit  1 card name "/home/mikolaj/devel/toppar/ff/top_all27_prot_na.inp"
+ VOPEN> Attempting to open::/home/mikolaj/devel/toppar/ff/top_all27_prot_na.inp::
+ OPNLGU> Unit  1 opened for READONLY access to /home/mikolaj/devel/toppar/ff/top_all27_prot_na.inp
+  
+ CHARMM>    read  rtf  unit  1 card
+ MAINIO> Residue topology file being read from unit   1.
+ TITLE> *>>>>>> COMBINED CHARMM ALL-HYDROGEN TOPOLOGY FILE FOR <<<<<<<<<
+ TITLE> *>>>>>>> CHARMM22 PROTEINS AND CHARMM27 NUCLEIC ACIDS <<<<<<<<<<
+ TITLE> *FROM
+ TITLE> *>>>> CHARMM22 ALL-HYDROGEN TOPOLOGY FILE FOR PROTEINS <<<<<<<<
+ TITLE> *>>>>>>>>>>>>>>>>>>>>>>> AUGUST 1999 <<<<<<<<<<<<<<<<<<<<<<<<<<<
+ TITLE> *>>>>>>> DIRECT COMMENTS TO ALEXANDER D. MACKERELL JR. <<<<<<<<<
+ TITLE> *>>>>>> 410-706-7442 OR EMAIL: ALEX,MMIRIS.AB.UMD.EDU  <<<<<<<<<
+ TITLE> *AND
+ TITLE> *  \\\\ CHARMM27 ALL-HYDROGEN NUCLEIC ACID TOPOLOGY FILE ////
+ TITLE> *  \\\\\\\\\\\\\\\\\\ DEVELOPMENTAL ////////////////////////
+ TITLE> *        ALEXANDER D. MACKERELL JR. AND NICOLAS FOLOPPE
+ TITLE> *                        AUGUST 1999
+ TITLE> *     ALL COMMENTS TO ADM JR.  EMAIL: ALEX,MMIRIS.AB.UMD.EDU
+ TITLE> *                 TELEPHONE: 410-706-7442
+ TITLE> * .
+ TITLE> * CHANGES: GMU JULY 2002
+ TITLE> *          ILE CD --> ILE CD1 AND ALSO ASSOCIATED HYDROGENS (PDB CONVENTION)
+ TITLE> *          CTER OT1, OT2 --> OXT, O (PDB CONVENTION)
+ TITLE> *          NTER HT* --> H* (PDB CONVENTION)
+ TITLE> *          HSP --> HIS
+ TITLE> *          NADP ---> NAP (PDB CONVENTION)
+ TITLE> *          COPY TIP --> HOH (PDB CONVENTION)
+ TITLE> *          MOVE CAL --> CA
+ TITLE> *          ADDED TYPES NO, ON FOR NO2*          BACKBONE HN --> H (PDB CONVENTION)
+ TITLE> *
+*** WARNING **** residue HSD  already exists (old one deleted)
+          RESI HSD          0.00
+*** WARNING **** residue DUM  already exists (old one deleted)
+          RESI DUM       0.00
+ There were   2 warning(s) from RTFRDR.
+  
+ CHARMM>    close      unit  1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open  read unit  1 card name "/home/mikolaj/devel/toppar/cluster/top_iron_sulfur.inp"
+ VOPEN> Attempting to open::/home/mikolaj/devel/toppar/cluster/top_iron_sulfur.inp::
+ OPNLGU> Unit  1 opened for READONLY access to /home/mikolaj/devel/toppar/cluster/top_iron_sulfur.inp
+  
+ CHARMM>    read  rtf  unit  1 card append
+ MAINIO> Residue topology file being read from unit   1.
+ TITLE> * IRON-SULFUR CENTER FE(CYS)4
+ TITLE> *
+ WARNING from DECODI -- Zero length string being converted to 0
+ RTFRDR> WARNING: Version number is NOT specified.
+  
+ CHARMM>    close      unit  1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    !###############################################
+ CHARMM>    !#               Parameter files               #
+ CHARMM>    !###############################################
+ CHARMM>    open  read unit  1 card name "/home/mikolaj/devel/toppar/ff/par_all27_prot_na.inp"
+ VOPEN> Attempting to open::/home/mikolaj/devel/toppar/ff/par_all27_prot_na.inp::
+ OPNLGU> Unit  1 opened for READONLY access to /home/mikolaj/devel/toppar/ff/par_all27_prot_na.inp
+  
+ CHARMM>    read  para unit  1 card
+
+          PARAMETER FILE BEING READ FROM UNIT  1
+ TITLE> *>>>>>> COMBINED CHARMM ALL-HYDROGEN PARAMETER FILE FOR <<<<<<<<<
+ TITLE> *>>>>>>> CHARMM22 PROTEINS AND CHARMM27 NUCLEIC ACIDS <<<<<<<<<<
+ TITLE> *FROM
+ TITLE> *>>>> CHARMM22 ALL-HYDROGEN PARAMETER FILE FOR PROTEINS <<<<<<<<
+ TITLE> *>>>>>>>>>>>>>>>>>>>>>>> AUGUST 1999 <<<<<<<<<<<<<<<<<<<<<<<<<<<
+ TITLE> *>>>>>>> DIRECT COMMENTS TO ALEXANDER D. MACKERELL JR. <<<<<<<<<
+ TITLE> *>>>>>> 410-706-7442 OR EMAIL: ALEX,MMIRIS.AB.UMD.EDU  <<<<<<<<<
+ TITLE> *AND
+ TITLE> *  \\\\ CHARMM27 ALL-HYDROGEN NUCLEIC ACID PARAMETER FILE ////
+ TITLE> *  \\\\\\\\\\\\\\\\\\ DEVELOPMENTAL ////////////////////////
+ TITLE> *       ALEXANDER D. MACKERELL JR. AND NICOLAS FOLOPPE
+ TITLE> *                       AUGUST 1999
+ TITLE> *    ALL COMMENTS TO ADM JR.  EMAIL: ALEX,MMIRIS.AB.UMD.EDU
+ TITLE> *            TELEPHONE: 410-706-7442
+ TITLE> * .
+ TITLE> * CHANGE BY GMU FEB 2003
+ TITLE> *        ADD ANGLE AND TORSIONS FOR FOR
+ TITLE> *
+ PARRDR> Multiple terms for dihedral type: INDEX 1053 CODE********     ON3 -P2  -ON2 -P2  
+ PARRDR> Multiple terms for dihedral type: INDEX 1051 CODE********     ON3 -P   -ON2 -P2  
+ PARRDR> Multiple terms for dihedral type: INDEX 1049 CODE********     ON2 -P2  -ON2 -P2  
+ PARRDR> Multiple terms for dihedral type: INDEX 1047 CODE********     ON2 -P   -ON2 -P2  
+ PARRDR> Multiple terms for dihedral type: INDEX 1045 CODE********     ON3 -P2  -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX 1043 CODE********     ON3 -P   -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX 1041 CODE********     ON2 -P2  -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX 1039 CODE********     ON2 -P   -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX 1035 CODE********     CN5 -NN2B-CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX 1026 CODE********     CN1T-NN2B-CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX 1015 CODE********     CN5 -NN2B-CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX 1006 CODE********     CN1T-NN2B-CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  997 CODE********     CN7B-CN8 -CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  996 CODE********     CN7B-CN8 -CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  994 CODE********     CN7B-CN7C-CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  993 CODE********     CN7B-CN7C-CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  991 CODE********     CN7B-CN7B-CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  990 CODE********     CN7B-CN7B-CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  984 CODE********     CN7B-CN8 -CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  983 CODE********     CN7B-CN8 -CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  981 CODE********     CN7B-CN7C-CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  980 CODE********     CN7B-CN7C-CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  978 CODE********     CN7B-CN7B-CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  977 CODE********     CN7B-CN7B-CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  967 CODE********     CN8 -CN3 -CN1A-ON1 
+ PARRDR> Multiple terms for dihedral type: INDEX  966 CODE********     CN8 -CN3 -CN1A-ON1 
+ PARRDR> Multiple terms for dihedral type: INDEX  962 CODE********     CN3C-CN3 -CN1A-ON1 
+ PARRDR> Multiple terms for dihedral type: INDEX  889 CODE********     CN8 -CN3 -CN1A-NN1 
+ PARRDR> Multiple terms for dihedral type: INDEX  888 CODE********     CN8 -CN3 -CN1A-NN1 
+ PARRDR> Multiple terms for dihedral type: INDEX  883 CODE********     CN3C-CN3 -CN1A-NN1 
+ PARRDR> Multiple terms for dihedral type: INDEX  881 CODE********     CN3B-CN3 -CN1A-NN1 
+ PARRDR> Multiple terms for dihedral type: INDEX  879 CODE********     CN3A-CN3 -CN1A-NN1 
+ PARRDR> Multiple terms for dihedral type: INDEX  857 CODE********     HN5 -ON5 -CN7 -CN8 
+ PARRDR> Multiple terms for dihedral type: INDEX  856 CODE********     HN5 -ON5 -CN7 -CN8 
+ PARRDR> Multiple terms for dihedral type: INDEX  845 CODE********     HN5 -ON5 -CN7 -CN7C
+ PARRDR> Multiple terms for dihedral type: INDEX  831 CODE********     HN5 -ON5 -CN7B-CN7B
+ PARRDR> Multiple terms for dihedral type: INDEX  830 CODE********     HN5 -ON5 -CN7B-CN7B
+ PARRDR> Multiple terms for dihedral type: INDEX  829 CODE********     HN5 -ON5 -CN7B-CN7B
+ PARRDR> Multiple terms for dihedral type: INDEX  827 CODE********     HN5 -ON5 -CN7 -CN7B
+ PARRDR> Multiple terms for dihedral type: INDEX  817 CODE********     HN5 -ON5 -CN8B-CN7 
+ PARRDR> Multiple terms for dihedral type: INDEX  816 CODE********     HN5 -ON5 -CN8B-CN7 
+ PARRDR> Multiple terms for dihedral type: INDEX  813 CODE********     HN5 -ON5 -CN7B-CN7 
+ PARRDR> Multiple terms for dihedral type: INDEX  811 CODE********     HN5 -ON5 -CN7 -CN7 
+ PARRDR> Multiple terms for dihedral type: INDEX  810 CODE********     HN5 -ON5 -CN7 -CN7 
+ PARRDR> Multiple terms for dihedral type: INDEX  763 CODE********     CT3 -OS  -CD  -OB  
+ PARRDR> Multiple terms for dihedral type: INDEX  761 CODE********     CT2 -OS  -CD  -OB  
+ PARRDR> Multiple terms for dihedral type: INDEX  754 CODE********     CP3 -N   -C   -O   
+ PARRDR> Multiple terms for dihedral type: INDEX  752 CODE********     CP2 -CP1 -C   -O   
+ PARRDR> Multiple terms for dihedral type: INDEX  750 CODE********     CP1 -N   -C   -O   
+ PARRDR> Multiple terms for dihedral type: INDEX  741 CODE********     HB  -CP1 -C   -O   
+ PARRDR> Multiple terms for dihedral type: INDEX  726 CODE********     N   -CP1 -C   -NH1 
+ PARRDR> Multiple terms for dihedral type: INDEX  724 CODE********     CP2 -CP1 -C   -NH1 
+ PARRDR> Multiple terms for dihedral type: INDEX  718 CODE********     HB  -CP1 -C   -NH1 
+ PARRDR> Multiple terms for dihedral type: INDEX  707 CODE********     CP2 -CP1 -C   -N   
+ PARRDR> Multiple terms for dihedral type: INDEX  701 CODE********     HB  -CP1 -C   -N   
+ PARRDR> Multiple terms for dihedral type: INDEX  673 CODE********     CT3 -NH1 -C   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  671 CODE********     CT2 -NH1 -C   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  669 CODE********     CT1 -NH1 -C   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  654 CODE********     CT2 -NH1 -C   -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  652 CODE********     CT1 -NH1 -C   -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  646 CODE********     HS  -S   -CT2 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  645 CODE********     HS  -S   -CT2 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  643 CODE********     H   -OH1 -CT2 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  642 CODE********     H   -OH1 -CT2 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  640 CODE********     H   -OH1 -CT1 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  639 CODE********     H   -OH1 -CT1 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  631 CODE********     CT1 -NH1 -C   -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  626 CODE********     H   -OH1 -CT2 -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  625 CODE********     H   -OH1 -CT2 -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  615 CODE********     HS  -S   -CT2 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  614 CODE********     HS  -S   -CT2 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  612 CODE********     H   -OH1 -CT2 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  611 CODE********     H   -OH1 -CT2 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  609 CODE********     H   -OH1 -CT1 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  608 CODE********     H   -OH1 -CT1 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  580 CODE********     H   -NH1 -C   -HA  
+ PARRDR> Multiple terms for dihedral type: INDEX  572 CODE********     CN7 -CN7 -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX  571 CODE********     CN7 -CN7 -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX  570 CODE********     CN7 -CN7 -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX  569 CODE********     CN7 -CN7 -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX  562 CODE********     CA  -CA  -ON2B-P   
+ PARRDR> Multiple terms for dihedral type: INDEX  557 CODE********     ON5 -CN7 -CN7 -ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  556 CODE********     ON5 -CN7 -CN7 -ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  555 CODE********     ON5 -CN7 -CN7 -ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  553 CODE********     ON2 -CN7B-CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  552 CODE********     ON2 -CN7B-CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  551 CODE********     ON2 -CN7B-CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  549 CODE********     ON2 -CN7 -CN7 -ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  548 CODE********     ON2 -CN7 -CN7 -ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  547 CODE********     ON2 -CN7 -CN7 -ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  540 CODE********     CPH1-NR1 -CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  539 CODE********     CPH1-NR1 -CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  536 CODE********     ON5 -CN7 -CN7 -ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  535 CODE********     ON5 -CN7 -CN7 -ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  534 CODE********     ON5 -CN7 -CN7 -ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  532 CODE********     ON2 -CN7 -CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  531 CODE********     ON2 -CN7 -CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  530 CODE********     ON2 -CN7 -CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  528 CODE********     ON2 -CN7 -CN7 -ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  527 CODE********     ON2 -CN7 -CN7 -ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  526 CODE********     ON2 -CN7 -CN7 -ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  516 CODE********     CPH1-NR1 -CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  515 CODE********     CPH1-NR1 -CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  506 CODE********     CN8B-CN7 -CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  504 CODE********     CN7 -CN7 -CN8B-ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  503 CODE********     CN7 -CN7 -CN8B-ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  502 CODE********     CN7 -CN7 -CN8B-ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  498 CODE********     CN7 -CN7 -CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  497 CODE********     CN7 -CN7 -CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  488 CODE********     CN9 -ON2 -P   -ON4 
+ PARRDR> Multiple terms for dihedral type: INDEX  486 CODE********     CN8B-ON2 -P   -ON4 
+ PARRDR> Multiple terms for dihedral type: INDEX  484 CODE********     CN8 -ON2 -P   -ON4 
+ PARRDR> Multiple terms for dihedral type: INDEX  482 CODE********     CN7B-ON2 -P   -ON4 
+ PARRDR> Multiple terms for dihedral type: INDEX  480 CODE********     CN7 -ON2 -P   -ON4 
+ PARRDR> Multiple terms for dihedral type: INDEX  478 CODE********     CA  -ON2B-P   -ON4 
+ PARRDR> Multiple terms for dihedral type: INDEX  469 CODE********     CN9 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  468 CODE********     CN9 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  467 CODE********     CN9 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  465 CODE********     CN8B-ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  464 CODE********     CN8B-ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  463 CODE********     CN8B-ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  461 CODE********     CN8B-CN7 -CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  459 CODE********     CN8 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  458 CODE********     CN8 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  457 CODE********     CN8 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  455 CODE********     CN7 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  454 CODE********     CN7 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  453 CODE********     CN7 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  451 CODE********     CN7 -CN7 -CN8B-ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  450 CODE********     CN7 -CN7 -CN8B-ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  449 CODE********     CN7 -CN7 -CN8B-ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  447 CODE********     CN7 -CN7 -CN7B-ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  446 CODE********     CN7 -CN7 -CN7B-ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  444 CODE********     CN7 -CN7 -CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  443 CODE********     CN7 -CN7 -CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  403 CODE********     CPH2-NR1 -CN7B-CN8 
+ PARRDR> Multiple terms for dihedral type: INDEX  402 CODE********     CPH2-NR1 -CN7B-CN8 
+ PARRDR> Multiple terms for dihedral type: INDEX  377 CODE********     CPH2-NR1 -CN7B-CN7B
+ PARRDR> Multiple terms for dihedral type: INDEX  376 CODE********     CPH2-NR1 -CN7B-CN7B
+ PARRDR> Multiple terms for dihedral type: INDEX  287 CODE46724475     CP2 -CP1 -CC  -O   
+ PARRDR> Multiple terms for dihedral type: INDEX  285 CODE46265835     HB  -CP1 -CC  -O   
+ PARRDR> Multiple terms for dihedral type: INDEX  271 CODE29334375     N   -CP1 -CC  -NH2 
+ PARRDR> Multiple terms for dihedral type: INDEX  269 CODE28952175     CP2 -CP1 -CC  -NH2 
+ PARRDR> Multiple terms for dihedral type: INDEX  267 CODE28493535     HB  -CP1 -CC  -NH2 
+ PARRDR> Multiple terms for dihedral type: INDEX  234 CODE24365676     N   -C   -CP1 -N   
+ PARRDR> Multiple terms for dihedral type: INDEX  226 CODE 9441585     CP1 -C   -N   -CP3 
+ PARRDR> Multiple terms for dihedral type: INDEX  224 CODE 9346035     CT3 -C   -N   -CP3 
+ PARRDR> Multiple terms for dihedral type: INDEX  222 CODE 9326925     CT2 -C   -N   -CP3 
+ PARRDR> Multiple terms for dihedral type: INDEX  220 CODE 9307815     CT1 -C   -N   -CP3 
+ PARRDR> Multiple terms for dihedral type: INDEX  214 CODE 8314095     CP1 -C   -N   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  212 CODE 8218545     CT3 -C   -N   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  210 CODE 8199435     CT2 -C   -N   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  208 CODE 8180325     CT1 -C   -N   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  177 CODE 6191963     CT3 -CT2 -CPH1-CPH1
+ PARRDR> Multiple terms for dihedral type: INDEX  176 CODE 6191963     CT3 -CT2 -CPH1-CPH1
+ PARRDR> Multiple terms for dihedral type: INDEX  173 CODE 6153743     CT1 -CT2 -CPH1-CPH1
+ PARRDR> Multiple terms for dihedral type: INDEX  172 CODE 6153743     CT1 -CT2 -CPH1-CPH1
+ PARRDR> Multiple terms for dihedral type: INDEX  165 CODE 5736403     CT3 -SM  -SM  -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  164 CODE 5736403     CT3 -SM  -SM  -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  162 CODE 5736263     CT3 -CT2 -S   -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  160 CODE 5734451     CT3 -C   -NH1 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  157 CODE 5717153     CT2 -CT2 -S   -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  155 CODE 5715341     CT2 -C   -NH1 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  152 CODE 5696231     CT1 -C   -NH1 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  144 CODE 5277763     CT2 -SM  -SM  -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  143 CODE 5277763     CT2 -SM  -SM  -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  141 CODE 5275811     CT2 -C   -NH1 -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  138 CODE 5256701     CT1 -C   -NH1 -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  128 CODE 4836281     CT1 -C   -NH1 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  125 CODE 4473191     HA  -C   -NH1 -CT1 
+*****  WARNING  ***** PARRDR no nonbond parameters for atom type:  61  NO  
+ NO nonbond interactions will be computed for this atom type.
+*****  WARNING  ***** PARRDR no nonbond parameters for atom type:  77  ON  
+ NO nonbond interactions will be computed for this atom type.
+ PARMIO> NONBOND, HBOND lists and IMAGE atoms cleared.
+  
+ CHARMM>    close      unit  1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open  read unit  1 card name "/home/mikolaj/devel/toppar/cluster/par_iron_sulfur.inp"
+ VOPEN> Attempting to open::/home/mikolaj/devel/toppar/cluster/par_iron_sulfur.inp::
+ OPNLGU> Unit  1 opened for READONLY access to /home/mikolaj/devel/toppar/cluster/par_iron_sulfur.inp
+  
+ CHARMM>    read  para unit  1 card append
+
+          PARAMETER FILE BEING READ FROM UNIT  1
+ TITLE> * TAKEN FROM IRON-SULFUR CLUSTER (GMU)
+ TITLE> *
+ PARRDR> Multiple terms for dihedral type: INDEX 1054 CODE********     ON3 -P2  -ON2 -P2  
+ PARRDR> Multiple terms for dihedral type: INDEX 1052 CODE********     ON3 -P   -ON2 -P2  
+ PARRDR> Multiple terms for dihedral type: INDEX 1050 CODE********     ON2 -P2  -ON2 -P2  
+ PARRDR> Multiple terms for dihedral type: INDEX 1048 CODE********     ON2 -P   -ON2 -P2  
+ PARRDR> Multiple terms for dihedral type: INDEX 1046 CODE********     ON3 -P2  -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX 1044 CODE********     ON3 -P   -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX 1042 CODE********     ON2 -P2  -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX 1040 CODE********     ON2 -P   -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX 1036 CODE********     CN5 -NN2B-CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX 1027 CODE********     CN1T-NN2B-CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX 1016 CODE********     CN5 -NN2B-CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX 1007 CODE********     CN1T-NN2B-CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  998 CODE********     CN7B-CN8 -CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  997 CODE********     CN7B-CN8 -CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  995 CODE********     CN7B-CN7C-CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  994 CODE********     CN7B-CN7C-CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  992 CODE********     CN7B-CN7B-CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  991 CODE********     CN7B-CN7B-CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  985 CODE********     CN7B-CN8 -CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  984 CODE********     CN7B-CN8 -CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  982 CODE********     CN7B-CN7C-CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  981 CODE********     CN7B-CN7C-CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  979 CODE********     CN7B-CN7B-CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  978 CODE********     CN7B-CN7B-CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  968 CODE********     CN8 -CN3 -CN1A-ON1 
+ PARRDR> Multiple terms for dihedral type: INDEX  967 CODE********     CN8 -CN3 -CN1A-ON1 
+ PARRDR> Multiple terms for dihedral type: INDEX  963 CODE********     CN3C-CN3 -CN1A-ON1 
+ PARRDR> Multiple terms for dihedral type: INDEX  890 CODE********     CN8 -CN3 -CN1A-NN1 
+ PARRDR> Multiple terms for dihedral type: INDEX  889 CODE********     CN8 -CN3 -CN1A-NN1 
+ PARRDR> Multiple terms for dihedral type: INDEX  884 CODE********     CN3C-CN3 -CN1A-NN1 
+ PARRDR> Multiple terms for dihedral type: INDEX  882 CODE********     CN3B-CN3 -CN1A-NN1 
+ PARRDR> Multiple terms for dihedral type: INDEX  880 CODE********     CN3A-CN3 -CN1A-NN1 
+ PARRDR> Multiple terms for dihedral type: INDEX  858 CODE********     HN5 -ON5 -CN7 -CN8 
+ PARRDR> Multiple terms for dihedral type: INDEX  857 CODE********     HN5 -ON5 -CN7 -CN8 
+ PARRDR> Multiple terms for dihedral type: INDEX  846 CODE********     HN5 -ON5 -CN7 -CN7C
+ PARRDR> Multiple terms for dihedral type: INDEX  832 CODE********     HN5 -ON5 -CN7B-CN7B
+ PARRDR> Multiple terms for dihedral type: INDEX  831 CODE********     HN5 -ON5 -CN7B-CN7B
+ PARRDR> Multiple terms for dihedral type: INDEX  830 CODE********     HN5 -ON5 -CN7B-CN7B
+ PARRDR> Multiple terms for dihedral type: INDEX  828 CODE********     HN5 -ON5 -CN7 -CN7B
+ PARRDR> Multiple terms for dihedral type: INDEX  818 CODE********     HN5 -ON5 -CN8B-CN7 
+ PARRDR> Multiple terms for dihedral type: INDEX  817 CODE********     HN5 -ON5 -CN8B-CN7 
+ PARRDR> Multiple terms for dihedral type: INDEX  814 CODE********     HN5 -ON5 -CN7B-CN7 
+ PARRDR> Multiple terms for dihedral type: INDEX  812 CODE********     HN5 -ON5 -CN7 -CN7 
+ PARRDR> Multiple terms for dihedral type: INDEX  811 CODE********     HN5 -ON5 -CN7 -CN7 
+ PARRDR> Multiple terms for dihedral type: INDEX  763 CODE********     CT3 -OS  -CD  -OB  
+ PARRDR> Multiple terms for dihedral type: INDEX  761 CODE********     CT2 -OS  -CD  -OB  
+ PARRDR> Multiple terms for dihedral type: INDEX  754 CODE********     CP3 -N   -C   -O   
+ PARRDR> Multiple terms for dihedral type: INDEX  752 CODE********     CP2 -CP1 -C   -O   
+ PARRDR> Multiple terms for dihedral type: INDEX  750 CODE********     CP1 -N   -C   -O   
+ PARRDR> Multiple terms for dihedral type: INDEX  741 CODE********     HB  -CP1 -C   -O   
+ PARRDR> Multiple terms for dihedral type: INDEX  726 CODE********     N   -CP1 -C   -NH1 
+ PARRDR> Multiple terms for dihedral type: INDEX  724 CODE********     CP2 -CP1 -C   -NH1 
+ PARRDR> Multiple terms for dihedral type: INDEX  718 CODE********     HB  -CP1 -C   -NH1 
+ PARRDR> Multiple terms for dihedral type: INDEX  707 CODE********     CP2 -CP1 -C   -N   
+ PARRDR> Multiple terms for dihedral type: INDEX  701 CODE********     HB  -CP1 -C   -N   
+ PARRDR> Multiple terms for dihedral type: INDEX  673 CODE********     CT3 -NH1 -C   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  671 CODE********     CT2 -NH1 -C   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  669 CODE********     CT1 -NH1 -C   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  654 CODE********     CT2 -NH1 -C   -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  652 CODE********     CT1 -NH1 -C   -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  646 CODE********     HS  -S   -CT2 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  645 CODE********     HS  -S   -CT2 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  643 CODE********     H   -OH1 -CT2 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  642 CODE********     H   -OH1 -CT2 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  640 CODE********     H   -OH1 -CT1 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  639 CODE********     H   -OH1 -CT1 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  631 CODE********     CT1 -NH1 -C   -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  626 CODE********     H   -OH1 -CT2 -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  625 CODE********     H   -OH1 -CT2 -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  615 CODE********     HS  -S   -CT2 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  614 CODE********     HS  -S   -CT2 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  612 CODE********     H   -OH1 -CT2 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  611 CODE********     H   -OH1 -CT2 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  609 CODE********     H   -OH1 -CT1 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  608 CODE********     H   -OH1 -CT1 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  580 CODE********     H   -NH1 -C   -HA  
+ PARRDR> Multiple terms for dihedral type: INDEX  572 CODE********     CN7 -CN7 -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX  571 CODE********     CN7 -CN7 -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX  570 CODE********     CN7 -CN7 -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX  569 CODE********     CN7 -CN7 -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX  562 CODE********     CA  -CA  -ON2B-P   
+ PARRDR> Multiple terms for dihedral type: INDEX  557 CODE********     ON5 -CN7 -CN7 -ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  556 CODE********     ON5 -CN7 -CN7 -ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  555 CODE********     ON5 -CN7 -CN7 -ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  553 CODE********     ON2 -CN7B-CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  552 CODE********     ON2 -CN7B-CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  551 CODE********     ON2 -CN7B-CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  549 CODE********     ON2 -CN7 -CN7 -ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  548 CODE********     ON2 -CN7 -CN7 -ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  547 CODE********     ON2 -CN7 -CN7 -ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  540 CODE********     CPH1-NR1 -CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  539 CODE********     CPH1-NR1 -CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  536 CODE********     ON5 -CN7 -CN7 -ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  535 CODE********     ON5 -CN7 -CN7 -ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  534 CODE********     ON5 -CN7 -CN7 -ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  532 CODE********     ON2 -CN7 -CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  531 CODE********     ON2 -CN7 -CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  530 CODE********     ON2 -CN7 -CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  528 CODE********     ON2 -CN7 -CN7 -ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  527 CODE********     ON2 -CN7 -CN7 -ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  526 CODE********     ON2 -CN7 -CN7 -ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  516 CODE********     CPH1-NR1 -CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  515 CODE********     CPH1-NR1 -CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  506 CODE********     CN8B-CN7 -CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  504 CODE********     CN7 -CN7 -CN8B-ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  503 CODE********     CN7 -CN7 -CN8B-ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  502 CODE********     CN7 -CN7 -CN8B-ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  498 CODE********     CN7 -CN7 -CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  497 CODE********     CN7 -CN7 -CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  488 CODE********     CN9 -ON2 -P   -ON4 
+ PARRDR> Multiple terms for dihedral type: INDEX  486 CODE********     CN8B-ON2 -P   -ON4 
+ PARRDR> Multiple terms for dihedral type: INDEX  484 CODE********     CN8 -ON2 -P   -ON4 
+ PARRDR> Multiple terms for dihedral type: INDEX  482 CODE********     CN7B-ON2 -P   -ON4 
+ PARRDR> Multiple terms for dihedral type: INDEX  480 CODE********     CN7 -ON2 -P   -ON4 
+ PARRDR> Multiple terms for dihedral type: INDEX  478 CODE********     CA  -ON2B-P   -ON4 
+ PARRDR> Multiple terms for dihedral type: INDEX  469 CODE********     CN9 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  468 CODE********     CN9 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  467 CODE********     CN9 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  465 CODE********     CN8B-ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  464 CODE********     CN8B-ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  463 CODE********     CN8B-ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  461 CODE********     CN8B-CN7 -CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  459 CODE********     CN8 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  458 CODE********     CN8 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  457 CODE********     CN8 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  455 CODE********     CN7 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  454 CODE********     CN7 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  453 CODE********     CN7 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  451 CODE********     CN7 -CN7 -CN8B-ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  450 CODE********     CN7 -CN7 -CN8B-ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  449 CODE********     CN7 -CN7 -CN8B-ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  447 CODE********     CN7 -CN7 -CN7B-ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  446 CODE********     CN7 -CN7 -CN7B-ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  444 CODE********     CN7 -CN7 -CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  443 CODE********     CN7 -CN7 -CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  403 CODE********     CPH2-NR1 -CN7B-CN8 
+ PARRDR> Multiple terms for dihedral type: INDEX  402 CODE********     CPH2-NR1 -CN7B-CN8 
+ PARRDR> Multiple terms for dihedral type: INDEX  377 CODE********     CPH2-NR1 -CN7B-CN7B
+ PARRDR> Multiple terms for dihedral type: INDEX  376 CODE********     CPH2-NR1 -CN7B-CN7B
+ PARRDR> Multiple terms for dihedral type: INDEX  287 CODE46724475     CP2 -CP1 -CC  -O   
+ PARRDR> Multiple terms for dihedral type: INDEX  285 CODE46265835     HB  -CP1 -CC  -O   
+ PARRDR> Multiple terms for dihedral type: INDEX  271 CODE29334375     N   -CP1 -CC  -NH2 
+ PARRDR> Multiple terms for dihedral type: INDEX  269 CODE28952175     CP2 -CP1 -CC  -NH2 
+ PARRDR> Multiple terms for dihedral type: INDEX  267 CODE28493535     HB  -CP1 -CC  -NH2 
+ PARRDR> Multiple terms for dihedral type: INDEX  234 CODE24365676     N   -C   -CP1 -N   
+ PARRDR> Multiple terms for dihedral type: INDEX  226 CODE 9441585     CP1 -C   -N   -CP3 
+ PARRDR> Multiple terms for dihedral type: INDEX  224 CODE 9346035     CT3 -C   -N   -CP3 
+ PARRDR> Multiple terms for dihedral type: INDEX  222 CODE 9326925     CT2 -C   -N   -CP3 
+ PARRDR> Multiple terms for dihedral type: INDEX  220 CODE 9307815     CT1 -C   -N   -CP3 
+ PARRDR> Multiple terms for dihedral type: INDEX  214 CODE 8314095     CP1 -C   -N   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  212 CODE 8218545     CT3 -C   -N   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  210 CODE 8199435     CT2 -C   -N   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  208 CODE 8180325     CT1 -C   -N   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  177 CODE 6191963     CT3 -CT2 -CPH1-CPH1
+ PARRDR> Multiple terms for dihedral type: INDEX  176 CODE 6191963     CT3 -CT2 -CPH1-CPH1
+ PARRDR> Multiple terms for dihedral type: INDEX  173 CODE 6153743     CT1 -CT2 -CPH1-CPH1
+ PARRDR> Multiple terms for dihedral type: INDEX  172 CODE 6153743     CT1 -CT2 -CPH1-CPH1
+ PARRDR> Multiple terms for dihedral type: INDEX  165 CODE 5736403     CT3 -SM  -SM  -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  164 CODE 5736403     CT3 -SM  -SM  -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  162 CODE 5736263     CT3 -CT2 -S   -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  160 CODE 5734451     CT3 -C   -NH1 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  157 CODE 5717153     CT2 -CT2 -S   -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  155 CODE 5715341     CT2 -C   -NH1 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  152 CODE 5696231     CT1 -C   -NH1 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  144 CODE 5277763     CT2 -SM  -SM  -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  143 CODE 5277763     CT2 -SM  -SM  -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  141 CODE 5275811     CT2 -C   -NH1 -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  138 CODE 5256701     CT1 -C   -NH1 -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  128 CODE 4836281     CT1 -C   -NH1 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  125 CODE 4473191     HA  -C   -NH1 -CT1 
+*****  WARNING  ***** PARRDR no nonbond parameters for atom type:  61  NO  
+ NO nonbond interactions will be computed for this atom type.
+*****  WARNING  ***** PARRDR no nonbond parameters for atom type:  77  ON  
+ NO nonbond interactions will be computed for this atom type.
+ PARMIO> NONBOND, HBOND lists and IMAGE atoms cleared.
+  
+ CHARMM>    close      unit  1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    !###############################################
+ CHARMM>    !#                   Protein                   #
+ CHARMM>    !###############################################
+ CHARMM>    open   read     unit 1 card name "../protein.pdb"
+ VOPEN> Attempting to open::../protein.pdb::
+ OPNLGU> Unit  1 opened for READONLY access to ../protein.pdb
+  
+ CHARMM>    read   sequ pdb unit 1
+ MAINIO> Sequence information being read from unit   1.
+ TITLE>  *
+
+          RESIDUE SEQUENCE --    54 RESIDUES
+          MET ALA LYS TRP VAL CYS LYS ILE CYS GLY TYR ILE TYR ASP GLU ASP ALA GLY ASP PRO 
+          ASP ASN GLY ILE SER PRO GLY THR LYS PHE GLU GLU LEU PRO ASP ASP TRP VAL CYS PRO 
+          ILE CYS GLY ALA PRO LYS SER GLU PHE GLU LYS LEU GLU ASP 
+ ***** Message from SEQRDR ***** THE SYSTEM CONTAINS 20 TITRATABLE GROUPS
+ THE USER MUST PREDETERMINE THE PROTONATION STATE THROUGH THE SEQUENCE AND RTF
+ HIS -  0  ASP -  7  GLU -  6  LYS -  5  TYR -  2
+  
+ CHARMM>    gene   PRTA first none last none setup
+ NO PATCHING WILL BE DONE ON THE FIRST RESIDUE
+ NO PATCHING WILL BE DONE ON THE LAST  RESIDUE
+ GENPSF> Segment   1 has been generated. Its identifier is PRTA.
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =        1   Number of residues   =       54
+         Number of atoms         =      806   Number of groups     =      243
+         Number of bonds         =      818   Number of angles     =     1485
+         Number of dihedrals     =     2196   Number of impropers  =      123
+         Number of HB acceptors  =       86   Number of HB donors  =       77
+         Number of NB exclusions =        0   Total charge =   -8.00000
+  
+ CHARMM>    rewind          unit 1
+                    REWINDING UNIT     1
+  
+ CHARMM>    read   coor pdb unit 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE>  *
+
+ ** WARNING ** For atom in coordinate file, the corresponding residue in the PSF lacks that atom:
+ INDEX=  421 IRES=   54 RESID=54   RES=ASP  ATOM=OXT 
+ ** WARNING ** After reading, there are no coordinates for selected atom:     2     1 MET  H   
+ ** WARNING ** After reading, there are no coordinates for selected atom:     4     1 MET  HA  
+ ** WARNING ** After reading, there are no coordinates for selected atom:     6     1 MET  HB1 
+ ** WARNING ** After reading, there are no coordinates for selected atom:     7     1 MET  HB2 
+ ** WARNING ** After reading, there are no coordinates for selected atom:     9     1 MET  HG1 
+ ** WARNING ** After reading, there are no coordinates for selected atom:    10     1 MET  HG2 
+ ** WARNING ** After reading, there are no coordinates for selected atom:    13     1 MET  HE1 
+ ** WARNING ** After reading, there are no coordinates for selected atom:    14     1 MET  HE2 
+ ** WARNING ** After reading, there are no coordinates for selected atom:    15     1 MET  HE3 
+ ** WARNING ** After reading, there are no coordinates for selected atom:    19     2 ALA  H   
+
+ ** A total of   386 selected atoms have no coordinates
+ *** LEVEL  2 WARNING *** BOMLEV IS    0
+  
+ CHARMM>    close           unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    open   read     unit 1 card name "../water.pdb"
+ VOPEN> Attempting to open::../water.pdb::
+ OPNLGU> Unit  1 opened for READONLY access to ../water.pdb
+  
+ CHARMM>    read   sequ pdb unit 1
+ MAINIO> Sequence information being read from unit   1.
+ TITLE>  *
+
+          RESIDUE SEQUENCE --   153 RESIDUES
+          TP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3M
+          TP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3M
+          TP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3M
+          TP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3M
+          TP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3M
+          TP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3M
+          TP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3M
+          TP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3MTP3M
+  
+ CHARMM>    gene   WATA setup noan nodi
+ NO PATCHING WILL BE DONE ON THE FIRST RESIDUE
+ NO PATCHING WILL BE DONE ON THE LAST  RESIDUE
+ GENPSF> Segment   2 has been generated. Its identifier is WATA.
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =        2   Number of residues   =      207
+         Number of atoms         =     1265   Number of groups     =      396
+         Number of bonds         =     1124   Number of angles     =     1638
+         Number of dihedrals     =     2196   Number of impropers  =      123
+         Number of HB acceptors  =      239   Number of HB donors  =       77
+         Number of NB exclusions =        0   Total charge =   -8.00000
+  
+ CHARMM>    rewind          unit 1
+                    REWINDING UNIT     1
+  
+ CHARMM>    read   coor pdb unit 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE>  *
+ ** WARNING ** After reading, there are no coordinates for selected atom:     2     1 MET  H   
+ ** WARNING ** After reading, there are no coordinates for selected atom:     4     1 MET  HA  
+ ** WARNING ** After reading, there are no coordinates for selected atom:     6     1 MET  HB1 
+ ** WARNING ** After reading, there are no coordinates for selected atom:     7     1 MET  HB2 
+ ** WARNING ** After reading, there are no coordinates for selected atom:     9     1 MET  HG1 
+ ** WARNING ** After reading, there are no coordinates for selected atom:    10     1 MET  HG2 
+ ** WARNING ** After reading, there are no coordinates for selected atom:    13     1 MET  HE1 
+ ** WARNING ** After reading, there are no coordinates for selected atom:    14     1 MET  HE2 
+ ** WARNING ** After reading, there are no coordinates for selected atom:    15     1 MET  HE3 
+ ** WARNING ** After reading, there are no coordinates for selected atom:    19     2 ALA  H   
+
+ ** A total of   692 selected atoms have no coordinates
+ *** LEVEL  2 WARNING *** BOMLEV IS    0
+  
+ CHARMM>    close           unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    !###############################################
+ CHARMM>    !#                Apply patches                #
+ CHARMM>    !###############################################
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    !###############################################
+ CHARMM>    !#              Add missing atoms              #
+ CHARMM>    !###############################################
+ CHARMM>    coor    init sele type h* end
+ SELRPN>    692 atoms have been selected out of   1265
+ SELECTED COORDINATES INITIALIZED IN THE MAIN SET.
+
+  
+ CHARMM>    ic      fill pres
+  
+ CHARMM>    ic      para
+  
+ CHARMM>    ! ic      build
+ CHARMM>    hbuild
+ PRNHBD: CUToff Hydrogen Bond  distance =    0.5000   Angle =   90.0000
+         CuT switching ON HB dist. =     3.5000  OFf HB dist. =    4.0000
+         CuT switching ON Hb Angle =    50.0000  OFf Hb Angle =   70.0000
+         ACCEptor antecedents included
+         All hydrogen bonds for each hydrogen will be found
+         Hydrogen bonds between excluded atoms will be kept
+
+
+ NONBOND OPTION FLAGS: 
+     ELEC     VDW      ATOMs    CDIElec  SHIFt    VATOm    VSWItch 
+     BYGRoup  NOEXtnd  NOEWald 
+ CUTNB  = 14.000 CTEXNB =999.000 CTONNB = 10.000 CTOFNB = 12.000
+ WMIN   =  1.500 WRNMXD =  0.500 E14FAC =  1.000 EPS    =  1.000
+ NBXMOD =      5
+ There are        0 atom  pairs and        0 atom  exclusions.
+ There are        0 group pairs and        0 group exclusions.
+ <MAKINB> with mode   5 found   2762 exclusions and   2143 interactions(1-4)
+ <MAKGRP> found    704 group exclusions.
+
+ CUToff Hydrogen Bond  distance =    0.5000           Angle =   90.0000
+ CuT switching ON HB dist. =     3.5000 OFf HB dist. =    4.0000
+ CuT switching ON Hb Angle =    50.0000 OFf Hb Angle =   70.0000
+ ACCEptor antecedents included
+ dihedral PHI STePs for spin =   10.0000
+ cutoff for water acceptor search CUTWat=    7.5000
+
+ Place: HA  ,    ,    , constructed for donor PRTA 1    MET  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 1    MET  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 1    MET  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 2    ALA  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 2    ALA  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 3    LYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 3    LYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 3    LYS  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 3    LYS  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 3    LYS  CD  .
+ Place: HE1 ,HE2 ,    , constructed for donor PRTA 3    LYS  CE  .
+ Place: H   ,    ,    , constructed for donor PRTA 4    TRP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 4    TRP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 4    TRP  CB  .
+ Place: HD1 ,    ,    , constructed for donor PRTA 4    TRP  CD1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 4    TRP  NE1 .
+ Place: HE3 ,    ,    , constructed for donor PRTA 4    TRP  CE3 .
+ Place: HZ3 ,    ,    , constructed for donor PRTA 4    TRP  CZ3 .
+ Place: HZ2 ,    ,    , constructed for donor PRTA 4    TRP  CZ2 .
+ Place: HH2 ,    ,    , constructed for donor PRTA 4    TRP  CH2 .
+ Place: H   ,    ,    , constructed for donor PRTA 5    VAL  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 5    VAL  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 5    VAL  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 6    CYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 6    CYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 6    CYS  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 7    LYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 7    LYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 7    LYS  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 7    LYS  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 7    LYS  CD  .
+ Place: HE1 ,HE2 ,    , constructed for donor PRTA 7    LYS  CE  .
+ Place: H   ,    ,    , constructed for donor PRTA 8    ILE  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 8    ILE  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 8    ILE  CB  .
+ Place: HG11,HG12,    , constructed for donor PRTA 8    ILE  CG1 .
+ Place: H   ,    ,    , constructed for donor PRTA 9    CYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 9    CYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 9    CYS  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 10   GLY  N   .
+ Place: HA1 ,HA2 ,    , constructed for donor PRTA 10   GLY  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 11   TYR  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 11   TYR  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 11   TYR  CB  .
+ Place: HD1 ,    ,    , constructed for donor PRTA 11   TYR  CD1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 11   TYR  CE1 .
+ Place: HD2 ,    ,    , constructed for donor PRTA 11   TYR  CD2 .
+ Place: HE2 ,    ,    , constructed for donor PRTA 11   TYR  CE2 .
+ Place: H   ,    ,    , constructed for donor PRTA 12   ILE  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 12   ILE  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 12   ILE  CB  .
+ Place: HG11,HG12,    , constructed for donor PRTA 12   ILE  CG1 .
+ Place: H   ,    ,    , constructed for donor PRTA 13   TYR  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 13   TYR  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 13   TYR  CB  .
+ Place: HD1 ,    ,    , constructed for donor PRTA 13   TYR  CD1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 13   TYR  CE1 .
+ Place: HD2 ,    ,    , constructed for donor PRTA 13   TYR  CD2 .
+ Place: HE2 ,    ,    , constructed for donor PRTA 13   TYR  CE2 .
+ Place: H   ,    ,    , constructed for donor PRTA 14   ASP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 14   ASP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 14   ASP  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 15   GLU  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 15   GLU  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 15   GLU  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 15   GLU  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 16   ASP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 16   ASP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 16   ASP  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 17   ALA  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 17   ALA  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 18   GLY  N   .
+ Place: HA1 ,HA2 ,    , constructed for donor PRTA 18   GLY  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 19   ASP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 19   ASP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 19   ASP  CB  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 20   PRO  CD  .
+ Place: HA  ,    ,    , constructed for donor PRTA 20   PRO  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 20   PRO  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 20   PRO  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 21   ASP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 21   ASP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 21   ASP  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 22   ASN  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 22   ASN  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 22   ASN  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 23   GLY  N   .
+ Place: HA1 ,HA2 ,    , constructed for donor PRTA 23   GLY  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 24   ILE  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 24   ILE  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 24   ILE  CB  .
+ Place: HG11,HG12,    , constructed for donor PRTA 24   ILE  CG1 .
+ Place: H   ,    ,    , constructed for donor PRTA 25   SER  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 25   SER  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 25   SER  CB  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 26   PRO  CD  .
+ Place: HA  ,    ,    , constructed for donor PRTA 26   PRO  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 26   PRO  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 26   PRO  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 27   GLY  N   .
+ Place: HA1 ,HA2 ,    , constructed for donor PRTA 27   GLY  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 28   THR  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 28   THR  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 28   THR  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 29   LYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 29   LYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 29   LYS  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 29   LYS  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 29   LYS  CD  .
+ Place: HE1 ,HE2 ,    , constructed for donor PRTA 29   LYS  CE  .
+ Place: H   ,    ,    , constructed for donor PRTA 30   PHE  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 30   PHE  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 30   PHE  CB  .
+ Place: HD1 ,    ,    , constructed for donor PRTA 30   PHE  CD1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 30   PHE  CE1 .
+ Place: HZ  ,    ,    , constructed for donor PRTA 30   PHE  CZ  .
+ Place: HD2 ,    ,    , constructed for donor PRTA 30   PHE  CD2 .
+ Place: HE2 ,    ,    , constructed for donor PRTA 30   PHE  CE2 .
+ Place: H   ,    ,    , constructed for donor PRTA 31   GLU  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 31   GLU  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 31   GLU  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 31   GLU  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 32   GLU  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 32   GLU  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 32   GLU  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 32   GLU  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 33   LEU  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 33   LEU  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 33   LEU  CB  .
+ Place: HG  ,    ,    , constructed for donor PRTA 33   LEU  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 34   PRO  CD  .
+ Place: HA  ,    ,    , constructed for donor PRTA 34   PRO  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 34   PRO  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 34   PRO  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 35   ASP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 35   ASP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 35   ASP  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 36   ASP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 36   ASP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 36   ASP  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 37   TRP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 37   TRP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 37   TRP  CB  .
+ Place: HD1 ,    ,    , constructed for donor PRTA 37   TRP  CD1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 37   TRP  NE1 .
+ Place: HE3 ,    ,    , constructed for donor PRTA 37   TRP  CE3 .
+ Place: HZ3 ,    ,    , constructed for donor PRTA 37   TRP  CZ3 .
+ Place: HZ2 ,    ,    , constructed for donor PRTA 37   TRP  CZ2 .
+ Place: HH2 ,    ,    , constructed for donor PRTA 37   TRP  CH2 .
+ Place: H   ,    ,    , constructed for donor PRTA 38   VAL  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 38   VAL  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 38   VAL  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 39   CYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 39   CYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 39   CYS  CB  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 40   PRO  CD  .
+ Place: HA  ,    ,    , constructed for donor PRTA 40   PRO  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 40   PRO  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 40   PRO  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 41   ILE  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 41   ILE  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 41   ILE  CB  .
+ Place: HG11,HG12,    , constructed for donor PRTA 41   ILE  CG1 .
+ Place: H   ,    ,    , constructed for donor PRTA 42   CYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 42   CYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 42   CYS  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 43   GLY  N   .
+ Place: HA1 ,HA2 ,    , constructed for donor PRTA 43   GLY  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 44   ALA  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 44   ALA  CA  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 45   PRO  CD  .
+ Place: HA  ,    ,    , constructed for donor PRTA 45   PRO  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 45   PRO  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 45   PRO  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 46   LYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 46   LYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 46   LYS  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 46   LYS  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 46   LYS  CD  .
+ Place: HE1 ,HE2 ,    , constructed for donor PRTA 46   LYS  CE  .
+ Place: H   ,    ,    , constructed for donor PRTA 47   SER  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 47   SER  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 47   SER  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 48   GLU  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 48   GLU  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 48   GLU  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 48   GLU  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 49   PHE  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 49   PHE  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 49   PHE  CB  .
+ Place: HD1 ,    ,    , constructed for donor PRTA 49   PHE  CD1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 49   PHE  CE1 .
+ Place: HZ  ,    ,    , constructed for donor PRTA 49   PHE  CZ  .
+ Place: HD2 ,    ,    , constructed for donor PRTA 49   PHE  CD2 .
+ Place: HE2 ,    ,    , constructed for donor PRTA 49   PHE  CE2 .
+ Place: H   ,    ,    , constructed for donor PRTA 50   GLU  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 50   GLU  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 50   GLU  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 50   GLU  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 51   LYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 51   LYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 51   LYS  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 51   LYS  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 51   LYS  CD  .
+ Place: HE1 ,HE2 ,    , constructed for donor PRTA 51   LYS  CE  .
+ Place: H   ,    ,    , constructed for donor PRTA 52   LEU  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 52   LEU  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 52   LEU  CB  .
+ Place: HG  ,    ,    , constructed for donor PRTA 52   LEU  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 53   GLU  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 53   GLU  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 53   GLU  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 53   GLU  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 54   ASP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 54   ASP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 54   ASP  CB  .
+
+ NBONDX:       325 atom and      0 group interactions within 14.00 A.
+ Spin: H   ,    ,    , constructed for donor PRTA 1    MET  N   .
+
+ NBONDX:      1170 atom and      0 group interactions within 14.00 A.
+ Spin: HE1 ,HE2 ,HE3 , constructed for donor PRTA 1    MET  CE  .
+
+ NBONDX:      1383 atom and      0 group interactions within 14.00 A.
+ Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 2    ALA  CB  .
+
+ NBONDX:      1062 atom and      0 group interactions within 14.00 A.
+ Spin: HZ1 ,HZ2 ,HZ3 , constructed for donor PRTA 3    LYS  NZ  .
+
+ NBONDX:      1437 atom and      0 group interactions within 14.00 A.
+ Spin: HG11,HG12,HG13, constructed for donor PRTA 5    VAL  CG1 .
+
+ NBONDX:      1416 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 5    VAL  CG2 .
+
+ NBONDX:       480 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 6    CYS  SG  .
+
+ NBONDX:      1011 atom and      0 group interactions within 14.00 A.
+ Spin: HZ1 ,HZ2 ,HZ3 , constructed for donor PRTA 7    LYS  NZ  .
+
+ NBONDX:       963 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 8    ILE  CG2 .
+
+ NBONDX:       972 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 8    ILE  CD1 .
+
+ NBONDX:       408 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 9    CYS  SG  .
+
+ NBONDX:       637 atom and      0 group interactions within 14.00 A.
+ Spin: HH  ,    ,    , constructed for donor PRTA 11   TYR  OH  .
+
+ NBONDX:      1596 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 12   ILE  CG2 .
+
+ NBONDX:      1452 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 12   ILE  CD1 .
+
+ NBONDX:       637 atom and      0 group interactions within 14.00 A.
+ Spin: HH  ,    ,    , constructed for donor PRTA 13   TYR  OH  .
+
+ NBONDX:      1377 atom and      0 group interactions within 14.00 A.
+ Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 17   ALA  CB  .
+
+ NBONDX:       870 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,    , constructed for donor PRTA 22   ASN  ND2 .
+
+ NBONDX:      1677 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 24   ILE  CG2 .
+
+ NBONDX:      1557 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 24   ILE  CD1 .
+
+ NBONDX:       357 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 25   SER  OG  .
+
+ NBONDX:       476 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 28   THR  OG1 .
+
+ NBONDX:      1596 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 28   THR  CG2 .
+
+ NBONDX:       876 atom and      0 group interactions within 14.00 A.
+ Spin: HZ1 ,HZ2 ,HZ3 , constructed for donor PRTA 29   LYS  NZ  .
+
+ NBONDX:      2274 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 33   LEU  CD1 .
+
+ NBONDX:      2031 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,HD23, constructed for donor PRTA 33   LEU  CD2 .
+
+ NBONDX:      1389 atom and      0 group interactions within 14.00 A.
+ Spin: HG11,HG12,HG13, constructed for donor PRTA 38   VAL  CG1 .
+
+ NBONDX:      1455 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 38   VAL  CG2 .
+
+ NBONDX:       560 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 39   CYS  SG  .
+
+ NBONDX:      1044 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 41   ILE  CG2 .
+
+ NBONDX:      1194 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 41   ILE  CD1 .
+
+ NBONDX:       427 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 42   CYS  SG  .
+
+ NBONDX:      1458 atom and      0 group interactions within 14.00 A.
+ Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 44   ALA  CB  .
+
+ NBONDX:      1725 atom and      0 group interactions within 14.00 A.
+ Spin: HZ1 ,HZ2 ,HZ3 , constructed for donor PRTA 46   LYS  NZ  .
+
+ NBONDX:       411 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 47   SER  OG  .
+
+ NBONDX:      1254 atom and      0 group interactions within 14.00 A.
+ Spin: HZ1 ,HZ2 ,HZ3 , constructed for donor PRTA 51   LYS  NZ  .
+
+ NBONDX:      1386 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 52   LEU  CD1 .
+
+ NBONDX:      1305 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,HD23, constructed for donor PRTA 52   LEU  CD2 .
+
+ NBONDX:       674 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 123  TP3M OH2 .
+ Minimum distance between this water and protein is  1.43320 A.
+
+ NBONDX:       878 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 19   TP3M OH2 .
+ Minimum distance between this water and protein is  1.61063 A.
+
+ NBONDX:       628 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 31   TP3M OH2 .
+ Minimum distance between this water and protein is  1.70471 A.
+
+ NBONDX:       832 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 71   TP3M OH2 .
+ Minimum distance between this water and protein is  1.81306 A.
+
+ NBONDX:      1016 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 29   TP3M OH2 .
+ Minimum distance between this water and protein is  1.83921 A.
+
+ NBONDX:      1142 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 14   TP3M OH2 .
+ Minimum distance between this water and protein is  1.84756 A.
+
+ NBONDX:       626 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 8    TP3M OH2 .
+ Minimum distance between this water and protein is  1.94741 A.
+
+ NBONDX:       756 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 110  TP3M OH2 .
+ Minimum distance between this water and protein is  1.95366 A.
+
+ NBONDX:       902 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 1    TP3M OH2 .
+ Minimum distance between this water and protein is  1.97565 A.
+
+ NBONDX:      1356 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 16   TP3M OH2 .
+ Minimum distance between this water and protein is  2.00825 A.
+
+ NBONDX:      1042 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 6    TP3M OH2 .
+ Minimum distance between this water and protein is  2.01108 A.
+
+ NBONDX:       588 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 36   TP3M OH2 .
+ Minimum distance between this water and protein is  2.05373 A.
+
+ NBONDX:       682 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 129  TP3M OH2 .
+ Minimum distance between this water and protein is  2.10062 A.
+
+ NBONDX:       520 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 142  TP3M OH2 .
+ Minimum distance between this water and protein is  2.11011 A.
+
+ NBONDX:       558 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 78   TP3M OH2 .
+ Minimum distance between this water and protein is  2.11305 A.
+
+ NBONDX:       806 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 42   TP3M OH2 .
+ Minimum distance between this water and protein is  2.11410 A.
+
+ NBONDX:       434 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 38   TP3M OH2 .
+ Minimum distance between this water and protein is  2.15604 A.
+
+ NBONDX:      1098 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 25   TP3M OH2 .
+ Minimum distance between this water and protein is  2.17443 A.
+
+ NBONDX:       744 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 143  TP3M OH2 .
+ Minimum distance between this water and protein is  2.20097 A.
+
+ NBONDX:       892 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 23   TP3M OH2 .
+ Minimum distance between this water and protein is  2.21113 A.
+
+ NBONDX:       602 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 130  TP3M OH2 .
+ Minimum distance between this water and protein is  2.22217 A.
+
+ NBONDX:       986 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 114  TP3M OH2 .
+ Minimum distance between this water and protein is  2.23500 A.
+
+ NBONDX:       888 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 91   TP3M OH2 .
+ Minimum distance between this water and protein is  2.24537 A.
+
+ NBONDX:       884 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 13   TP3M OH2 .
+ Minimum distance between this water and protein is  2.28101 A.
+
+ NBONDX:       622 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 102  TP3M OH2 .
+ Minimum distance between this water and protein is  2.28678 A.
+
+ NBONDX:       858 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 11   TP3M OH2 .
+ Minimum distance between this water and protein is  2.28798 A.
+
+ NBONDX:       818 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 108  TP3M OH2 .
+ Minimum distance between this water and protein is  2.31306 A.
+
+ NBONDX:       600 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 51   TP3M OH2 .
+ Minimum distance between this water and protein is  2.31457 A.
+
+ NBONDX:       884 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 95   TP3M OH2 .
+ Minimum distance between this water and protein is  2.39655 A.
+
+ NBONDX:       702 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 40   TP3M OH2 .
+ Minimum distance between this water and protein is  2.41179 A.
+
+ NBONDX:       456 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 100  TP3M OH2 .
+ Minimum distance between this water and protein is  2.43108 A.
+
+ NBONDX:       926 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 12   TP3M OH2 .
+ Minimum distance between this water and protein is  2.47321 A.
+
+ NBONDX:       930 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 24   TP3M OH2 .
+ Minimum distance between this water and protein is  2.50781 A.
+
+ NBONDX:       372 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 52   TP3M OH2 .
+ Minimum distance between this water and protein is  2.51773 A.
+
+ NBONDX:       714 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 98   TP3M OH2 .
+ Minimum distance between this water and protein is  2.52615 A.
+
+ NBONDX:       816 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 20   TP3M OH2 .
+ Minimum distance between this water and protein is  2.54763 A.
+
+ NBONDX:       744 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 57   TP3M OH2 .
+ Minimum distance between this water and protein is  2.59925 A.
+
+ NBONDX:      1152 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 5    TP3M OH2 .
+ Minimum distance between this water and protein is  2.61492 A.
+
+ NBONDX:      1110 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 83   TP3M OH2 .
+ Minimum distance between this water and protein is  2.62116 A.
+
+ NBONDX:       922 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 65   TP3M OH2 .
+ Minimum distance between this water and protein is  2.62220 A.
+
+ NBONDX:       820 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 4    TP3M OH2 .
+ Minimum distance between this water and protein is  2.62281 A.
+
+ NBONDX:       872 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 50   TP3M OH2 .
+ Minimum distance between this water and protein is  2.63537 A.
+
+ NBONDX:       728 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 35   TP3M OH2 .
+ Minimum distance between this water and protein is  2.65397 A.
+
+ NBONDX:       712 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 120  TP3M OH2 .
+ Minimum distance between this water and protein is  2.65456 A.
+
+ NBONDX:       514 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 68   TP3M OH2 .
+ Minimum distance between this water and protein is  2.66723 A.
+
+ NBONDX:       596 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 150  TP3M OH2 .
+ Minimum distance between this water and protein is  2.66739 A.
+
+ NBONDX:       752 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 17   TP3M OH2 .
+ Minimum distance between this water and protein is  2.66875 A.
+
+ NBONDX:       712 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 2    TP3M OH2 .
+ Minimum distance between this water and protein is  2.69272 A.
+
+ NBONDX:       852 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 73   TP3M OH2 .
+ Minimum distance between this water and protein is  2.69373 A.
+
+ NBONDX:       966 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 77   TP3M OH2 .
+ Minimum distance between this water and protein is  2.69549 A.
+
+ NBONDX:      1290 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 9    TP3M OH2 .
+ Minimum distance between this water and protein is  2.69862 A.
+
+ NBONDX:      1122 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 115  TP3M OH2 .
+ Minimum distance between this water and protein is  2.70617 A.
+
+ NBONDX:      1006 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 26   TP3M OH2 .
+ Minimum distance between this water and protein is  2.74072 A.
+
+ NBONDX:       756 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 60   TP3M OH2 .
+ Minimum distance between this water and protein is  2.75918 A.
+
+ NBONDX:       644 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 49   TP3M OH2 .
+ Minimum distance between this water and protein is  2.76915 A.
+
+ NBONDX:       634 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 111  TP3M OH2 .
+ Minimum distance between this water and protein is  2.78118 A.
+
+ NBONDX:       838 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 140  TP3M OH2 .
+ Minimum distance between this water and protein is  2.78173 A.
+
+ NBONDX:       658 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 37   TP3M OH2 .
+ Minimum distance between this water and protein is  2.78242 A.
+
+ NBONDX:       746 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 74   TP3M OH2 .
+ Minimum distance between this water and protein is  2.81521 A.
+
+ NBONDX:      1090 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 21   TP3M OH2 .
+ Minimum distance between this water and protein is  2.82877 A.
+
+ NBONDX:       836 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 87   TP3M OH2 .
+ Minimum distance between this water and protein is  2.83091 A.
+
+ NBONDX:       662 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 7    TP3M OH2 .
+ Minimum distance between this water and protein is  2.83191 A.
+
+ NBONDX:       992 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 96   TP3M OH2 .
+ Minimum distance between this water and protein is  2.83599 A.
+
+ NBONDX:       742 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 79   TP3M OH2 .
+ Minimum distance between this water and protein is  2.84026 A.
+
+ NBONDX:       516 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 53   TP3M OH2 .
+ Minimum distance between this water and protein is  2.84145 A.
+
+ NBONDX:       854 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 15   TP3M OH2 .
+ Minimum distance between this water and protein is  2.84763 A.
+
+ NBONDX:       854 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 66   TP3M OH2 .
+ Minimum distance between this water and protein is  2.85120 A.
+
+ NBONDX:       588 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 22   TP3M OH2 .
+ Minimum distance between this water and protein is  2.86032 A.
+
+ NBONDX:       448 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 125  TP3M OH2 .
+ Minimum distance between this water and protein is  2.86495 A.
+
+ NBONDX:       826 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 89   TP3M OH2 .
+ Minimum distance between this water and protein is  2.87026 A.
+
+ NBONDX:       722 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 32   TP3M OH2 .
+ Minimum distance between this water and protein is  2.87231 A.
+
+ NBONDX:       604 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 131  TP3M OH2 .
+ Minimum distance between this water and protein is  2.87674 A.
+
+ NBONDX:       766 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 145  TP3M OH2 .
+ Minimum distance between this water and protein is  2.88394 A.
+
+ NBONDX:       512 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 86   TP3M OH2 .
+ Minimum distance between this water and protein is  2.89183 A.
+
+ NBONDX:       982 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 28   TP3M OH2 .
+ Minimum distance between this water and protein is  2.89257 A.
+
+ NBONDX:       570 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 112  TP3M OH2 .
+ Minimum distance between this water and protein is  2.90076 A.
+
+ NBONDX:       578 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 116  TP3M OH2 .
+ Minimum distance between this water and protein is  2.91037 A.
+
+ NBONDX:      1094 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 55   TP3M OH2 .
+ Minimum distance between this water and protein is  2.91278 A.
+
+ NBONDX:       488 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 148  TP3M OH2 .
+ Minimum distance between this water and protein is  2.91494 A.
+
+ NBONDX:       978 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 27   TP3M OH2 .
+ Minimum distance between this water and protein is  2.92004 A.
+
+ NBONDX:       978 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 47   TP3M OH2 .
+ Minimum distance between this water and protein is  2.92422 A.
+
+ NBONDX:       824 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 101  TP3M OH2 .
+ Minimum distance between this water and protein is  2.93434 A.
+
+ NBONDX:       850 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 39   TP3M OH2 .
+ Minimum distance between this water and protein is  2.94404 A.
+
+ NBONDX:       688 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 75   TP3M OH2 .
+ Minimum distance between this water and protein is  2.95723 A.
+
+ NBONDX:       800 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 33   TP3M OH2 .
+ Minimum distance between this water and protein is  2.98668 A.
+
+ NBONDX:       978 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 113  TP3M OH2 .
+ Minimum distance between this water and protein is  2.98746 A.
+
+ NBONDX:       510 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 30   TP3M OH2 .
+ Minimum distance between this water and protein is  2.99142 A.
+
+ NBONDX:       988 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 10   TP3M OH2 .
+ Minimum distance between this water and protein is  2.99516 A.
+
+ NBONDX:       772 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 58   TP3M OH2 .
+ Minimum distance between this water and protein is  2.99775 A.
+
+ NBONDX:       510 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 151  TP3M OH2 .
+ Minimum distance between this water and protein is  2.99999 A.
+
+ NBONDX:       706 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 56   TP3M OH2 .
+ Minimum distance between this water and protein is  3.00292 A.
+
+ NBONDX:       802 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 147  TP3M OH2 .
+ Minimum distance between this water and protein is  3.01919 A.
+
+ NBONDX:       654 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 106  TP3M OH2 .
+ Minimum distance between this water and protein is  3.03085 A.
+
+ NBONDX:       596 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 67   TP3M OH2 .
+ Minimum distance between this water and protein is  3.03339 A.
+
+ NBONDX:       720 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 64   TP3M OH2 .
+ Minimum distance between this water and protein is  3.03583 A.
+
+ NBONDX:      1178 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 48   TP3M OH2 .
+ Minimum distance between this water and protein is  3.03736 A.
+
+ NBONDX:       624 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 85   TP3M OH2 .
+ Minimum distance between this water and protein is  3.05511 A.
+
+ NBONDX:       742 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 107  TP3M OH2 .
+ Minimum distance between this water and protein is  3.07347 A.
+
+ NBONDX:       748 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 18   TP3M OH2 .
+ Minimum distance between this water and protein is  3.09078 A.
+
+ NBONDX:       564 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 104  TP3M OH2 .
+ Minimum distance between this water and protein is  3.10973 A.
+
+ NBONDX:       606 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 97   TP3M OH2 .
+ Minimum distance between this water and protein is  3.12962 A.
+
+ NBONDX:       770 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 3    TP3M OH2 .
+ Minimum distance between this water and protein is  3.17471 A.
+
+ NBONDX:       828 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 45   TP3M OH2 .
+ Minimum distance between this water and protein is  3.23785 A.
+
+ NBONDX:       720 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 153  TP3M OH2 .
+ Minimum distance between this water and protein is  3.24704 A.
+
+ NBONDX:       666 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 54   TP3M OH2 .
+ Minimum distance between this water and protein is  3.28012 A.
+
+ NBONDX:       832 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 94   TP3M OH2 .
+ Minimum distance between this water and protein is  3.28995 A.
+
+ NBONDX:       672 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 59   TP3M OH2 .
+ Minimum distance between this water and protein is  3.32127 A.
+
+ NBONDX:       474 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 41   TP3M OH2 .
+ Minimum distance between this water and protein is  3.34083 A.
+
+ NBONDX:       574 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 63   TP3M OH2 .
+ Minimum distance between this water and protein is  3.37595 A.
+
+ NBONDX:      1036 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 34   TP3M OH2 .
+ Minimum distance between this water and protein is  3.39442 A.
+
+ NBONDX:       974 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 80   TP3M OH2 .
+ Minimum distance between this water and protein is  3.42661 A.
+
+ NBONDX:       892 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 90   TP3M OH2 .
+ Minimum distance between this water and protein is  3.46978 A.
+
+ NBONDX:       574 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 61   TP3M OH2 .
+ Minimum distance between this water and protein is  3.53937 A.
+
+ NBONDX:       642 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 72   TP3M OH2 .
+ Minimum distance between this water and protein is  3.55959 A.
+
+ NBONDX:       838 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 136  TP3M OH2 .
+ Minimum distance between this water and protein is  3.56702 A.
+
+ NBONDX:       674 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 146  TP3M OH2 .
+ Minimum distance between this water and protein is  3.65305 A.
+
+ NBONDX:       622 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 43   TP3M OH2 .
+ Minimum distance between this water and protein is  3.75239 A.
+
+ NBONDX:       528 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 128  TP3M OH2 .
+ Minimum distance between this water and protein is  3.76466 A.
+
+ NBONDX:       672 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 81   TP3M OH2 .
+ Minimum distance between this water and protein is  3.80336 A.
+
+ NBONDX:       574 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 149  TP3M OH2 .
+ Minimum distance between this water and protein is  3.86580 A.
+
+ NBONDX:       596 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 99   TP3M OH2 .
+ Minimum distance between this water and protein is  3.87499 A.
+
+ NBONDX:       812 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 119  TP3M OH2 .
+ Minimum distance between this water and protein is  3.90164 A.
+
+ NBONDX:       506 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 93   TP3M OH2 .
+ Minimum distance between this water and protein is  3.93816 A.
+
+ NBONDX:       592 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 62   TP3M OH2 .
+ Minimum distance between this water and protein is  4.11383 A.
+
+ NBONDX:       432 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 118  TP3M OH2 .
+ Minimum distance between this water and protein is  4.13164 A.
+
+ NBONDX:       496 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 124  TP3M OH2 .
+ Minimum distance between this water and protein is  4.30265 A.
+
+ NBONDX:       430 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 135  TP3M OH2 .
+ Minimum distance between this water and protein is  4.83545 A.
+
+ NBONDX:       544 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 69   TP3M OH2 .
+ Minimum distance between this water and protein is  4.84065 A.
+
+ NBONDX:       626 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 103  TP3M OH2 .
+ Minimum distance between this water and protein is  4.87741 A.
+
+ NBONDX:       620 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 88   TP3M OH2 .
+ Minimum distance between this water and protein is  4.94043 A.
+
+ NBONDX:       838 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 144  TP3M OH2 .
+ Minimum distance between this water and protein is  5.08754 A.
+
+ NBONDX:       500 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 139  TP3M OH2 .
+ Minimum distance between this water and protein is  5.14000 A.
+
+ NBONDX:       668 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 137  TP3M OH2 .
+ Minimum distance between this water and protein is  5.17327 A.
+
+ NBONDX:       390 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 46   TP3M OH2 .
+ Minimum distance between this water and protein is  5.42426 A.
+
+ NBONDX:       492 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 138  TP3M OH2 .
+ Minimum distance between this water and protein is  5.57418 A.
+
+ NBONDX:       738 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 92   TP3M OH2 .
+ Minimum distance between this water and protein is  5.60807 A.
+
+ NBONDX:       540 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 76   TP3M OH2 .
+ Minimum distance between this water and protein is  5.61505 A.
+
+ NBONDX:       756 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 121  TP3M OH2 .
+ Minimum distance between this water and protein is  5.72869 A.
+
+ NBONDX:       372 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 117  TP3M OH2 .
+ Minimum distance between this water and protein is  5.74275 A.
+
+ NBONDX:       722 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 109  TP3M OH2 .
+ Minimum distance between this water and protein is  5.82052 A.
+
+ NBONDX:       570 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 122  TP3M OH2 .
+ Minimum distance between this water and protein is  5.86149 A.
+
+ NBONDX:       394 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 152  TP3M OH2 .
+ Minimum distance between this water and protein is  6.48462 A.
+
+ NBONDX:       544 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 141  TP3M OH2 .
+ Minimum distance between this water and protein is  6.70204 A.
+
+ NBONDX:       320 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 126  TP3M OH2 .
+ Minimum distance between this water and protein is  7.68358 A.
+
+ NBONDX:       322 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 84   TP3M OH2 .
+ Minimum distance between this water and protein is  7.99309 A.
+
+ NBONDX:       308 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 134  TP3M OH2 .
+ Minimum distance between this water and protein is  8.03913 A.
+
+ NBONDX:       290 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 127  TP3M OH2 .
+ Minimum distance between this water and protein is  8.44436 A.
+
+ NBONDX:       218 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 82   TP3M OH2 .
+ Minimum distance between this water and protein is  8.98427 A.
+
+ NBONDX:        36 atom and      0 group interactions within 14.00 A.
+ Place:H1  , Spin:H2  ,    ,     constructed for water WATA 70   TP3M OH2 .
+ Minimum distance between this water and protein is  9.05384 A.
+
+ NBONDX:        24 atom and      0 group interactions within 14.00 A.
+ Place:H1  , Spin:H2  ,    ,     constructed for water WATA 105  TP3M OH2 .
+ Minimum distance between this water and protein is  9.99425 A.
+
+ NBONDX:       164 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 133  TP3M OH2 .
+ Minimum distance between this water and protein is 10.34919 A.
+
+ NBONDX:       120 atom and      0 group interactions within 14.00 A.
+ Spin:H1  ,H2  ,    ,     constructed for water WATA 132  TP3M OH2 .
+ Minimum distance between this water and protein is 11.60368 A.
+ Place:H1  ,H2  ,    ,     constructed for water WATA 44   TP3M OH2 .
+ Minimum distance between this water and protein is 15.08480 A.
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    !###############################################
+ CHARMM>    !#              Optimize and save              #
+ CHARMM>    !###############################################
+ CHARMM>    open  write         unit 1 card name @mol_pre.pdb
+ Parameter: MOL -> "RUBR"
+ VOPEN> Attempting to open::rubr_pre.pdb::
+ OPNLGU> Unit  1 opened for WRITE access to rubr_pre.pdb
+  
+ CHARMM>    write coor pdb      unit 1
+ RDTITL> CLOSE               UNIT 1
+ RDTITL> No title read.
+  
+ CHARMM>    close               unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    ! Fix all but hydrogens, waters and some residues
+ CHARMM>    cons fix sele .not. (segid WAT* .or. hydrogen) show end
+ The following atoms are currently set:
+SEGId RESId RESName  .. TYPEs ..
+ PRTA 1    MET  N    CA   CB   CG   SD   CE   C    O   
+ PRTA 2    ALA  N    CA   CB   C    O   
+ PRTA 3    LYS  N    CA   CB   CG   CD   CE   NZ   C    O   
+ PRTA 4    TRP  N    CA   CB   CG   CD1  NE1  CE2  CD2  CE3  CZ3  CZ2  CH2  C    O   
+ PRTA 5    VAL  N    CA   CB   CG1  CG2  C    O   
+ PRTA 6    CYS  N    CA   CB   SG   C    O   
+ PRTA 7    LYS  N    CA   CB   CG   CD   CE   NZ   C    O   
+ PRTA 8    ILE  N    CA   CB   CG2  CG1  CD1  C    O   
+ PRTA 9    CYS  N    CA   CB   SG   C    O   
+ PRTA 10   GLY  N    CA   C    O   
+ PRTA 11   TYR  N    CA   CB   CG   CD1  CE1  CZ   OH   CD2  CE2  C    O   
+ PRTA 12   ILE  N    CA   CB   CG2  CG1  CD1  C    O   
+ PRTA 13   TYR  N    CA   CB   CG   CD1  CE1  CZ   OH   CD2  CE2  C    O   
+ PRTA 14   ASP  N    CA   CB   CG   OD1  OD2  C    O   
+ PRTA 15   GLU  N    CA   CB   CG   CD   OE1  OE2  C    O   
+ PRTA 16   ASP  N    CA   CB   CG   OD1  OD2  C    O   
+ PRTA 17   ALA  N    CA   CB   C    O   
+ PRTA 18   GLY  N    CA   C    O   
+ PRTA 19   ASP  N    CA   CB   CG   OD1  OD2  C    O   
+ PRTA 20   PRO  N    CD   CA   CB   CG   C    O   
+ PRTA 21   ASP  N    CA   CB   CG   OD1  OD2  C    O   
+ PRTA 22   ASN  N    CA   CB   CG   OD1  ND2  C    O   
+ PRTA 23   GLY  N    CA   C    O   
+ PRTA 24   ILE  N    CA   CB   CG2  CG1  CD1  C    O   
+ PRTA 25   SER  N    CA   CB   OG   C    O   
+ PRTA 26   PRO  N    CD   CA   CB   CG   C    O   
+ PRTA 27   GLY  N    CA   C    O   
+ PRTA 28   THR  N    CA   CB   OG1  CG2  C    O   
+ PRTA 29   LYS  N    CA   CB   CG   CD   CE   NZ   C    O   
+ PRTA 30   PHE  N    CA   CB   CG   CD1  CE1  CZ   CD2  CE2  C    O   
+ PRTA 31   GLU  N    CA   CB   CG   CD   OE1  OE2  C    O   
+ PRTA 32   GLU  N    CA   CB   CG   CD   OE1  OE2  C    O   
+ PRTA 33   LEU  N    CA   CB   CG   CD1  CD2  C    O   
+ PRTA 34   PRO  N    CD   CA   CB   CG   C    O   
+ PRTA 35   ASP  N    CA   CB   CG   OD1  OD2  C    O   
+ PRTA 36   ASP  N    CA   CB   CG   OD1  OD2  C    O   
+ PRTA 37   TRP  N    CA   CB   CG   CD1  NE1  CE2  CD2  CE3  CZ3  CZ2  CH2  C    O   
+ PRTA 38   VAL  N    CA   CB   CG1  CG2  C    O   
+ PRTA 39   CYS  N    CA   CB   SG   C    O   
+ PRTA 40   PRO  N    CD   CA   CB   CG   C    O   
+ PRTA 41   ILE  N    CA   CB   CG2  CG1  CD1  C    O   
+ PRTA 42   CYS  N    CA   CB   SG   C    O   
+ PRTA 43   GLY  N    CA   C    O   
+ PRTA 44   ALA  N    CA   CB   C    O   
+ PRTA 45   PRO  N    CD   CA   CB   CG   C    O   
+ PRTA 46   LYS  N    CA   CB   CG   CD   CE   NZ   C    O   
+ PRTA 47   SER  N    CA   CB   OG   C    O   
+ PRTA 48   GLU  N    CA   CB   CG   CD   OE1  OE2  C    O   
+ PRTA 49   PHE  N    CA   CB   CG   CD1  CE1  CZ   CD2  CE2  C    O   
+ PRTA 50   GLU  N    CA   CB   CG   CD   OE1  OE2  C    O   
+ PRTA 51   LYS  N    CA   CB   CG   CD   CE   NZ   C    O   
+ PRTA 52   LEU  N    CA   CB   CG   CD1  CD2  C    O   
+ PRTA 53   GLU  N    CA   CB   CG   CD   OE1  OE2  C    O   
+ PRTA 54   ASP  N    CA   CB   CG   OD1  OD2  C    O   
+ SELRPN>    420 atoms have been selected out of   1265
+  
+ CHARMM>     
+  
+ CHARMM>    ! Optimize
+ CHARMM>    mini  sd    nstep 100 nprint 20 inbfrq 20
+
+ NONBOND OPTION FLAGS: 
+     ELEC     VDW      ATOMs    CDIElec  SHIFt    VATOm    VSWItch 
+     BYGRoup  NOEXtnd  NOEWald 
+ CUTNB  = 14.000 CTEXNB =999.000 CTONNB = 10.000 CTOFNB = 12.000
+ WMIN   =  1.500 WRNMXD =  0.500 E14FAC =  1.000 EPS    =  1.000
+ NBXMOD =      5
+ There are        0 atom  pairs and        0 atom  exclusions.
+ There are        0 group pairs and        0 group exclusions.
+ <MAKINB> with mode   5 found   2762 exclusions and   2143 interactions(1-4)
+ <MAKGRP> found    704 group exclusions.
+ Generating nonbond list with Exclusion mode = 5
+ == PRIMARY == SPACE FOR   363499 ATOM PAIRS AND        0 GROUP PAIRS
+
+ General atom nonbond list generation found:
+   283237 ATOM PAIRS WERE FOUND FOR ATOM LIST
+    14672 GROUP PAIRS REQUIRED ATOM SEARCHES
+
+
+
+ STEEPD> An energy minimization has been requested.
+
+ NSTEP  =          100   NPRINT =           20
+ STEP   =    0.0200000   TOLFUN =    0.0000000
+ TOLGRD =    0.0000000   TOLSTP =    0.0000000
+
+MINI MIN: Cycle      ENERgy      Delta-E         GRMS    Step-size
+MINI INTERN:          BONDs       ANGLes       UREY-b    DIHEdrals    IMPRopers
+MINI EXTERN:        VDWaals         ELEC       HBONds          ASP         USER
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>        0 -11050.74096      0.00000     98.67017      0.02000
+MINI INTERN>        0.02099     31.16711      7.94875     69.20105      0.00000
+MINI EXTERN>     2605.97876 -13765.05761      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+ UPDECI: Nonbond update at step        20
+ Generating nonbond list with Exclusion mode = 5
+ == PRIMARY == SPACE FOR   363499 ATOM PAIRS AND        0 GROUP PAIRS
+
+ General atom nonbond list generation found:
+   282764 ATOM PAIRS WERE FOUND FOR ATOM LIST
+    14670 GROUP PAIRS REQUIRED ATOM SEARCHES
+
+MINI>       20 -13811.76548   2761.02452     11.22327      0.00963
+MINI INTERN>       98.87422     80.03833      6.73171     64.28894      1.20113
+MINI EXTERN>       95.69696 -14158.59677      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+ UPDECI: Nonbond update at step        40
+ Generating nonbond list with Exclusion mode = 5
+ == PRIMARY == SPACE FOR   363499 ATOM PAIRS AND        0 GROUP PAIRS
+
+ General atom nonbond list generation found:
+   282588 ATOM PAIRS WERE FOUND FOR ATOM LIST
+    14674 GROUP PAIRS REQUIRED ATOM SEARCHES
+
+MINI>       40 -14124.36358    312.59810      5.34945      0.00464
+MINI INTERN>       40.24547     69.11788      6.97454     63.38579      2.31016
+MINI EXTERN>       28.86377 -14335.26119      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+ UPDECI: Nonbond update at step        60
+ Generating nonbond list with Exclusion mode = 5
+ == PRIMARY == SPACE FOR   363499 ATOM PAIRS AND        0 GROUP PAIRS
+
+ General atom nonbond list generation found:
+   282499 ATOM PAIRS WERE FOUND FOR ATOM LIST
+    14667 GROUP PAIRS REQUIRED ATOM SEARCHES
+
+MINI>       60 -14256.29863    131.93505      5.77287      0.00536
+MINI INTERN>       44.75738     69.63365      7.04301     63.03436      2.62484
+MINI EXTERN>        2.27256 -14445.66442      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+ UPDECI: Nonbond update at step        80
+ Generating nonbond list with Exclusion mode = 5
+ == PRIMARY == SPACE FOR   363499 ATOM PAIRS AND        0 GROUP PAIRS
+
+ General atom nonbond list generation found:
+   282492 ATOM PAIRS WERE FOUND FOR ATOM LIST
+    14676 GROUP PAIRS REQUIRED ATOM SEARCHES
+
+MINI>       80 -14368.25858    111.95995      1.57075      0.00258
+MINI INTERN>       31.71322     69.00701      7.05556     62.73781      2.65183
+MINI EXTERN>      -14.39076 -14527.03325      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+ UPDECI: Nonbond update at step       100
+ Generating nonbond list with Exclusion mode = 5
+ == PRIMARY == SPACE FOR   363499 ATOM PAIRS AND        0 GROUP PAIRS
+
+ General atom nonbond list generation found:
+   282569 ATOM PAIRS WERE FOUND FOR ATOM LIST
+    14656 GROUP PAIRS REQUIRED ATOM SEARCHES
+
+MINI>      100 -14427.07704     58.81846      2.94099      0.00298
+MINI INTERN>       36.21675     69.34431      7.05891     62.59122      2.61949
+MINI EXTERN>      -19.80315 -14585.10458      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+
+ STEEPD> Minimization exiting with number of steps limit (       100) exceeded.
+
+STPD MIN: Cycle      ENERgy      Delta-E         GRMS    Step-size
+STPD INTERN:          BONDs       ANGLes       UREY-b    DIHEdrals    IMPRopers
+STPD EXTERN:        VDWaals         ELEC       HBONds          ASP         USER
+ ----------       ---------    ---------    ---------    ---------    ---------
+STPD>      100 -14427.07704     58.81846      2.94099      0.00358
+STPD INTERN>       36.21675     69.34431      7.05891     62.59122      2.61949
+STPD EXTERN>      -19.80315 -14585.10458      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+  
+ CHARMM>    mini  conj  nstep 200 nprint 20 inbfrq 20
+
+ NONBOND OPTION FLAGS: 
+     ELEC     VDW      ATOMs    CDIElec  SHIFt    VATOm    VSWItch 
+     BYGRoup  NOEXtnd  NOEWald 
+ CUTNB  = 14.000 CTEXNB =999.000 CTONNB = 10.000 CTOFNB = 12.000
+ WMIN   =  1.500 WRNMXD =  0.500 E14FAC =  1.000 EPS    =  1.000
+ NBXMOD =      5
+ There are   282569 atom  pairs and     4905 atom  exclusions.
+ There are        0 group pairs and      704 group exclusions.
+ Generating nonbond list with Exclusion mode = 5
+ == PRIMARY == SPACE FOR   363499 ATOM PAIRS AND        0 GROUP PAIRS
+
+ General atom nonbond list generation found:
+   282569 ATOM PAIRS WERE FOUND FOR ATOM LIST
+    14656 GROUP PAIRS REQUIRED ATOM SEARCHES
+
+
+
+ CONJUG> An energy minimization has been requested.
+
+ NCGCYC =          100   NSTEP  =          200
+ PCUT   =    0.9999000   PRTMIN =            1
+ STEP   =    0.0200000   TOLFUN =    0.0000000
+ TOLGRD =    0.0000000   TOLITR =          100
+ TOLSTP =    0.0000000
+
+MINI MIN: Cycle      ENERgy      Delta-E         GRMS    Step-size
+MINI INTERN:          BONDs       ANGLes       UREY-b    DIHEdrals    IMPRopers
+MINI EXTERN:        VDWaals         ELEC       HBONds          ASP         USER
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>        0 -14427.07704     58.81846      2.94099      0.00000
+MINI INTERN>       36.21675     69.34431      7.05891     62.59122      2.61949
+MINI EXTERN>      -19.80315 -14585.10458      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>       20 -14661.45785    234.38082      2.80631      0.34154
+MINI INTERN>       53.67564     78.64025      7.03615     61.20435      2.45655
+MINI EXTERN>       14.04594 -14878.51673      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>       40 -14767.33742    105.87957      2.72099      0.42500
+MINI INTERN>       52.98350     86.85125      6.90904     61.72261      3.24923
+MINI EXTERN>       58.11125 -15037.16431      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>       60 -14838.37710     71.03968      2.74680      0.28825
+MINI INTERN>       46.81382     83.87906      6.86182     60.90666      2.80309
+MINI EXTERN>      101.71481 -15141.35635      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>       80 -14891.32274     52.94564      2.50139      0.27188
+MINI INTERN>       62.81646     86.65908      6.90725     61.45202      3.01718
+MINI EXTERN>      124.46899 -15236.64371      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>      100 -14933.93951     42.61677      2.12536      0.28639
+MINI INTERN>       56.33664     84.56079      7.03870     62.29055      3.61821
+MINI EXTERN>      122.90809 -15270.69248      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+ UPDECI: Nonbond update at step       100
+ Generating nonbond list with Exclusion mode = 5
+ == PRIMARY == SPACE FOR   363499 ATOM PAIRS AND        0 GROUP PAIRS
+
+ General atom nonbond list generation found:
+   286781 ATOM PAIRS WERE FOUND FOR ATOM LIST
+    14850 GROUP PAIRS REQUIRED ATOM SEARCHES
+
+MINI>      100 -14934.17029      0.23078      2.12559      0.00000
+MINI INTERN>       56.33664     84.56079      7.03870     62.29055      3.61821
+MINI EXTERN>      122.90802 -15270.92319      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>      120 -15058.75943    124.58914      1.43628      0.46741
+MINI INTERN>       61.04338     84.23397      6.86524     61.04117      3.26860
+MINI EXTERN>      132.43935 -15407.65114      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>      140 -15109.88214     51.12272      1.06124      0.49408
+MINI INTERN>       61.54673     86.56954      6.85549     59.15727      3.12491
+MINI EXTERN>      143.38718 -15470.52326      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>      160 -15140.58705     30.70491      0.82424      0.45682
+MINI INTERN>       61.81065     84.38897      6.77847     59.28892      3.26985
+MINI EXTERN>      150.99096 -15507.11487      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>      180 -15159.45968     18.87263      0.88081      0.29261
+MINI INTERN>       62.59872     84.48385      6.87905     60.06114      3.25699
+MINI EXTERN>      162.30845 -15539.04787      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>      200 -15175.09276     15.63308      0.77199      0.30089
+MINI INTERN>       62.76375     85.42019      6.77455     57.63636      3.07258
+MINI EXTERN>      153.65845 -15544.41865      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+
+ CONJUG> Minimization exiting with number of steps limit (  200) exceeded.
+
+CONJ MIN: Cycle      ENERgy      Delta-E         GRMS    Step-size
+CONJ INTERN:          BONDs       ANGLes       UREY-b    DIHEdrals    IMPRopers
+CONJ EXTERN:        VDWaals         ELEC       HBONds          ASP         USER
+ ----------       ---------    ---------    ---------    ---------    ---------
+CONJ>      200 -15175.09276     15.63308      0.77199      0.02000
+CONJ INTERN>       62.76375     85.42019      6.77455     57.63636      3.07258
+CONJ EXTERN>      153.65845 -15544.41865      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+  
+ CHARMM>     
+  
+ CHARMM>    ! Release all constraints
+ CHARMM>    cons fix sele none end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    stream "/home/mikolaj/devel/toppar/radii/radii.str"
+ VOPEN> Attempting to open::/home/mikolaj/devel/toppar/radii/radii.str::
+ OPNLGU> Unit 99 opened for READONLY access to /home/mikolaj/devel/toppar/radii/radii.str
+
+                    INPUT STREAM SWITCHING TO UNIT    99
+ RDTITL> * ASSIGNING RADII TO ATOMS
+ RDTITL> * M. ULLMANN, FEB 2009
+ RDTITL> * .
+ RDTITL> 
+ Parameter: IN1 <- "" <empty>
+  
+ CHARMM>     
+  
+ CHARMM>    scalar wmain set 150.0  sele all end
+ SELRPN>   1265 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 1.50 sele chem DUM end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 2.00 sele chem P*  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 1.70 sele chem C*  end
+ SELRPN>    267 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 1.50 sele chem O*  end
+ SELRPN>    239 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 1.55 sele chem N*  end
+ SELRPN>     62 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 1.80 sele chem S*  end
+ SELRPN>      5 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 1.30 sele chem FE  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 1.30 sele chem MG  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 1.46 sele chem W   end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    !lone pair
+ CHARMM>    scalar wmain set 0.30 sele chem LP  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    ! polar hydrogens
+ CHARMM>    scalar wmain set 0.30 sele chem H   end
+ SELRPN>     58 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HS   end
+ SELRPN>      4 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HB   end
+ SELRPN>     59 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HT   end
+ SELRPN>    306 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HC   end
+ SELRPN>     15 atoms have been selected out of   1265
+  
+ CHARMM>     
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HN1  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HN2  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HN3B end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HN4  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HN5  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HC   end
+ SELRPN>     15 atoms have been selected out of   1265
+  
+ CHARMM>     
+  
+ CHARMM>    ! aromatic or double-bond hydrogens
+ CHARMM>    scalar wmain set 0.80 sele chem HP   end
+ SELRPN>     28 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HR1  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HR2  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HR3  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HE1  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HE2  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HN3  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>     
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HN3C end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HNP  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HN8  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HN9  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HNE1 end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HNE2 end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>     
+  
+ CHARMM>    ! unpolar hydrogens
+ CHARMM>    scalar wmain set 1.00 sele chem HA   end
+ SELRPN>    222 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 1.00 sele chem HN6  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    scalar wmain set 1.00 sele chem HN7  end
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>     
+  
+ CHARMM>    !
+ CHARMM>    ! check if all atoms got a radius
+ CHARMM>    !
+ CHARMM>    scalar wmain statistics select all end
+ SELRPN>   1265 atoms have been selected out of   1265
+ Statistics for 1265 selected atoms:
+       minimum =   0.300000      maximum =    1.80000     weight =    1265.00    
+       average =    1.02332      variance=   0.582720     total  =    1294.50    
+  
+ CHARMM>    define check select  property wmain .eq. 150.0 show end
+ The following atoms are currently set:
+SEGId RESId RESName  .. TYPEs ..
+ SELRPN>      0 atoms have been selected out of   1265
+  
+ CHARMM>    if ?nsel ne 0  stop  !some heavy atom have a zero radius
+ RDCMND substituted energy or value "?NSEL" to "0"
+ Comparing "0" and "0".
+ IF test evaluated as false.  Skipping command
+  
+ CHARMM>     
+  
+ VCLOSE: Closing unit   99 with status "KEEP"
+
+                    RETURNING TO INPUT STREAM     5
+  
+ CHARMM>     
+  
+ CHARMM>    open  write         unit 1 card name @mol.pdb
+ Parameter: MOL -> "RUBR"
+ VOPEN> Attempting to open::rubr.pdb::
+ OPNLGU> Unit  1 opened for WRITE access to rubr.pdb
+  
+ CHARMM>    write coor pdb      unit 1
+ RDTITL> CLOSE               UNIT 1
+ RDTITL> No title read.
+  
+ CHARMM>    close               unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open  write         unit 1 card name @mol.crd
+ Parameter: MOL -> "RUBR"
+ VOPEN> Attempting to open::rubr.crd::
+ OPNLGU> Unit  1 opened for WRITE access to rubr.crd
+  
+ CHARMM>    write coor card     unit 1
+ RDTITL> CLOSE               UNIT 1
+ RDTITL> No title read.
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>    close               unit 1
+ CLOLGU>  *****  WARNING  ***** Attempt to close unit that was not open.
+  
+ CHARMM>     
+  
+ CHARMM>    open  write         unit 1 card name @mol.psf
+ Parameter: MOL -> "RUBR"
+ VOPEN> Attempting to open::rubr.psf::
+ OPNLGU> Unit  1 opened for WRITE access to rubr.psf
+  
+ CHARMM>    write psf card      unit 1
+ RDTITL> CLOSE               UNIT 1
+ RDTITL> No title read.
+  
+ CHARMM>    close               unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open  write         unit 1 card name @mol_xplor.psf
+ Parameter: MOL -> "RUBR"
+ VOPEN> Attempting to open::rubr_xplor.psf::
+ OPNLGU> Unit  1 opened for WRITE access to rubr_xplor.psf
+  
+ CHARMM>    write psf xplo card unit 1
+ RDTITL> CLOSE               UNIT 1
+ RDTITL> No title read.
+  
+ CHARMM>    close               unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    stop
+$$$$$$  New timer profile $$$$$
+               Nonbond force          11.07670 Other:    0.00000
+               Bond energy             0.02800 Other:    0.00000
+               Angle energy            0.12801 Other:    0.00000
+               Dihedral energy         0.18801 Other:    0.00000
+          Energy time            11.44072 Other:    0.02000
+     Dynamics total         11.44072 Other:    0.00000
+ Total time             13.06482 Other:    1.62410
+
+                    NORMAL TERMINATION BY NORMAL STOP
+                    MAXIMUM STACK SPACE USED IS   84024
+                    STACK CURRENTLY IN USE IS         0
+                    MOST SEVERE WARNING WAS AT LEVEL  2
+                    HEAP PRINTOUT-  HEAP SIZE  10240000
+                    SPACE CURRENTLY IN USE IS      3248
+                    MAXIMUM SPACE USED IS        448534
+                    FREE LIST
+            PRINHP> ADDRESS:         1 LENGTH:   9837540 NEXT:   9840789
+            PRINHP> ADDRESS:   9840789 LENGTH:    399212 NEXT:         0
+
+                    $$$$$ JOB ACCOUNTING INFORMATION $$$$$
+                     ELAPSED TIME:    13.08  SECONDS 
+                         CPU TIME:    13.04  SECONDS 

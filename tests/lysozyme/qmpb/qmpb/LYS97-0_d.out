@@ -1,0 +1,86 @@
+Starting /home/mikolaj/local/bin/my_3diel_solver for molecule named LYS97-0_d
+using the following physical conditions:
+Exterior dielectric constant, epsext = 80
+Solvent probe radius, solrad = 1.4
+Ion exclusion layer thickness, sterln = 2
+Temperature, T = 300
+Ionic strength, ionicstr = 0.1
+Hueckel factor (epsext*kappasq) = 0.843038
+Debye length 1/kappa = 9.7414
+ln(10) * kBolt * T = 0.00413389
+kBolt = 5.98442e-06
+conconv = 0.000602214
+econv = 332.063
+Bohr radius = 0.529177
+Proton Charge = 1
+elementary_charge = 1.60218e-19
+energy_unit = 2.30707e-18
+Avogadro_Number = 6.02214e+23
+voltconv = 14.3996
+pkconv = 241.903
+  Solute interior dielectric, epsin1 = 1
+  Protein interior dielectric constant, epsin2 = 4
+Vacuum dielectric constant, epsvac = 1
+
+No blab level set (so no blabbing)
+Using finite difference method with lattice levels:
+                   Centering Style   grid dimension    spacing
+Coarsest level: ON_GEOM_CENT resolved to (-0.919373, 20.3963, 19.0418)) 121 2
+Finer level:    (-6.724, 16.48, 32.153) 101 1
+Finer level:    (-6.724, 16.48, 32.153) 101 0.5
+Finest level:   (-6.724, 16.48, 32.153) 101 0.25
+
+
+Self energy of LYS97-0_d in three dielectric environment = 19.8896
+(probably in kcal/mole, INCLUDING GRID ARTEFACTS)
+
+
+Interaction energy of LYS97-0_d with background charge set in three dielectric environment = -0.0861227
+(probably in kcal/mole)
+
+
+
+Interaction energies of LYS97-0_d with charges of given instances of sites (probably in kcal/mole).
+Format: site instance energy
+
+0   0 : 9.18272e-05
+0   1 : -1.25087e-06
+1   0 : 1.09224e-05
+1   1 : -8.71587e-05
+2   0 : 0.00034665
+2   1 : 1.09308e-05
+3   0 : 0.00106763
+3   1 : 0.000111797
+3   2 : 7.49718e-05
+3   3 : -0.000766715
+4   0 : 0.000118011
+4   1 : -0.000454665
+5   0 : 0.00111434
+5   1 : -0.0118755
+6   0 : 3.19715e-06
+6   1 : -0.000800134
+7   0 : 3.87419e-05
+7   1 : 1.60439e-06
+8   0 : 4.21451e-05
+8   1 : -0.000320444
+9   0 : -6.38806e-06
+9   1 : -3.71597e-05
+10   0 : 3.69563e-06
+10   1 : -0.000237602
+11   0 : -6.08548e-06
+11   1 : 1.9605e-05
+12   0 : -1.20328e-06
+12   1 : 0.000214358
+13   0 : -2.44735e-05
+13   1 : -0.000272357
+14   0 : 0.0055211
+14   1 : 4.71446e-05
+15   0 : 70.7688
+15   1 : 39.7792
+16   0 : -0.00122456
+16   1 : -0.00763687
+17   0 : 0.000191606
+17   1 : -7.44912e-07
+18   0 : 2.07639e-06
+18   1 : -5.23962e-05
+Total runtime: 7.52 s user 0.06 s system 

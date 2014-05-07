@@ -1,0 +1,86 @@
+Starting /home/mikolaj/local/bin/my_3diel_solver for molecule named LYS1-0_p
+using the following physical conditions:
+Exterior dielectric constant, epsext = 80
+Solvent probe radius, solrad = 1.4
+Ion exclusion layer thickness, sterln = 2
+Temperature, T = 300
+Ionic strength, ionicstr = 0.1
+Hueckel factor (epsext*kappasq) = 0.843038
+Debye length 1/kappa = 9.7414
+ln(10) * kBolt * T = 0.00413389
+kBolt = 5.98442e-06
+conconv = 0.000602214
+econv = 332.063
+Bohr radius = 0.529177
+Proton Charge = 1
+elementary_charge = 1.60218e-19
+energy_unit = 2.30707e-18
+Avogadro_Number = 6.02214e+23
+voltconv = 14.3996
+pkconv = 241.903
+  Solute interior dielectric, epsin1 = 1
+  Protein interior dielectric constant, epsin2 = 4
+Vacuum dielectric constant, epsvac = 1
+
+No blab level set (so no blabbing)
+Using finite difference method with lattice levels:
+                   Centering Style   grid dimension    spacing
+Coarsest level: ON_GEOM_CENT resolved to (-0.919373, 20.3963, 19.0418)) 121 2
+Finer level:    (-2.175, 10.086, 7.264) 101 1
+Finer level:    (-2.175, 10.086, 7.264) 101 0.5
+Finest level:   (-2.175, 10.086, 7.264) 101 0.25
+
+
+Self energy of LYS1-0_p in three dielectric environment = 106.377
+(probably in kcal/mole, INCLUDING GRID ARTEFACTS)
+
+
+Interaction energy of LYS1-0_p with background charge set in three dielectric environment = -0.53502
+(probably in kcal/mole)
+
+
+
+Interaction energies of LYS1-0_p with charges of given instances of sites (probably in kcal/mole).
+Format: site instance energy
+
+0   0 : 212.753
+0   1 : 70.1221
+1   0 : -1.12825
+1   1 : -4.33435
+2   0 : 0.0572271
+2   1 : -0.000328236
+3   0 : 0.324982
+3   1 : 0.029886
+3   2 : -0.0265635
+3   3 : -0.353989
+4   0 : 0.00545996
+4   1 : -0.027219
+5   0 : -7.23011e-05
+5   1 : -0.0188836
+6   0 : -0.00122913
+6   1 : -0.00867132
+7   0 : 0.0657599
+7   1 : 6.8131e-05
+8   0 : 0.00496837
+8   1 : -0.0280927
+9   0 : -0.00026896
+9   1 : -0.00440957
+10   0 : 0.00288486
+10   1 : -0.0159546
+11   0 : -0.000968909
+11   1 : -0.0282654
+12   0 : 0.00135865
+12   1 : -0.014653
+13   0 : -0.0118466
+13   1 : -0.393163
+14   0 : 0.0477328
+14   1 : 0.000417601
+15   0 : 0.0116927
+15   1 : 6.44323e-05
+16   0 : -0.000401593
+16   1 : -0.00725033
+17   0 : 0.00302921
+17   1 : 3.63864e-05
+18   0 : -0.000468322
+18   1 : -0.0103005
+Total runtime: 7.24 s user 0.07 s system 
