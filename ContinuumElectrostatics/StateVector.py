@@ -5,6 +5,9 @@
 #                          Mikolaj J. Feliks (2014)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
+
+__revision__ = "$Revision$"
+
 import exceptions
 
 from pCore           import logFile, LogFileActive, Integer1DArray
