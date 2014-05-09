@@ -21,8 +21,9 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("../charmm/lysozyme.crd")
 #===========================================
 ce_model = CEModelMEAD (system = mol, meadPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 8)
 
-del ce_model.standardSites["ARG"]
-del ce_model.standardSites["CYS"]
+
+del ce_model.librarySites["ARG"]
+del ce_model.librarySites["CYS"]
 
 ce_model.Initialize ()
 
