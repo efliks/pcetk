@@ -409,9 +409,14 @@ class CEModelMEAD (object):
       except:
         raise CEModelMEADError ("Cannot create scratch directory %s" % self.scratch)
 
-    # Here decide whether to use a custom library of sites
-    search    = "%s/%s" % (_YAMLPATHIN, "sites/")
-    sitefiles = glob.glob ("%s/*.yaml" % search)
+    # Load a library of sites
+    search     = "%s/%s" % (_YAMLPATHIN, "sites/")
+    sitefiles  = glob.glob ("%s/*.yaml" % search)
+
+    # Use custom files if they are present
+    extrafiles = glob.glob ("*.yaml")
+    if extrafiles:
+      sitefiles.extend (extrafiles)
 
     for sitefile in sitefiles:
       site = YAMLUnpickle (sitefile)
