@@ -11,4 +11,4 @@ export PDYNAMO_PARAMETERS=$PDYNAMO_ROOT/parameters
 export PDYNAMO_SCRATCH=/tmp
 export PDYNAMO_STYLE=$PDYNAMO_PARAMETERS/ccsStyleSheets/defaultStyle.css
 
-export PYTHONPATH=$PDYNAMO_ROOT/pBabel-$PDYNAMO_VERSION:$PDYNAMO_ROOT/pCore-$PDYNAMO_VERSION:$PDYNAMO_ROOT/pMolecule-$PDYNAMO_VERSION:$PDYNAMO_ROOT/pMoleculeScripts-$PDYNAMO_VERSION:/home/mikolaj/devel/ContinuumElectrostatics-0.1
+export PYTHONPATH=$PDYNAMO_ROOT/pBabel-$PDYNAMO_VERSION:$PDYNAMO_ROOT/pCore-$PDYNAMO_VERSION:$PDYNAMO_ROOT/pMolecule-$PDYNAMO_VERSION:$PDYNAMO_ROOT/pMoleculeScripts-$PDYNAMO_VERSION:/home/mikolaj/devel/ContinuumElectrostatics
