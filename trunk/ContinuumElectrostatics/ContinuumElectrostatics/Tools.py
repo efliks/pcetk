@@ -6,6 +6,9 @@
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
 
+__revision__ = "$Revision$"
+
+
 class _Residue (object):
   """A class used for decomposing the system into residues."""
 

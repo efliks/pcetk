@@ -10,6 +10,9 @@ A module that handles writing PQR files. These files are needed as an input to e
 
 This module is based on the PDBFileWriter module.
 """
+
+__revision__ = "$Revision$"
+
 # import itertools, time
 # from pMolecule    import PDYNAMO_VERSION, PeriodicTable, 
 # from ExportImport import _Exporter
