@@ -26,10 +26,10 @@
 
 __revision__ = "$Revision$"
 
-import exceptions, os, subprocess, threading
+import exceptions, os, subprocess, threading, glob
 
 
-from pCore                  import logFile, LogFileActive, Selection, Vector3, UNITS_ENERGY_KILOCALORIES_PER_MOLE_TO_KILOJOULES_PER_MOLE
+from pCore                  import logFile, LogFileActive, Selection, Vector3, YAMLUnpickle, UNITS_ENERGY_KILOCALORIES_PER_MOLE_TO_KILOJOULES_PER_MOLE
 from pMolecule              import System
                             
 from Constants              import *
@@ -41,6 +41,8 @@ from MEADOutputFileReader   import MEADOutputFileReader
 
 
 _DEBUG            = False
+
+_YAMLPATHIN       = os.path.join (os.getenv ("PDYNAMO_CONTINUUMELECTROSTATICS"), "parameters")
 
 _PREV_RESIDUE     = ("C", "O")
 
@@ -56,20 +58,6 @@ _PROTEIN_RESIDUES = (
    "HSP", "HSE", "HSD", "HIE", "HID"
 )
 
-_ATOMIC_RADII = {
- "DUM" : 1.50,      "HN5" : 0.30,      "LP"   : 0.30,      "HN3C" : 0.80,
- "P*"  : 2.00,      "HC"  : 0.30,      "H"    : 0.30,      "HNP"  : 0.80,
- "C*"  : 1.70,      "HP"  : 0.80,      "HS"   : 0.30,      "HN8"  : 0.80,
- "O*"  : 1.50,      "HR1" : 0.80,      "HB"   : 0.30,      "HN9"  : 0.80,
- "N*"  : 1.55,      "HR2" : 0.80,      "HT"   : 0.30,      "HNE1" : 0.80,
- "S*"  : 1.80,      "HR3" : 0.80,      "HC"   : 0.30,      "HNE2" : 0.80,
- "FE"  : 1.30,      "HE1" : 0.80,      "HN1"  : 0.30,      "HA"   : 1.00,
- "MG"  : 1.30,      "HE2" : 0.80,      "HN2"  : 0.30,      "HN6"  : 1.00,
- "W"   : 1.46,      "HN3" : 0.80,      "HN3B" : 0.30,      "HN7"  : 1.00,
- "HN4" : 0.30,
-}
-
-
 _DefaultTemperature     = 300.0
 
 _DefaultIonicStrength   = 0.1
@@ -83,49 +71,6 @@ _DefaultThreads         = 1
 _DefaultCleanUp         = False
 
 _DefaultFocussingSteps  = [(121, 2.00), (101, 1.00), (101, 0.50), (101, 0.25)]
-
-# The Gmodel values were calculated for T = 300K
-# They are appropriately recalculated for a given temperature of the model
-# 
-# Acids have their contribution to Gmicro negative, bases positive (is that true?)
-_DefaultTitratableSites = {
-  "ASP" : (( "CB", "HB1", "HB2", "CG", "OD1", "OD2", ),
-  ( "p", -5.487135, 1, -0.21, 0.09, 0.09, 0.75, -0.36, -0.36, ),
-  ( "d",  0.000000, 0, -0.28, 0.09, 0.09, 0.62, -0.76, -0.76, ),
-  ),
-
-  "TYR" : (( "CE1", "HE1", "CE2", "HE2", "CZ", "OH", "HH", ),
-  ( "p",-13.169124, 1, -0.12, 0.12, -0.12, 0.12,  0.11, -0.54, 0.43, ),
-  ( "d",  0.000000, 0, -0.17, 0.07, -0.17, 0.07, -0.11, -0.69, 0.00, ),
-  ),
-
-  "GLU" : (( "CG", "HG1", "HG2", "CD", "OE1", "OE2", ),
-  ( "p", -6.035848, 1, -0.21, 0.09, 0.09, 0.75, -0.36, -0.36, ),
-  ( "d",  0.000000, 0, -0.28, 0.09, 0.09, 0.62, -0.76, -0.76, ),
-  ),
-
-  "CYS" : (( "CB", "HB1", "HB2", "SG", "HG1", ),
-  ( "p",-12.483232, 1, -0.11,  0.09,  0.09, -0.23,  0.16, ),
-  ( "d",  0.000000, 0, -0.20, -0.05, -0.05, -0.70, -0.00, ),
-  ),
-
-  "LYS" : (( "CE", "HE1", "HE2", "NZ", "HZ1", "HZ2", "HZ3", ),
-  ( "p",-14.266551, 1, 0.21, 0.05, 0.05, -0.30, 0.33, 0.33, 0.33, ),
-  ( "d",  0.000000, 0, 0.10, 0.00, 0.00, -0.25, 0.05, 0.05, 0.05, ),
-  ),
-
-  "ARG" : (( "CZ", "CD", "HD1", "HD2", "NE", "HE", "NH1", "HH11", "HH12", "NH2", "HH21", "HH22", ),
-  ( "p",-16.461405, 1, 0.64, 0.20, 0.09, 0.09, -0.70, 0.44, -0.80, 0.46, 0.46, -0.80, 0.46, 0.46, ),
-  ( "d",  0.000000, 0, 0.48, 0.06, 0.00, 0.00, -0.33, 0.17, -0.39, 0.10, 0.10, -0.39, 0.10, 0.10, ),
-  ),
-
-  "HIS" : (("NE2", "CG", "ND1", "HD1", "CE1", "HE2", "CD2", "CB", "HB1", "HB2", "HD2", "HE1", ),
-  ( "HSP",  0.000000, 2, -0.51,  0.19, -0.51, 0.44, 0.32, 0.44,  0.19, -0.05, 0.09, 0.09, 0.13, 0.18, ),
-  ( "HSD",  9.602486, 1, -0.70, -0.05, -0.36, 0.32, 0.25, 0.00,  0.22, -0.09, 0.09, 0.09, 0.10, 0.13, ),
-  ( "HSE",  9.053770, 1, -0.36,  0.22, -0.70, 0.00, 0.25, 0.32, -0.05, -0.08, 0.09, 0.09, 0.09, 0.13, ),
-  ( "fd" , 27.434000, 0, -0.70,  0.12, -0.70, 0.00, 0.12, 0.00, -0.05, -0.08, 0.09, 0.09, 0.09, 0.02, ),
-  ),
-}
 
 
 #-------------------------------------------------------------------------------
@@ -412,8 +357,8 @@ class CEModelMEAD (object):
                  "nthreads"           :  _DefaultThreads          ,
                  "deleteJobFiles"     :  _DefaultCleanUp          ,
                  "scratch"            :  _DefaultScratch          ,
-                 "standardSites"      :  _DefaultTitratableSites  ,
                  "focussingSteps"     :  _DefaultFocussingSteps   ,
+                 "librarySites"       :  {}                       ,
                  "meadSites"          :  []                       ,
                  "backAtomIndices"    :  None                     ,
                  "proteinAtomIndices" :  None                     ,
@@ -463,6 +408,15 @@ class CEModelMEAD (object):
         os.mkdir (self.scratch)
       except:
         raise CEModelMEADError ("Cannot create scratch directory %s" % self.scratch)
+
+    # Here decide whether to use a custom library of sites
+    search    = "%s/%s" % (_YAMLPATHIN, "sites/")
+    sitefiles = glob.glob ("%s/*.yaml" % search)
+
+    for sitefile in sitefiles:
+      site = YAMLUnpickle (sitefile)
+      name = site["site"]
+      self.librarySites[name] = {"atoms" : site["atoms"], "instances" : site["instances"]}
 
 
   def WriteW (self, filename = "W.dat", log = logFile):
@@ -733,7 +687,7 @@ class CEModelMEAD (object):
         modelAtomIndices = []
         modelAtomNames   = []
 
-        if cr.resName in self.standardSites:
+        if cr.resName in self.librarySites:
           if resIndex > 1:
             pr = residues[resIndex - 1]
 
@@ -762,9 +716,9 @@ class CEModelMEAD (object):
                 modelAtomNames.append (nrAtomName)
 
 
-          site            = self.standardSites[cr.resName]
-          siteAtoms       = site[0]
-          siteInstances   = site[1:]
+          site            = self.librarySites[cr.resName]
+          siteAtoms       = site["atoms"]
+          siteInstances   = site["instances"]
 
           siteAtomIndices = []
           siteAtomNames   = []
@@ -788,11 +742,12 @@ class CEModelMEAD (object):
           instances = []
 
           for instID, instance in enumerate (siteInstances, 1):
-            label      = instance[0]
-            Gmodel300K = instance[1]
+            label      = instance["label"]
+            protons    = instance["protons"]
+            charges    = instance["charges"]
+
+            Gmodel300K = instance["Gmodel"]
             Gmodel     = Gmodel300K * 300.0 / self.temperature
-            protons    = instance[2]
-            charges    = instance[3:]
 
             if self.splitToDirectories:
               modelPqr  = "%s/model_%s.pqr" % (direc, label)
@@ -802,14 +757,12 @@ class CEModelMEAD (object):
               siteLog   = "%s/site_%s.out"  % (direc, label)
               siteGrid  = "%s/site_%s.ogm"  % (direc, label)
             else:
-              foo = "%s_%s_%s_%s" % (cr.segName, cr.resName, cr.resNum, label)
-
-              modelPqr  = "%s/model_%s.pqr" % (self.scratch, foo)
-              modelLog  = "%s/model_%s.out" % (self.scratch, foo)
-              modelGrid = "%s/model_%s.mgm" % (self.scratch, foo)
-              sitePqr   = "%s/site_%s.pqr"  % (self.scratch, foo)
-              siteLog   = "%s/site_%s.out"  % (self.scratch, foo)
-              siteGrid  = "%s/site_%s.ogm"  % (self.scratch, foo)
+              modelPqr  = "%s/model_%s_%s_%s_%s.pqr" % (self.scratch, cr.segName, cr.resName, cr.resNum, label)
+              modelLog  = "%s/model_%s_%s_%s_%s.out" % (self.scratch, cr.segName, cr.resName, cr.resNum, label)
+              modelGrid = "%s/model_%s_%s_%s_%s.mgm" % (self.scratch, cr.segName, cr.resName, cr.resNum, label)
+              sitePqr   = "%s/site_%s_%s_%s_%s.pqr"  % (self.scratch, cr.segName, cr.resName, cr.resNum, label)
+              siteLog   = "%s/site_%s_%s_%s_%s.out"  % (self.scratch, cr.segName, cr.resName, cr.resNum, label)
+              siteGrid  = "%s/site_%s_%s_%s_%s.ogm"  % (self.scratch, cr.segName, cr.resName, cr.resNum, label)
 
 
             newInstance = MEADInstance (
@@ -977,7 +930,7 @@ class CEModelMEAD (object):
       systemRadii   = []
 
       systemTypes   = self.system.energyModel.mmAtoms.AtomTypes ()
-      radii         = _ATOMIC_RADII
+      radii         = YAMLUnpickle ("%s/%s" % (_YAMLPATHIN, "radii.yaml"))
 
       for atomType in systemTypes:
         if radii.has_key (atomType):
