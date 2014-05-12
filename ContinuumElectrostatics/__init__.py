@@ -26,6 +26,8 @@ histidines doubly protonated, other residues protonated.
 __revision__ = "$Revision$"
 
 
-from CEModelMEAD        import CEModelMEAD
+from CEModelMEAD              import CEModelMEAD
+                              
+from StateVector              import StateVector
 
-from StateVector        import StateVector
+from GMCTOutputFileReader     import GMCTOutputFileReader

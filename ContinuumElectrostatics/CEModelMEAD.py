@@ -505,10 +505,10 @@ class CEModelMEAD (object):
 
     The energy is calculated at a given pH."""
     if self.isCalculated:
-      Gintr = 0.0
-      Wij   = 0.0
-      conv  = 1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10)
-      G     = pH * conv
+      Gintr    = 0.0
+      Wij      = 0.0
+      convert  = 1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * CONSTANT_LN10 * self.temperature)
+      G        = pH * convert
 
       for site, whichInstance in zip (self.meadSites, stateVector):
         instance  = site.instances[whichInstance]
