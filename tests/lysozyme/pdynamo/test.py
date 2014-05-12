@@ -43,21 +43,26 @@ ce_model.WriteW ()
 #===========================================
 v = StateVector (ce_model)
 
-v.Print (ce_model)
-Gmicro = ce_model.CalculateMicrostateEnergy (v, pH = 7.0)
+for i, (site, state) in enumerate (zip (ce_model.meadSites, v)):
+  if site.resName == "HIS":
+    inst = 3
+  else:
+    inst = 1
+  v[i] = inst
 
+v.Print ()
+Gmicro = ce_model.CalculateMicrostateEnergy (v, pH = 7.0)
 logFile.Text ("Gmicro = %f\n" % Gmicro)
 
+v.Reset ()
+v.Print ()
+Gmicro = ce_model.CalculateMicrostateEnergy (v, pH = 7.0)
+logFile.Text ("Gmicro = %f\n" % Gmicro)
 
 v.Increment ()
-
-v.Print (ce_model)
+v.Print ()
 Gmicro = ce_model.CalculateMicrostateEnergy (v, pH = 7.0)
-
 logFile.Text ("Gmicro = %f\n" % Gmicro)
-
-
-
 
 
 #===========================================
