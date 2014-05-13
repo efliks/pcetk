@@ -8,15 +8,29 @@
 
 __revision__ = "$Revision: 6 $"
 
+#from pCore.cDefinitions    cimport Boolean, CFalse, CTrue, Integer
 
+
+# Include the file StateVector.h in the generated C code
 cdef extern from "StateVector.h":
 
   ctypedef struct CStateVector "StateVector":
-    pass
+    int *vector
+    int *maxvector
+    int  length
 
 
-  cdef CStateVector     *StateVector_Allocate (const Integer size)
+  cdef CStateVector *StateVector_Allocate       (int size)
+  cdef void          StateVector_Deallocate     (CStateVector *self)
+  cdef void          StateVector_Reset          (CStateVector *self)
+  cdef void          StateVector_ResetToMaximum (CStateVector *self)
+  cdef int           StateVector_Increment      (CStateVector *self)
+  cdef int           StateVector_GetItem        (CStateVector *self, int index)
 
-
+#-------------------------------------------------------------------------------
 cdef class StateVector:
   cdef CStateVector     *cObject
+
+#  cdef public object length
+#  cdef public object vector
+#  cdef public object maxvector

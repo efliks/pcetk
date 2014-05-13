@@ -5,13 +5,13 @@
 !                          Mikolaj J. Feliks (2014)
 ! . License   : CeCILL French Free Software License     (http://www.cecill.info)
 !-----------------------------------------------------------------------------*/
-# ifndef _STATEVECTOR
-# define _STATEVECTOR
+#ifndef _STATEVECTOR
+#define _STATEVECTOR
 
-# include "Boolean.h"
-# include "Integer.h"
-# include "Memory.h"
-# include "Status.h"
+#include "Boolean.h"
+#include "Integer.h"
+#include "Memory.h"
+#include "Status.h"
 
 
 typedef struct {
@@ -22,14 +22,11 @@ typedef struct {
 
 
 //extern StateVector *StateVector_Allocate (const Integer length, Status *status);
-extern StateVector *StateVector_Allocate (const Integer length);
+extern StateVector *StateVector_Allocate       (const Integer length);
+extern void         StateVector_Deallocate     (      StateVector *self);
+extern void         StateVector_Reset          (const StateVector *self);
+extern void         StateVector_ResetToMaximum (const StateVector *self);
+extern Boolean      StateVector_Increment      (const StateVector *self);
+extern Integer      StateVector_GetItem        (const StateVector *self, const Integer index);
 
-extern void StateVector_Deallocate (StateVector *self);
-
-extern void StateVector_Reset (const StateVector *self);
-
-extern void StateVector_ResetToMaximum (const StateVector *self);
-
-extern Boolean StateVector_Increment (const StateVector *self);
-
-# endif
+#endif

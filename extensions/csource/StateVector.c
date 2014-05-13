@@ -12,10 +12,8 @@
 //StateVector *StateVector_Allocate (const Integer length, Status *status) {
 StateVector *StateVector_Allocate (const Integer length) {
   StateVector *self = NULL;
+
   MEMORY_ALLOCATE (self, StateVector);
-
-  //TO DO: Check if memory allocation was successfull, use Status_Set
-
   if (self != NULL) {
     self->vector    = NULL;
     self->maxvector = NULL;
@@ -23,16 +21,19 @@ StateVector *StateVector_Allocate (const Integer length) {
 
     if (length > 0) {
       MEMORY_ALLOCATEARRAY (self->vector, length, Integer);
-      //if (self->vector == NULL) StateVector_Deallocate (&self);
+      if (self->vector == NULL) {
+        MEMORY_DEALLOCATE (self);
+      }
 
       MEMORY_ALLOCATEARRAY (self->maxvector, length, Integer);
-      //if (self->maxvector == NULL) StateVector_Deallocate (&self);
+      if (self->maxvector == NULL) {
+        MEMORY_DEALLOCATE (self->vector);
+        MEMORY_DEALLOCATE (self);
+      }
     }
   }
-
   return self;
 }
-
 
 // Use **self ???
 void StateVector_Deallocate (StateVector *self) {
@@ -43,7 +44,6 @@ void StateVector_Deallocate (StateVector *self) {
   }
 }
 
-
 void StateVector_Reset (const StateVector *self) {
   Integer   i;
   Integer   *v = self->vector;
@@ -52,7 +52,6 @@ void StateVector_Reset (const StateVector *self) {
     *v = 0;
   }
 }
-
 
 void StateVector_ResetToMaximum (const StateVector *self) {
   Integer   i;
@@ -63,39 +62,7 @@ void StateVector_ResetToMaximum (const StateVector *self) {
   }
 }
 
-
 Boolean StateVector_Increment (const StateVector *self) {
-/*
-  Integer   i;
-  Integer   value, maxvalue;
-
-  for (i = 0; i < self->length; i++) {
-    value    = self->vector[i];
-    maxvalue = self->maxvector[i];
-
-    if (value < maxvalue) {
-      value++;
-      self->vector[i] = value;
-      return True;
-    }
-    else {
-      self->vector[i] = 0;
-    }
-  }
-  return False;
-*/
-
-/*
-for index, (value, maxvalue) in enumerate (zip (self.vector, self.maxvector)):
-  if value < maxvalue:
-    value = value + 1
-    self.vector[index] = value
-    return True
-  else:
-    value = 0
-    self.vector[index] = value
-return False
-*/
   Integer i;
   Integer *v = self->vector, *m = self->maxvector;
 
@@ -109,4 +76,13 @@ return False
     }
   }
   return False;
+}
+
+Integer StateVector_GetItem (const StateVector *self, const Integer index) {
+  if (index < 0 || index > (self->length - 1)) {
+    return -1000;
+  }
+  else {
+    return self->vector[index];
+  }
 }
