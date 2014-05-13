@@ -6,7 +6,7 @@
 ! . License   : CeCILL French Free Software License     (http://www.cecill.info)
 !-----------------------------------------------------------------------------*/
 
-# include "StateVector.h"
+#include "StateVector.h"
 
 
 //StateVector *StateVector_Allocate (const Integer length, Status *status) {
@@ -62,9 +62,45 @@ void StateVector_ResetToMaximum (const StateVector *self) {
   }
 }
 
+Integer StateVector_GetItem (const StateVector *self, const Integer index) {
+  if (index < 0 || index > (self->length - 1)) {
+    return -1000;
+  }
+  else {
+    return self->vector[index];
+  }
+}
+
+Boolean StateVector_SetItem (const StateVector *self, const Integer index, const Integer value) {
+  if (index < 0 || index > (self->length - 1)) {
+    return False;
+  }
+  else if (value < 0 || value > self->maxvector[index]) {
+    return False;
+  }
+  else {
+    self->vector[index] = value;
+    return True;
+  }
+}
+
 Boolean StateVector_Increment (const StateVector *self) {
   Integer i;
   Integer *v = self->vector, *m = self->maxvector;
+
+  //This prevents zeroing the state vector after the last iteration
+/*
+  incr = False;
+  for (i = 0; i < self->length; i++, v++, m++) {
+    if ((*v) < (*m)) {
+      incr = True;
+      break;
+    }
+  }
+  if (incr == False) {
+    return False;
+  }
+*/
 
   for (i = 0; i < self->length; i++, v++, m++) {
     if ((*v) < (*m)) {
@@ -76,13 +112,4 @@ Boolean StateVector_Increment (const StateVector *self) {
     }
   }
   return False;
-}
-
-Integer StateVector_GetItem (const StateVector *self, const Integer index) {
-  if (index < 0 || index > (self->length - 1)) {
-    return -1000;
-  }
-  else {
-    return self->vector[index];
-  }
 }

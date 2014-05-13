@@ -24,8 +24,9 @@ cdef extern from "StateVector.h":
   cdef void          StateVector_Deallocate     (CStateVector *self)
   cdef void          StateVector_Reset          (CStateVector *self)
   cdef void          StateVector_ResetToMaximum (CStateVector *self)
-  cdef int           StateVector_Increment      (CStateVector *self)
   cdef int           StateVector_GetItem        (CStateVector *self, int index)
+  cdef int           StateVector_SetItem        (CStateVector *self, int index, int value)
+  cdef int           StateVector_Increment      (CStateVector *self)
 
 #-------------------------------------------------------------------------------
 cdef class StateVector:
