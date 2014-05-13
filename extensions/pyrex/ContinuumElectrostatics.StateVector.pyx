@@ -22,8 +22,12 @@ cdef class StateVector:
 
   def __getitem__ (self, index):
     """Get an item."""
-    # return self.cObject.vector[index]
     return StateVector_GetItem (self.cObject, index)
+
+
+  def __setitem__ (self, index, value):
+    """Set an item."""
+    StateVector_SetItem (self.cObject, index, value)
 
 
   def __dealloc__ (self):

@@ -26,7 +26,8 @@ extern StateVector *StateVector_Allocate       (const Integer length);
 extern void         StateVector_Deallocate     (      StateVector *self);
 extern void         StateVector_Reset          (const StateVector *self);
 extern void         StateVector_ResetToMaximum (const StateVector *self);
-extern Boolean      StateVector_Increment      (const StateVector *self);
 extern Integer      StateVector_GetItem        (const StateVector *self, const Integer index);
+extern Boolean      StateVector_SetItem        (const StateVector *self, const Integer index, const Integer value);
+extern Boolean      StateVector_Increment      (const StateVector *self);
 
 #endif
