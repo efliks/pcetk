@@ -496,28 +496,32 @@ class CEModelMEAD (object):
 #    pass
 
 
-#  def CalculateMicrostateEnergy (self, stateVector, pH = 7.0):
-#    """Calculate energy of a protonation state (=microstate).
-#
-#    The protonation state is defined by a state vector. 
-#
-#    The energy is calculated at a given pH."""
-#    if self.isCalculated:
-#      Gintr    = 0.0
-#      Wij      = 0.0
-#      convert  = 1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * CONSTANT_LN10 * self.temperature)
-#      G        = pH * convert
-#
-#      for site, whichInstance in zip (self.meadSites, stateVector):
-#        instance  = site.instances[whichInstance]
-#        Gshift    = G - instance.Gintr
-#        Gintr    += Gshift
-#  
-#        for interaction, whichInteractionInstance in zip (instance.interactions, stateVector):
-#          Wij += interaction[whichInteractionInstance]
-#
-#      Gmicro = Gintr + 0.5 * Wij
-#      return Gmicro
+  def CalculateMicrostateEnergy (self, stateVector, pH = 7.0):
+    """Calculate energy of a protonation state (=microstate).
+
+    The protonation state is defined by a state vector. 
+
+    The energy is calculated at a given pH."""
+    if self.isCalculated:
+      Gintr    = 0.0
+      Wij      = 0.0
+      convert  = 1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * CONSTANT_LN10 * self.temperature)
+      G        = pH * convert
+
+      for i in range (0, len (self.meadSites)):
+        site          = self.meadSites[i]
+        whichInstance = stateVector[i]
+        instance      = site.instances[whichInstance]
+
+        #if instance.protons > 0:
+        Gshift  = G #- instance.Gintr
+        Gintr  += Gshift
+  
+        for interaction, whichInteractionInstance in zip (instance.interactions, stateVector):
+          Wij += interaction[whichInteractionInstance]
+
+      Gmicro = Gintr + 0.5 * Wij
+      return Gmicro
 
 # These checks are not necessary
 #      if not isinstance (stateVector, StateVector):
