@@ -43,17 +43,13 @@ Pickle ("ce_model.pkl", ce_model)
 
 
 #===========================================
-#v = StateVector (ce_model)
-#
-#v.Print (ce_model)
-#
-#v.Increment ()
-#
-#v.Print (ce_model)
-#
-#v.Increment ()
-#
-#v.Print (ce_model)
+vector = StateVector (ce_model)
+
+vector.Print (ce_model)
+
+energy = ce_model.CalculateMicrostateEnergy (vector)
+
+logFile.Text ("Gmicro = %.6f\n" % energy)
 
 
 #for i, (site, state) in enumerate (zip (ce_model.meadSites, v)):
