@@ -1,4 +1,0 @@
-gcc -I/home/mikolaj/local/opt/pDynamo-1.8.0/pCore-1.8.0/extensions/cinclude -I../cinclude/ -c -o StateVector.o   StateVector.c 
-
-gcc -I/home/mikolaj/local/opt/pDynamo-1.8.0/pCore-1.8.0/extensions/cinclude -I../cinclude/ -c -o main.o main.c 
-gcc StateVector.o main.o -o run
