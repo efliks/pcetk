@@ -8,6 +8,8 @@
 
 #include "StateVector.h"
 
+#define _REVISION "$Revision$"
+
 
 //StateVector *StateVector_Allocate (const Integer length, Status *status) {
 StateVector *StateVector_Allocate (const Integer length) {

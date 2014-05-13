@@ -8,6 +8,9 @@
 #ifndef _STATEVECTOR
 #define _STATEVECTOR
 
+#define _REVISION "$Revision$"
+
+
 #include "Boolean.h"
 #include "Integer.h"
 #include "Memory.h"

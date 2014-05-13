@@ -6,7 +6,7 @@
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
 
-__revision__ = "$Revision: 6 $"
+__revision__ = "$Revision$"
 
 #from pCore.cDefinitions    cimport Boolean, CFalse, CTrue, Integer
 

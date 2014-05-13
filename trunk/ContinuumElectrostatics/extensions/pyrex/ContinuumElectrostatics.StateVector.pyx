@@ -6,7 +6,7 @@
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
 
-__revision__ = "$Revision: 6 $"
+__revision__ = "$Revision$"
 
 #from CoreObjects   import CLibraryError
 from pCore         import logFile, LogFileActive
@@ -99,7 +99,7 @@ cdef class StateVector:
 #  # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #  #-------------------------------------------------------------------------------
 #  
-#  __revision__ = "$Revision: 6 $"
+#  __revision__ = "$Revision$"
 #  
 #  import exceptions
 #  
