@@ -37,8 +37,6 @@ from PQRFileWriter          import PQRFile_FromSystem
 from MEADOutputFileReader   import MEADOutputFileReader
 
 
-_DEBUG            = False
-
 _YAMLPATHIN       = os.path.join (os.getenv ("PDYNAMO_CONTINUUMELECTROSTATICS"), "parameters")
 
 _PREV_RESIDUE     = ("C", "O")
@@ -581,8 +579,6 @@ class CEModelMEAD (object):
 
 
       if self.nthreads < 2:
-        if _DEBUG and LogFileActive (log): log.Text ("Starting serial run\n")
-
         for meadSite in self.meadSites:
           for instance in meadSite.instances:
             instance.CalculateSiteInModelCompound (log)
@@ -591,8 +587,6 @@ class CEModelMEAD (object):
 
             instance.TableEntry (table)
       else:
-        if _DEBUG and LogFileActive (log): log.Text ("Starting parallel run on %d CPUs\n" % self.nthreads)
-
         batches = []
         threads = []
         limit   = self.nthreads - 1
@@ -627,9 +621,6 @@ class CEModelMEAD (object):
         batchTotal = len (batches)
 
         for batchCount, threads in enumerate (batches, 1):
-          if _DEBUG and LogFileActive (log):
-            log.Text ("Running batch %d/%d\n" % (batchCount, batchTotal))
-
           for thread in threads:
             thread.start ()
 
@@ -705,11 +696,6 @@ class CEModelMEAD (object):
 
       # Out of all residues, select titratable residues and extend them by adding some atoms from neighbouring residues to create model compounds
       totalResidues = len (residues)
-
-      if _DEBUG and LogFileActive (log):
-        log.Text ("Found %d residues\n" % totalResidues)
-
-
       siteID = 1
 
       for resIndex, cr in enumerate (residues):
@@ -836,13 +822,6 @@ class CEModelMEAD (object):
 
           self.meadSites.append (newMeadSite)
           siteID += 1
-
-
-      if _DEBUG and LogFileActive (log):
-        log.Text ("Found %d titratable residues\n" % len (self.meadSites))
-
-        for i, meadSite in enumerate (self.meadSites, 1):
-          log.Text ("%3d %s %s\n" % (i, meadSite.resName, meadSite.resNum))
 
 
       # Construct background set of charges
@@ -996,24 +975,12 @@ class CEModelMEAD (object):
 
           PQRFile_FromSystem (instance.sitePqr,  self.system, selection = site,  charges = chargesUpdated, radii = systemRadii)
 
-          if _DEBUG and LogFileActive (log):
-            log.Text ("Wrote file %s\n" % instance.modelPqr)
-            log.Text ("Wrote file %s\n" % instance.sitePqr)
-
 
       # Write background PQR file
       PQRFile_FromSystem (self.backPqr, self.system, selection = Selection (self.backAtomIndices), charges = systemCharges, radii = systemRadii)
 
-      if _DEBUG and LogFileActive (log):
-        log.Text ("Wrote file %s\n" % self.backPqr)
-
-
       # Write full-protein PQR file (to be used as eps2set_region)
       PQRFile_FromSystem (self.proteinPqr, self.system, selection = Selection (self.proteinAtomIndices), charges = systemCharges, radii = systemRadii)
-
-      if _DEBUG and LogFileActive (log):
-        log.Text ("Wrote file %s\n" % self.proteinPqr)
-
 
       # Write FPT-file
       lines = []
@@ -1026,9 +993,6 @@ class CEModelMEAD (object):
             lines.append (line)
 
       WriteInputFile (self.sitesFpt, lines)
-
-      if _DEBUG and LogFileActive (log):
-        log.Text ("Wrote file %s\n" % self.sitesFpt)
 
 
       # Write MGM and OGM files
@@ -1048,10 +1012,6 @@ class CEModelMEAD (object):
           for fileGrid in (instance.modelGrid, instance.siteGrid):
             WriteInputFile (fileGrid, lines)
             filesWritten.append (fileGrid)
-
-      if _DEBUG and LogFileActive (log):
-        for fw in filesWritten:
-          log.Text ("Wrote file %s\n" % fw)
 
       self.isFilesWritten = True
 
