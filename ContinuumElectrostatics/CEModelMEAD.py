@@ -433,9 +433,9 @@ class CEModelMEAD (object):
          ("idInst2"  , ( 8,   0) ),
          ("labSite2" , (14,  -1) ),
          ("labInst2" , (14,  -1) ),
-         ("Wij_symm" , (12,   3) ),
-         ("Wij"      , (12,   3) ),
-         ("Wij_err"  , (12,   3) ),
+         ("Wij_symm" , (16,   10) ),
+         ("Wij"      , (16,   10) ),
+         ("Wij_err"  , (16,   10) ),
               )
       header = _FormatEntry (items, header = True)
       entry  = _FormatEntry (items)
@@ -476,7 +476,7 @@ class CEModelMEAD (object):
          ("instID"    , (12,  0) ),
          ("siteLabel" , (16, -1) ),
          ("instLabel" , (16, -1) ),
-         ("Gintr"     , (12,  3) ),
+         ("Gintr"     , (16,  10) ),
          ("protons"   , (12,  0) ),
               )
       header = _FormatEntry (items, header = True)
@@ -490,11 +490,6 @@ class CEModelMEAD (object):
       WriteInputFile (filename, lines)
 
 
-#  def CalculateProbabilityOfMicrostate (self, stateVector, pH = 7.0):
-#    """Using Boltzmann weighted sum, calculate the probablity of a given microstate."""
-#    pass
-
-
   def CalculateMicrostateEnergy (self, stateVector, pH = 7.0):
     """Calculate energy of a protonation state (=microstate).
 
@@ -502,25 +497,53 @@ class CEModelMEAD (object):
 
     The energy is calculated at a given pH."""
     if self.isCalculated:
-      Gintr    = 0.0
-      Wij      = 0.0
-      convert  = 1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * CONSTANT_LN10 * self.temperature)
-      G        = pH * convert
+      totalGintr    = 0.
+      totalInteract = 0.
+      nprotons      = 0
+      nsites        = len (self.meadSites)
 
-      for i in range (0, len (self.meadSites)):
-        site          = self.meadSites[i]
-        whichInstance = stateVector[i]
-        instance      = site.instances[whichInstance]
+      for siteIndex in range (0, nsites):
+        site          = self.meadSites [siteIndex]
+        instanceIndex = stateVector    [siteIndex]
+        instance      = site.instances [instanceIndex]
 
-        #if instance.protons > 0:
-        Gshift  = G #- instance.Gintr
-        Gintr  += Gshift
-  
-        for interaction, whichInteractionInstance in zip (instance.interactions, stateVector):
-          Wij += interaction[whichInteractionInstance]
+        Gintr         = instance.Gintr
+        cprotons      = instance.protons
+        interactions  = instance.interactions
 
-      Gmicro = Gintr + 0.5 * Wij
-      return Gmicro
+        totalGintr    = totalGintr + Gintr
+        nprotons      = nprotons + cprotons
+
+        for siteIndexInner in range (0, nsites):
+          instanceIndexInner = stateVector  [siteIndexInner]
+          interaction        = interactions [siteIndexInner]
+          totalInteract      = totalInteract + interaction [instanceIndexInner]
+
+      protonChemicalPotential = -CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10 * pH
+
+      Gmicro = totalGintr - nprotons * protonChemicalPotential + 0.5 * totalInteract
+    else:
+      Gmicro = 0.
+
+    return Gmicro        
+
+
+
+#      Gintr    = 0.0
+#      Wij      = 0.0
+#      convert  = 1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * CONSTANT_LN10 * self.temperature)
+#      G        = pH * convert
+#
+#      for i in range (0, len (self.meadSites)):
+#        site           = self.meadSites[i]
+#        whichInstance  = stateVector[i]
+#        instance       = site.instances[whichInstance]
+#  
+#        for interaction, whichInteractionInstance in zip (instance.interactions, stateVector):
+#          Wij += interaction[whichInteractionInstance]
+#
+#      Gmicro = Gintr + 0.5 * Wij
+#      return Gmicro
 
 # These checks are not necessary
 #      if not isinstance (stateVector, StateVector):

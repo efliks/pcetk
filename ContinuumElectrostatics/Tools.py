@@ -5,7 +5,7 @@
 #                          Mikolaj J. Feliks (2014)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
-
+"""Different tools and helper functions."""
 
 
 class _Residue (object):

@@ -8,8 +8,6 @@
 #ifndef _STATEVECTOR
 #define _STATEVECTOR
 
-
-
 #include "Boolean.h"
 #include "Integer.h"
 #include "Memory.h"

@@ -23,8 +23,6 @@ protonation states at pH = 7, i.e. aspartates and glutamates deprotonated,
 histidines doubly protonated, other residues protonated.
 """
 
-
-
 from CEModelMEAD              import CEModelMEAD
                               
 from StateVector              import StateVector

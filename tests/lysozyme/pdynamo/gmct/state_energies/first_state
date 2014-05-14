@@ -1,6 +1,6 @@
 chemical potential  -9.602486   vmemb 0.000000
 ----------------------------------------------------
-State            1    state energy = 4.132772e+01 kcal/mol
+State            1    state energy = 4.132908e+01 kcal/mol
 conf:   conf
                      PRTA_LYS1                      p   1
                      PRTA_GLU7                      p   1
@@ -16,8 +16,3 @@ conf:   conf
                     PRTA_TYR53                      p   1
                     PRTA_ASP66                      p   1
                     PRTA_ASP87                      p   1
-                    PRTA_LYS96                      p   1
-                    PRTA_LYS97                      p   1
-                   PRTA_ASP101                      p   1
-                   PRTA_LYS116                      p   1
-                   PRTA_ASP119                      p   1

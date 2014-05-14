@@ -43,7 +43,23 @@ Pickle ("ce_model.pkl", ce_model)
 
 
 #===========================================
-vector = StateVector (ce_model)
+vector    = StateVector (ce_model)
+
+#increment = True
+#nstates   = 0
+#
+#while increment:
+#  increment = vector.Increment ()
+#  Gmicro    = ce_model.CalculateMicrostateEnergy (vector)
+#
+#  logFile.Text ("Gmicro = %g\n" % Gmicro)
+#
+#  nstates = nstates + 1
+#  if nstates > 5000:
+#    break
+
+
+vector.Reset ()
 
 vector.Print (ce_model)
 
@@ -52,26 +68,55 @@ energy = ce_model.CalculateMicrostateEnergy (vector)
 logFile.Text ("Gmicro = %.6f\n" % energy)
 
 
-#for i, (site, state) in enumerate (zip (ce_model.meadSites, v)):
-#  if site.resName == "HIS":
-#    inst = 3
-#  else:
-#    inst = 1
-#  v[i] = inst
-#
-#v.Print ()
-#Gmicro = ce_model.CalculateMicrostateEnergy (v, pH = 7.0)
-#logFile.Text ("Gmicro = %f\n" % Gmicro)
-#
-#v.Reset ()
-#v.Print ()
-#Gmicro = ce_model.CalculateMicrostateEnergy (v, pH = 7.0)
-#logFile.Text ("Gmicro = %f\n" % Gmicro)
-#
-#v.Increment ()
-#v.Print ()
-#Gmicro = ce_model.CalculateMicrostateEnergy (v, pH = 7.0)
-#logFile.Text ("Gmicro = %f\n" % Gmicro)
+vector.Increment ()
+
+vector.Print (ce_model)
+
+energy = ce_model.CalculateMicrostateEnergy (vector)
+
+logFile.Text ("Gmicro = %.6f\n" % energy)
+
+
+vector.Increment ()
+
+vector.Print (ce_model)
+
+energy = ce_model.CalculateMicrostateEnergy (vector)
+
+logFile.Text ("Gmicro = %.6f\n" % energy)
+
+
+vector.Increment ()
+
+vector.Print (ce_model)
+
+energy = ce_model.CalculateMicrostateEnergy (vector)
+
+logFile.Text ("Gmicro = %.6f\n" % energy)
+
+# vector[0]  = 0    #   PRTA_LYS1     p   1
+# vector[1]  = 1    #   PRTA_GLU7     d   0
+# vector[2]  = 1    #  PRTA_LYS13     d   0
+# vector[3]  = 2    #  PRTA_HIS15   HSE   1
+# vector[4]  = 1    #  PRTA_ASP18     d   0
+# vector[5]  = 0    #  PRTA_TYR20     p   1
+# vector[6]  = 0    #  PRTA_TYR23     p   1
+# vector[7]  = 0    #  PRTA_LYS33     p   1
+# vector[8]  = 0    #  PRTA_GLU35     p   1
+# vector[9]  = 1    #  PRTA_ASP48     d   0
+# vector[10] = 0    #  PRTA_ASP52     p   1
+# vector[11] = 0    #  PRTA_TYR53     p   1
+# vector[12] = 1    #  PRTA_ASP66     d   0
+# vector[13] = 1    #  PRTA_ASP87     d   0
+# vector[14] = 0    #  PRTA_LYS96     p   1
+# vector[15] = 0    #  PRTA_LYS97     p   1
+# vector[16] = 1    # PRTA_ASP101     d   0
+# vector[17] = 0    # PRTA_LYS116     p   1
+# vector[18] = 1    # PRTA_ASP119     d   0
+# 
+# vector.Print (ce_model)
+# energy = ce_model.CalculateMicrostateEnergy (vector)
+# logFile.Text ("Gmicro = %.6f\n" % energy)
 
 
 #===========================================

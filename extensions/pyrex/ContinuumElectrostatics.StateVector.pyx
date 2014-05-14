@@ -5,9 +5,7 @@
 #                          Mikolaj J. Feliks (2014)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
-
-
-from pCore         import logFile, LogFileActive, CLibraryError
+from pCore    import logFile, LogFileActive, CLibraryError
 
 
 cdef class StateVector:
