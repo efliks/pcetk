@@ -5,9 +5,7 @@
 !                          Mikolaj J. Feliks (2014)
 ! . License   : CeCILL French Free Software License     (http://www.cecill.info)
 !-----------------------------------------------------------------------------*/
-
 #include "StateVector.h"
-
 
 
 /*StateVector *StateVector_Allocate (const Integer length, Status *status) {*/

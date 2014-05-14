@@ -5,7 +5,7 @@
 #                          Mikolaj J. Feliks (2014)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
-
+"""Reading output files from MEAD."""
 
 from pCore      import logFile, LogFileActive, TextFileReader
 

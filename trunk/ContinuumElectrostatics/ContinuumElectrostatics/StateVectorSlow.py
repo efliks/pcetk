@@ -5,7 +5,7 @@
 #                          Mikolaj J. Feliks (2014)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
-
+"""The previous implementation of the StateVector class in pure Python."""
 
 import exceptions
 
