@@ -8,7 +8,6 @@
 #ifndef _STATEVECTOR
 #define _STATEVECTOR
 
-#define _REVISION "$Revision$"
 
 
 #include "Boolean.h"
@@ -24,7 +23,7 @@ typedef struct {
 } StateVector;
 
 
-//extern StateVector *StateVector_Allocate (const Integer length, Status *status);
+/*extern StateVector *StateVector_Allocate (const Integer length, Status *status);*/
 extern StateVector *StateVector_Allocate       (const Integer length);
 extern void         StateVector_Deallocate     (      StateVector *self);
 extern void         StateVector_Reset          (const StateVector *self);

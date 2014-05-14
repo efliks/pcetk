@@ -6,7 +6,6 @@
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
 
-__revision__ = "$Revision$"
 
 from pCore      import logFile, LogFileActive, TextFileReader
 from Constants  import *

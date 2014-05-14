@@ -8,10 +8,9 @@
 
 #include "StateVector.h"
 
-#define _REVISION "$Revision$"
 
 
-//StateVector *StateVector_Allocate (const Integer length, Status *status) {
+/*StateVector *StateVector_Allocate (const Integer length, Status *status) {*/
 StateVector *StateVector_Allocate (const Integer length) {
   StateVector *self = NULL;
 
@@ -37,7 +36,6 @@ StateVector *StateVector_Allocate (const Integer length) {
   return self;
 }
 
-// Use **self ???
 void StateVector_Deallocate (StateVector *self) {
   if (self != NULL) {
     MEMORY_DEALLOCATE (self->maxvector);
@@ -90,8 +88,8 @@ Boolean StateVector_Increment (const StateVector *self) {
   Integer i;
   Integer *v = self->vector, *m = self->maxvector;
 
-  //This prevents zeroing the state vector after the last iteration
 /*
+  This prevents zeroing the state vector after the last iteration
   incr = False;
   for (i = 0; i < self->length; i++, v++, m++) {
     if ((*v) < (*m)) {
