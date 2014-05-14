@@ -1,0 +1,17 @@
+chemical potential  -9.602486   vmemb 0.000000
+----------------------------------------------------
+State            1    state energy = 1.921131e+01 kcal/mol
+conf:   conf
+                     PRTA_HIS5                    HSP   2
+----------------------------------------------------
+State            2    state energy = 1.925522e+01 kcal/mol
+conf:   conf
+                     PRTA_HIS5                    HSD   1
+----------------------------------------------------
+State            3    state energy = 1.868032e+01 kcal/mol
+conf:   conf
+                     PRTA_HIS5                    HSE   1
+----------------------------------------------------
+State            4    state energy = 2.812986e+01 kcal/mol
+conf:   conf
+                     PRTA_HIS5                     fd   0

@@ -1,0 +1,87 @@
+Starting /home/mikolaj/local/bin//my_2diel_solver for molecule named scratch/PRTA/HIS5//site_HSP
+using the following physical conditions:
+Exterior dielectric constant, epsext = 80
+Solvent probe radius, solrad = 1.4
+Ion exclusion layer thickness, sterln = 2
+Temperature, T = 300
+Ionic strength, ionicstr = 0.1
+Hueckel factor (epsext*kappasq) = 0.843038
+Debye length 1/kappa = 9.7414
+ln(10) * kBolt * T = 0.00413389
+kBolt = 5.98442e-06
+conconv = 0.000602214
+econv = 332.063
+Bohr radius = 0.529177
+Proton Charge = 1
+elementary_charge = 1.60218e-19
+energy_unit = 2.30707e-18
+Avogadro_Number = 6.02214e+23
+voltconv = 14.3996
+pkconv = 241.903
+  Solute interior dielectric, epsin = 4
+Vacuum dielectric constant, epsvac = 1
+
+No blab level set (so no blabbing)
+/home/mikolaj/local/bin//my_2diel_solver: WARNING:  The atom, "0:0:0:0:5:CB",
+   occurs in both the solute and protein atom sets.
+   For defining the Electrolyte boundary, the protein version
+   will be used.
+/home/mikolaj/local/bin//my_2diel_solver: WARNING:  The atom, "0:0:0:0:5:CD2",
+   occurs in both the solute and protein atom sets.
+   For defining the Electrolyte boundary, the protein version
+   will be used.
+/home/mikolaj/local/bin//my_2diel_solver: WARNING:  The atom, "0:0:0:0:5:CE1",
+   occurs in both the solute and protein atom sets.
+   For defining the Electrolyte boundary, the protein version
+   will be used.
+/home/mikolaj/local/bin//my_2diel_solver: WARNING:  The atom, "0:0:0:0:5:CG",
+   occurs in both the solute and protein atom sets.
+   For defining the Electrolyte boundary, the protein version
+   will be used.
+/home/mikolaj/local/bin//my_2diel_solver: WARNING:  The atom, "0:0:0:0:5:HB1",
+   occurs in both the solute and protein atom sets.
+   For defining the Electrolyte boundary, the protein version
+   will be used.
+/home/mikolaj/local/bin//my_2diel_solver: WARNING:  The atom, "0:0:0:0:5:HB2",
+   occurs in both the solute and protein atom sets.
+   For defining the Electrolyte boundary, the protein version
+   will be used.
+/home/mikolaj/local/bin//my_2diel_solver: WARNING:  The atom, "0:0:0:0:5:HD1",
+   occurs in both the solute and protein atom sets.
+   For defining the Electrolyte boundary, the protein version
+   will be used.
+/home/mikolaj/local/bin//my_2diel_solver: WARNING:  The atom, "0:0:0:0:5:HD2",
+   occurs in both the solute and protein atom sets.
+   For defining the Electrolyte boundary, the protein version
+   will be used.
+/home/mikolaj/local/bin//my_2diel_solver: WARNING:  The atom, "0:0:0:0:5:HE1",
+   occurs in both the solute and protein atom sets.
+   For defining the Electrolyte boundary, the protein version
+   will be used.
+/home/mikolaj/local/bin//my_2diel_solver: WARNING:  The atom, "0:0:0:0:5:HE2",
+   occurs in both the solute and protein atom sets.
+   For defining the Electrolyte boundary, the protein version
+   will be used.
+/home/mikolaj/local/bin//my_2diel_solver: WARNING:  The atom, "0:0:0:0:5:ND1",
+   occurs in both the solute and protein atom sets.
+   For defining the Electrolyte boundary, the protein version
+   will be used.
+/home/mikolaj/local/bin//my_2diel_solver: WARNING:  The atom, "0:0:0:0:5:NE2",
+   occurs in both the solute and protein atom sets.
+   For defining the Electrolyte boundary, the protein version
+   will be used.
+Using finite difference method with lattice levels:
+                   Centering Style   grid dimension    spacing
+Coarsest level: ON_GEOM_CENT resolved to (3.55784, 1.62244, 5.3468)) 121 2
+Finer level:    (1.82311, 0.224498, 6.05708) 101 1
+Finer level:    (1.82311, 0.224498, 6.05708) 101 0.5
+Finest level:   (1.82311, 0.224498, 6.05708) 101 0.25
+
+
+Self energy of scratch/PRTA/HIS5//site_HSP in two dielectric environment = 236.94
+(probably in kcal/mole, INCLUDING GRID ARTEFACTS)
+
+
+Interaction energy of scratch/PRTA/HIS5//site_HSP with background charge set in two dielectric environment = 0.266746
+(probably in kcal/mole)
+Total runtime: 8.42 s user 0.04 s system 

@@ -1,0 +1,52 @@
+Starting /home/mikolaj/local/bin//my_3diel_solver for molecule named scratch/PRTA/HIS5//site_HSE
+using the following physical conditions:
+Exterior dielectric constant, epsext = 80
+Solvent probe radius, solrad = 1.4
+Ion exclusion layer thickness, sterln = 2
+Temperature, T = 300
+Ionic strength, ionicstr = 0.1
+Hueckel factor (epsext*kappasq) = 0.843038
+Debye length 1/kappa = 9.7414
+ln(10) * kBolt * T = 0.00413389
+kBolt = 5.98442e-06
+conconv = 0.000602214
+econv = 332.063
+Bohr radius = 0.529177
+Proton Charge = 1
+elementary_charge = 1.60218e-19
+energy_unit = 2.30707e-18
+Avogadro_Number = 6.02214e+23
+voltconv = 14.3996
+pkconv = 241.903
+  Solute interior dielectric, epsin1 = 1
+  Protein interior dielectric constant, epsin2 = 4
+Vacuum dielectric constant, epsvac = 1
+
+No blab level set (so no blabbing)
+Using finite difference method with lattice levels:
+                   Centering Style   grid dimension    spacing
+Coarsest level: ON_GEOM_CENT resolved to (5.19565, 4.71925, 4.86556)) 121 2
+Finer level:    (1.82311, 0.224498, 6.05708) 101 1
+Finer level:    (1.82311, 0.224498, 6.05708) 101 0.5
+Finest level:   (1.82311, 0.224498, 6.05708) 101 0.25
+
+
+Self energy of scratch/PRTA/HIS5//site_HSE in three dielectric environment = 188.273
+(probably in kcal/mole, INCLUDING GRID ARTEFACTS)
+
+
+Interaction energy of scratch/PRTA/HIS5//site_HSE with background charge set in three dielectric environment = -0.17584
+(probably in kcal/mole)
+
+
+
+Interaction energies of scratch/PRTA/HIS5//site_HSE with charges of given instances of sites (probably in kcal/mole).
+Format: site instance energy
+
+0   0 : 352.864
+0   1 : 246.914
+0   2 : 376.54
+0   3 : 350.644
+1   0 : 0.0393699
+1   1 : 0.339551
+Total runtime: 9.12 s user 0.07 s system 
