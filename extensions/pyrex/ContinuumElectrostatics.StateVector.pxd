@@ -6,27 +6,26 @@
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
 
-__revision__ = "$Revision$"
 
-#from pCore.cDefinitions    cimport Boolean, CFalse, CTrue, Integer
+from pCore.cDefinitions    cimport Boolean, CFalse, CTrue, Integer
 
 
 # Include the file StateVector.h in the generated C code
 cdef extern from "StateVector.h":
 
   ctypedef struct CStateVector "StateVector":
-    int *vector
-    int *maxvector
-    int  length
+    Integer *vector
+    Integer *maxvector
+    Integer  length
 
 
-  cdef CStateVector *StateVector_Allocate       (int size)
+  cdef CStateVector *StateVector_Allocate       (Integer size)
   cdef void          StateVector_Deallocate     (CStateVector *self)
   cdef void          StateVector_Reset          (CStateVector *self)
   cdef void          StateVector_ResetToMaximum (CStateVector *self)
-  cdef int           StateVector_GetItem        (CStateVector *self, int index)
-  cdef int           StateVector_SetItem        (CStateVector *self, int index, int value)
-  cdef int           StateVector_Increment      (CStateVector *self)
+  cdef Integer       StateVector_GetItem        (CStateVector *self, Integer index)
+  cdef Integer       StateVector_SetItem        (CStateVector *self, Integer index, Integer value)
+  cdef Integer       StateVector_Increment      (CStateVector *self)
 
 #-------------------------------------------------------------------------------
 cdef class StateVector:

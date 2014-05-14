@@ -6,7 +6,6 @@
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
 
-__revision__ = "$Revision$"
 
 CONSTANT_MOLAR_GAS_KCAL_MOL = 1.9872041 / 1000.0
 CONSTANT_LN10               = 2.302585092994046

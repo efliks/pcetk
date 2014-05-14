@@ -22,7 +22,6 @@
 # 
 # FIXME: Optionally convert kcal/mol (MEAD units) to kJ/mol (pDynamo units)
 
-__revision__ = "$Revision$"
 
 import exceptions, os, subprocess, threading, glob
 
