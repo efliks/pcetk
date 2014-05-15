@@ -37,22 +37,6 @@ from PQRFileWriter          import PQRFile_FromSystem
 from MEADOutputFileReader   import MEADOutputFileReader
 
 
-_YAMLPATHIN       = os.path.join (os.getenv ("PDYNAMO_CONTINUUMELECTROSTATICS"), "parameters")
-
-_PREV_RESIDUE     = ("C", "O")
-
-_NEXT_RESIDUE     = ("N", "H",  "CA", "HA")
-
-_NEXT_RESIDUE_PRO = ("N", "CA", "HA", "CD",  "HD1", "HD2")
-
-_NEXT_RESIDUE_GLY = ("N", "H",  "CA", "HA1", "HA2")
-
-_PROTEIN_RESIDUES = (
-   "ALA", "CYS", "ASP", "GLU", "PHE", "GLY", "HIS", "ILE", "LYS", "LEU",
-   "MET", "ASN", "PRO", "GLN", "ARG", "SER", "THR", "VAL", "TRP", "TYR",
-   "HSP", "HSE", "HSD", "HIE", "HID"
-)
-
 _DefaultTemperature     = 300.0
 
 _DefaultIonicStrength   = 0.1
@@ -405,7 +389,7 @@ class CEModelMEAD (object):
         raise CEModelMEADError ("Cannot create scratch directory %s" % self.scratch)
 
     # Load a library of sites
-    search     = "%s/%s" % (_YAMLPATHIN, "sites/")
+    search     = "%s/%s" % (YAMLPATHIN, "sites/")
     sitefiles  = glob.glob ("%s/*.yaml" % search)
 
     # Use custom files if they are present
@@ -512,44 +496,20 @@ class CEModelMEAD (object):
         totalGintr    = totalGintr + Gintr
         nprotons      = nprotons + cprotons
 
-        for siteIndexInner in range (0, nsites):
+#        for siteIndexInner in range (0, nsites):
+        for siteIndexInner in range (0, siteIndex):
           instanceIndexInner = stateVector  [siteIndexInner]
           interaction        = interactions [siteIndexInner]
           totalInteract      = totalInteract + interaction [instanceIndexInner]
 
       protonChemicalPotential = -CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10 * pH
 
-      Gmicro = totalGintr - nprotons * protonChemicalPotential + 0.5 * totalInteract
+      #Gmicro = totalGintr - nprotons * protonChemicalPotential + 0.5 * totalInteract
+      Gmicro = totalGintr - nprotons * protonChemicalPotential + totalInteract
     else:
-      Gmicro = 0.
+      Gmicro = None
 
     return Gmicro        
-
-
-
-#      Gintr    = 0.0
-#      Wij      = 0.0
-#      convert  = 1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * CONSTANT_LN10 * self.temperature)
-#      G        = pH * convert
-#
-#      for i in range (0, len (self.meadSites)):
-#        site           = self.meadSites[i]
-#        whichInstance  = stateVector[i]
-#        instance       = site.instances[whichInstance]
-#  
-#        for interaction, whichInteractionInstance in zip (instance.interactions, stateVector):
-#          Wij += interaction[whichInteractionInstance]
-#
-#      Gmicro = Gintr + 0.5 * Wij
-#      return Gmicro
-
-# These checks are not necessary
-#      if not isinstance (stateVector, StateVector):
-#        raise CEModelMEADError ("An instance of StateVector is required.")
-#      size   = len (stateVector)
-#      nsites = len (self.meadSites)
-#      if size != nsites:
-#        raise CEModelMEADError ("The number of sites and the number of elements in the state vector differ.")
 
 
   def CalculateEnergies (self, log = logFile):
@@ -639,6 +599,82 @@ class CEModelMEAD (object):
       self.isCalculated = True
 
 
+  def Initialize2 (self, log = logFile):
+    """Improved initialization."""
+    if not self.isInitialized:
+      system          = self.system
+      ParseLabel      = system.sequence.ParseLabel
+      segments        = system.sequence.children
+      excludeSegments = ["WATA", ]
+
+      #============ Go over segments ============
+      for segment in segments:
+        segmentName = segment.lable
+
+        # Segment with titratable residues?
+        if segmentName not in excludeSegments:
+          residues  = segment.children
+          nresidues = len (residues)
+  
+          #============ Go over residues ============
+          for residueIndex, residue in enumerate (residues):
+            residueName, residueSerial = ParseLabel (residue.label, fields = 2)
+ 
+            # Titratable residue? 
+            if residueName in self.librarySites:
+
+              # Include atoms from the previous residue?
+              if residueIndex > 1:
+                prevResidue = residues[residueIndex - 1]
+                prevResidueName, prevResidueSerial = ParseLabel (prevResidue.label, fields = 2)
+
+                if prevResidueName in PROTEIN_RESIDUES:
+                  prevResidueAtomNames = PREV_RESIDUE
+
+
+              # Include atoms from the next residue?
+              if residueIndex < (nresidues - 1):
+                nextResidue = residues[residueIndex + 1]
+                nextResidueName, nextResidueSerial = ParseLabel (nextResidue.label, fields = 2)
+
+                if nextResidueName in PROTEIN_RESIDUES:
+                  if   nextResidueName == "PRO":
+                    nextResidueAtomNames = NEXT_RESIDUE_PRO
+                  elif nextResidueName == "GLY":
+                    nextResidueAtomNames = NEXT_RESIDUE_GLY
+                  else:
+                    nextResidueAtomNames = NEXT_RESIDUE
+
+
+              libSite          = self.librarySites[residueName]
+              libSiteAtoms     = libSite["atoms"]
+              libSiteInstances = libSite["instances"]
+
+              atoms            = residue.children
+              atomIndicesModel = []
+              atomIndicesSite  = []
+              atomRadiiSite    = []
+
+              #============ Go over atoms ============
+              for atom in atoms:
+                atomIndex   = atom.index
+                atomName    = atom.label
+                atomRadius  = 1.
+
+                if atomName in libSiteAtoms:
+                  atomIndicesSite.append (atomIndex)
+
+              # Create instances
+              for instanceIndex, instance in enumerate (libSiteInstances):
+                libLabel    = instance["label"]
+                libProtons  = instance["protons"]
+                libCharges  = instance["charges"]
+
+                libGmodel   = instance["Gmodel"]
+                Gmodel      = libGmodel * 300.0 / self.temperature
+
+
+
   def Initialize (self, log = logFile):
     """Decompose the system into model compounds, sites and background charge set.
 
@@ -663,7 +699,7 @@ class CEModelMEAD (object):
         if residue != prevResidue and prevResidue != "":
           segPrevName, resPrevName, resPrevNum = prevPath
 
-          if resPrevName in _PROTEIN_RESIDUES:
+          if resPrevName in PROTEIN_RESIDUES:
             r = _Residue (
                      segName     = segPrevName ,
                      resName     = resPrevName ,
@@ -682,7 +718,7 @@ class CEModelMEAD (object):
         prevResidue = residue
         prevPath    = [segName, resName, resNum]
 
-      if resName in _PROTEIN_RESIDUES:
+      if resName in PROTEIN_RESIDUES:
         if atomNames:
           r = _Residue (
                    segName     = segPrevName ,
@@ -707,7 +743,7 @@ class CEModelMEAD (object):
             pr = residues[resIndex - 1]
 
             for prAtomName, prAtomIndex in zip (pr.atomNames, pr.atomIndices):
-              if prAtomName in _PREV_RESIDUE:
+              if prAtomName in PREV_RESIDUE:
                 modelAtomIndices.append (prAtomIndex)
                 modelAtomNames.append (prAtomName)
 
@@ -719,11 +755,11 @@ class CEModelMEAD (object):
             nr = residues[resIndex + 1]
 
             if   nr.resName == "PRO":
-              nextResidueAtomNames = _NEXT_RESIDUE_PRO
+              nextResidueAtomNames = NEXT_RESIDUE_PRO
             elif nr.resName == "GLY":
-              nextResidueAtomNames = _NEXT_RESIDUE_GLY
+              nextResidueAtomNames = NEXT_RESIDUE_GLY
             else:
-              nextResidueAtomNames = _NEXT_RESIDUE
+              nextResidueAtomNames = NEXT_RESIDUE
 
             for nrAtomName, nrAtomIndex in zip (nr.atomNames, nr.atomIndices):
               if nrAtomName in nextResidueAtomNames:
@@ -841,7 +877,7 @@ class CEModelMEAD (object):
       self.backPqr         = "%s/back.pqr" % self.scratch
 
 
-      # Construct the protein (this means removing residues not defined in _PROTEIN_RESIDUES, usually waters and ions)
+      # Construct the protein (this means removing residues not defined in PROTEIN_RESIDUES, usually waters and ions)
       proteinAtomIndices = []
 
       for residue in residues:
@@ -938,7 +974,7 @@ class CEModelMEAD (object):
       systemRadii   = []
 
       systemTypes   = self.system.energyModel.mmAtoms.AtomTypes ()
-      radii         = YAMLUnpickle ("%s/%s" % (_YAMLPATHIN, "radii.yaml"))
+      radii         = YAMLUnpickle ("%s/%s" % (YAMLPATHIN, "radii.yaml"))
 
       for atomType in systemTypes:
         if radii.has_key (atomType):
