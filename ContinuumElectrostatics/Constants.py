@@ -7,9 +7,28 @@
 #-------------------------------------------------------------------------------
 """Constants."""
 
+import  os
+
 
 CONSTANT_MOLAR_GAS_KCAL_MOL = 1.9871653920000e-03  #1.9872041 / 1000.0
 CONSTANT_LN10               = 2.302585092994046
 
 # Only valid for T=300 K
 UNITS_ENERGY_PKA_UNITS_TO_KILOCALORIES_PER_MOL = 1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * 300.0 * CONSTANT_LN10)
+
+
+YAMLPATHIN       = os.path.join (os.getenv ("PDYNAMO_CONTINUUMELECTROSTATICS"), "parameters")
+
+PREV_RESIDUE     = ("C", "O")
+
+NEXT_RESIDUE     = ("N", "H",  "CA", "HA")
+
+NEXT_RESIDUE_PRO = ("N", "CA", "HA", "CD",  "HD1", "HD2")
+
+NEXT_RESIDUE_GLY = ("N", "H",  "CA", "HA1", "HA2")
+
+PROTEIN_RESIDUES = (
+   "ALA", "CYS", "ASP", "GLU", "PHE", "GLY", "HIS", "ILE", "LYS", "LEU",
+   "MET", "ASN", "PRO", "GLN", "ARG", "SER", "THR", "VAL", "TRP", "TYR",
+   "HSP", "HSE", "HSD", "HIE", "HID"
+)
