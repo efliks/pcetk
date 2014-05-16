@@ -606,7 +606,7 @@ class CEModelMEAD (object):
                     prevNames = PREV_RESIDUE
   
                     for atom in prevResidue.children:
-                      if atom.name in prevNames:
+                      if atom.label in prevNames:
                         prevIndices.append (atom.index)
   
                 # Include atoms from the next residue to the model compound?
@@ -623,9 +623,9 @@ class CEModelMEAD (object):
                       nextNames = NEXT_RESIDUE
   
                     for atom in nextResidue.children:
-                      if atom.name in nextNames:
+                      if atom.label in nextNames:
                         nextIndices.append (atom.index)
- 
+
  
                 # Collect atom indices 
                 libSite          = self.librarySites[residueName]
@@ -638,7 +638,6 @@ class CEModelMEAD (object):
                 for atom in atoms:
                   atomIndex   = atom.index
                   atomName    = atom.label
-                  atomRadius  = 1.
   
                   if atomName in libSiteAtoms:
                     atomIndicesSite.append (atomIndex)
@@ -651,37 +650,40 @@ class CEModelMEAD (object):
                 libSiteInstances = libSite["instances"]
                 instances        = []
   
-                for instanceIndex, instance in enumerate (libSiteInstances):
-                  label     = instance [ "label"   ]
-                  nprotons  = instance [ "protons" ]
-                  charges   = instance [ "charges" ]
-                  Gmodel    = instance [ "Gmodel"  ] * 300.0 / self.temperature
+                for instIndex, instance in enumerate (libSiteInstances):
+                  label    = instance [ "label"   ]
+                  protons  = instance [ "protons" ]
+                  charges  = instance [ "charges" ]
+                  Gmodel   = instance [ "Gmodel"  ] * 300.0 / self.temperature
+                  pattern  = "%s/%s_%s.%s"
 
                   if self.splitToDirectories:
                     foo = "%s/%s/%s%s" % (self.scratch, segmentName, residueName, residueSerial)
                     bar = label
-
-                    if not os.path.exists (foo):
-                      os.makedirs (foo)
                   else:
                     foo = self.scratch
                     bar = "%s_%s_%s_%s" % (segmentName, residueName, residueSerial, label)
 
-                  pattern = "%s/%s_%s.%s"
+                  modelPqr  = pattern % (foo, "model", bar, "pqr") 
+                  modelLog  = pattern % (foo, "model", bar, "log") 
+                  modelGrid = pattern % (foo, "model", bar, "mgm") 
+                  sitePqr   = pattern % (foo, "site" , bar, "pqr") 
+                  siteLog   = pattern % (foo, "site" , bar, "log") 
+                  siteGrid  = pattern % (foo, "site" , bar, "ogm") 
 
+                  # Note: set the instance's parent later
                   newInstance = MEADInstance (
-                               parent    = None              , # <--Do not forget to set this later
-                               instID    = instanceIndex + 1 ,
-                               Gmodel    = Gmodel            ,
-                               label     = label             ,
-                               protons   = nprotons          ,
-                               charges   = charges           ,
-                               modelPqr  = pattern % (foo, "model", bar, "pqr")  ,
-                               modelLog  = pattern % (foo, "model", bar, "log")  ,
-                               modelGrid = pattern % (foo, "model", bar, "mgm")  ,
-                               sitePqr   = pattern % (foo, "site" , bar, "pqr")  ,
-                               siteLog   = pattern % (foo, "site" , bar, "log")  ,
-                               siteGrid  = pattern % (foo, "site" , bar, "ogm")  ,
+                                 instID     =  instIndex + 1 ,
+                                 label      =  label         ,
+                                 protons    =  protons       ,
+                                 charges    =  charges       ,
+                                 Gmodel     =  Gmodel        ,
+                                 modelPqr   =  modelPqr      ,
+                                 modelLog   =  modelLog      ,
+                                 modelGrid  =  modelGrid     ,
+                                 sitePqr    =  sitePqr       ,
+                                 siteLog    =  siteLog       ,
+                                 siteGrid   =  siteGrid      ,
                                              )
                   instances.append (newInstance)
 
@@ -1081,6 +1083,20 @@ class CEModelMEAD (object):
         systemRadii.append (radius)
 
 
+      # Create subdirectories, if necessary
+      if self.splitToDirectories:
+
+        for meadSite in self.meadSites:
+          sitePqr   = meadSite.instances[0].sitePqr
+          directory = os.path.dirname (sitePqr)
+
+          if not os.path.exists (directory):
+            try:
+              os.makedirs (directory)
+            except:
+              raise CEModelMEADError ("Cannot create directory %s" % directory)
+
+
       # Write two PQR files for each instance of every site, first for the model compund and second for the site itself
       for meadSite in self.meadSites:
         model = Selection (meadSite.modelAtomIndices)
@@ -1098,10 +1114,15 @@ class CEModelMEAD (object):
 
           chargesUpdated = Clone (systemCharges)
 
-# When Initialize_Testing is used, this part has to be FIXED
-          for atomName, atomIndex in zip (meadSite.siteAtomNames, meadSite.siteAtomIndices):
-            pickCharge                = instance.charges[meadSite.siteAtomNames.index (atomName)]
+# This fragment does not work when Initialize_Testing is used
+#           for atomName, atomIndex in zip (meadSite.siteAtomNames, meadSite.siteAtomIndices):
+#             pickCharge                = instance.charges[meadSite.siteAtomNames.index (atomName)]
+#             chargesUpdated[atomIndex] = pickCharge
+
+          for chargeIndex, atomIndex in enumerate (meadSite.siteAtomIndices):
+            pickCharge                = instance.charges[chargeIndex]
             chargesUpdated[atomIndex] = pickCharge
+
 
           PQRFile_FromSystem (instance.sitePqr,  self.system, selection = site,  charges = chargesUpdated, radii = systemRadii)
 
