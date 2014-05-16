@@ -26,7 +26,7 @@
 import exceptions, os, subprocess, threading, glob
 
 
-from pCore                  import logFile, LogFileActive, Selection, Vector3, YAMLUnpickle, UNITS_ENERGY_KILOCALORIES_PER_MOLE_TO_KILOJOULES_PER_MOLE
+from pCore                  import logFile, LogFileActive, Selection, Vector3, YAMLUnpickle, Clone, UNITS_ENERGY_KILOCALORIES_PER_MOLE_TO_KILOJOULES_PER_MOLE
 from pMolecule              import System
                             
 from Constants              import *
@@ -252,33 +252,6 @@ class MEADInstance (object):
         table.Stop ()
 
 
-#  def Summary (self, log = logFile, printInteractions = False):
-#    """Summary of an instance."""
-#    if LogFileActive (log):
-#      site    = self.parent
-#      model   = site.parent
-#
-#      summary = log.GetSummary ()
-#      summary.Start ("Instance %s %s %s %s" % (site.segName, site.resName, site.resNum, self.label))
-#      summary.Entry ("Gborn_model",   "%f" % self.Gborn_model)
-#      summary.Entry ("Gback_model",   "%f" % self.Gback_model)
-#      summary.Entry ("Gborn_protein", "%f" % self.Gborn_protein)
-#      summary.Entry ("Gback_protein", "%f" % self.Gback_protein)
-#      summary.Entry ("Gmodel",        "%f" % self.Gmodel)
-#      summary.Entry ("Gintr",         "%f" % self.Gintr)
-#
-#      if printInteractions:
-#        for site in model.meadSites:
-#          for instance in site.instances:
-#            s     = site.siteID     - 1
-#            i     = instance.instID - 1
-#            Wij   = self.interactions[s][i]
-#
-#            label = "%s %s %s %s" % (site.segName, site.resName, site.resNum, instance.label)
-#            summary.Entry ("Wij (%s)" % label, "%f" % Wij)
-#      summary.Stop ()
-
-
   def TableEntry (self, table = None):
     """Report calculated energies in a table."""
     if table:
@@ -388,7 +361,7 @@ class CEModelMEAD (object):
       except:
         raise CEModelMEADError ("Cannot create scratch directory %s" % self.scratch)
 
-    # Load a library of sites
+    # Load the library of sites
     search     = "%s/%s" % (YAMLPATHIN, "sites/")
     sitefiles  = glob.glob ("%s/*.yaml" % search)
 
@@ -496,7 +469,7 @@ class CEModelMEAD (object):
         totalGintr    = totalGintr + Gintr
         nprotons      = nprotons + cprotons
 
-#        for siteIndexInner in range (0, nsites):
+        #for siteIndexInner in range (0, nsites):
         for siteIndexInner in range (0, siteIndex):
           instanceIndexInner = stateVector  [siteIndexInner]
           interaction        = interactions [siteIndexInner]
@@ -526,7 +499,13 @@ class CEModelMEAD (object):
     """
     if self.isFilesWritten:
       table = None
+
       if LogFileActive (log):
+        if self.nthreads < 2:
+          log.Text ("\nStarting serial run.\n")
+        else:
+          log.Text ("\nStarting parallel run on %d CPUs.\n" % self.nthreads)
+
         table = log.GetTable (columns = [6, 6, 6, 6, 16, 16, 16, 16, 16, 16])
         table.Start ()
         table.Heading ("Instance of a site", columnSpan = 4)
@@ -536,7 +515,6 @@ class CEModelMEAD (object):
         table.Heading ("Gback_protein")
         table.Heading ("Gmodel"       )
         table.Heading ("Gintr"        )
-
 
       if self.nthreads < 2:
         for meadSite in self.meadSites:
@@ -559,36 +537,18 @@ class CEModelMEAD (object):
             thread = _MEADThread (instance, log)
             threads.append (thread)
 
-#         for meadSite in self.meadSites:
-#           for instance in meadSite.instances:
-#             if len (threads) > limit:
-#               batches.append (threads)
-#               threads = []
-#             thread = _MEADThreadModelCompound (instance, log)
-#             threads.append (thread)
-#
-#         for meadSite in self.meadSites:
-#           for instance in meadSite.instances:
-#             if len (threads) > limit:
-#               batches.append (threads)
-#               threads = []
-#             thread = _MEADThreadProtein (instance, log)
-#             threads.append (thread)
         if threads:
           batches.append (threads)
 
-
-        batchTotal = len (batches)
-
-        for batchCount, threads in enumerate (batches, 1):
-          for thread in threads:
+        for batch in batches:
+          for thread in batch:
             thread.start ()
 
-          for thread in threads:
+          for thread in batch:
             thread.join ()
 
           # Print the results at the end of each batch, otherwise they come in random order
-          for thread in threads:
+          for thread in batch:
             instance = thread.instance
             instance.TableEntry (table)
 
@@ -599,19 +559,27 @@ class CEModelMEAD (object):
       self.isCalculated = True
 
 
-  def Initialize2 (self, log = logFile):
-    """Improved initialization."""
+  def Initialize_Testing (self, excludeSegments = None, excludeResidues = None, log = logFile):
+    """Decompose the system into model compounds, sites and background charge set."""
+
     if not self.isInitialized:
-      system          = self.system
-      ParseLabel      = system.sequence.ParseLabel
-      segments        = system.sequence.children
-      excludeSegments = ["WATA", ]
+      system      = self.system
+      ParseLabel  = system.sequence.ParseLabel
+      segments    = system.sequence.children
+      siteIndex   = 0
+
+      if excludeSegments is None:
+        excludeSegments = ["WATA", ]
+
+      if excludeResidues is None:
+        excludeResidues = []  # For example ["ARG", "LYS", ]
+
 
       #============ Go over segments ============
       for segment in segments:
-        segmentName = segment.lable
+        segmentName = segment.label
 
-        # Segment with titratable residues?
+        # Include segment?
         if segmentName not in excludeSegments:
           residues  = segment.children
           nresidues = len (residues)
@@ -619,60 +587,184 @@ class CEModelMEAD (object):
           #============ Go over residues ============
           for residueIndex, residue in enumerate (residues):
             residueName, residueSerial = ParseLabel (residue.label, fields = 2)
+
+            # Include residue?
+            if residueName not in excludeResidues:
  
-            # Titratable residue? 
-            if residueName in self.librarySites:
+              # Titratable residue? 
+              if residueName in self.librarySites:
+  
+                prevIndices = []
+                nextIndices = []
+  
+                # Include atoms from the previous residue to the model compound?
+                if residueIndex > 1:
+                  prevResidue = residues[residueIndex - 1]
+                  prevResidueName, prevResidueSerial = ParseLabel (prevResidue.label, fields = 2)
+  
+                  if prevResidueName in PROTEIN_RESIDUES:
+                    prevNames = PREV_RESIDUE
+  
+                    for atom in prevResidue.children:
+                      if atom.name in prevNames:
+                        prevIndices.append (atom.index)
+  
+                # Include atoms from the next residue to the model compound?
+                if residueIndex < (nresidues - 1):
+                  nextResidue = residues[residueIndex + 1]
+                  nextResidueName, nextResidueSerial = ParseLabel (nextResidue.label, fields = 2)
+  
+                  if nextResidueName in PROTEIN_RESIDUES:
+                    if   nextResidueName == "PRO":
+                      nextNames = NEXT_RESIDUE_PRO
+                    elif nextResidueName == "GLY":
+                      nextNames = NEXT_RESIDUE_GLY
+                    else:
+                      nextNames = NEXT_RESIDUE
+  
+                    for atom in nextResidue.children:
+                      if atom.name in nextNames:
+                        nextIndices.append (atom.index)
+ 
+ 
+                # Collect atom indices 
+                libSite          = self.librarySites[residueName]
+                libSiteAtoms     = libSite["atoms"]
 
-              # Include atoms from the previous residue?
-              if residueIndex > 1:
-                prevResidue = residues[residueIndex - 1]
-                prevResidueName, prevResidueSerial = ParseLabel (prevResidue.label, fields = 2)
+                atoms            = residue.children
+                atomIndicesModel = prevIndices
+                atomIndicesSite  = []
+  
+                for atom in atoms:
+                  atomIndex   = atom.index
+                  atomName    = atom.label
+                  atomRadius  = 1.
+  
+                  if atomName in libSiteAtoms:
+                    atomIndicesSite.append (atomIndex)
 
-                if prevResidueName in PROTEIN_RESIDUES:
-                  prevResidueAtomNames = PREV_RESIDUE
+                  atomIndicesModel.append (atomIndex)
+                atomIndicesModel.extend (nextIndices)
 
 
-              # Include atoms from the next residue?
-              if residueIndex < (nresidues - 1):
-                nextResidue = residues[residueIndex + 1]
-                nextResidueName, nextResidueSerial = ParseLabel (nextResidue.label, fields = 2)
+                # Create instances
+                libSiteInstances = libSite["instances"]
+                instances        = []
+  
+                for instanceIndex, instance in enumerate (libSiteInstances):
+                  label     = instance [ "label"   ]
+                  nprotons  = instance [ "protons" ]
+                  charges   = instance [ "charges" ]
+                  Gmodel    = instance [ "Gmodel"  ] * 300.0 / self.temperature
 
-                if nextResidueName in PROTEIN_RESIDUES:
-                  if   nextResidueName == "PRO":
-                    nextResidueAtomNames = NEXT_RESIDUE_PRO
-                  elif nextResidueName == "GLY":
-                    nextResidueAtomNames = NEXT_RESIDUE_GLY
+                  if self.splitToDirectories:
+                    foo = "%s/%s/%s%s" % (self.scratch, segmentName, residueName, residueSerial)
+                    bar = label
+
+                    if not os.path.exists (foo):
+                      os.makedirs (foo)
                   else:
-                    nextResidueAtomNames = NEXT_RESIDUE
+                    foo = self.scratch
+                    bar = "%s_%s_%s_%s" % (segmentName, residueName, residueSerial, label)
+
+                  pattern = "%s/%s_%s.%s"
+
+                  newInstance = MEADInstance (
+                               parent    = None              , # <--Do not forget to set this later
+                               instID    = instanceIndex + 1 ,
+                               Gmodel    = Gmodel            ,
+                               label     = label             ,
+                               protons   = nprotons          ,
+                               charges   = charges           ,
+                               modelPqr  = pattern % (foo, "model", bar, "pqr")  ,
+                               modelLog  = pattern % (foo, "model", bar, "log")  ,
+                               modelGrid = pattern % (foo, "model", bar, "mgm")  ,
+                               sitePqr   = pattern % (foo, "site" , bar, "pqr")  ,
+                               siteLog   = pattern % (foo, "site" , bar, "log")  ,
+                               siteGrid  = pattern % (foo, "site" , bar, "ogm")  ,
+                                             )
+                  instances.append (newInstance)
 
 
-              libSite          = self.librarySites[residueName]
-              libSiteAtoms     = libSite["atoms"]
-              libSiteInstances = libSite["instances"]
+                # Calculate the center of geometry
+                center = Vector3 ()
+                for atomIndex in atomIndicesSite:
+                  center.AddScaledVector3 (1.0, system.coordinates3[atomIndex])
 
-              atoms            = residue.children
-              atomIndicesModel = []
-              atomIndicesSite  = []
-              atomRadiiSite    = []
+                center.Scale (1.0 / len (atomIndicesSite))
 
-              #============ Go over atoms ============
-              for atom in atoms:
-                atomIndex   = atom.index
-                atomName    = atom.label
-                atomRadius  = 1.
+                # Create a site
+                newSite = MEADSite (
+                               parent           = self             ,
+                               siteID           = siteIndex + 1    ,
+                               segName          = segmentName      ,
+                               resName          = residueName      ,
+                               resNum           = residueSerial    ,
+                               modelAtomIndices = atomIndicesModel ,
+                               siteAtomIndices  = atomIndicesSite  ,
+                               instances        = instances        ,
+                               center           = center           ,
+                                   )
+                for instance in newSite.instances:
+                  instance.parent = newSite    # <--Setting parents
+                
+                self.meadSites.append (newSite)
+                siteIndex = siteIndex + 1
 
-                if atomName in libSiteAtoms:
-                  atomIndicesSite.append (atomIndex)
 
-              # Create instances
-              for instanceIndex, instance in enumerate (libSiteInstances):
-                libLabel    = instance["label"]
-                libProtons  = instance["protons"]
-                libCharges  = instance["charges"]
+      # Construct the background set of charges
+      allSiteAtomIndices = []
+      for site in self.meadSites:
+        allSiteAtomIndices.extend (site.siteAtomIndices)
 
-                libGmodel   = instance["Gmodel"]
-                Gmodel      = libGmodel * 300.0 / self.temperature
+      backAtomIndices = []
 
+      #============ Go over segments ============
+      for segment in segments:
+        residues = segment.children
+
+        #============ Go over residues ============
+        for residue in residues:
+          atoms = residue.children
+
+          #============ Go over atoms ============
+#          backAtomIndices.extend (filter (lambda atom: atom.index not in allSiteAtomIndices, atoms))
+          for atom in atoms:
+            if atom.index not in allSiteAtomIndices:
+              backAtomIndices.append (atom.index)
+
+      self.backAtomIndices = backAtomIndices
+      self.backPqr         = "%s/back.pqr" % self.scratch
+
+
+      # Construct the protein (this means removing residues not defined in PROTEIN_RESIDUES, usually waters and ions)
+      proteinAtomIndices = []
+
+      #============ Go over segments ============
+      for segment in segments:
+        residues = segment.children
+
+        #============ Go over residues ============
+        for residue in residues:
+          residueName, residueSerial = ParseLabel (residue.label, fields = 2)
+
+          if residueName not in REMOVE_RESIDUES:
+            atoms = residue.children
+  
+            #============ Go over atoms ============
+#            proteinAtomIndices.extend (map (lambda atom: atom.index, atoms))
+            for atom in atoms:
+              proteinAtomIndices.append (atom.index)
+      self.proteinAtomIndices = proteinAtomIndices
+
+
+      # Define full-protein PQR file (to be used as eps2set_region)
+      self.proteinPqr = "%s/protein.pqr" % self.scratch
+
+      # Define FPT-file
+      self.sitesFpt = "%s/site.fpt" % self.scratch
+
+      self.isInitialized = True
 
 
   def Initialize (self, log = logFile):
@@ -997,14 +1089,16 @@ class CEModelMEAD (object):
         for instance in meadSite.instances:
 
           # In the PQR file of the model compound, charges of the site atoms must be set to zero (requirement of the my_2diel_solver program)
-          chargesUpdated = systemCharges[:]
+          chargesUpdated = Clone (systemCharges)
           for atomIndex in meadSite.siteAtomIndices:
             chargesUpdated[atomIndex] = 0.0
 
           PQRFile_FromSystem (instance.modelPqr, self.system, selection = model, charges = chargesUpdated, radii = systemRadii)
 
 
-          chargesUpdated = systemCharges[:]
+          chargesUpdated = Clone (systemCharges)
+
+# When Initialize_Testing is used, this part has to be FIXED
           for atomName, atomIndex in zip (meadSite.siteAtomNames, meadSite.siteAtomIndices):
             pickCharge                = instance.charges[meadSite.siteAtomNames.index (atomName)]
             chargesUpdated[atomIndex] = pickCharge
