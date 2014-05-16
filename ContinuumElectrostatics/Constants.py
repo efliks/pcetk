@@ -32,3 +32,7 @@ PROTEIN_RESIDUES = (
    "MET", "ASN", "PRO", "GLN", "ARG", "SER", "THR", "VAL", "TRP", "TYR",
    "HSP", "HSE", "HSD", "HIE", "HID"
 )
+
+REMOVE_RESIDUES  = (
+    "WAT", "HOH", "TIP", "TIP3", "TP3M", "SOD",
+)
