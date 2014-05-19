@@ -19,9 +19,9 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/testpeptide.crd")
 
 
 #===========================================
-ce_model = CEModelMEAD (system = mol, meadPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 1)
+ce_model = CEModelMEAD (system = mol, meadPath = "/home/mikolaj/local/bin/", scratch = "scratch_new4", nthreads = 8)
 
-ce_model.Initialize ()
+ce_model.Initialize_Testing ()
 
 ce_model.Summary ()
 
@@ -31,25 +31,25 @@ ce_model.WriteJobFiles ()
 
 ce_model.CalculateEnergies ()
 
-ce_model.WriteGintr ()
+ce_model.WriteGintr (filename = "gintr_new4.dat")
 
-ce_model.WriteW ()
-
-Pickle ("ce_model.pkl", ce_model)
+ce_model.WriteW (filename = "W_new4.dat")
+# 
+# Pickle ("ce_model.pkl", ce_model)
 
 
 #===========================================
-vector    = StateVector (ce_model)
-
-vector.Reset ()
-moreIncrements = True
-
-while moreIncrements:
-  Gmicro  = ce_model.CalculateMicrostateEnergy (vector)
-  message = "Gmicro = %.6f" % Gmicro
-
-  vector.Print (ce_model, title = message)
-  moreIncrements = vector.Increment ()
+# vector    = StateVector (ce_model)
+# 
+# vector.Reset ()
+# moreIncrements = True
+# 
+# while moreIncrements:
+#   Gmicro  = ce_model.CalculateMicrostateEnergy (vector)
+#   message = "Gmicro = %.6f" % Gmicro
+# 
+#   vector.Print (ce_model, title = message)
+#   moreIncrements = vector.Increment ()
 
 
 #===========================================
