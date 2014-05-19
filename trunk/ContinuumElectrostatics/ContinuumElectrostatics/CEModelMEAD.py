@@ -595,8 +595,6 @@ class CEModelMEAD (object):
   
                 prevIndices = []
                 nextIndices = []
-                prevNames   = []
-                nextNames   = []
   
                 # Include atoms from the previous residue to the model compound?
                 if residueIndex > 1:
@@ -604,12 +602,11 @@ class CEModelMEAD (object):
                   prevResidueName, prevResidueSerial = ParseLabel (prevResidue.label, fields = 2)
   
                   if prevResidueName in PROTEIN_RESIDUES:
-                    prevResNames = PREV_RESIDUE
+                    prevNames = PREV_RESIDUE
   
                     for atom in prevResidue.children:
-                      if atom.label in prevResNames:
+                      if atom.label in prevNames:
                         prevIndices.append (atom.index)
-                        prevNames.append (atom.label)
   
                 # Include atoms from the next residue to the model compound?
                 if residueIndex < (nresidues - 1):
@@ -618,16 +615,15 @@ class CEModelMEAD (object):
   
                   if nextResidueName in PROTEIN_RESIDUES:
                     if   nextResidueName == "PRO":
-                      nextResNames = NEXT_RESIDUE_PRO
+                      nextNames = NEXT_RESIDUE_PRO
                     elif nextResidueName == "GLY":
-                      nextResNames = NEXT_RESIDUE_GLY
+                      nextNames = NEXT_RESIDUE_GLY
                     else:
-                      nextResNames = NEXT_RESIDUE
+                      nextNames = NEXT_RESIDUE
   
                     for atom in nextResidue.children:
-                      if atom.label in nextResNames:
+                      if atom.label in nextNames:
                         nextIndices.append (atom.index)
-                        nextNames.append (atom.label)
 
  
                 # Collect atom indices 
@@ -635,20 +631,15 @@ class CEModelMEAD (object):
                 libSiteAtoms     = libSite["atoms"]
 
                 atoms            = residue.children
-                atomIndicesModel = prevIndices
-                atomIndicesSite  = []
-                atomNamesModel   = prevNames
-                atomNamesSite    = []
+                modelAtomIndices = prevIndices
+                siteAtomIndices  = []
   
                 for atom in atoms:
                   if atom.label in libSiteAtoms:
-                    atomIndicesSite.append (atom.index)
-                    atomNamesSite.append (atom.label)
+                    siteAtomIndices.append (atom.index)
 
-                  atomIndicesModel.append (atom.index)
-
-                atomIndicesModel.extend (nextIndices)
-                atomNamesModel.extend (nextNames)
+                  modelAtomIndices.append (atom.index)
+                modelAtomIndices.extend (nextIndices)
 
 
                 # Create instances
@@ -695,10 +686,10 @@ class CEModelMEAD (object):
 
                 # Calculate the center of geometry
                 center = Vector3 ()
-                for atomIndex in atomIndicesSite:
+                for atomIndex in siteAtomIndices:
                   center.AddScaledVector3 (1.0, system.coordinates3[atomIndex])
 
-                center.Scale (1.0 / len (atomIndicesSite))
+                center.Scale (1.0 / len (siteAtomIndices))
 
                 # Create a site
                 newSite = MEADSite (
@@ -707,10 +698,8 @@ class CEModelMEAD (object):
                                segName          = segmentName      ,
                                resName          = residueName      ,
                                resNum           = residueSerial    ,
-                               modelAtomIndices = atomIndicesModel ,
-                               modelAtomNames   = atomNamesModel   ,
-                               siteAtomIndices  = atomIndicesSite  ,
-                               siteAtomNames    = atomNamesSite    ,
+                               modelAtomIndices = modelAtomIndices ,
+                               siteAtomIndices  = siteAtomIndices  ,
                                instances        = instances        ,
                                center           = center           ,
                                    )
@@ -1117,17 +1106,17 @@ class CEModelMEAD (object):
           PQRFile_FromSystem (instance.modelPqr, self.system, selection = model, charges = chargesUpdated, radii = systemRadii)
 
 
+# This fragment does not work when Initialize_Testing is used
+#           for atomName, atomIndex in zip (meadSite.siteAtomNames, meadSite.siteAtomIndices):
+#             pickCharge                = instance.charges[meadSite.siteAtomNames.index (atomName)]
+#             chargesUpdated[atomIndex] = pickCharge
+
           chargesUpdated = Clone (systemCharges)
-          for atomName, atomIndex in zip (meadSite.siteAtomNames, meadSite.siteAtomIndices):
-            pickCharge                = instance.charges[meadSite.siteAtomNames.index (atomName)]
+          for chargeIndex, atomIndex in enumerate (meadSite.siteAtomIndices):
+            pickCharge                = instance.charges[chargeIndex]
             chargesUpdated[atomIndex] = pickCharge
 
           PQRFile_FromSystem (instance.sitePqr,  self.system, selection = site,  charges = chargesUpdated, radii = systemRadii)
-
-# This fragment does not work when Initialize_Testing is used
-#          for chargeIndex, atomIndex in enumerate (meadSite.siteAtomIndices):
-#            pickCharge                = instance.charges[chargeIndex]
-#            chargesUpdated[atomIndex] = pickCharge
 
 
       # Write background PQR file
