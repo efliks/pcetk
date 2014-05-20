@@ -5,21 +5,13 @@
 #                          Mikolaj J. Feliks (2014)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
+"""CEModelMEAD is a class representing the continuum electrostatic model.
 
-# FIXME: Move parts of WriteJobFiles to the instance class
-# 
-# FIXME: Rename variables containing filenames so that they start from "file"
-# 
-# FIXME: Coordinates from the FPT file should have their own data structure?
-# 
-# FIXME: Efficiency improvements during partitioning of the system and writing job files?
-# 
-# FIXME: Use arrays instead of lists for interactions (Real1DArray or SymmetricMatrix?)
-# 
-# FIXME: Have a column of ETA (Estimated Time for Accomplishment) in MEAD calculations
-# 
-# FIXME: Optionally convert kcal/mol (MEAD units) to kJ/mol (pDynamo units)
+MEADSite is a class representing a titratable site.
 
+MEADInstance is a class representing a particular instance of a site.
+
+CEModelMEADError and _MEADThread are helper classes."""
 
 import exceptions, os, subprocess, threading, glob
 
@@ -102,24 +94,25 @@ class MEADInstance (object):
   For the time being, the instances only differ in charges. There are no rotameric instances."""
 
   defaultAttributes = {
-                  "parent"        : None , # <--This should point to the instance's site
-                  "instID"        : None ,
-                  "label"         : None ,
-                  "protons"       : 0    ,
-                  "charges"       : None ,
-                  "modelPqr"      : None ,
-                  "modelLog"      : None ,
-                  "modelGrid"     : None ,
-                  "sitePqr"       : None ,
-                  "siteLog"       : None ,
-                  "siteGrid"      : None ,
-                  "Gmodel"        : None ,
-                  "Gintr"         : None ,
-                  "Gborn_model"   : None ,
-                  "Gback_model"   : None ,
-                  "Gborn_protein" : None ,
-                  "Gback_protein" : None ,
-                  "interactions"  : None ,
+                  "parent"          : None , # <--This should point to the instance's site
+                  "instID"          : None ,
+                  "instIndexMatrix" : None ,
+                  "label"           : None ,
+                  "protons"         : None ,
+                  "charges"         : None ,
+                  "interactions"    : None ,
+                  "modelPqr"        : None ,
+                  "modelLog"        : None ,
+                  "modelGrid"       : None ,
+                  "sitePqr"         : None ,
+                  "siteLog"         : None ,
+                  "siteGrid"        : None ,
+                  "Gmodel"          : None ,
+                  "Gintr"           : None ,
+                  "Gborn_model"     : None ,
+                  "Gback_model"     : None ,
+                  "Gborn_protein"   : None ,
+                  "Gback_protein"   : None ,
                       }
 
   def __init__ (self, *arguments, **keywordArguments):
@@ -234,7 +227,8 @@ class MEADInstance (object):
             i   = instance.instID - 1
             Wij = self.interactions[s][i]
             instances.append ([Wij, site.segName, site.resName, site.resNum, instance.label])
-        if sort: instances.sort ()
+        if sort: 
+          instances.sort ()
 
         table = log.GetTable (columns = [6, 6, 6, 6, 16])
         table.Start ()
@@ -270,9 +264,8 @@ class MEADInstance (object):
 class MEADSite (object):
   """Titratable site.
 
-  Each site has at least two instances."""
+  Each site has at least two instances (protonated and deprotonated)."""
 
-# FIXME: Atom names are not necessary? Or also add coordinates and radii (modelAtomRadii, siteAtomRadii)
   defaultAttributes = {
                   "parent"           : None , # <--This should point to the MEAD model
                   "siteID"           : None ,
@@ -299,25 +292,24 @@ class CEModelMEAD (object):
   """Continuum electrostatic model."""
 
   defaultAttributes = {
-                 "temperature"        :  _DefaultTemperature      ,
-                 "ionicStrength"      :  _DefaultIonicStrength    ,
-                 "meadPath"           :  _DefaultMeadPath         ,
-                 "nthreads"           :  _DefaultThreads          ,
-                 "deleteJobFiles"     :  _DefaultCleanUp          ,
-                 "scratch"            :  _DefaultScratch          ,
-                 "focussingSteps"     :  _DefaultFocussingSteps   ,
-                 "librarySites"       :  {}                       ,
-                 "meadSites"          :  []                       ,
-                 "backAtomIndices"    :  None                     ,
-                 "proteinAtomIndices" :  None                     ,
-                 "backPqr"            :  None                     ,
-                 "proteinPqr"         :  None                     ,
-                 "sitesFpt"           :  None                     ,
-                 "system"             :  None                     ,
-                 "isInitialized"      :  False                    ,
-                 "isFilesWritten"     :  False                    ,
-                 "isCalculated"       :  False                    ,
-                 "splitToDirectories" :  True                     ,
+                 "temperature"        :  _DefaultTemperature    ,
+                 "ionicStrength"      :  _DefaultIonicStrength  ,
+                 "meadPath"           :  _DefaultMeadPath       ,
+                 "nthreads"           :  _DefaultThreads        ,
+                 "deleteJobFiles"     :  _DefaultCleanUp        ,
+                 "scratch"            :  _DefaultScratch        ,
+                 "focussingSteps"     :  Clone (_DefaultFocussingSteps) ,
+                 "librarySites"       :  None     ,
+                 "meadSites"          :  None     ,
+                 "backAtomIndices"    :  None     ,
+                 "proteinAtomIndices" :  None     ,
+                 "backPqr"            :  None     ,
+                 "proteinPqr"         :  None     ,
+                 "sitesFpt"           :  None     ,
+                 "isInitialized"      :  False    ,
+                 "isFilesWritten"     :  False    ,
+                 "isCalculated"       :  False    ,
+                 "splitToDirectories" :  True     ,
                       }
 
   defaultAttributeNames = {
@@ -339,36 +331,36 @@ class CEModelMEAD (object):
     if self.deleteJobFiles: self.DeleteJobFiles ()
 
 
-  def __init__ (self, *arguments, **keywordArguments):
+  def __init__ (self, log = logFile, *arguments, **keywordArguments):
     """Constructor."""
     for (key, value) in self.__class__.defaultAttributes.iteritems (): setattr (self, key, value)
     for (key, value) in                 keywordArguments.iteritems (): setattr (self, key, value)
 
+    self.LoadLibraryOfSites (log = log)
 
-    if not isinstance (self.system, System):
-      raise CEModelMEADError ("The system argument is mandatory.")
 
-    if not self.system.energyModel.mmModel.label is "CHARMM":
-      raise CEModelMEADError ("The energy model of the system is different from CHARMM.")
+  def LoadLibraryOfSites (self, log = logFile):
+    """Load a set of YAML files with parameters for titratable sites.
 
-    if not os.path.exists (self.scratch):
-      try:
-        os.mkdir (self.scratch)
-      except:
-        raise CEModelMEADError ("Cannot create scratch directory %s" % self.scratch)
+    If there are YAML files in the current directory, they are loaded as well.
 
-    # Load the library of sites
-    sitefiles = glob.glob (os.path.join (YAMLPATHIN, "sites/", "*.yaml"))
+    If these additional files have names coinciding with the names from the library, the library parameters will be overwritten."""
+    filesLibrary = glob.glob (os.path.join (YAMLPATHIN, "sites/", "*.yaml"))
+    filesExtra   = glob.glob (os.path.join (os.getcwd (), "*.yaml"))
+    filesLibrary.extend (filesExtra)
 
-    # Use custom files if they are present
-    extrafiles = glob.glob ("*.yaml")
-    if extrafiles:
-      sitefiles.extend (extrafiles)
+    if LogFileActive (log):
+      for fileExtra in filesExtra:
+        log.Text ("\nIncluded custom file: %s\n" % os.path.basename (fileExtra))
 
-    for sitefile in sitefiles:
-      site = YAMLUnpickle (sitefile)
-      name = site["site"]
-      self.librarySites[name] = {"atoms" : site["atoms"], "instances" : site["instances"]}
+    self.librarySites = {}
+
+    for fileSite in filesLibrary:
+      site      = YAMLUnpickle (fileSite)
+      name      = site [ "site"      ]
+      atoms     = site [ "atoms"     ]
+      instances = site [ "instances" ]
+      self.librarySites[name] = {"atoms" : atoms, "instances" : instances}
 
 
   def WriteW (self, filename = "W.dat", log = logFile):
@@ -554,14 +546,20 @@ class CEModelMEAD (object):
       self.isCalculated = True
 
 
-  def Initialize (self, excludeSegments = None, excludeResidues = None, log = logFile):
+  def Initialize (self, system, excludeSegments = None, excludeResidues = None, log = logFile):
     """Decompose the system into model compounds, sites and a background charge set."""
 
+    # Check for the CHARMM energy model
+    if not system.energyModel.mmModel.label is "CHARMM":
+      raise CEModelMEADError ("The energy model of the system is different from CHARMM.")
+
     if not self.isInitialized:
-      system      = self.system
-      ParseLabel  = system.sequence.ParseLabel
-      segments    = system.sequence.children
-      siteIndex   = 0
+      ParseLabel = system.sequence.ParseLabel
+      segments   = system.sequence.children
+
+      instIndexMatrix = 0
+      siteIndex       = 0
+      self.meadSites  = []
 
       if excludeSegments is None:
         excludeSegments = ["WATA", ]
@@ -667,27 +665,30 @@ class CEModelMEAD (object):
 
                   # Set the parent later
                   newInstance = MEADInstance (
-                                 instID     =  instIndex + 1 ,
-                                 label      =  label         ,
-                                 protons    =  protons       ,
-                                 charges    =  charges       ,
-                                 Gmodel     =  Gmodel        ,
-                                 modelPqr   =  modelPqr      ,
-                                 modelLog   =  modelLog      ,
-                                 modelGrid  =  modelGrid     ,
-                                 sitePqr    =  sitePqr       ,
-                                 siteLog    =  siteLog       ,
-                                 siteGrid   =  siteGrid      ,
+                                 instID          = instIndex + 1   ,
+                                 instIndexMatrix = instIndexMatrix ,
+                                 label           = label           ,
+                                 protons         = protons         ,
+                                 charges         = charges         ,
+                                 Gmodel          = Gmodel          ,
+                                 modelPqr        = modelPqr        ,
+                                 modelLog        = modelLog        ,
+                                 modelGrid       = modelGrid       ,
+                                 sitePqr         = sitePqr         ,
+                                 siteLog         = siteLog         ,
+                                 siteGrid        = siteGrid        ,
                                              )
                   instances.append (newInstance)
+                  instIndexMatrix = instIndexMatrix + 1
 
 
                 # Calculate the center of geometry
                 center = Vector3 ()
+                natoms = len (siteAtomIndices)
+
                 for atomIndex in siteAtomIndices:
                   center.AddScaledVector3 (1.0, system.coordinates3[atomIndex])
-
-                center.Scale (1.0 / len (siteAtomIndices))
+                center.Scale (1.0 / natoms)
 
                 # Create a site
                 newSite = MEADSite (
@@ -776,9 +777,6 @@ class CEModelMEAD (object):
 
       nsites     = len (self.meadSites)
       ninstances = sum (map (lambda site: len (site.instances), self.meadSites))
-#      ninstances = 0
-#      for site in self.meadSites:
-#        ninstances += len (site.instances)
 
       summary.Entry ("Number Of Sites",     "%s" % nsites)
       summary.Entry ("Number Of Instances", "%s" % ninstances)
@@ -832,15 +830,15 @@ class CEModelMEAD (object):
       pass
 
 
-  def WriteJobFiles (self, log = logFile):
-    """Write files: PQR and FPT."""
+  def WriteJobFiles (self, system, log = logFile):
+    """Write files: PQR, FPT, OGM and MGM."""
     if self.isInitialized:
 
       # Get atomic charges and radii for the system
-      systemCharges = self.system.AtomicCharges ()
+      systemCharges = system.AtomicCharges ()
       systemRadii   = []
 
-      systemTypes   = self.system.energyModel.mmAtoms.AtomTypes ()
+      systemTypes   = system.energyModel.mmAtoms.AtomTypes ()
       radii         = YAMLUnpickle ("%s/%s" % (YAMLPATHIN, "radii.yaml"))
 
       for atomType in systemTypes:
@@ -854,6 +852,14 @@ class CEModelMEAD (object):
           else:
             raise CEModelMEADError ("Cannot find atomic radius for atom type %s" % atomType)
         systemRadii.append (radius)
+
+
+      # Prepare scratch space
+      if not os.path.exists (self.scratch):
+        try:
+          os.mkdir (self.scratch)
+        except:
+          raise CEModelMEADError ("Cannot create scratch directory %s" % self.scratch)
 
 
       # Create subdirectories, if necessary
@@ -882,7 +888,7 @@ class CEModelMEAD (object):
           for atomIndex in meadSite.siteAtomIndices:
             chargesUpdated[atomIndex] = 0.0
 
-          PQRFile_FromSystem (instance.modelPqr, self.system, selection = model, charges = chargesUpdated, radii = systemRadii)
+          PQRFile_FromSystem (instance.modelPqr, system, selection = model, charges = chargesUpdated, radii = systemRadii)
 
 
           chargesUpdated = Clone (systemCharges)
@@ -890,14 +896,14 @@ class CEModelMEAD (object):
             pickCharge                = instance.charges[chargeIndex]
             chargesUpdated[atomIndex] = pickCharge
 
-          PQRFile_FromSystem (instance.sitePqr,  self.system, selection = site,  charges = chargesUpdated, radii = systemRadii)
+          PQRFile_FromSystem (instance.sitePqr, system, selection = site,  charges = chargesUpdated, radii = systemRadii)
 
 
       # Write background PQR file
-      PQRFile_FromSystem (self.backPqr, self.system, selection = Selection (self.backAtomIndices), charges = systemCharges, radii = systemRadii)
+      PQRFile_FromSystem (self.backPqr, system, selection = Selection (self.backAtomIndices), charges = systemCharges, radii = systemRadii)
 
       # Write full-protein PQR file (to be used as eps2set_region)
-      PQRFile_FromSystem (self.proteinPqr, self.system, selection = Selection (self.proteinAtomIndices), charges = systemCharges, radii = systemRadii)
+      PQRFile_FromSystem (self.proteinPqr, system, selection = Selection (self.proteinAtomIndices), charges = systemCharges, radii = systemRadii)
 
       # Write FPT-file
       lines = []
@@ -905,7 +911,7 @@ class CEModelMEAD (object):
       for siteIndex, meadSite in enumerate (self.meadSites):
         for instanceIndex, instance in enumerate (meadSite.instances):
           for atomIndex, charge in zip (meadSite.siteAtomIndices, instance.charges):
-            x, y, z = self.system.coordinates3[atomIndex]
+            x, y, z = system.coordinates3[atomIndex]
             line    = "%d %d %f %f %f %f\n" % (siteIndex, instanceIndex, x, y, z, charge)
             lines.append (line)
 
