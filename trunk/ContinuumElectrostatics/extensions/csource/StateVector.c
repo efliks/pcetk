@@ -82,10 +82,10 @@ Boolean StateVector_SetItem (const StateVector *self, const Integer index, const
   }
 }
 
+/* The incrementation algorithm by Timm Essigke */
 Boolean StateVector_Increment (const StateVector *self) {
   Integer i;
   Integer *v = self->vector, *m = self->maxvector;
-
 /*
   This prevents zeroing the state vector after the last iteration
   incr = False;

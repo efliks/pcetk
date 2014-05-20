@@ -8,24 +8,10 @@
 """Different tools and helper functions."""
 
 
-class _Residue (object):
-  """A class used for decomposing the system into residues."""
-
-  def __init__ (self, **keywordArguments):
-    for (key, value) in keywordArguments.iteritems (): setattr (self, key, value)
-
-#  def __init__ (self, segName = None, resName = None, resNum = None, atomNames = None, atomIndices = None):
-#    self.segName     = segName
-#    self.resName     = resName
-#    self.resNum      = resNum
-#    self.atomNames   = atomNames
-#    self.atomIndices = atomIndices
-
-
 #===============================================================================
 # Helper functions
 #===============================================================================
-def _FormatEntry (items, header = False):
+def FormatEntry (items, header = False):
   """Generating headers or format strings for entries in files W.dat and gintr.dat"""
   if header:
     string = "#"
@@ -43,7 +29,7 @@ def _FormatEntry (items, header = False):
   return "%s\n" % string
 
 
-def _ConvertAttribute (attr):
+def ConvertAttribute (attr):
   """Converting attributes to strings in Summary methods."""
   if isinstance (attr, bool):
     if attr:

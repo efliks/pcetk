@@ -11,12 +11,12 @@ INC3   = ../cinclude
 CFLAGS = -fPIC -c -I$(INC1) -I$(INC2) -I$(INC3)
 CC     = gcc
 
-all: pyrex object link install
+all: pyrex compile link install
 
 pyrex:
 	pyrexc ContinuumElectrostatics.StateVector.pyx 
 
-object: ContinuumElectrostatics.StateVector.c
+compile: ContinuumElectrostatics.StateVector.c
 	$(CC) $(CFLAGS) ContinuumElectrostatics.StateVector.c -o ContinuumElectrostatics.StateVector.o
 
 link: ContinuumElectrostatics.StateVector.o ../csource/StateVector.o

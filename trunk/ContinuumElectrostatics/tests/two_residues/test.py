@@ -19,9 +19,9 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/testpeptide.crd")
 
 
 #===========================================
-ce_model = CEModelMEAD (system = mol, meadPath = "/home/mikolaj/local/bin/", scratch = "scratch_testing", nthreads = 2)
+ce_model = CEModelMEAD (system = mol, meadPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 8)
 
-ce_model.Initialize_Testing ()
+ce_model.Initialize ()
 
 ce_model.Summary ()
 
@@ -29,12 +29,12 @@ ce_model.SummarySites ()
 
 ce_model.WriteJobFiles ()
 
-# ce_model.CalculateEnergies ()
-# 
-# ce_model.WriteGintr (filename = "gintr_new.dat")
-# 
-# ce_model.WriteW (filename = "W_new.dat")
-# 
+ce_model.CalculateEnergies ()
+
+ce_model.WriteGintr (filename = "gintr.dat")
+
+ce_model.WriteW (filename = "W.dat")
+
 # Pickle ("ce_model.pkl", ce_model)
 
 

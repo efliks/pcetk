@@ -3,8 +3,8 @@
                    (CHARMM) - Developmental Version 28a3     August 15, 2000   
        Copyright(c) 1984,1992  President and Fellows of Harvard College
                               All Rights Reserved
-      Current operating system: Linux-3.2.0-4-amd64(x86_64)@vic.local
-                 Created on  5/14/14 at 22:20:56 by user: mikolaj     
+      Current operating system: Linux-3.2.0-29-generic(x86_64)@gre039853
+                 Created on  5/20/14 at 11:56:49 by user: mikolaj     
 
             Maximum number of ATOMS:    240480, and RESidues:       72000
             Current HEAP size:        10240000, and STACK size:   2000000
@@ -607,7 +607,172 @@ STPD EXTERN>      -17.36664     42.66349      0.00000      0.00000      0.00000
   
  CHARMM>     
   
- CHARMM>    !stream "radii.str"
+ CHARMM>    stream "radii.str"
+ VOPEN> Attempting to open::radii.str::
+ OPNLGU> Unit 99 opened for READONLY access to radii.str
+
+                    INPUT STREAM SWITCHING TO UNIT    99
+ RDTITL> * ASSIGNING RADII TO ATOMS
+ RDTITL> * M. ULLMANN, FEB 2009
+ RDTITL> * .
+ RDTITL> 
+ Parameter: IN1 <- "" <empty>
+  
+ CHARMM>     
+  
+ CHARMM>    scalar wmain set 150.0  sele all end
+ SELRPN>    118 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 1.50 sele chem DUM end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 2.00 sele chem P*  end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 1.70 sele chem C*  end
+ SELRPN>     36 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 1.50 sele chem O*  end
+ SELRPN>     13 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 1.55 sele chem N*  end
+ SELRPN>     13 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 1.80 sele chem S*  end
+ SELRPN>      1 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 1.30 sele chem FE  end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 1.30 sele chem MG  end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 1.46 sele chem W   end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    !lone pair
+ CHARMM>    scalar wmain set 0.30 sele chem LP  end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    ! polar hydrogens
+ CHARMM>    scalar wmain set 0.30 sele chem H   end
+ SELRPN>     13 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HS   end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HB   end
+ SELRPN>     15 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HT   end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HC   end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>     
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HN1  end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HN2  end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HN3B end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HN4  end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HN5  end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.30 sele chem HC   end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>     
+  
+ CHARMM>    ! aromatic or double-bond hydrogens
+ CHARMM>    scalar wmain set 0.80 sele chem HP   end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HR1  end
+ SELRPN>      1 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HR2  end
+ SELRPN>      1 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HR3  end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HE1  end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HE2  end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HN3  end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>     
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HN3C end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HNP  end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HN8  end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HN9  end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HNE1 end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 0.80 sele chem HNE2 end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>     
+  
+ CHARMM>    ! unpolar hydrogens
+ CHARMM>    scalar wmain set 1.00 sele chem HA   end
+ SELRPN>     25 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 1.00 sele chem HN6  end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    scalar wmain set 1.00 sele chem HN7  end
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>     
+  
+ CHARMM>    !
+ CHARMM>    ! check if all atoms got a radius
+ CHARMM>    !
+ CHARMM>    scalar wmain statistics select all end
+ SELRPN>    118 atoms have been selected out of    118
+ Statistics for  118 selected atoms:
+       minimum =   0.300000      maximum =    1.80000     weight =    118.000    
+       average =    1.16653      variance=   0.552270     total  =    137.650    
+  
+ CHARMM>    define check select  property wmain .eq. 150.0 show end
+ The following atoms are currently set:
+SEGId RESId RESName  .. TYPEs ..
+ SELRPN>      0 atoms have been selected out of    118
+  
+ CHARMM>    if ?nsel ne 0  stop  !some heavy atom have a zero radius
+ RDCMND substituted energy or value "?NSEL" to "0"
+ Comparing "0" and "0".
+ IF test evaluated as false.  Skipping command
+  
+ CHARMM>     
+  
+ VCLOSE: Closing unit   99 with status "KEEP"
+
+                    RETURNING TO INPUT STREAM     5
+  
  CHARMM>     
   
  CHARMM>    open  write         unit 1 card name @mol.pdb
@@ -669,12 +834,10 @@ STPD EXTERN>      -17.36664     42.66349      0.00000      0.00000      0.00000
   
  CHARMM>    stop
 $$$$$$  New timer profile $$$$$
-               Nonbond force           0.06000 Other:    0.00000
-               Bond energy             0.00400 Other:    0.00000
-               Angle energy            0.00800 Other:    0.00000
-          Energy time             0.07600 Other:    0.00400
-     Dynamics total          0.07600 Other:    0.00000
- Total time              2.82018 Other:    2.74417
+               Nonbond force           0.02400 Other:    0.00000
+          Energy time             0.02800 Other:    0.00400
+     Dynamics total          0.02800 Other:    0.00000
+ Total time              1.02406 Other:    0.99606
 
                     NORMAL TERMINATION BY NORMAL STOP
                     MAXIMUM STACK SPACE USED IS   72000
@@ -688,5 +851,5 @@ $$$$$$  New timer profile $$$$$
             PRINHP> ADDRESS:  10227567 LENGTH:     12434 NEXT:         0
 
                     $$$$$ JOB ACCOUNTING INFORMATION $$$$$
-                     ELAPSED TIME:     2.82  SECONDS 
-                         CPU TIME:     2.82  SECONDS 
+                     ELAPSED TIME:     1.22  SECONDS 
+                         CPU TIME:     1.00  SECONDS 
