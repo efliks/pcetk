@@ -96,7 +96,7 @@ class MEADInstance (object):
   defaultAttributes = {
                   "parent"          : None , # <--This should point to the instance's site
                   "instID"          : None ,
-                  "instIndexMatrix" : None ,
+                  "instIndexGlobal" : None ,
                   "label"           : None ,
                   "protons"         : None ,
                   "charges"         : None ,
@@ -550,14 +550,15 @@ class CEModelMEAD (object):
     """Decompose the system into model compounds, sites and a background charge set."""
 
     # Check for the CHARMM energy model
-    if not system.energyModel.mmModel.label is "CHARMM":
+    if system.energyModel.mmModel.label is not "CHARMM":
       raise CEModelMEADError ("The energy model of the system is different from CHARMM.")
+
 
     if not self.isInitialized:
       ParseLabel = system.sequence.ParseLabel
       segments   = system.sequence.children
 
-      instIndexMatrix = 0
+      instIndexGlobal = 0
       siteIndex       = 0
       self.meadSites  = []
 
@@ -666,7 +667,7 @@ class CEModelMEAD (object):
                   # Set the parent later
                   newInstance = MEADInstance (
                                  instID          = instIndex + 1   ,
-                                 instIndexMatrix = instIndexMatrix ,
+                                 instIndexGlobal = instIndexGlobal ,
                                  label           = label           ,
                                  protons         = protons         ,
                                  charges         = charges         ,
@@ -679,7 +680,7 @@ class CEModelMEAD (object):
                                  siteGrid        = siteGrid        ,
                                              )
                   instances.append (newInstance)
-                  instIndexMatrix = instIndexMatrix + 1
+                  instIndexGlobal = instIndexGlobal + 1
 
 
                 # Calculate the center of geometry
