@@ -704,37 +704,18 @@ class CEModelMEAD (object):
                                    )
                 for instance in newSite.instances:
                   instance.parent = newSite    # <--Setting parents
-                
+
                 self.meadSites.append (newSite)
                 siteIndex = siteIndex + 1
 
 
-      # Construct the background set of charges
-      allSiteAtomIndices = []
+      # Construct the background set of charges and the protein (to be used as eps2set_region)
+      allSiteAtomIndices  = []
       for site in self.meadSites:
         allSiteAtomIndices.extend (site.siteAtomIndices)
 
-      backAtomIndices = []
-
-      #============ Go over segments ============
-      for segment in segments:
-        residues = segment.children
-
-        #============ Go over residues ============
-        for residue in residues:
-          atoms = residue.children
-
-          #============ Go over atoms ============
-          for atom in atoms:
-            if atom.index not in allSiteAtomIndices:
-              backAtomIndices.append (atom.index)
-
-      self.backAtomIndices = backAtomIndices
-      self.backPqr         = os.path.join (self.scratch, "back.pqr")
-
-
-      # Construct the protein (this means removing residues not defined in PROTEIN_RESIDUES, usually waters and ions)
-      proteinAtomIndices = []
+      backAtomIndices     = []
+      proteinAtomIndices  = []
 
       #============ Go over segments ============
       for segment in segments:
@@ -744,17 +725,23 @@ class CEModelMEAD (object):
         for residue in residues:
           residueName, residueSerial = ParseLabel (residue.label, fields = 2)
 
+          # Remove residues not defined in PROTEIN_RESIDUES, usually waters and ions
           if residueName not in REMOVE_RESIDUES:
             atoms = residue.children
-  
+
             #============ Go over atoms ============
             for atom in atoms:
               proteinAtomIndices.append (atom.index)
+
+              if atom.index not in allSiteAtomIndices:
+                backAtomIndices.append (atom.index)
+
+
       self.proteinAtomIndices = proteinAtomIndices
+      self.backAtomIndices    = backAtomIndices
 
-
-      # Define full-protein PQR file (to be used as eps2set_region)
-      self.proteinPqr = os.path.join (self.scratch, "protein.pqr")
+      self.proteinPqr         = os.path.join (self.scratch, "protein.pqr")
+      self.backPqr            = os.path.join (self.scratch, "back.pqr")
 
       # Define FPT-file
       self.sitesFpt = os.path.join (self.scratch, "site.fpt")
