@@ -14,8 +14,6 @@
 # 
 # FIXME: Efficiency improvements during partitioning of the system and writing job files?
 # 
-# FIXME: Drop _Residue class, use components of the system instead (children)
-# 
 # FIXME: Use arrays instead of lists for interactions (Real1DArray or SymmetricMatrix?)
 # 
 # FIXME: Have a column of ETA (Estimated Time for Accomplishment) in MEAD calculations
@@ -30,7 +28,7 @@ from pCore                  import logFile, LogFileActive, Selection, Vector3, Y
 from pMolecule              import System
                             
 from Constants              import *
-from Tools                  import _Residue, _FormatEntry, _ConvertAttribute
+from Tools                  import FormatEntry, ConvertAttribute
 from StateVector            import StateVector
 from InputFileWriter        import WriteInputFile
 from PQRFileWriter          import PQRFile_FromSystem
@@ -283,9 +281,7 @@ class MEADSite (object):
                   "resNum"           : None ,
                   "instances"        : None ,
                   "center"           : None ,
-                  "modelAtomNames"   : None ,
                   "modelAtomIndices" : None ,
-                  "siteAtomNames"    : None ,
                   "siteAtomIndices"  : None ,
                   "label"            : None ,
                       }
@@ -387,12 +383,12 @@ class CEModelMEAD (object):
          ("idInst2"  , ( 8,   0) ),
          ("labSite2" , (14,  -1) ),
          ("labInst2" , (14,  -1) ),
-         ("Wij_symm" , (16,   10) ),
-         ("Wij"      , (16,   10) ),
-         ("Wij_err"  , (16,   10) ),
+         ("Wij_symm" , (16,   8) ),
+         ("Wij"      , (16,   8) ),
+         ("Wij_err"  , (16,   8) ),
               )
-      header = _FormatEntry (items, header = True)
-      entry  = _FormatEntry (items)
+      header = FormatEntry (items, header = True)
+      entry  = FormatEntry (items)
       lines  = [header]
 
       for site1 in self.meadSites:
@@ -430,11 +426,11 @@ class CEModelMEAD (object):
          ("instID"    , (12,  0) ),
          ("siteLabel" , (16, -1) ),
          ("instLabel" , (16, -1) ),
-         ("Gintr"     , (16,  10) ),
+         ("Gintr"     , (16,  8) ),
          ("protons"   , (12,  0) ),
               )
-      header = _FormatEntry (items, header = True)
-      entry  = _FormatEntry (items)
+      header = FormatEntry (items, header = True)
+      entry  = FormatEntry (items)
       lines  = [header]
 
       for site in self.meadSites:
@@ -558,8 +554,8 @@ class CEModelMEAD (object):
       self.isCalculated = True
 
 
-  def Initialize_Testing (self, excludeSegments = None, excludeResidues = None, log = logFile):
-    """Decompose the system into model compounds, sites and background charge set."""
+  def Initialize (self, excludeSegments = None, excludeResidues = None, log = logFile):
+    """Decompose the system into model compounds, sites and a background charge set."""
 
     if not self.isInitialized:
       system      = self.system
@@ -633,11 +629,13 @@ class CEModelMEAD (object):
                 atoms            = residue.children
                 modelAtomIndices = prevIndices
                 siteAtomIndices  = []
-  
-                for atom in atoms:
-                  if atom.label in libSiteAtoms:
-                    siteAtomIndices.append (atom.index)
 
+                for libAtomName in libSiteAtoms:
+                  for atom in atoms:
+                    if libAtomName == atom.label:
+                      siteAtomIndices.append (atom.index)
+
+                for atom in atoms:
                   modelAtomIndices.append (atom.index)
                 modelAtomIndices.extend (nextIndices)
 
@@ -763,225 +761,6 @@ class CEModelMEAD (object):
       self.isInitialized = True
 
 
-  def Initialize (self, log = logFile):
-    """Decompose the system into model compounds, sites and background charge set.
-
-    Create the necessary data structures inside the model object.
-
-    FIXME: Rewrite this method to use system.sequence.children and eliminate the _Residue class.
-    """
-    if not self.isInitialized:
-      residues    = []
-      atomNames   = []
-      atomIndices = []
-
-      residue     = ""
-      prevResidue = ""
-
-      for atomIndex, atom in enumerate (self.system.atoms):
-        segName         = atom.parent.parent.label
-        residue         = atom.parent.label
-        resName, resNum = self.system.sequence.ParseLabel (residue, fields = 2)
-        atomName        = atom.label
-
-        if residue != prevResidue and prevResidue != "":
-          segPrevName, resPrevName, resPrevNum = prevPath
-
-          if resPrevName in PROTEIN_RESIDUES:
-            r = _Residue (
-                     segName     = segPrevName ,
-                     resName     = resPrevName ,
-                     resNum      = resPrevNum  ,
-                     atomNames   = atomNames   ,
-                     atomIndices = atomIndices
-                         )
-            residues.append (r)
-
-          atomNames   = []
-          atomIndices = []
-
-        atomNames.append (atomName)
-        atomIndices.append (atomIndex)
-
-        prevResidue = residue
-        prevPath    = [segName, resName, resNum]
-
-      if resName in PROTEIN_RESIDUES:
-        if atomNames:
-          r = _Residue (
-                   segName     = segPrevName ,
-                   resName     = resPrevName ,
-                   resNum      = resPrevNum  ,
-                   atomNames   = atomNames   ,
-                   atomIndices = atomIndices
-                       )
-          residues.append (r)
-
-
-      # Out of all residues, select titratable residues and extend them by adding some atoms from neighbouring residues to create model compounds
-      totalResidues = len (residues)
-      siteID = 1
-
-      for resIndex, cr in enumerate (residues):
-        modelAtomIndices = []
-        modelAtomNames   = []
-
-        if cr.resName in self.librarySites:
-          if resIndex > 1:
-            pr = residues[resIndex - 1]
-
-            for prAtomName, prAtomIndex in zip (pr.atomNames, pr.atomIndices):
-              if prAtomName in PREV_RESIDUE:
-                modelAtomIndices.append (prAtomIndex)
-                modelAtomNames.append (prAtomName)
-
-
-          modelAtomIndices.extend (cr.atomIndices)
-          modelAtomNames.extend (cr.atomNames)
-
-          if resIndex < (totalResidues - 2):
-            nr = residues[resIndex + 1]
-
-            if   nr.resName == "PRO":
-              nextResidueAtomNames = NEXT_RESIDUE_PRO
-            elif nr.resName == "GLY":
-              nextResidueAtomNames = NEXT_RESIDUE_GLY
-            else:
-              nextResidueAtomNames = NEXT_RESIDUE
-
-            for nrAtomName, nrAtomIndex in zip (nr.atomNames, nr.atomIndices):
-              if nrAtomName in nextResidueAtomNames:
-                modelAtomIndices.append (nrAtomIndex)
-                modelAtomNames.append (nrAtomName)
-
-
-          site            = self.librarySites[cr.resName]
-          siteAtoms       = site["atoms"]
-          siteInstances   = site["instances"]
-
-          siteAtomIndices = []
-          siteAtomNames   = []
-
-          for atomName in siteAtoms:
-            if atomName in cr.atomNames:
-              siteAtomNames.append (atomName)
-
-              atomIndex = cr.atomIndices[cr.atomNames.index (atomName)]
-              siteAtomIndices.append (atomIndex)
-
-
-          if self.splitToDirectories:
-            direc = "%s/%s/%s%s/" % (self.scratch, cr.segName, cr.resName, cr.resNum)
-            if not os.path.exists (direc):
-              try:
-                os.makedirs (direc)
-              except:
-                raise CEModelMEADError ("Cannot create directory: %s" % direc)
-
-          instances = []
-
-          for instID, instance in enumerate (siteInstances, 1):
-            label      = instance["label"]
-            protons    = instance["protons"]
-            charges    = instance["charges"]
-
-            Gmodel300K = instance["Gmodel"]
-            Gmodel     = Gmodel300K * 300.0 / self.temperature
-
-            if self.splitToDirectories:
-              modelPqr  = "%s/model_%s.pqr" % (direc, label)
-              modelLog  = "%s/model_%s.out" % (direc, label)
-              modelGrid = "%s/model_%s.mgm" % (direc, label)
-              sitePqr   = "%s/site_%s.pqr"  % (direc, label)
-              siteLog   = "%s/site_%s.out"  % (direc, label)
-              siteGrid  = "%s/site_%s.ogm"  % (direc, label)
-            else:
-              modelPqr  = "%s/model_%s_%s_%s_%s.pqr" % (self.scratch, cr.segName, cr.resName, cr.resNum, label)
-              modelLog  = "%s/model_%s_%s_%s_%s.out" % (self.scratch, cr.segName, cr.resName, cr.resNum, label)
-              modelGrid = "%s/model_%s_%s_%s_%s.mgm" % (self.scratch, cr.segName, cr.resName, cr.resNum, label)
-              sitePqr   = "%s/site_%s_%s_%s_%s.pqr"  % (self.scratch, cr.segName, cr.resName, cr.resNum, label)
-              siteLog   = "%s/site_%s_%s_%s_%s.out"  % (self.scratch, cr.segName, cr.resName, cr.resNum, label)
-              siteGrid  = "%s/site_%s_%s_%s_%s.ogm"  % (self.scratch, cr.segName, cr.resName, cr.resNum, label)
-
-
-            newInstance = MEADInstance (
-                                    parent    = None       , # <--Do not forget to set this later
-                                    instID    = instID     ,
-                                    Gmodel    = Gmodel     ,
-                                    label     = label      ,
-                                    protons   = protons    ,
-                                    charges   = charges    ,
-                                    modelPqr  = modelPqr   ,
-                                    modelLog  = modelLog   ,
-                                    modelGrid = modelGrid  ,
-                                    sitePqr   = sitePqr    ,
-                                    siteLog   = siteLog    ,
-                                    siteGrid  = siteGrid   ,
-                                       )
-            instances.append (newInstance)
-
-          # For each site, calculate the center of geometry
-          center = Vector3 ()
-          for atomIndex in siteAtomIndices:
-            center.AddScaledVector3 (1.0, self.system.coordinates3[atomIndex])
-
-          center.Scale (1.0 / len (siteAtomIndices))
-
-
-          newMeadSite = MEADSite (
-                             parent           = self             ,
-                             siteID           = siteID           ,
-                             segName          = cr.segName       ,
-                             resName          = cr.resName       ,
-                             resNum           = cr.resNum        ,
-                             modelAtomNames   = modelAtomNames   ,
-                             modelAtomIndices = modelAtomIndices ,
-                             siteAtomNames    = siteAtomNames    ,
-                             siteAtomIndices  = siteAtomIndices  ,
-                             instances        = instances        ,
-                             center           = center           ,
-                                 )
-          for instance in newMeadSite.instances:
-            instance.parent = newMeadSite    # <--Setting parents
-
-          self.meadSites.append (newMeadSite)
-          siteID += 1
-
-
-      # Construct background set of charges
-      allSiteAtomIndices = []
-
-      for meadSite in self.meadSites:
-        allSiteAtomIndices.extend (meadSite.siteAtomIndices)
-
-      backAtomIndices = []
-
-      for residue in residues:
-        for atomIndex in residue.atomIndices:
-          if not atomIndex in allSiteAtomIndices:
-            backAtomIndices.append (atomIndex)
-
-      self.backAtomIndices = backAtomIndices
-      self.backPqr         = "%s/back.pqr" % self.scratch
-
-
-      # Construct the protein (this means removing residues not defined in PROTEIN_RESIDUES, usually waters and ions)
-      proteinAtomIndices = []
-
-      for residue in residues:
-        proteinAtomIndices.extend (residue.atomIndices)
-      self.proteinAtomIndices = proteinAtomIndices
-
-
-      # Define full-protein PQR file (to be used as eps2set_region)
-      self.proteinPqr = "%s/protein.pqr" % self.scratch
-
-      # Define FPT-file
-      self.sitesFpt = "%s/site.fpt" % self.scratch
-
-      self.isInitialized = True
-
-
   def Summary (self, log = logFile):
     """Summary."""
     if LogFileActive (log):
@@ -992,7 +771,7 @@ class CEModelMEAD (object):
       keys.sort ()
       for key in keys:
         attr     = getattr (self, self.__class__.defaultAttributeNames[key])
-        attrConv = _ConvertAttribute (attr)
+        attrConv = ConvertAttribute (attr)
         summary.Entry (key, attrConv)
 
       nsites     = len (self.meadSites)
@@ -1105,11 +884,6 @@ class CEModelMEAD (object):
 
           PQRFile_FromSystem (instance.modelPqr, self.system, selection = model, charges = chargesUpdated, radii = systemRadii)
 
-
-# This fragment does not work when Initialize_Testing is used
-#           for atomName, atomIndex in zip (meadSite.siteAtomNames, meadSite.siteAtomIndices):
-#             pickCharge                = instance.charges[meadSite.siteAtomNames.index (atomName)]
-#             chargesUpdated[atomIndex] = pickCharge
 
           chargesUpdated = Clone (systemCharges)
           for chargeIndex, atomIndex in enumerate (meadSite.siteAtomIndices):

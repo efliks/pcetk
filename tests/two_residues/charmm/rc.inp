@@ -71,7 +71,7 @@ mini  sd    nstep 50 nprint 20 inbfrq 20
 !cons fix sele none end
 
 
-!stream "radii.str"
+stream "radii.str"
 
 open  write         unit 1 card name @mol.pdb
 write coor pdb      unit 1

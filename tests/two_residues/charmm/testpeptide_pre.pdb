@@ -1,5 +1,5 @@
 REMARK  MAKE PSF AND PDB FILES                                                        
-REMARK   DATE:     5/14/14     22:20:59      CREATED BY USER: mikolaj                 
+REMARK   DATE:     5/20/14     11:56:50      CREATED BY USER: mikolaj                 
 ATOM      1  N   GLY     1       0.000   0.000   0.000  1.00  0.00      PRTA
 ATOM      2  H   GLY     1      -0.567   0.684  -0.453  1.00  0.00      PRTA
 ATOM      3  CA  GLY     1       0.000   0.000   1.460  1.00  0.00      PRTA
