@@ -19,15 +19,15 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/testpeptide.crd")
 
 
 #===========================================
-ce_model = CEModelMEAD (system = mol, meadPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 8)
+ce_model = CEModelMEAD (meadPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 2)
 
-ce_model.Initialize ()
+ce_model.Initialize (mol)
 
 ce_model.Summary ()
 
 ce_model.SummarySites ()
 
-ce_model.WriteJobFiles ()
+ce_model.WriteJobFiles (mol)
 
 ce_model.CalculateEnergies ()
 
