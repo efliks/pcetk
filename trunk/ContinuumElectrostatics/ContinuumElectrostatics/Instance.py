@@ -131,7 +131,7 @@ class MEADInstance (object):
     reader = MEADOutputFileReader (self.siteLog)
     reader.Parse ()
 
-    if not hasattr (reader, "born") or not hasattr (reader, "back") or not hasattr (reader.interactions):
+    if not hasattr (reader, "born") or not hasattr (reader, "back") or not hasattr (reader, "interactions"):
       raise ContinuumElectrostaticsError ("Output file %s empty or corrupted. Empty the scratch directory and start anew." % self.modelLog)
 
     self.Gborn_protein = reader.born
