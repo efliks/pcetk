@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# . File      : Tools.py
+# . File      : Toolbox.py
 # . Program   : pDynamo-1.8.0                           (http://www.pdynamo.org)
 # . Copyright : CEA, CNRS, Martin  J. Field  (2007-2012),
 #                          Mikolaj J. Feliks (2014)
@@ -8,9 +8,6 @@
 """Different tools and helper functions."""
 
 
-#===============================================================================
-# Helper functions
-#===============================================================================
 def FormatEntry (items, header = False):
   """Generating headers or format strings for entries in files W.dat and gintr.dat"""
   if header:
