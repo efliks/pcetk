@@ -86,7 +86,6 @@ class MEADInstance (object):
       try:
         outFile = open (self.modelLog, "w")
         subprocess.check_call (command, stderr = outFile, stdout = outFile)
-
         outFile.close ()
       except:
         report = " ".join (command)
@@ -94,6 +93,9 @@ class MEADInstance (object):
 
     reader = MEADOutputFileReader (self.modelLog)
     reader.Parse ()
+
+    if not hasattr (reader, "born") or not hasattr (reader, "back"):
+      raise ContinuumElectrostaticsError ("Output file %s empty or corrupted. Empty the scratch directory and start anew." % self.modelLog)
 
     self.Gborn_model = reader.born
     self.Gback_model = reader.back
