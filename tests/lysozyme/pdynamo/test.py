@@ -4,7 +4,7 @@ from pBabel import CHARMMParameterFiles_ToParameters, CHARMMPSFFile_ToSystem, CH
 
 from pCore import Pickle, Unpickle, logFile
 
-from ContinuumElectrostatics import CEModelMEAD, StateVector
+from ContinuumElectrostatics import MEADModel
 
 
 logFile.Header ("Calculate protonation states in lysozyme")
@@ -19,7 +19,7 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("../charmm/lysozyme.crd")
 
 
 #===========================================
-ce_model = CEModelMEAD (meadPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 8)
+ce_model = MEADModel (meadPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 1)
 
 ce_model.Initialize (mol, excludeResidues = ["CYS", "ARG"])
 
@@ -27,15 +27,15 @@ ce_model.Summary ()
 
 ce_model.SummarySites ()
 
-ce_model.WriteJobFiles (mol)
-
-ce_model.CalculateEnergies ()
-
-ce_model.WriteGintr ()
-
-ce_model.WriteW ()
-
-Pickle ("ce_model.pkl", ce_model)
+#  ce_model.WriteJobFiles (mol)
+#  
+#  ce_model.CalculateEnergies ()
+#  
+#  ce_model.WriteGintr ()
+#  
+#  ce_model.WriteW ()
+#  
+#  Pickle ("ce_model.pkl", ce_model)
 
 
 

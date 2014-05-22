@@ -88,8 +88,7 @@ class MEADInstance (object):
         subprocess.check_call (command, stderr = outFile, stdout = outFile)
         outFile.close ()
       except:
-        report = " ".join (command)
-        raise ContinuumElectrostaticsError ("Failed running command: %s" % report)
+        raise ContinuumElectrostaticsError ("Failed running command: %s" % " ".join (command))
 
     reader = MEADOutputFileReader (self.modelLog)
     reader.Parse ()
@@ -125,14 +124,15 @@ class MEADInstance (object):
       try:
         outFile = open (self.siteLog, "w")
         subprocess.check_call (command, stderr = outFile, stdout = outFile)
-
         outFile.close ()
       except:
-        report = " ".join (command)
-        raise ContinuumElectrostaticsError ("Failed running command: %s" % report)
+        raise ContinuumElectrostaticsError ("Failed running command: %s" % " ".join (command))
 
     reader = MEADOutputFileReader (self.siteLog)
     reader.Parse ()
+
+    if not hasattr (reader, "born") or not hasattr (reader, "back") or not hasattr (reader.interactions):
+      raise ContinuumElectrostaticsError ("Output file %s empty or corrupted. Empty the scratch directory and start anew." % self.modelLog)
 
     self.Gborn_protein = reader.born
     self.Gback_protein = reader.back

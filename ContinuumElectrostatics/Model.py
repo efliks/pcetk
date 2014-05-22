@@ -206,16 +206,22 @@ class MEADModel (object):
         totalGintr    = totalGintr + Gintr
         nprotons      = nprotons + cprotons
 
-        #for siteIndexInner in range (0, nsites):
         for siteIndexInner in range (0, siteIndex):
           instanceIndexInner = stateVector  [siteIndexInner]
           interaction        = interactions [siteIndexInner]
           totalInteract      = totalInteract + interaction [instanceIndexInner]
 
       protonChemicalPotential = -CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10 * pH
-
-      #Gmicro = totalGintr - nprotons * protonChemicalPotential + 0.5 * totalInteract
       Gmicro = totalGintr - nprotons * protonChemicalPotential + totalInteract
+
+# Slower but more accurate?
+#        for siteIndexInner in range (0, nsites):
+#          instanceIndexInner = stateVector  [siteIndexInner]
+#          interaction        = interactions [siteIndexInner]
+#          totalInteract      = totalInteract + interaction [instanceIndexInner]
+#
+#      protonChemicalPotential = -CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10 * pH
+#      Gmicro = totalGintr - nprotons * protonChemicalPotential + 0.5 * totalInteract
     else:
       Gmicro = None
 
