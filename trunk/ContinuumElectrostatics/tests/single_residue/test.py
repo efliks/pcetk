@@ -4,7 +4,7 @@ from pBabel import CHARMMParameterFiles_ToParameters, CHARMMPSFFile_ToSystem, CH
 
 from pCore import Pickle, Unpickle, logFile
 
-from ContinuumElectrostatics import CEModelMEAD, StateVector
+from ContinuumElectrostatics import MEADModel, StateVector
 
 
 logFile.Header ("A system with only one titratable site.")
@@ -19,15 +19,15 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/testpeptide.crd")
 
 
 #===========================================
-ce_model = CEModelMEAD (system = mol, meadPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 1)
+ce_model = MEADModel (meadPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 1)
 
-ce_model.Initialize ()
+ce_model.Initialize (mol)
 
 ce_model.Summary ()
 
 ce_model.SummarySites ()
 
-ce_model.WriteJobFiles ()
+ce_model.WriteJobFiles (mol)
 
 ce_model.CalculateEnergies ()
 
@@ -39,17 +39,17 @@ Pickle ("ce_model.pkl", ce_model)
 
 
 #===========================================
-vector    = StateVector (ce_model)
-
-vector.Reset ()
-moreIncrements = True
-
-while moreIncrements:
-  Gmicro  = ce_model.CalculateMicrostateEnergy (vector)
-  message = "Gmicro = %.6f" % Gmicro
-
-  vector.Print (ce_model, title = message)
-  moreIncrements = vector.Increment ()
+#  vector    = StateVector (ce_model)
+#  
+#  vector.Reset ()
+#  moreIncrements = True
+#  
+#  while moreIncrements:
+#    Gmicro  = ce_model.CalculateMicrostateEnergy (vector)
+#    message = "Gmicro = %.6f" % Gmicro
+#  
+#    vector.Print (ce_model, title = message)
+#    moreIncrements = vector.Increment ()
 
 
 #===========================================

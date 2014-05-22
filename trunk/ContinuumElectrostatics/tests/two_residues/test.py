@@ -4,7 +4,7 @@ from pBabel import CHARMMParameterFiles_ToParameters, CHARMMPSFFile_ToSystem, CH
 
 from pCore import Pickle, Unpickle, logFile
 
-from ContinuumElectrostatics import CEModelMEAD, StateVector
+from ContinuumElectrostatics import MEADModel, StateVector
 
 
 logFile.Header ("A system with only one titratable site.")
@@ -19,7 +19,7 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/testpeptide.crd")
 
 
 #===========================================
-ce_model = CEModelMEAD (meadPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 2)
+ce_model = MEADModel (meadPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 2)
 
 ce_model.Initialize (mol)
 
@@ -31,11 +31,11 @@ ce_model.WriteJobFiles (mol)
 
 ce_model.CalculateEnergies ()
 
-ce_model.WriteGintr (filename = "gintr.dat")
+ce_model.WriteGintr ()
 
-ce_model.WriteW (filename = "W.dat")
+ce_model.WriteW ()
 
-# Pickle ("ce_model.pkl", ce_model)
+Pickle ("ce_model.pkl", ce_model)
 
 
 #===========================================
