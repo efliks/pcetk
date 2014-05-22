@@ -1,0 +1,13 @@
+blab        1
+nconfflip   10
+tlimit      3
+itraj       0
+nmcfull     10000
+temp        300
+icorr       0
+limit       2
+nmcequi     100
+nmu         1
+mu          -9.602485991  0.0  -9.602485991  0   0
+nsubstate   1
+substate    actsite.subst

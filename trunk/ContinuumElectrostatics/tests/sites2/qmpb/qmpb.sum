@@ -1,0 +1,114 @@
+HIS5-0 HSP
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 304.592
+Modelsite in TwoDielectric 302.552
+Difference 2.03999999999996
+
+Background Energy:
+Site in ThreeDielectric -0.251571
+Modelsite in TwoDielectric 0.264389
+Difference -0.51596
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: 1.52403999999996
+############################################
+
+HIS5-0 HSD
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 322.049
+Modelsite in TwoDielectric 321.044
+Difference 1.005
+
+Background Energy:
+Site in ThreeDielectric -0.338404
+Modelsite in TwoDielectric -0.0819814
+Difference -0.2564226
+
+Intrinsic Model Energy: 9.602486
+
+Sum of contributions: 10.3510634
+############################################
+
+HIS5-0 HSE
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 223.738
+Modelsite in TwoDielectric 223.333
+Difference 0.405000000000001
+
+Background Energy:
+Site in ThreeDielectric -0.173857
+Modelsite in TwoDielectric 0.00274574
+Difference -0.17660274
+
+Intrinsic Model Energy: 9.05377
+
+Sum of contributions: 9.28216726
+############################################
+
+HIS5-0 full_deprot
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 367.733
+Modelsite in TwoDielectric 366.76
+Difference 0.973000000000013
+
+Background Energy:
+Site in ThreeDielectric -0.141371
+Modelsite in TwoDielectric -0.18758
+Difference 0.046209
+
+Intrinsic Model Energy: 27.434
+
+Sum of contributions: 28.453209
+############################################
+
+GLU8-0 p
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 174.889
+Modelsite in TwoDielectric 174.687
+Difference 0.201999999999998
+
+Background Energy:
+Site in ThreeDielectric -0.0390294
+Modelsite in TwoDielectric 0.131967
+Difference -0.1709964
+
+Intrinsic Model Energy: -6.0358483372
+
+Sum of contributions: -6.0048447372
+############################################
+
+GLU8-0 d
+
+Reference Rotameric Form!
+
+Born Energy:
+Site in ThreeDielectric 367.535
+Modelsite in TwoDielectric 366.584
+Difference 0.951000000000022
+
+Background Energy:
+Site in ThreeDielectric 0.152173
+Modelsite in TwoDielectric 0.244796
+Difference -0.092623
+
+Intrinsic Model Energy: 0
+
+Sum of contributions: 0.858377000000022
+############################################
+

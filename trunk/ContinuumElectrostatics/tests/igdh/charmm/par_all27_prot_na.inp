@@ -3568,7 +3568,7 @@ OT     0.000000  -0.152100     1.768200 ! ALLOW   WAT
 
 !CAL    0.000000  -0.120000     1.710000 ! ALLOW ION
 !                !Calcium (BP)
-FE     0.000000   0.000000     0.650000  ! ALLOW HEM *** Hack: changed the first value from 0.01 to zero ***
+FE     0.010000   0.000000     0.650000 ! ALLOW HEM
                 ! Heme (6-liganded): Iron atom (KK 05/13/91)
 S      0.000000  -0.450000     2.000000 ! ALLOW   SUL ION
                 ! adm jr., 3/3/92, methanethiol/ethylmethylsulfide pure solvent

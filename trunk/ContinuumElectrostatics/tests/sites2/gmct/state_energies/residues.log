@@ -1,0 +1,74 @@
+GMCT Version 1.2.0
+temp          = 300.000000 K
+limit         = 2.000000 kcal/mol
+tlimit        = 3.000000 kcal/mol
+conflimit     = 1.000000 kcal/mol
+estepwl       = 0.100000 kcal/mol
+emultwl       = 1.000000009999999939e+00
+fequiwl       = 2.000000000000000000e+00
+fzerowl       = 2.000000000000000000e+00
+fendwl        = 1.000000500000000070e+00
+expfnwl       = 1.200000053701169245e+00
+tolwl         = 1.000000e-03
+tolbp         = 1.000000e-12
+tolg_stderr   = 5.000000e-02 kcal/mol
+tol_acorr     = 1.000000e-03
+nifep         = 1
+wtfep         = 0.000000
+estepclust    = 0.100000 kcal/mol
+expgiclust    = 0.200000
+omegaclust    = 1.000000
+tolsorclust   = 1.000000e-08
+tolabsclust   = 1.000000e-07
+cooporder     = 2
+nmcstride     = 1
+nmcfull       = 10000
+nmcequi       = 100
+blab          = 1
+seed          = -1400146678
+nsubstate     = 1
+ipmacro       = 1
+igmacro       = 0
+icmacro       = 0
+ifullmacro    = 0
+idosmacro     = 0
+icorr         = 0
+icoop         = 0
+iecoop        = 0
+ihcoop        = 0
+icoint        = 0
+ifofep        = 0
+ifowl         = 1
+igrct         = 0
+igmethod      = 0
+itraj         = 0
+ierror        = 0
+vmemb         = 0.000000 V
+slopVmemb     = 0.000000 
+nconfflip     = 10
+nmu           = 1
+iclustmethod  = 1
+iclustgv      = 1
+clustnsitemax = 10
+clustncmax    = 1000000000
+mu            = -9.602486 0.000000 -9.602486 0 0
+limit         = 3.354863 RT
+tlimit        = 5.032294 RT
+conflimit     = 1.677431 RT
+tolg_stderr   = 0.083872 RT
+estepwl       = 0.167743 RT
+estepclust    = 0.167743 RT
+Conformational Flip after 2147483647 mc step
+ncflip        = 2147483647
+1 Conformational Flip per mc step
+ncflip2       = 1
+---------------------
+Substate actsite.subst
+Conformation search key *
+Site Instance search keys, allowed number of bound ligands of mu :
+Resolved to :
+Conformations :
+ ConfID 1
+Sites and Instances:
+---------------------
+molecule name residues

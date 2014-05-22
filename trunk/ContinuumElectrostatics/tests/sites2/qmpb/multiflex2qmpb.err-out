@@ -1,0 +1,49 @@
+5 HIS
+label HSP HSD HSE full_deprot
+Gmodel 0 9.602486 9.05377 27.434
+proton 2 1 1 0
+center NE2
+HIS NE2 -0.51 -0.70 -0.36 -0.70
+HIS CG 0.19 -0.05 0.22 0.12
+HIS ND1 -0.51 -0.36 -0.70 -0.70
+HIS HD1 0.44 0.32 0.00 0.00
+HIS CE1 0.32 0.25 0.25 0.12
+HIS HE2 0.44 0.00 0.32 0.00
+HIS CD2 0.19 0.22 -0.05 -0.05
+HIS CB -0.05 -0.09 -0.08 -0.08
+HIS HB1 0.09 0.09 0.09 0.09
+HIS HB2 0.09 0.09 0.09 0.09
+HIS HD2 0.13 0.10 0.09 0.09
+HIS HE1 0.18 0.13 0.13 0.02
+4 instances for residue HIS
+Check column 0 for integer charge: 1 : 1.0
+Check column 1 for integer charge: 1.66533453693773e-16 : 0.0
+Check column 2 for integer charge: 5.55111512312578e-17 : 0.0
+Check column 3 for integer charge: -1 : -1.0
+8 GLU
+4.4
+-6.0358483372
+GLU CG -0.21 -0.28
+GLU HG1 0.09 0.09
+GLU HG2 0.09 0.09
+GLU CD 0.75 0.62
+GLU OE1 -0.36 -0.76
+GLU OE2 -0.36 -0.76
+8, HG2
+8, OE2
+8, CD
+8, OE1
+8, CG
+8, HG1
+5, HD2
+5, HB2
+5, NE2
+5, CB
+5, HE1
+5, ND1
+5, CD2
+5, HD1
+5, CE1
+5, CG
+5, HE2
+5, HB1
