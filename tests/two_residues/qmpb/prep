@@ -1,5 +1,0 @@
-f=testpeptide
-
-cp ../charmm/$f.pqr .
-
-./make_sites $f.pqr >$f.sites

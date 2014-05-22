@@ -133,24 +133,19 @@ class MEADModel (object):
       entry  = FormatEntry (items)
       lines  = [header]
 
-      for site1 in self.meadSites:
-        for instance1 in site1.instances:
-          for site2 in self.meadSites:
-            for instance2 in site2.instances:
-              s   = site2.siteID     - 1
-              i   = instance2.instID - 1
-              Wij = instance1.interactions[s][i]
+      for sitea in self.meadSites:
+        for insta in sitea.instances:
+          for siteb in self.meadSites:
+            for instb in siteb.instances:
 
-              s   = site1.siteID     - 1
-              i   = instance1.instID - 1
-              Wji = instance2.interactions[s][i]
-
+              Wij      = insta.interactions[siteb.siteID - 1][instb.instID - 1]
+              Wji      = instb.interactions[sitea.siteID - 1][insta.instID - 1]
               Wij_symm = 0.5 * (Wij + Wji)
               Wij_err  = Wij_symm - Wij
 
               line = entry % (
-                      site1.siteID, instance1.instID, site1.label, instance1.label,
-                      site2.siteID, instance2.instID, site2.label, instance2.label,
+                      sitea.siteID, insta.instID, sitea.label, insta.label,
+                      siteb.siteID, instb.instID, siteb.label, instb.label,
                       Wij_symm, Wij, Wij_err
                              )
               lines.append (line)
