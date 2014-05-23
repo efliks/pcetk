@@ -177,6 +177,34 @@ class MEADModel (object):
       WriteInputFile (filename, lines)
 
 
+  def CalculateProtonationProbabilitiesGMCT (self, pH = 7.0, log = logFile):
+    """Use GMCT to estimate the protonation probabilities."""
+    pass
+
+
+  def CalculateProtonationProbabilitiesAnalytically (self, pH = 7.0, log = logFile):
+    """For each site, calculate the probability of occurance of each instance, using the Boltzmann weighted sum."""
+    nsites = len (self.meadSites) 
+    if nsites > MAX_SITES:
+      raise ContinuumElectrostaticsError ("Too many sites for analytic treatment (%d)\n" % nsites)
+
+    energies    = []
+    stateVector = StateVector (self)
+    increment   = True
+
+    # Go over all state vectors and calculate microstate energies
+    while increment:
+      increment = stateVector.Increment ()
+      energy    = self.CalculateMicrostateEnergy (stateVector, pH = pH)
+      energies.append (energy)
+
+
+    for site in self.meadSites:
+      for instance in site.instances:
+        pass
+
+
+
   def CalculateMicrostateEnergy (self, stateVector, pH = 7.0):
     """Calculate energy of a protonation state (=microstate).
 
@@ -220,7 +248,7 @@ class MEADModel (object):
     else:
       Gmicro = None
 
-    return Gmicro        
+    return Gmicro
 
 
   def CalculateEnergies (self, log = logFile):

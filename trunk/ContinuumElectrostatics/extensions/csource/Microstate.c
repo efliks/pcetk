@@ -7,6 +7,7 @@
 !-----------------------------------------------------------------------------*/
 #include "Microstate.h"
 
+/*
 Real Microstate_Energy (Real *gintr, Integer *protons, Real **interactions, StateVector *vector, Real protonChemicalPotential) {
   Integer site;
   Integer *v = vector->vector;
@@ -22,3 +23,4 @@ Real Microstate_Energy (Real *gintr, Integer *protons, Real **interactions, Stat
 
   return Gintr - nprotons * protonChemicalPotential + 0.5 * W;
 }
+*/
