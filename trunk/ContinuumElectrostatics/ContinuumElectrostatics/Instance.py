@@ -64,6 +64,7 @@ class MEADInstance (object):
                   "Gback_model"     : None ,
                   "Gborn_protein"   : None ,
                   "Gback_protein"   : None ,
+                  "probability"     : None ,
                       }
 
   def __init__ (self, *arguments, **keywordArguments):

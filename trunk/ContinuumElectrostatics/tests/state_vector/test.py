@@ -2,7 +2,7 @@
 
 from pCore import Pickle, Unpickle, logFile
 
-from ContinuumElectrostatics import CEModelMEAD, StateVector
+from ContinuumElectrostatics import MEADModel, StateVector
 
 
 logFile.Header ("Testing of the state vector")
