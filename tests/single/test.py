@@ -37,6 +37,8 @@ ce_model.WriteW ()
 
 Pickle ("ce_model.pkl", ce_model)
 
+ce_model.CalculateProbabilitiesAnalytically ()
+
 
 #===========================================
 #  vector    = StateVector (ce_model)

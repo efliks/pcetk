@@ -37,7 +37,11 @@ ce_model.WriteW ()
 
 Pickle ("ce_model.pkl", ce_model)
 
-ce_model.CalculateProbabilitiesAnalytically ()
+ce_model.CalculateProbabilitiesAnalytically (pH =  4.0)
+
+ce_model.CalculateProbabilitiesAnalytically (pH =  7.0)
+
+ce_model.CalculateProbabilitiesAnalytically (pH = 10.0)
 
 
 #===========================================

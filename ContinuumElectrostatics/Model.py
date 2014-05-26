@@ -191,14 +191,25 @@ class MEADModel (object):
     stateVector = StateVector (self)
     stateVector.Reset ()
 
-    # First off, find the minimum energy
-    energyZero = self.CalculateMicrostateEnergy (stateVector, pH = pH)
-    increment  = True
+#    energyZero    = self.CalculateMicrostateEnergy (stateVector, pH = pH)
+#    stateEnergies = [energyZero]
+#    increment     = True
+#    while increment:
+#      energy    = self.CalculateMicrostateEnergy (stateVector, pH = pH)
+#      if energy < energyZero:
+#        energyZero = energy
+#
+#      stateEnergies.append (energy)
+#      increment = stateVector.Increment ()
+
+    # Find the minimum energy
+    stateEnergies = []
+    increment     = True
     while increment:
       energy    = self.CalculateMicrostateEnergy (stateVector, pH = pH)
-      if energy < energyZero:
-        energyZero = energy
+      stateEnergies.append (energy)
       increment = stateVector.Increment ()
+    energyZero = min (stateEnergies)
 
     if LogFileActive (log):
       log.Text ("\nSearching for the minimum energy complete.\n")
@@ -207,26 +218,50 @@ class MEADModel (object):
     # Just to be on a safe side
     stateVector.Reset ()
 
-    bfactors  = []
-    beta      = -1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature)
-    increment = True
+    bfactors    = []
+    beta        = -1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature)
+    vectorIndex = 0
+    increment   = True
 
     # Go over all state vectors and calculate Boltzmann factors
     while increment:
-      bfactor   = math.exp (beta * (self.CalculateMicrostateEnergy (stateVector, pH = pH) - energyZero))
+      # bfactor   = math.exp (beta * (self.CalculateMicrostateEnergy (stateVector, pH = pH) - energyZero))
+      bfactor   = math.exp (beta * stateEnergies[vectorIndex] - energyZero)
       bfactors.append (bfactor)
-      increment = stateVector.Increment ()
+      increment   = stateVector.Increment ()
+      vectorIndex = vectorIndex + 1
 
     if LogFileActive (log):
       log.Text ("\nCalculating Boltzmann factors complete.\n")
 
 
-#    for site in self.meadSites:
-#      for instance in site.instances:
-#        pass
-#
-#    if LogFileActive (log):
-#      log.Text ("\nCalculating protonation probabilities complete.\n")
+    for site in self.meadSites:
+      for instance in site.instances:
+        instance.probability = 0.
+
+    increment   = True
+    vectorIndex = 0
+    stateVector.Reset ()
+
+    while increment:
+      for siteIndex, site in enumerate (self.meadSites):
+        instanceIndex        = stateVector[siteIndex]
+        instance             = site.instances[instanceIndex]
+        instance.probability = instance.probability + bfactors[vectorIndex]
+      increment   = stateVector.Increment ()
+      vectorIndex = vectorIndex + 1
+
+    bsum = 1.0 / sum (bfactors)
+    for site in self.meadSites:
+      for instance in site.instances:
+        instance.probability = instance.probability * bsum
+
+    if LogFileActive (log):
+      log.Text ("\nCalculating protonation probabilities complete.\n")
+
+    for site in self.meadSites:
+      for instance in site.instances:
+        log.Text ("%4s   %4s    %f\n" % (site.resNum, instance.label, instance.probability))
 
 
   def CalculateMicrostateEnergy (self, stateVector, pH = 7.0):
@@ -245,11 +280,9 @@ class MEADModel (object):
         site          = self.meadSites [siteIndex]
         instanceIndex = stateVector    [siteIndex]
         instance      = site.instances [instanceIndex]
-
         Gintr         = instance.Gintr
         cprotons      = instance.protons
         interactions  = instance.interactions
-
         totalGintr    = totalGintr + Gintr
         nprotons      = nprotons + cprotons
 
