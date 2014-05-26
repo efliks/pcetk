@@ -7,7 +7,7 @@
 #-------------------------------------------------------------------------------
 """MEADModel is a class representing the continuum electrostatic model."""
 
-import os, glob
+import os, glob, math
 
 
 from pCore             import logFile, LogFileActive, Selection, Vector3, YAMLUnpickle, Clone, UNITS_ENERGY_KILOCALORIES_PER_MOLE_TO_KILOJOULES_PER_MOLE
@@ -177,32 +177,56 @@ class MEADModel (object):
       WriteInputFile (filename, lines)
 
 
-  def CalculateProtonationProbabilitiesGMCT (self, pH = 7.0, log = logFile):
-    """Use GMCT to estimate the protonation probabilities."""
+  def CalculateProbabilitiesGMCT (self, pH = 7.0, log = logFile):
+    """Use GMCT to estimate protonation probabilities."""
     pass
 
 
-  def CalculateProtonationProbabilitiesAnalytically (self, pH = 7.0, log = logFile):
+  def CalculateProbabilitiesAnalytically (self, pH = 7.0, log = logFile):
     """For each site, calculate the probability of occurance of each instance, using the Boltzmann weighted sum."""
     nsites = len (self.meadSites) 
     if nsites > MAX_SITES:
       raise ContinuumElectrostaticsError ("Too many sites for analytic treatment (%d)\n" % nsites)
 
-    energies    = []
     stateVector = StateVector (self)
-    increment   = True
+    stateVector.Reset ()
 
-    # Go over all state vectors and calculate microstate energies
+    # First off, find the minimum energy
+    energyZero = self.CalculateMicrostateEnergy (stateVector, pH = pH)
+    increment  = True
     while increment:
-      increment = stateVector.Increment ()
       energy    = self.CalculateMicrostateEnergy (stateVector, pH = pH)
-      energies.append (energy)
+      if energy < energyZero:
+        energyZero = energy
+      increment = stateVector.Increment ()
+
+    if LogFileActive (log):
+      log.Text ("\nSearching for the minimum energy complete.\n")
 
 
-    for site in self.meadSites:
-      for instance in site.instances:
-        pass
+    # Just to be on a safe side
+    stateVector.Reset ()
 
+    bfactors  = []
+    beta      = -1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature)
+    increment = True
+
+    # Go over all state vectors and calculate Boltzmann factors
+    while increment:
+      bfactor   = math.exp (beta * (self.CalculateMicrostateEnergy (stateVector, pH = pH) - energyZero))
+      bfactors.append (bfactor)
+      increment = stateVector.Increment ()
+
+    if LogFileActive (log):
+      log.Text ("\nCalculating Boltzmann factors complete.\n")
+
+
+#    for site in self.meadSites:
+#      for instance in site.instances:
+#        pass
+#
+#    if LogFileActive (log):
+#      log.Text ("\nCalculating protonation probabilities complete.\n")
 
 
   def CalculateMicrostateEnergy (self, stateVector, pH = 7.0):
