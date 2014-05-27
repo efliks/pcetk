@@ -137,12 +137,10 @@ class MEADModel (object):
         for insta in sitea.instances:
           for siteb in self.meadSites:
             for instb in siteb.instances:
-
               Wij      = insta.interactions[siteb.siteID - 1][instb.instID - 1]
               Wji      = instb.interactions[sitea.siteID - 1][insta.instID - 1]
               Wij_symm = 0.5 * (Wij + Wji)
               Wij_err  = Wij_symm - Wij
-
               line = entry % (
                       sitea.siteID, insta.instID, sitea.label, insta.label,
                       siteb.siteID, instb.instID, siteb.label, instb.label,
@@ -177,91 +175,114 @@ class MEADModel (object):
       WriteInputFile (filename, lines)
 
 
+  def CalculateCurvesGMCT (self, resolution = 0.5, log = logFile):
+    """Calculate titration curves using GMCT."""
+    pass
+
+
+  def CalculateCurvesAnalytically (self, resolution = 0.5, log = logFile):
+    """Calculate titration curves analytically."""
+    if self.isCalculated:
+      nsteps = int (14.0 / resolution + 1)
+      sites  = []
+      for site in self.meadSites:
+        instances = []
+        for instance in site.instances:
+          instances.append ([None] * nsteps)
+        sites.append (instances)
+  
+      # Go over pH values 0...14
+      pH = 0.
+      for step in range (0, nsteps):
+        self.CalculateProbabilitiesAnalytically (pH = pH, log = None)
+  
+        for siteIndex, site in enumerate (self.meadSites):
+          for instIndex, instance in enumerate (site.instances):
+             sites[siteIndex][instIndex][step] = instance.probability
+  
+        if LogFileActive (log):
+          log.Text ("Calculated pH = %.2f\n" % pH)
+        pH = pH + resolution
+  
+      # Write results to files
+      directory = os.path.join (self.scratch, "curves")
+      if not os.path.exists (directory): os.mkdir (directory)
+  
+      for siteIndex, site in enumerate (self.meadSites):
+        for instIndex, instance in enumerate (site.instances):
+          probabilities = sites[siteIndex][instIndex]
+          lines         = []
+          for step in range (0, nsteps):
+            lines.append ("%f %f\n" % (step * resolution, probabilities[step]))
+
+          filename = os.path.join (directory, "%s_%s.dat" % (site.label, instance.label))
+          WriteInputFile (filename, lines)
+
+
   def CalculateProbabilitiesGMCT (self, pH = 7.0, log = logFile):
-    """Use GMCT to estimate protonation probabilities."""
+    """Use GMCT to estimate probabilities."""
     pass
 
 
   def CalculateProbabilitiesAnalytically (self, pH = 7.0, log = logFile):
     """For each site, calculate the probability of occurance of each instance, using the Boltzmann weighted sum."""
-    nsites = len (self.meadSites) 
-    if nsites > MAX_SITES:
-      raise ContinuumElectrostaticsError ("Too many sites for analytic treatment (%d)\n" % nsites)
+    if self.isCalculated:
+      if len (self.meadSites) > MAX_SITES:
+        raise ContinuumElectrostaticsError ("Too many sites for analytic treatment (%d)\n" % nsites)
+  
+      # Calculate all state energies
+      stateVector   = StateVector (self)
+      stateEnergies = []
+      increment     = True
+      stateVector.Reset ()
 
-    stateVector = StateVector (self)
-    stateVector.Reset ()
+      while increment:
+        energy    = self.CalculateMicrostateEnergy (stateVector, pH = pH)
+        increment = stateVector.Increment ()
+        stateEnergies.append (energy)
 
-#    energyZero    = self.CalculateMicrostateEnergy (stateVector, pH = pH)
-#    stateEnergies = [energyZero]
-#    increment     = True
-#    while increment:
-#      energy    = self.CalculateMicrostateEnergy (stateVector, pH = pH)
-#      if energy < energyZero:
-#        energyZero = energy
-#
-#      stateEnergies.append (energy)
-#      increment = stateVector.Increment ()
-
-    # Find the minimum energy
-    stateEnergies = []
-    increment     = True
-    while increment:
-      energy    = self.CalculateMicrostateEnergy (stateVector, pH = pH)
-      stateEnergies.append (energy)
-      increment = stateVector.Increment ()
-    energyZero = min (stateEnergies)
-
-    if LogFileActive (log):
-      log.Text ("\nSearching for the minimum energy complete.\n")
-
-
-    # Just to be on a safe side
-    stateVector.Reset ()
-
-    bfactors    = []
-    beta        = -1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature)
-    vectorIndex = 0
-    increment   = True
-
-    # Go over all state vectors and calculate Boltzmann factors
-    while increment:
-      # bfactor   = math.exp (beta * (self.CalculateMicrostateEnergy (stateVector, pH = pH) - energyZero))
-      bfactor   = math.exp (beta * stateEnergies[vectorIndex] - energyZero)
-      bfactors.append (bfactor)
-      increment   = stateVector.Increment ()
-      vectorIndex = vectorIndex + 1
-
-    if LogFileActive (log):
-      log.Text ("\nCalculating Boltzmann factors complete.\n")
-
-
-    for site in self.meadSites:
-      for instance in site.instances:
-        instance.probability = 0.
-
-    increment   = True
-    vectorIndex = 0
-    stateVector.Reset ()
-
-    while increment:
-      for siteIndex, site in enumerate (self.meadSites):
-        instanceIndex        = stateVector[siteIndex]
-        instance             = site.instances[instanceIndex]
-        instance.probability = instance.probability + bfactors[vectorIndex]
-      increment   = stateVector.Increment ()
-      vectorIndex = vectorIndex + 1
-
-    bsum = 1.0 / sum (bfactors)
-    for site in self.meadSites:
-      for instance in site.instances:
-        instance.probability = instance.probability * bsum
-
-    if LogFileActive (log):
-      log.Text ("\nCalculating protonation probabilities complete.\n")
-
-    for site in self.meadSites:
-      for instance in site.instances:
-        log.Text ("%4s   %4s    %f\n" % (site.resNum, instance.label, instance.probability))
+      # Find the minimum energy
+      energyZero = min (stateEnergies)
+  
+      if LogFileActive (log):
+        log.Text ("\nSearching for the minimum energy complete.\n")
+  
+      # Go over all calculated state energies and calculate Boltzmann factors
+      bfactors = []
+      beta     = -1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature)
+      nstates  = len (stateEnergies)
+      for stateIndex in range (0, nstates):
+        bfactor = math.exp (beta * (stateEnergies[stateIndex] - energyZero))
+        bfactors.append (bfactor)
+  
+      if LogFileActive (log):
+        log.Text ("\nCalculating Boltzmann factors complete.\n")
+ 
+      # Reset the probabilities 
+      for site in self.meadSites:
+        for instance in site.instances:
+          instance.probability = 0.
+ 
+      # Calculate the probabilities 
+      increment  = True
+      stateIndex = 0
+      stateVector.Reset ()
+  
+      while increment:
+        for siteIndex, site in enumerate (self.meadSites):
+          instanceIndex        = stateVector[siteIndex]
+          instance             = site.instances[instanceIndex]
+          instance.probability = instance.probability + bfactors[stateIndex]
+        increment  = stateVector.Increment ()
+        stateIndex = stateIndex + 1
+  
+      bsum = 1.0 / sum (bfactors)
+      for site in self.meadSites:
+        for instance in site.instances:
+          instance.probability = instance.probability * bsum
+  
+      if LogFileActive (log):
+        log.Text ("\nCalculating protonation probabilities complete.\n")
 
 
   def CalculateMicrostateEnergy (self, stateVector, pH = 7.0):
@@ -366,7 +387,6 @@ class MEADModel (object):
         for batch in batches:
           for thread in batch:
             thread.start ()
-
           for thread in batch:
             thread.join ()
 
@@ -533,7 +553,7 @@ class MEADModel (object):
                                siteID           = siteIndex + 1    ,
                                segName          = segmentName      ,
                                resName          = residueName      ,
-                               resNum           = residueSerial    ,
+                               resSerial        = residueSerial    ,
                                modelAtomIndices = modelAtomIndices ,
                                siteAtomIndices  = siteAtomIndices  ,
                                instances        = instances        ,
@@ -624,11 +644,51 @@ class MEADModel (object):
           table.Entry ("%d" % site.siteID)
           table.Entry (site.segName)
           table.Entry (site.resName)
-          table.Entry (site.resNum)
+          table.Entry (site.resSerial)
           table.Entry ("%d" % len (site.instances))
           table.Entry ("%10.3f" % site.center[0])
           table.Entry ("%10.3f" % site.center[1])
           table.Entry ("%10.3f" % site.center[2])
+        table.Stop ()
+
+ 
+  def SummaryProbabilities (self, log = logFile):
+    """List probabilities of occurance of instances."""
+    if LogFileActive (log):
+      if self.isCalculated:
+        
+        maxinstances = 0
+        for site in self.meadSites:
+          ninstances = len (site.instances)
+          if ninstances > maxinstances: maxinstances = ninstances
+
+        table = log.GetTable (columns = [6, 6, 6] + [8, 8] * maxinstances)
+        table.Start ()
+        table.Heading ("Site", columnSpan = 3)
+        table.Heading ("Probabilities of instances", columnSpan = maxinstances * 2)
+
+        for site in self.meadSites:
+          table.Entry ("%6s" % site.segName)
+          table.Entry ("%6s" % site.resName)
+          table.Entry ("%6s" % site.resSerial)
+
+          maxProb = 0.
+          for instance in site.instances:
+            if instance.probability > maxProb: 
+              maxProb = instance.probability
+              maxID   = instance.instID
+
+          for instance in site.instances:
+            if instance.instID == maxID:
+              label = "*%s" % instance.label
+            else:
+              label = instance.label
+            table.Entry ("%8s"   % label)
+            table.Entry ("%8.4f" % instance.probability)
+
+          for filler in range (0, maxinstances - len (site.instances)):
+            table.Entry ("")
+            table.Entry ("")
         table.Stop ()
 
 

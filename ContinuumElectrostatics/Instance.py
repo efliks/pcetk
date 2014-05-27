@@ -167,7 +167,7 @@ class MEADInstance (object):
 
 
   def PrintInteractions (self, sort = False, log = logFile):
-    """Print interactions of the instance of a site with other instances of other sites."""
+    """Print interactions of an instance of a site with other instances of other sites."""
     if LogFileActive (log):
       site  = self.parent
       model = site.parent
@@ -180,7 +180,7 @@ class MEADInstance (object):
             s   = site.siteID     - 1
             i   = instance.instID - 1
             Wij = self.interactions[s][i]
-            instances.append ([Wij, site.segName, site.resName, site.resNum, instance.label])
+            instances.append ([Wij, site.segName, site.resName, site.resSerial, instance.label])
         if sort: 
           instances.sort ()
 
@@ -189,10 +189,10 @@ class MEADInstance (object):
         table.Heading ("Instance of a site", columnSpan = 4)
         table.Heading ("Wij")
 
-        for Wij, segName, resName, resNum, label in instances:
+        for Wij, segName, resName, resSerial, label in instances:
           table.Entry (segName)
           table.Entry (resName)
-          table.Entry (resNum)
+          table.Entry (resSerial)
           table.Entry (label)
           table.Entry ("%16.4f" % Wij)
         table.Stop ()
@@ -204,7 +204,7 @@ class MEADInstance (object):
       site = self.parent
       table.Entry (site.segName)
       table.Entry (site.resName)
-      table.Entry (site.resNum)
+      table.Entry (site.resSerial)
       table.Entry (self.label)
       table.Entry ("%16.4f" % self.Gborn_model)
       table.Entry ("%16.4f" % self.Gback_model)

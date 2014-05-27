@@ -1,0 +1,7 @@
+f=1DFN.pdb
+
+grep -E "^ATOM.{17}A" $f | ./segid PRTA > chaina.pdb
+
+grep -E "^ATOM.{17}B" $f | ./segid PRTB > chainb.pdb
+
+grep ^HETATM $f | ./pdb_recount 1 | ./segid WATA > water.pdb
