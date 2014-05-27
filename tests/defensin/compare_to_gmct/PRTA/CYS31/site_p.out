@@ -1,0 +1,76 @@
+Starting /home/mikolaj/local/bin/my_3diel_solver for molecule named scratch/PRTA/CYS31/site_p
+using the following physical conditions:
+Exterior dielectric constant, epsext = 80
+Solvent probe radius, solrad = 1.4
+Ion exclusion layer thickness, sterln = 2
+Temperature, T = 300
+Ionic strength, ionicstr = 0.1
+Hueckel factor (epsext*kappasq) = 0.843038
+Debye length 1/kappa = 9.7414
+ln(10) * kBolt * T = 0.00413389
+kBolt = 5.98442e-06
+conconv = 0.000602214
+econv = 332.063
+Bohr radius = 0.529177
+Proton Charge = 1
+elementary_charge = 1.60218e-19
+energy_unit = 2.30707e-18
+Avogadro_Number = 6.02214e+23
+voltconv = 14.3996
+pkconv = 241.903
+  Solute interior dielectric, epsin1 = 1
+  Protein interior dielectric constant, epsin2 = 4
+Vacuum dielectric constant, epsvac = 1
+
+No blab level set (so no blabbing)
+Using finite difference method with lattice levels:
+                   Centering Style   grid dimension    spacing
+Coarsest level: ON_GEOM_CENT resolved to (24.1776, 30.1496, 6.10909)) 121 2
+Finer level:    (28.7616, 32.9359, 13.7605) 101 1
+Finer level:    (28.7616, 32.9359, 13.7605) 101 0.5
+Finest level:   (28.7616, 32.9359, 13.7605) 101 0.25
+
+
+Self energy of scratch/PRTA/CYS31/site_p in three dielectric environment = 23.6013
+(probably in kcal/mole, INCLUDING GRID ARTEFACTS)
+
+
+Interaction energy of scratch/PRTA/CYS31/site_p with background charge set in three dielectric environment = -0.180394
+(probably in kcal/mole)
+
+
+
+Interaction energies of scratch/PRTA/CYS31/site_p with charges of given instances of sites (probably in kcal/mole).
+Format: site instance energy
+
+0   0 : -0.0022094
+0   1 : 0.00367465
+1   0 : 0.345532
+1   1 : 2.4877
+2   0 : 0.00388673
+2   1 : 0.03298
+3   0 : 0.00906171
+3   1 : 0.0581569
+4   0 : -0.0607497
+4   1 : -0.00696945
+5   0 : -0.0133487
+5   1 : 0.175183
+6   0 : 0.00215953
+6   1 : 0.15679
+7   0 : -0.00180762
+7   1 : -0.000621743
+8   0 : -0.0234637
+8   1 : -0.00226784
+9   0 : 0.0379876
+9   1 : 0.00477382
+10   0 : -0.000124867
+10   1 : 0.0669029
+11   0 : 0.000627904
+11   1 : 0.00531263
+12   0 : -0.00215288
+12   1 : -6.09631e-05
+13   0 : 0.00741272
+13   1 : 0.410368
+14   0 : 47.1916
+14   1 : 92.6158
+Total runtime: 9.75 s user 0.06 s system 

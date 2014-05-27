@@ -1,0 +1,11 @@
+blab        1
+nconfflip   10
+tlimit      3
+itraj       0
+nmcfull     100
+temp        300
+icorr       0
+limit       2
+nmcequi     50
+nmu         1
+mu          -19.204969  0.0  0.342946  0  0
