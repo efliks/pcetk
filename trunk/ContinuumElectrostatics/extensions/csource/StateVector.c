@@ -111,3 +111,22 @@ Boolean StateVector_Increment (const StateVector *self) {
   }
   return False;
 }
+
+/*
+Real Microstate_Energy (Real *gintr, Integer *protons, Real **interactions, StateVector *vector, Real pH, Real temperature) {
+  Integer siteIndex, siteIndexInner;
+  Integer *v = vector->vector;
+  Real    W = 0.0, Gintr = 0.0;
+
+  for (siteIndex = 0; siteIndex < vector->lenght; siteIndex++, v++) {
+    instanceIndex = *v;
+
+    for (siteIndexInner = 0; siteIndexInner < vector->lenght; siteIndexInner++) {
+
+    }
+  }
+
+  protonChemicalPotential = -CONSTANT_MOLAR_GAS_KCAL_MOL * temperature * CONSTANT_LN10 * pH
+  return Gintr - nprotons * protonChemicalPotential + 0.5 * W;
+}
+*/

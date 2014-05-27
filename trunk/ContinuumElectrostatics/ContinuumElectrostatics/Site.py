@@ -18,7 +18,7 @@ class MEADSite (object):
                   "siteID"           : None ,
                   "segName"          : None ,
                   "resName"          : None ,
-                  "resNum"           : None ,
+                  "resSerial"        : None ,
                   "instances"        : None ,
                   "center"           : None ,
                   "modelAtomIndices" : None ,
@@ -31,7 +31,7 @@ class MEADSite (object):
     for (key, value) in self.__class__.defaultAttributes.iteritems (): setattr (self, key, value)
     for (key, value) in                 keywordArguments.iteritems (): setattr (self, key, value)
 
-    self.label = "%s_%s%s" % (self.segName, self.resName, self.resNum)
+    self.label = "%s_%s%s" % (self.segName, self.resName, self.resSerial)
 
 
 #===============================================================================
