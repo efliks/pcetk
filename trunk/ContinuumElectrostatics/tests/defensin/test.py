@@ -19,7 +19,7 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/defensin.crd")
 
 
 #===========================================
-ce_model = MEADModel (meadPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 8)
+ce_model = MEADModel (meadPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 2)
 
 ce_model.Initialize (mol)
 
@@ -39,8 +39,7 @@ ce_model.CalculateProbabilitiesAnalytically ()
 
 ce_model.SummaryProbabilities ()
 
-
-#ce_model.CalculateCurvesAnalytically ()
+ce_model.CalculateCurvesAnalytically ()
 
 
 #===========================================

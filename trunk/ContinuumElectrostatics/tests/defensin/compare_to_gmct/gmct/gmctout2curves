@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Make Curves/ directory out of a gmct-out file
+
+# File stem, for example monomer
+f=$1
+
+awk '
+/^chemical/ && (NR > 1) {
+  exit;
+}
+/^conf_/ {
+  printf("%s ", $1);
+}
+' $f.gmct-out > names
+
+if [ ! -d Curves ] ; then mkdir Curves ; fi
+
+for r in `cat names` ; do
+  awk -v r=$r '$0 ~ r { print(-$3 / 1.371767, $2); }' $f.gmct-out > Curves/$r.dat
+  echo $r
+done
+
+

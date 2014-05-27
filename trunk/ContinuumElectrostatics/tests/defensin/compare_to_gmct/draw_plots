@@ -1,0 +1,10 @@
+# Run the script plot_curves.py first
+
+for i in page??.gnuplot; do
+  gnuplot $i
+  echo    $i
+done
+
+gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=plots.pdf -dBATCH page??.pdf
+
+rm page*.pdf page*.gnuplot
