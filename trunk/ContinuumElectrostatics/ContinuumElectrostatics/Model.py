@@ -7,19 +7,20 @@
 #-------------------------------------------------------------------------------
 """MEADModel is a class representing the continuum electrostatic model."""
 
-import os, glob, math
+import os, glob, math, subprocess
 
 
 from pCore             import logFile, LogFileActive, Selection, Vector3, YAMLUnpickle, Clone, UNITS_ENERGY_KILOCALORIES_PER_MOLE_TO_KILOJOULES_PER_MOLE
                        
-from Constants         import *
-from Error             import ContinuumElectrostaticsError
-from InputFileWriter   import WriteInputFile
-from PQRFileWriter     import PQRFile_FromSystem
-from Site              import MEADSite
-from Instance          import MEADInstance, InstanceThread 
-from Toolbox           import FormatEntry, ConvertAttribute
-from StateVector       import StateVector
+from Constants            import *
+from Error                import ContinuumElectrostaticsError
+from Site                 import MEADSite
+from Instance             import MEADInstance, InstanceThread 
+from Toolbox              import FormatEntry, ConvertAttribute
+from StateVector          import StateVector
+from GMCTOutputFileReader import GMCTOutputFileReader
+from InputFileWriter      import WriteInputFile
+from PQRFileWriter        import PQRFile_FromSystem
 
 
 _DefaultTemperature     = 300.0
@@ -28,13 +29,29 @@ _DefaultIonicStrength   = 0.1
 
 _DefaultMeadPath        = "/usr/bin"
 
+_DefaultGmctPath        = "/usr/bin"
+
 _DefaultScratch         = "/tmp"
 
 _DefaultThreads         = 1
 
 _DefaultCleanUp         = False
 
-_DefaultFocussingSteps  = [(121, 2.00), (101, 1.00), (101, 0.50), (101, 0.25)]
+_DefaultFocussingSteps  = ((121, 2.00), (101, 1.00), (101, 0.50), (101, 0.25))
+
+_DefaultGmctSetup       = """
+blab        1
+nconfflip   10
+tlimit      3
+itraj       0
+nmcfull     10000
+temp        %f
+icorr       0
+limit       2
+nmcequi     100
+nmu         1
+mu          %f  %f  0.0  0  0
+"""
 
 
 #-------------------------------------------------------------------------------
@@ -42,38 +59,33 @@ class MEADModel (object):
   """Continuum electrostatic model."""
 
   defaultAttributes = {
-                 "temperature"        :  _DefaultTemperature    ,
-                 "ionicStrength"      :  _DefaultIonicStrength  ,
-                 "meadPath"           :  _DefaultMeadPath       ,
-                 "nthreads"           :  _DefaultThreads        ,
-                 "deleteJobFiles"     :  _DefaultCleanUp        ,
-                 "scratch"            :  _DefaultScratch        ,
-                 "focussingSteps"     :  Clone (_DefaultFocussingSteps) ,
-                 "librarySites"       :  None     ,
-                 "meadSites"          :  None     ,
-                 "backAtomIndices"    :  None     ,
-                 "proteinAtomIndices" :  None     ,
-                 "backPqr"            :  None     ,
-                 "proteinPqr"         :  None     ,
-                 "sitesFpt"           :  None     ,
-                 "isInitialized"      :  False    ,
-                 "isFilesWritten"     :  False    ,
-                 "isCalculated"       :  False    ,
-                 "splitToDirectories" :  True     ,
+    "temperature"        :  _DefaultTemperature     ,
+    "ionicStrength"      :  _DefaultIonicStrength   ,
+    "meadPath"           :  _DefaultMeadPath        ,
+    "gmctPath"           :  _DefaultGmctPath        ,
+    "nthreads"           :  _DefaultThreads         ,
+    "deleteJobFiles"     :  _DefaultCleanUp         ,
+    "scratch"            :  _DefaultScratch         ,
+    "focussingSteps"     :  _DefaultFocussingSteps  ,
+    "librarySites"       :  None                    ,
+    "meadSites"          :  None                    ,
+    "backAtomIndices"    :  None                    ,
+    "proteinAtomIndices" :  None                    ,
+    "backPqr"            :  None                    ,
+    "proteinPqr"         :  None                    ,
+    "sitesFpt"           :  None                    ,
+    "isInitialized"      :  False                   ,
+    "isFilesWritten"     :  False                   ,
+    "isCalculated"       :  False                   ,
+    "splitToDirectories" :  True                    ,
                       }
 
   defaultAttributeNames = {
-                  "Temperature"       : "temperature"        ,
-                  "Ionic Strength"    : "ionicStrength"      ,
-                  "Threads"           : "nthreads"           ,
-                  "Delete Job Files"  : "deleteJobFiles"     ,
-                  "Split Directories" : "splitToDirectories" ,
+    "Temperature"       : "temperature"    ,  "Split Directories" : "splitToDirectories" ,
+    "Ionic Strength"    : "ionicStrength"  ,  "Initialized"       : "isInitialized"      ,
+    "Threads"           : "nthreads"       ,  "Files Written"     : "isFilesWritten"     ,
+    "Delete Job Files"  : "deleteJobFiles" ,  "Calculated"        : "isCalculated"       ,
                           }
-#                   "Scratch Directory" : "scratch"            ,
-#                   "Path to MEAD"      : "meadPath"           ,
-#                   "Initialized"       : "isInitialized"      ,
-#                   "Files Written"     : "isFilesWritten"     ,
-#                   "Calculated"        : "isCalculated"       ,
 
 
   def __del__ (self):
@@ -175,13 +187,8 @@ class MEADModel (object):
       WriteInputFile (filename, lines)
 
 
-  def CalculateCurvesGMCT (self, resolution = 0.5, log = logFile):
-    """Calculate titration curves using GMCT."""
-    pass
-
-
-  def CalculateCurvesAnalytically (self, resolution = 0.5, log = logFile):
-    """Calculate titration curves analytically."""
+  def CalculateCurves (self, analytically = False, resolution = 0.5, directory = "curves", log = logFile):
+    """Calculate titration curves using GMCT (default) or analytically."""
     if self.isCalculated:
       nsteps = int (14.0 / resolution + 1)
       sites  = []
@@ -194,7 +201,10 @@ class MEADModel (object):
       # Go over pH values 0...14
       pH = 0.
       for step in range (0, nsteps):
-        self.CalculateProbabilitiesAnalytically (pH = pH, log = None)
+        if analytically:
+          self.CalculateProbabilitiesAnalytically (pH = pH, log = None)
+        else:
+          self.CalculateProbabilitiesGMCT (pH = pH, log = None)
   
         for siteIndex, site in enumerate (self.meadSites):
           for instIndex, instance in enumerate (site.instances):
@@ -205,8 +215,11 @@ class MEADModel (object):
         pH = pH + resolution
   
       # Write results to files
-      directory = os.path.join (self.scratch, "curves")
-      if not os.path.exists (directory): os.mkdir (directory)
+      if not os.path.exists (directory):
+        try:
+          os.mkdir (directory)
+        except:
+          raise ContinuumElectrostaticsError ("Cannot create scratch directory %s" % directory)
   
       for siteIndex, site in enumerate (self.meadSites):
         for instIndex, instance in enumerate (site.instances):
@@ -220,8 +233,69 @@ class MEADModel (object):
 
 
   def CalculateProbabilitiesGMCT (self, pH = 7.0, log = logFile):
-    """Use GMCT to estimate probabilities."""
-    pass
+    """Use GMCT to estimate protonation probabilities."""
+    if self.isCalculated:
+      potential = -CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10 * pH
+      project   = "job"
+      mkdir     = os.makedirs
+      chdir     = os.chdir
+      getcwd    = os.getcwd
+      link      = os.symlink
+      join      = os.path.join
+      exists    = os.path.exists
+
+      # Prepare input files and directories for GMCT
+      dirConf = join (self.scratch, "gmct/conf")
+      if not exists (dirConf): 
+        mkdir (dirConf)
+
+      dirCalc = join (self.scratch, "gmct/%s" % pH)
+      if not exists (dirCalc): 
+        mkdir (dirCalc)
+
+      self.WriteGintr (filename = join (dirConf, "%s.gint"  % project))
+      self.WriteW     (filename = join (dirConf, "%s.inter" % project))
+
+      WriteInputFile (join (dirCalc, "%s.conf"  % project), ["conf  0.0  0.0  0.0\n"])
+      WriteInputFile (join (dirCalc, "%s.setup" % project), _DefaultGmctSetup % (self.temperature, potential, potential))
+
+      linkname = join (dirCalc, "conf")
+      if not exists (linkname):
+        link ("../conf", linkname)
+
+      # Run GMCT
+      fOutput = "%s.gmct-out" % project
+      fError  = "%s.gmct-err" % project
+
+      if exists (join (dirCalc, fOutput)):
+        pass
+      else:
+        dirWork = getcwd ()
+        chdir (dirCalc)
+        output  = open (fOutput, "w")
+        error   = open (fError,  "w")
+        command = [join (self.gmctPath, "gmct"), project]
+        try:
+          subprocess.check_call (command, stderr = error, stdout = output)
+        except:
+          raise ContinuumElectrostaticsError ("Failed running command: %s" % " ".join (command))
+        error.close  ()
+        output.close ()
+        chdir (dirWork)
+
+      # Reseting probabilities just in case 
+      for site in self.meadSites:
+        for instance in site.instances:
+          instance.probability = None
+
+      # Read probabilities from the output file
+      reader = GMCTOutputFileReader (join (dirCalc, fOutput))
+      reader.Parse ()
+
+      for site in self.meadSites:
+        for instance in site.instances:
+          key = "conf_%s_%s%s_%s" % (site.segName, site.resName, site.resSerial, instance.label)
+          instance.probability = reader.probabilities[key][0]
 
 
   def CalculateProbabilitiesAnalytically (self, pH = 7.0, log = logFile):
@@ -258,7 +332,7 @@ class MEADModel (object):
       if LogFileActive (log):
         log.Text ("\nCalculating Boltzmann factors complete.\n")
  
-      # Reset the probabilities 
+      # Set all probabilities to zero
       for site in self.meadSites:
         for instance in site.instances:
           instance.probability = 0.
@@ -291,6 +365,7 @@ class MEADModel (object):
     The protonation state is defined by a state vector. 
 
     The energy is calculated at a given pH."""
+    Gmicro = None
     if self.isCalculated:
       totalGintr    = 0.
       totalInteract = 0.
@@ -311,10 +386,9 @@ class MEADModel (object):
           instanceIndexInner = stateVector  [siteIndexInner]
           interaction        = interactions [siteIndexInner]
           totalInteract      = totalInteract + interaction [instanceIndexInner]
+      Gmicro = totalGintr - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10 * pH) + totalInteract
 
-      protonChemicalPotential = -CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10 * pH
-      Gmicro = totalGintr - nprotons * protonChemicalPotential + totalInteract
-
+    return Gmicro
 # Slower but more accurate?
 #        for siteIndexInner in range (0, nsites):
 #          instanceIndexInner = stateVector  [siteIndexInner]
@@ -323,10 +397,6 @@ class MEADModel (object):
 #
 #      protonChemicalPotential = -CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10 * pH
 #      Gmicro = totalGintr - nprotons * protonChemicalPotential + 0.5 * totalInteract
-    else:
-      Gmicro = None
-
-    return Gmicro
 
 
   def CalculateEnergies (self, log = logFile):
@@ -656,7 +726,6 @@ class MEADModel (object):
     """List probabilities of occurance of instances."""
     if LogFileActive (log):
       if self.isCalculated:
-        
         maxinstances = 0
         for site in self.meadSites:
           ninstances = len (site.instances)

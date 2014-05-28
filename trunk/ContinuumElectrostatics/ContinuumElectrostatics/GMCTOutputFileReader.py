@@ -19,14 +19,14 @@ class GMCTOutputFileReader (TextFileReader):
     TextFileReader.__init__ (self, name)
 
 
-  def Parse (self, temperature, log = logFile):
+  def Parse (self, temperature = 300.0, log = logFile):
     """Parse the data on the file."""
     if not self.QPARSED:
       if LogFileActive (log):
         self.log = log
 
       self.Open ()
-      convert       = 1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * CONSTANT_LN10 * temperature)
+      convert       = -1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * CONSTANT_LN10 * temperature)
       shift         = None
       line          = None
       pHtable       = [] 
@@ -40,9 +40,7 @@ class GMCTOutputFileReader (TextFileReader):
           if line.startswith ("chemical potential"):
             tokens = line.split ()
             mu     = float (tokens[2]) 
-            if not shift:
-              shift  = mu * convert
-            pH = (mu * convert) - shift
+            pH = mu * convert
             pHtable.append (pH)
 
             self.GetLine ()
@@ -62,13 +60,11 @@ class GMCTOutputFileReader (TextFileReader):
                 entries = []
               entries.append (float (probability))
               probabilities[label] = entries
-
       except EOFError:
         pass
 
       self.pHtable       = pHtable
       self.probabilities = probabilities
-
       self.WarningStop ()
       self.Close ()
       self.log     = None

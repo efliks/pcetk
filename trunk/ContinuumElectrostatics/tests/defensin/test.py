@@ -19,7 +19,7 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/defensin.crd")
 
 
 #===========================================
-ce_model = MEADModel (meadPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 2)
+ce_model = MEADModel (meadPath = "/home/mikolaj/local/bin/", gmctPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 2)
 
 ce_model.Initialize (mol)
 
@@ -31,16 +31,30 @@ ce_model.WriteJobFiles (mol)
 
 ce_model.CalculateEnergies ()
 
-ce_model.WriteGintr ()
 
-ce_model.WriteW ()
+logFile.Text ("\n*** Calculating titration curves with GMCT ***\n")
 
-ce_model.CalculateProbabilitiesAnalytically ()
+ce_model.CalculateCurves (directory = "curves_gmct")
 
-ce_model.SummaryProbabilities ()
 
-ce_model.CalculateCurvesAnalytically ()
+logFile.Text ("\n*** Calculating titration curves analytically ***\n")
 
+ce_model.CalculateCurves (analytically = True, directory = "curves_analytic")
+
+
+
+#  logFile.Text ("\n*** Calculating probabilities analytically ***\n")
+#  
+#  ce_model.CalculateProbabilitiesAnalytically ()
+#  
+#  ce_model.SummaryProbabilities ()
+#  
+#  
+#  logFile.Text ("\n*** Calculating probabilities in GMCT ***\n")
+#  
+#  ce_model.CalculateProbabilitiesGMCT ()
+#  
+#  ce_model.SummaryProbabilities ()
 
 #===========================================
 logFile.Footer ()

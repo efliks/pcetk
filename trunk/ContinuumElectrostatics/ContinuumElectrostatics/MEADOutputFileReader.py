@@ -56,9 +56,9 @@ class MEADOutputFileReader (TextFileReader):
                 self.interactions.append ([site, instance, energy])
       except EOFError:
         pass
+
       self.WarningStop ()
       self.Close ()
-
       self.log     = None
       self.QPARSED = True
 
