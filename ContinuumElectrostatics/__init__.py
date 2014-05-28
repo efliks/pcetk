@@ -9,6 +9,6 @@
 
 The model allows for predictions of protonation states of titratable residues in proteins."""
 
-from Model              import MEADModel
-                              
-from StateVector        import StateVector
+from Model                 import MEADModel
+                                 
+from StateVector           import StateVector
