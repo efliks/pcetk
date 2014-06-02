@@ -19,7 +19,7 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/defensin.crd")
 
 
 #===========================================
-ce_model = MEADModel (meadPath = "/home/mikolaj/local/bin/", gmctPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 2)
+ce_model = MEADModel (meadPath = "/home/mikolaj/local/bin/", gmctPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 4)
 
 ce_model.Initialize (mol)
 
@@ -34,12 +34,12 @@ ce_model.CalculateEnergies ()
 
 logFile.Text ("\n*** Calculating titration curves with GMCT ***\n")
 
-ce_model.CalculateCurves (directory = "curves_gmct")
+ce_model.CalculateCurves (directory = "curves_gmct2")
 
 
 logFile.Text ("\n*** Calculating titration curves analytically ***\n")
 
-ce_model.CalculateCurves (analytically = True, directory = "curves_analytic")
+ce_model.CalculateCurves (analytically = True, directory = "curves_analytic2")
 
 
 
