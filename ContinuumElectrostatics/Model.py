@@ -5,9 +5,11 @@
 #                          Mikolaj J. Feliks (2014)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
-"""MEADModel is a class representing the continuum electrostatic model."""
+"""MEADModel is a class representing the continuum electrostatic model.
 
-import os, glob, math, subprocess
+CurvesThread is a class for parallel calculations of titration curves."""
+
+import os, glob, math, threading, subprocess
 
 
 from pCore             import logFile, LogFileActive, Selection, Vector3, YAMLUnpickle, Clone, UNITS_ENERGY_KILOCALORIES_PER_MOLE_TO_KILOJOULES_PER_MOLE
@@ -52,6 +54,38 @@ nmcequi     100
 nmu         1
 mu          %f  %f  0.0  0  0
 """
+
+
+#-------------------------------------------------------------------------------
+class CurvesThread (threading.Thread):
+  """A class for running parallel calculations of titration curves."""
+
+  def __init__ (self, ContinuumElectrostaticModel, pH, analytically = False, log = logFile):
+    """Constructor."""
+    threading.Thread.__init__ (self)
+    self.model        = ContinuumElectrostaticModel
+    self.pH           = pH
+    self.analytically = analytically
+    self.log          = log
+
+
+  def run (self):
+    """Run the calculations and collect the results."""
+    if self.analytically:
+      self.model.CalculateProbabilitiesAnalytically (pH = self.pH, log = None)
+    else:
+      self.model.CalculateProbabilitiesGMCT (pH = self.pH, log = None)
+
+    sites = []
+    for site in self.model.meadSites:
+      sites.append (map (lambda instance: instance.probability, site.instances))
+    self.sites = sites
+#    sites = []
+#    for site in self.model.meadSites:
+#      instances = []
+#      for instance in site.instances):
+#        instances.append (instance.probability)
+#      sites.append (instances)
 
 
 #-------------------------------------------------------------------------------
@@ -188,7 +222,7 @@ class MEADModel (object):
 
 
   def CalculateCurves (self, analytically = False, resolution = 0.5, directory = "curves", log = logFile):
-    """Calculate titration curves using GMCT (default) or analytically."""
+    """Calculate titration curves using GMCT or analytically."""
     if self.isCalculated:
       nsteps = int (14.0 / resolution + 1)
       sites  = []
@@ -197,22 +231,65 @@ class MEADModel (object):
         for instance in site.instances:
           instances.append ([None] * nsteps)
         sites.append (instances)
-  
-      # Go over pH values 0...14
-      pH = 0.
-      for step in range (0, nsteps):
-        if analytically:
-          self.CalculateProbabilitiesAnalytically (pH = pH, log = None)
+
+      if LogFileActive (log):
+        if self.nthreads < 2:
+          log.Text ("\nStarting serial run.\n")
         else:
-          self.CalculateProbabilitiesGMCT (pH = pH, log = None)
-  
-        for siteIndex, site in enumerate (self.meadSites):
-          for instIndex, instance in enumerate (site.instances):
-             sites[siteIndex][instIndex][step] = instance.probability
-  
-        if LogFileActive (log):
-          log.Text ("Calculated pH = %.2f\n" % pH)
-        pH = pH + resolution
+          log.Text ("\nStarting parallel run on %d CPUs.\n" % self.nthreads)
+
+
+      if self.nthreads < 2:
+        pH = 0.
+        for step in range (0, nsteps):
+          if analytically:
+            self.CalculateProbabilitiesAnalytically (pH = pH, log = None)
+          else:
+            self.CalculateProbabilitiesGMCT (pH = pH, log = None)
+    
+          for siteIndex, site in enumerate (self.meadSites):
+            for instIndex, instance in enumerate (site.instances):
+              sites[siteIndex][instIndex][step] = instance.probability
+          pH = pH + resolution
+      else:
+        batches = []
+        batch   = []
+        limit   = self.nthreads - 1
+        pH      = 0.
+
+        for step in range (0, nsteps):
+          newThread = CurvesThread (self, pH, analytically = analytically, log = log)
+          batch.append (newThread)
+          if len (batch) > limit:
+            batches.append (batch)
+            batch = []
+          pH = pH + resolution
+
+        if batch:
+          batches.append (batch)
+
+        for batch in batches:
+          for thread in batch:
+            thread.start ()
+          for thread in batch:
+            thread.join ()
+
+#        step = 0
+#        for batch in batches:
+#          for thread in batch:
+#            thread.start ()
+#          for thread in batch:
+#            thread.join ()
+#
+#          for thread in batch:
+#            for siteIndex, site in enumerate (thread.sites):
+#              for instIndex, instProbability in enumerate (site):
+#                sites[siteIndex][instIndex][step] = instProbability
+#            step = step + 1
+
+      if LogFileActive (log):
+        log.Text ("\nCalculating titration curves complete.\n")
+
   
       # Write results to files
       if not os.path.exists (directory):
@@ -246,22 +323,25 @@ class MEADModel (object):
 
       # Prepare input files and directories for GMCT
       dirConf = join (self.scratch, "gmct/conf")
-      if not exists (dirConf): 
-        mkdir (dirConf)
+      if not exists (dirConf): mkdir (dirConf)
 
       dirCalc = join (self.scratch, "gmct/%s" % pH)
-      if not exists (dirCalc): 
-        mkdir (dirCalc)
+      if not exists (dirCalc): mkdir (dirCalc)
 
-      self.WriteGintr (filename = join (dirConf, "%s.gint"  % project))
-      self.WriteW     (filename = join (dirConf, "%s.inter" % project))
+      fileGint = join (dirConf, "%s.gint" % project)
+      if not exists (fileGint): self.WriteGintr (fileGint)
 
-      WriteInputFile (join (dirCalc, "%s.conf"  % project), ["conf  0.0  0.0  0.0\n"])
-      WriteInputFile (join (dirCalc, "%s.setup" % project), _DefaultGmctSetup % (self.temperature, potential, potential))
+      fileInter = join (dirConf, "%s.inter" % project)
+      if not exists (fileInter): self.WriteW (fileInter)
+
+      fileConf = join (dirCalc, "%s.conf" % project)
+      if not exists (fileConf): WriteInputFile (fileConf, ["conf  0.0  0.0  0.0\n"])
+
+      fileSetup = join (dirCalc, "%s.setup" % project)
+      if not exists (fileSetup): WriteInputFile (fileSetup, _DefaultGmctSetup % (self.temperature, potential, potential))
 
       linkname = join (dirCalc, "conf")
-      if not exists (linkname):
-        link ("../conf", linkname)
+      if not exists (linkname): link ("../conf", linkname)
 
       # Run GMCT
       fOutput = "%s.gmct-out" % project

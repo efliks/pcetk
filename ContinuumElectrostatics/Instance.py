@@ -24,7 +24,7 @@ class InstanceThread (threading.Thread):
 
   It also calculates Gintr."""
 
-  def __init__ (self, instance = None, log = logFile):
+  def __init__ (self, instance, log = logFile):
     """Constructor."""
     threading.Thread.__init__ (self)
     self.instance = instance
