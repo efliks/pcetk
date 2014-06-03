@@ -5,9 +5,7 @@
 #                          Mikolaj J. Feliks (2014)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
-"""MEADModel is a class representing the continuum electrostatic model.
-
-CurvesThread is a class for parallel calculations of titration curves."""
+"""MEADModel is a class representing the continuum electrostatic model."""
 
 import os, glob, math, threading, subprocess
 
@@ -46,46 +44,14 @@ blab        1
 nconfflip   10
 tlimit      3
 itraj       0
-nmcfull     10000
+nmcfull     1000
 temp        %f
 icorr       0
 limit       2
-nmcequi     100
+nmcequi     300
 nmu         1
 mu          %f  %f  0.0  0  0
 """
-
-
-#-------------------------------------------------------------------------------
-class CurvesThread (threading.Thread):
-  """A class for running parallel calculations of titration curves."""
-
-  def __init__ (self, ContinuumElectrostaticModel, pH, analytically = False, log = logFile):
-    """Constructor."""
-    threading.Thread.__init__ (self)
-    self.model        = ContinuumElectrostaticModel
-    self.pH           = pH
-    self.analytically = analytically
-    self.log          = log
-
-
-  def run (self):
-    """Run the calculations and collect the results."""
-    if self.analytically:
-      self.model.CalculateProbabilitiesAnalytically (pH = self.pH, log = None)
-    else:
-      self.model.CalculateProbabilitiesGMCT (pH = self.pH, log = None)
-
-    sites = []
-    for site in self.model.meadSites:
-      sites.append (map (lambda instance: instance.probability, site.instances))
-    self.sites = sites
-#    sites = []
-#    for site in self.model.meadSites:
-#      instances = []
-#      for instance in site.instances):
-#        instances.append (instance.probability)
-#      sites.append (instances)
 
 
 #-------------------------------------------------------------------------------
@@ -112,14 +78,14 @@ class MEADModel (object):
     "isFilesWritten"     :  False                   ,
     "isCalculated"       :  False                   ,
     "splitToDirectories" :  True                    ,
-                      }
+        }
 
   defaultAttributeNames = {
     "Temperature"       : "temperature"    ,  "Split Directories" : "splitToDirectories" ,
     "Ionic Strength"    : "ionicStrength"  ,  "Initialized"       : "isInitialized"      ,
     "Threads"           : "nthreads"       ,  "Files Written"     : "isFilesWritten"     ,
     "Delete Job Files"  : "deleteJobFiles" ,  "Calculated"        : "isCalculated"       ,
-                          }
+        }
 
 
   def __del__ (self):
@@ -222,9 +188,66 @@ class MEADModel (object):
 
 
   def CalculateCurves (self, analytically = False, resolution = 0.5, directory = "curves", log = logFile):
-    """Calculate titration curves using GMCT or analytically."""
+    """Calculate titration curves."""
+    if LogFileActive (log):
+      if self.nthreads < 2:
+        log.Text ("\nStarting serial run.\n")
+        calculate = self.CalculateCurvesSerial 
+      else:
+        log.Text ("\nStarting parallel run on %d CPUs.\n" % self.nthreads)
+        calculate = self.CalculateCurvesParallel 
+    calculate (analytically = analytically, resolution = resolution, directory = directory, log = log)
+
+
+  def CalculateCurvesParallel (self, analytically = False, resolution = 0.5, directory = "curves", log = logFile):
+    """Calculate titration curves using GMCT or analytically in parallel mode."""
+    pass
+#
+#    class StepThread (threading.Thread):
+#      """Calculate each pH-step in a separate thread."""
+#      def __init__ (self, meadModel, analytically, pH):
+#        self.model = meadModel
+#        self.pH    = pH
+#        if analytically:
+#          self.calculate = meadModel.CalculateProbabilitiesAnalytically
+#        else:
+#          self.calculate = meadModel.CalculateProbabilitiesGMCT
+#
+#      def run (self):
+#        self.calculate (self.pH, log = None)
+#        sites = []
+#        for site in self.model.meadSites:
+#          instances = []
+#          for instance in site.instances:
+#            instances.append (instance.probability)
+#          sites.append (instances)
+#        self.sites = sites
+#
+#
+#    nsteps  = int (14.0 / resolution + 1)
+#    limit   = self.nthreads - 1
+#    batches = []
+#    batch   = []
+#    for step in range (0, nsteps):
+#      batch.append (StepThread (self, analytically = analytically, step * resolution))
+#      if len (batch) > limit:
+#        batches.append (batch)
+#        batch = []
+#    if batch:
+#      batches.append (batch)
+#
+#    step = 0
+#    for batch in batches:
+#      for thread in batch: thread.start ()
+#      for thread in batch: thread.join ()
+
+
+  def CalculateCurvesSerial (self, analytically = False, resolution = 0.5, directory = "curves", log = logFile):
+    """Calculate titration curves using GMCT or analytically in serial mode."""
     if self.isCalculated:
       nsteps = int (14.0 / resolution + 1)
+
+      # Prepare a three-dimensional list of M-sites, each site N-instances, each instance O-steps of pH
       sites  = []
       for site in self.meadSites:
         instances = []
@@ -233,74 +256,41 @@ class MEADModel (object):
         sites.append (instances)
 
       if LogFileActive (log):
-        if self.nthreads < 2:
-          log.Text ("\nStarting serial run.\n")
+        tab = log.GetTable (columns = [10, 10])
+        tab.Start ()
+        tab.Heading ("Step")
+        tab.Heading ("pH")
+
+      for step in range (0, nsteps):
+        if analytically:
+          self.CalculateProbabilitiesAnalytically (pH = step * resolution, log = None)
         else:
-          log.Text ("\nStarting parallel run on %d CPUs.\n" % self.nthreads)
+          self.CalculateProbabilitiesGMCT (pH = step * resolution, log = None)
+   
+        # Fill in the three-dimensional list
+        for siteIndex, site in enumerate (self.meadSites):
+          for instanceIndex, instance in enumerate (site.instances):
+            sites[siteIndex][instanceIndex][step] = instance.probability
 
-
-      if self.nthreads < 2:
-        pH = 0.
-        for step in range (0, nsteps):
-          if analytically:
-            self.CalculateProbabilitiesAnalytically (pH = pH, log = None)
-          else:
-            self.CalculateProbabilitiesGMCT (pH = pH, log = None)
-    
-          for siteIndex, site in enumerate (self.meadSites):
-            for instIndex, instance in enumerate (site.instances):
-              sites[siteIndex][instIndex][step] = instance.probability
-          pH = pH + resolution
-      else:
-        batches = []
-        batch   = []
-        limit   = self.nthreads - 1
-        pH      = 0.
-
-        for step in range (0, nsteps):
-          newThread = CurvesThread (self, pH, analytically = analytically, log = log)
-          batch.append (newThread)
-          if len (batch) > limit:
-            batches.append (batch)
-            batch = []
-          pH = pH + resolution
-
-        if batch:
-          batches.append (batch)
-
-        for batch in batches:
-          for thread in batch:
-            thread.start ()
-          for thread in batch:
-            thread.join ()
-
-#        step = 0
-#        for batch in batches:
-#          for thread in batch:
-#            thread.start ()
-#          for thread in batch:
-#            thread.join ()
-#
-#          for thread in batch:
-#            for siteIndex, site in enumerate (thread.sites):
-#              for instIndex, instProbability in enumerate (site):
-#                sites[siteIndex][instIndex][step] = instProbability
-#            step = step + 1
+        if LogFileActive (log):
+          tab.Entry ("%10d"   % step)
+          tab.Entry ("%10.2f" % (step * resolution))
 
       if LogFileActive (log):
+        tab.Stop ()
         log.Text ("\nCalculating titration curves complete.\n")
-
   
       # Write results to files
       if not os.path.exists (directory):
         try:
           os.mkdir (directory)
         except:
-          raise ContinuumElectrostaticsError ("Cannot create scratch directory %s" % directory)
-  
+          raise ContinuumElectrostaticsError ("Cannot create directory %s" % directory)
+ 
+      # For each instance of each site, write a curve file
       for siteIndex, site in enumerate (self.meadSites):
-        for instIndex, instance in enumerate (site.instances):
-          probabilities = sites[siteIndex][instIndex]
+        for instanceIndex, instance in enumerate (site.instances):
+          probabilities = sites[siteIndex][instanceIndex]
           lines         = []
           for step in range (0, nsteps):
             lines.append ("%f %f\n" % (step * resolution, probabilities[step]))
@@ -309,7 +299,7 @@ class MEADModel (object):
           WriteInputFile (filename, lines)
 
 
-  def CalculateProbabilitiesGMCT (self, pH = 7.0, log = logFile):
+  def CalculateProbabilitiesGMCT (self, pH = 7.0, dryRun = False, log = logFile):
     """Use GMCT to estimate protonation probabilities."""
     if self.isCalculated:
       potential = -CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10 * pH
@@ -322,10 +312,10 @@ class MEADModel (object):
       exists    = os.path.exists
 
       # Prepare input files and directories for GMCT
-      dirConf = join (self.scratch, "gmct/conf")
+      dirConf = join (self.scratch, "gmct", "conf")
       if not exists (dirConf): mkdir (dirConf)
 
-      dirCalc = join (self.scratch, "gmct/%s" % pH)
+      dirCalc = join (self.scratch, "gmct", "%s" % pH)
       if not exists (dirCalc): mkdir (dirCalc)
 
       fileGint = join (dirConf, "%s.gint" % project)
@@ -344,44 +334,44 @@ class MEADModel (object):
       if not exists (linkname): link ("../conf", linkname)
 
       # Run GMCT
-      fOutput = "%s.gmct-out" % project
-      fError  = "%s.gmct-err" % project
-
-      if exists (join (dirCalc, fOutput)):
-        pass
-      else:
-        dirWork = getcwd ()
-        chdir (dirCalc)
-        output  = open (fOutput, "w")
-        error   = open (fError,  "w")
-        command = [join (self.gmctPath, "gmct"), project]
-        try:
-          subprocess.check_call (command, stderr = error, stdout = output)
-        except:
-          raise ContinuumElectrostaticsError ("Failed running command: %s" % " ".join (command))
-        error.close  ()
-        output.close ()
-        chdir (dirWork)
-
-      # Reseting probabilities just in case 
-      for site in self.meadSites:
-        for instance in site.instances:
-          instance.probability = None
-
-      # Read probabilities from the output file
-      reader = GMCTOutputFileReader (join (dirCalc, fOutput))
-      reader.Parse ()
-
-      for site in self.meadSites:
-        for instance in site.instances:
-          key = "conf_%s_%s%s_%s" % (site.segName, site.resName, site.resSerial, instance.label)
-          instance.probability = reader.probabilities[key][0]
+      if not dryRun:
+        fileOutput = "%s.gmct-out" % project
+        fileError  = "%s.gmct-err" % project
+  
+        if exists (join (dirCalc, fileOutput)):
+          pass
+        else:
+          dirWork = getcwd ()
+          chdir (dirCalc)
+          output  = open (fileOutput, "w")
+          error   = open (fileError,  "w")
+          command = [join (self.gmctPath, "gmct"), project]
+          try:
+            subprocess.check_call (command, stderr = error, stdout = output)
+          except:
+            raise ContinuumElectrostaticsError ("Failed running command: %s" % " ".join (command))
+          error.close ()
+          output.close ()
+          chdir (dirWork)
+  
+        # Read probabilities from the output file
+        reader = GMCTOutputFileReader (join (dirCalc, fileOutput))
+        reader.Parse ()
+  
+        for site in self.meadSites:
+          for instance in site.instances:
+            key = "conf_%s_%s%s_%s" % (site.segName, site.resName, site.resSerial, instance.label)
+            instance.probability = reader.probabilities[key][0]
+# Instead of writing probabilities to instances, return them to the calling function. 
+# Otherwise the results will get mixed up in parallel mode.
+# The same applies to the analytic calculation below.
 
 
   def CalculateProbabilitiesAnalytically (self, pH = 7.0, log = logFile):
     """For each site, calculate the probability of occurance of each instance, using the Boltzmann weighted sum."""
     if self.isCalculated:
-      if len (self.meadSites) > MAX_SITES:
+      nsites = len (self.meadSites)
+      if nsites > MAX_SITES:
         raise ContinuumElectrostaticsError ("Too many sites for analytic treatment (%d)\n" % nsites)
   
       # Calculate all state energies
@@ -558,7 +548,6 @@ class MEADModel (object):
     # Check for the CHARMM energy model
     if system.energyModel.mmModel.label is not "CHARMM":
       raise ContinuumElectrostaticsError ("The energy model of the system is different from CHARMM.")
-
 
     if not self.isInitialized:
       ParseLabel = system.sequence.ParseLabel
