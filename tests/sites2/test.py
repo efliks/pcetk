@@ -31,12 +31,6 @@ ce_model.WriteJobFiles (mol)
 
 ce_model.CalculateEnergies ()
 
-ce_model.WriteGintr ()
-
-ce_model.WriteW ()
-
-Pickle ("ce_model.pkl", ce_model)
-
 ce_model.CalculateProbabilitiesAnalytically ()
 
 ce_model.SummaryProbabilities ()
