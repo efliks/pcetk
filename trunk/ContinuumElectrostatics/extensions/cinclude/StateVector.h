@@ -13,8 +13,8 @@
 #include "Memory.h"
 #include "Status.h"
 
-#define CONSTANT_MOLAR_GAS_KCAL_MOL  1.9871653920000e-03
-#define CONSTANT_LN10                2.302585092994046
+#define CONSTANT_MOLAR_GAS_KCAL_MOL  0.001987165392
+#define CONSTANT_LN10                2.302585092994
 
 
 typedef struct {
