@@ -44,11 +44,11 @@ blab        1
 nconfflip   10
 tlimit      3
 itraj       0
-nmcfull     1000
+nmcfull     10000
 temp        %f
 icorr       0
 limit       2
-nmcequi     300
+nmcequi     100
 nmu         1
 mu          %f  %f  0.0  0  0
 """
@@ -246,14 +246,8 @@ class MEADModel (object):
     """Calculate titration curves using GMCT or analytically in serial mode."""
     if self.isCalculated:
       nsteps = int (14.0 / resolution + 1)
-
-      # Prepare a three-dimensional list of M-sites, each site N-instances, each instance O-steps of pH
-      sites  = []
-      for site in self.meadSites:
-        instances = []
-        for instance in site.instances:
-          instances.append ([None] * nsteps)
-        sites.append (instances)
+      steps  = []
+      tab    = None
 
       if LogFileActive (log):
         tab = log.GetTable (columns = [10, 10])
@@ -263,20 +257,15 @@ class MEADModel (object):
 
       for step in range (0, nsteps):
         if analytically:
-          self.CalculateProbabilitiesAnalytically (pH = step * resolution, log = None)
+          result = self.CalculateProbabilitiesAnalytically (pH = step * resolution, log = None)
         else:
-          self.CalculateProbabilitiesGMCT (pH = step * resolution, log = None)
+          result = self.CalculateProbabilitiesGMCT (pH = step * resolution, log = None)
+        steps.append (result)
    
-        # Fill in the three-dimensional list
-        for siteIndex, site in enumerate (self.meadSites):
-          for instanceIndex, instance in enumerate (site.instances):
-            sites[siteIndex][instanceIndex][step] = instance.probability
-
-        if LogFileActive (log):
+        if tab:
           tab.Entry ("%10d"   % step)
           tab.Entry ("%10.2f" % (step * resolution))
-
-      if LogFileActive (log):
+      if tab:
         tab.Stop ()
         log.Text ("\nCalculating titration curves complete.\n")
   
@@ -290,94 +279,96 @@ class MEADModel (object):
       # For each instance of each site, write a curve file
       for siteIndex, site in enumerate (self.meadSites):
         for instanceIndex, instance in enumerate (site.instances):
-          probabilities = sites[siteIndex][instanceIndex]
-          lines         = []
+          lines = []
           for step in range (0, nsteps):
-            lines.append ("%f %f\n" % (step * resolution, probabilities[step]))
+            lines.append ("%f %f\n" % (step * resolution, steps[step][siteIndex][instanceIndex]))
 
           filename = os.path.join (directory, "%s_%s.dat" % (site.label, instance.label))
           WriteInputFile (filename, lines)
 
 
-  def CalculateProbabilitiesGMCT (self, pH = 7.0, dryRun = False, log = logFile):
+  def CalculateProbabilitiesGMCT (self, pH = 7.0, log = logFile):
     """Use GMCT to estimate protonation probabilities."""
     if self.isCalculated:
       potential = -CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10 * pH
       project   = "job"
-      mkdir     = os.makedirs
-      chdir     = os.chdir
-      getcwd    = os.getcwd
-      link      = os.symlink
-      join      = os.path.join
-      exists    = os.path.exists
 
       # Prepare input files and directories for GMCT
-      dirConf = join (self.scratch, "gmct", "conf")
-      if not exists (dirConf): mkdir (dirConf)
+      dirConf = os.path.join (self.scratch, "gmct", "conf")
+      if not os.path.exists (dirConf): os.makedirs (dirConf)
 
-      dirCalc = join (self.scratch, "gmct", "%s" % pH)
-      if not exists (dirCalc): mkdir (dirCalc)
+      dirCalc = os.path.join (self.scratch, "gmct", "%s" % pH)
+      if not os.path.exists (dirCalc): os.makedirs (dirCalc)
 
-      fileGint = join (dirConf, "%s.gint" % project)
-      if not exists (fileGint): self.WriteGintr (fileGint)
+      fileGint = os.path.join (dirConf, "%s.gint" % project)
+      if not os.path.exists (fileGint): self.WriteGintr (fileGint)
 
-      fileInter = join (dirConf, "%s.inter" % project)
-      if not exists (fileInter): self.WriteW (fileInter)
+      fileInter = os.path.join (dirConf, "%s.inter" % project)
+      if not os.path.exists (fileInter): self.WriteW (fileInter)
 
-      fileConf = join (dirCalc, "%s.conf" % project)
-      if not exists (fileConf): WriteInputFile (fileConf, ["conf  0.0  0.0  0.0\n"])
+      fileConf = os.path.join (dirCalc, "%s.conf" % project)
+      if not os.path.exists (fileConf): WriteInputFile (fileConf, ["conf  0.0  0.0  0.0\n"])
 
-      fileSetup = join (dirCalc, "%s.setup" % project)
-      if not exists (fileSetup): WriteInputFile (fileSetup, _DefaultGmctSetup % (self.temperature, potential, potential))
+      fileSetup = os.path.join (dirCalc, "%s.setup" % project)
+      if not os.path.exists (fileSetup): WriteInputFile (fileSetup, _DefaultGmctSetup % (self.temperature, potential, potential))
 
-      linkname = join (dirCalc, "conf")
-      if not exists (linkname): link ("../conf", linkname)
+      linkname = os.path.join (dirCalc, "conf")
+      if not os.path.exists (linkname): os.symlink ("../conf", linkname)
 
       # Run GMCT
-      if not dryRun:
-        fileOutput = "%s.gmct-out" % project
-        fileError  = "%s.gmct-err" % project
+      output = os.path.join (dirCalc, "%s.gmct-out" % project)
+      error  = os.path.join (dirCalc, "%s.gmct-err" % project)
+
+      if os.path.exists (os.path.join (dirCalc, output)):
+        pass
+      else:
+        command = [os.path.join (self.gmctPath, "gmct"), project]
+        try:
+          out       = open (output, "w")
+          err       = open (error,  "w")
+          dirReturn = os.getcwd ()
+          os.chdir (dirCalc)
+          subprocess.check_call (command, stderr = err, stdout = out)
+          os.chdir (dirReturn)
+          out.close ()
+          err.close ()
+        except:
+          raise ContinuumElectrostaticsError ("Failed running command: %s" % " ".join (command))
   
-        if exists (join (dirCalc, fileOutput)):
-          pass
-        else:
-          dirWork = getcwd ()
-          chdir (dirCalc)
-          output  = open (fileOutput, "w")
-          error   = open (fileError,  "w")
-          command = [join (self.gmctPath, "gmct"), project]
-          try:
-            subprocess.check_call (command, stderr = error, stdout = output)
-          except:
-            raise ContinuumElectrostaticsError ("Failed running command: %s" % " ".join (command))
-          error.close ()
-          output.close ()
-          chdir (dirWork)
+      # Read probabilities from the output file
+      reader = GMCTOutputFileReader (output)
+      reader.Parse ()
+
+      # Construct a two-dimensional list of M-sites, each site N-instances, initiated with zeros
+      sites = []
+      for site in self.meadSites:
+        instances = []
+        for instance in site.instances:
+          instances.append (0.)
+        sites.append (instances)
   
-        # Read probabilities from the output file
-        reader = GMCTOutputFileReader (join (dirCalc, fileOutput))
-        reader.Parse ()
-  
-        for site in self.meadSites:
-          for instance in site.instances:
-            key = "conf_%s_%s%s_%s" % (site.segName, site.resName, site.resSerial, instance.label)
-            instance.probability = reader.probabilities[key][0]
-# Instead of writing probabilities to instances, return them to the calling function. 
-# Otherwise the results will get mixed up in parallel mode.
-# The same applies to the analytic calculation below.
+      for siteIndex, site in enumerate (self.meadSites):
+        for instanceIndex, instance in enumerate (site.instances):
+          key                             = "conf_%s_%s%s_%s" % (site.segName, site.resName, site.resSerial, instance.label)
+          probability                     = reader.probabilities[key][0]
+          sites[siteIndex][instanceIndex] = probability
+          instance.probability            = probability
+
+      # Return the two-dimensional list
+      return sites
 
 
   def CalculateProbabilitiesAnalytically (self, pH = 7.0, log = logFile):
     """For each site, calculate the probability of occurance of each instance, using the Boltzmann weighted sum."""
     if self.isCalculated:
       nsites = len (self.meadSites)
-      if nsites > MAX_SITES:
+      if nsites > ANALYTIC_SITES:
         raise ContinuumElectrostaticsError ("Too many sites for analytic treatment (%d)\n" % nsites)
   
       # Calculate all state energies
-      stateVector   = StateVector (self)
-      stateEnergies = []
       increment     = True
+      stateEnergies = []
+      stateVector   = StateVector (self)
       stateVector.Reset ()
 
       while increment:
@@ -402,31 +393,44 @@ class MEADModel (object):
       if LogFileActive (log):
         log.Text ("\nCalculating Boltzmann factors complete.\n")
  
-      # Set all probabilities to zero
+      # Construct a two-dimensional list of M-sites, each site N-instances, initiated with zeros
+      sites = []
       for site in self.meadSites:
+        instances = []
         for instance in site.instances:
-          instance.probability = 0.
- 
+          instances.append (0.)
+        sites.append (instances)
+
       # Calculate the probabilities 
+      stateVector.Reset ()
       increment  = True
       stateIndex = 0
-      stateVector.Reset ()
-  
+
       while increment:
         for siteIndex, site in enumerate (self.meadSites):
-          instanceIndex        = stateVector[siteIndex]
-          instance             = site.instances[instanceIndex]
-          instance.probability = instance.probability + bfactors[stateIndex]
+          instanceIndex                   = stateVector[siteIndex]
+          probability                     = sites[siteIndex][instanceIndex]
+          probability                     = probability + bfactors[stateIndex]
+          sites[siteIndex][instanceIndex] = probability
         increment  = stateVector.Increment ()
         stateIndex = stateIndex + 1
-  
+
       bsum = 1.0 / sum (bfactors)
-      for site in self.meadSites:
-        for instance in site.instances:
-          instance.probability = instance.probability * bsum
+      for siteIndex, site in enumerate (sites):
+        for instanceIndex, instance in enumerate (site):
+          probability                     = sites[siteIndex][instanceIndex] * bsum
+          sites[siteIndex][instanceIndex] = probability
   
       if LogFileActive (log):
         log.Text ("\nCalculating protonation probabilities complete.\n")
+
+      # Copy the calculated probabilities into the MEADModel
+      for siteIndex, site in enumerate (self.meadSites):
+        for instanceIndex, instance in enumerate (site.instances):
+          instance.probability = sites[siteIndex][instanceIndex]
+
+      # Return the two-dimensional list
+      return sites
 
 
   def CalculateMicrostateEnergy (self, stateVector, pH = 7.0):
@@ -482,7 +486,7 @@ class MEADModel (object):
     Finally, use the calculated homotransfer energies to calculate Gintr from Gmodel.
     """
     if self.isFilesWritten:
-      table = None
+      tab = None
 
       if LogFileActive (log):
         if self.nthreads < 2:
@@ -490,15 +494,15 @@ class MEADModel (object):
         else:
           log.Text ("\nStarting parallel run on %d CPUs.\n" % self.nthreads)
 
-        table = log.GetTable (columns = [6, 6, 6, 6, 16, 16, 16, 16, 16, 16])
-        table.Start ()
-        table.Heading ("Instance of a site", columnSpan = 4)
-        table.Heading ("Gborn_model"  )
-        table.Heading ("Gback_model"  )
-        table.Heading ("Gborn_protein")
-        table.Heading ("Gback_protein")
-        table.Heading ("Gmodel"       )
-        table.Heading ("Gintr"        )
+        tab = log.GetTable (columns = [6, 6, 6, 6, 16, 16, 16, 16, 16, 16])
+        tab.Start ()
+        tab.Heading ("Instance of a site", columnSpan = 4)
+        tab.Heading ("Gborn_model"  )
+        tab.Heading ("Gback_model"  )
+        tab.Heading ("Gborn_protein")
+        tab.Heading ("Gback_protein")
+        tab.Heading ("Gmodel"       )
+        tab.Heading ("Gintr"        )
 
       if self.nthreads < 2:
         for meadSite in self.meadSites:
@@ -507,7 +511,7 @@ class MEADModel (object):
             instance.CalculateSiteInProtein (log)
             instance.CalculateGintr (log)
 
-            instance.TableEntry (table)
+            instance.TableEntry (tab)
       else:
         batches = []
         threads = []
@@ -533,10 +537,10 @@ class MEADModel (object):
           # Print the results at the end of each batch, otherwise they come in random order
           for thread in batch:
             instance = thread.instance
-            instance.TableEntry (table)
+            instance.TableEntry (tab)
 
-      if table:
-        table.Stop ()
+      if tab:
+        tab.Stop ()
         log.Text ("\nCalculating electrostatic energies complete.\n")
 
       self.isCalculated = True
@@ -772,23 +776,23 @@ class MEADModel (object):
     """List titratable residues."""
     if LogFileActive (log):
       if self.isInitialized:
-        table = log.GetTable (columns = [8, 8, 8, 8, 10, 10, 10, 10])
-        table.Start ()
-        table.Heading ("SiteID")
-        table.Heading ("Site", columnSpan = 3)
-        table.Heading ("Instances")
-        table.Heading ("Center", columnSpan = 3)
+        tab = log.GetTable (columns = [8, 8, 8, 8, 10, 10, 10, 10])
+        tab.Start ()
+        tab.Heading ("SiteID")
+        tab.Heading ("Site", columnSpan = 3)
+        tab.Heading ("Instances")
+        tab.Heading ("Center", columnSpan = 3)
 
         for site in self.meadSites:
-          table.Entry ("%d" % site.siteID)
-          table.Entry (site.segName)
-          table.Entry (site.resName)
-          table.Entry (site.resSerial)
-          table.Entry ("%d" % len (site.instances))
-          table.Entry ("%10.3f" % site.center[0])
-          table.Entry ("%10.3f" % site.center[1])
-          table.Entry ("%10.3f" % site.center[2])
-        table.Stop ()
+          tab.Entry ("%d" % site.siteID)
+          tab.Entry (site.segName)
+          tab.Entry (site.resName)
+          tab.Entry (site.resSerial)
+          tab.Entry ("%d" % len (site.instances))
+          tab.Entry ("%10.3f" % site.center[0])
+          tab.Entry ("%10.3f" % site.center[1])
+          tab.Entry ("%10.3f" % site.center[2])
+        tab.Stop ()
 
  
   def SummaryProbabilities (self, log = logFile):
@@ -800,15 +804,15 @@ class MEADModel (object):
           ninstances = len (site.instances)
           if ninstances > maxinstances: maxinstances = ninstances
 
-        table = log.GetTable (columns = [6, 6, 6] + [8, 8] * maxinstances)
-        table.Start ()
-        table.Heading ("Site", columnSpan = 3)
-        table.Heading ("Probabilities of instances", columnSpan = maxinstances * 2)
+        tab = log.GetTable (columns = [6, 6, 6] + [8, 8] * maxinstances)
+        tab.Start ()
+        tab.Heading ("Site", columnSpan = 3)
+        tab.Heading ("Probabilities of instances", columnSpan = maxinstances * 2)
 
         for site in self.meadSites:
-          table.Entry ("%6s" % site.segName)
-          table.Entry ("%6s" % site.resName)
-          table.Entry ("%6s" % site.resSerial)
+          tab.Entry ("%6s" % site.segName)
+          tab.Entry ("%6s" % site.resName)
+          tab.Entry ("%6s" % site.resSerial)
 
           maxProb = 0.
           for instance in site.instances:
@@ -821,13 +825,13 @@ class MEADModel (object):
               label = "*%s" % instance.label
             else:
               label = instance.label
-            table.Entry ("%8s"   % label)
-            table.Entry ("%8.4f" % instance.probability)
+            tab.Entry ("%8s"   % label)
+            tab.Entry ("%8.4f" % instance.probability)
 
           for filler in range (0, maxinstances - len (site.instances)):
-            table.Entry ("")
-            table.Entry ("")
-        table.Stop ()
+            tab.Entry ("")
+            tab.Entry ("")
+        tab.Stop ()
 
 
   def DeleteJobFiles (self):
