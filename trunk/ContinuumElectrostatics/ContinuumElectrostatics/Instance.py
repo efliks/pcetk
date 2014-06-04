@@ -184,34 +184,34 @@ class MEADInstance (object):
         if sort: 
           instances.sort ()
 
-        table = log.GetTable (columns = [6, 6, 6, 6, 16])
-        table.Start ()
-        table.Heading ("Instance of a site", columnSpan = 4)
-        table.Heading ("Wij")
+        tab = log.GetTable (columns = [6, 6, 6, 6, 16])
+        tab.Start ()
+        tab.Heading ("Instance of a site", columnSpan = 4)
+        tab.Heading ("Wij")
 
         for Wij, segName, resName, resSerial, label in instances:
-          table.Entry (segName)
-          table.Entry (resName)
-          table.Entry (resSerial)
-          table.Entry (label)
-          table.Entry ("%16.4f" % Wij)
-        table.Stop ()
+          tab.Entry (segName)
+          tab.Entry (resName)
+          tab.Entry (resSerial)
+          tab.Entry (label)
+          tab.Entry ("%16.4f" % Wij)
+        tab.Stop ()
 
 
-  def TableEntry (self, table = None):
-    """Report calculated energies in a table."""
-    if table:
+  def TableEntry (self, tab = None):
+    """Report calculated energies in a tab."""
+    if tab:
       site = self.parent
-      table.Entry (site.segName)
-      table.Entry (site.resName)
-      table.Entry (site.resSerial)
-      table.Entry (self.label)
-      table.Entry ("%16.4f" % self.Gborn_model)
-      table.Entry ("%16.4f" % self.Gback_model)
-      table.Entry ("%16.4f" % self.Gborn_protein)
-      table.Entry ("%16.4f" % self.Gback_protein)
-      table.Entry ("%16.4f" % self.Gmodel)
-      table.Entry ("%16.4f" % self.Gintr)
+      tab.Entry (site.segName)
+      tab.Entry (site.resName)
+      tab.Entry (site.resSerial)
+      tab.Entry (self.label)
+      tab.Entry ("%16.4f" % self.Gborn_model)
+      tab.Entry ("%16.4f" % self.Gback_model)
+      tab.Entry ("%16.4f" % self.Gborn_protein)
+      tab.Entry ("%16.4f" % self.Gback_protein)
+      tab.Entry ("%16.4f" % self.Gmodel)
+      tab.Entry ("%16.4f" % self.Gintr)
 
 
 #===============================================================================

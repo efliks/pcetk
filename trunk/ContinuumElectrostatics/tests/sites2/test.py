@@ -19,7 +19,7 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/testpeptide.crd")
 
 
 #===========================================
-ce_model = MEADModel (meadPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 2)
+ce_model = MEADModel (meadPath = "/home/mikolaj/local/bin/", gmctPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 1)
 
 ce_model.Initialize (mol)
 
@@ -31,12 +31,32 @@ ce_model.WriteJobFiles (mol)
 
 ce_model.CalculateEnergies ()
 
-ce_model.CalculateProbabilitiesAnalytically ()
 
-ce_model.SummaryProbabilities ()
+logFile.Text ("\n*** Calculating curves analytically ***\n")
+
+ce_model.CalculateCurves (analytically = True,  directory = "curves_analytic")
 
 
-ce_model.CalculateCurvesAnalytically ()
+logFile.Text ("\n*** Calculating curves with GMCT ***\n")
+
+ce_model.CalculateCurves (analytically = False, directory = "curves_gmct")
+
+
+
+
+#  probAnalytic = ce_model.CalculateProbabilitiesAnalytically ()
+#  
+#  ce_model.SummaryProbabilities ()
+#  
+#  
+#  probGMCT     = ce_model.CalculateProbabilitiesGMCT ()
+#  
+#  ce_model.SummaryProbabilities ()
+#  
+#  
+#  print probAnalytic
+#  
+#  print probGMCT
 
 
 #===========================================
