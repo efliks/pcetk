@@ -32,15 +32,13 @@ ce_model.WriteJobFiles (mol)
 ce_model.CalculateEnergies ()
 
 
-logFile.Text ("\n*** Calculating titration curves with GMCT ***\n")
+# logFile.Text ("\n*** Calculating curves using GMCT in serial mode ***\n")
+# ce_model.nthreads = 1
+# ce_model.CalculateCurves (isAnalytic = False,  directory = "curves_gmct_serial")
 
-ce_model.CalculateCurvesSerial (directory = "curves_gmct")
 
-
-#logFile.Text ("\n*** Calculating titration curves analytically ***\n")
-
-#ce_model.CalculateCurves (analytically = True, directory = "curves_analytic2")
-
+logFile.Text ("\n*** Calculating curves using GMCT in parallel mode ***\n")
+ce_model.CalculateCurves (isAnalytic = False,  directory = "curves_gmct_parallel")
 
 
 #===========================================
