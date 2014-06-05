@@ -32,29 +32,26 @@ ce_model.WriteJobFiles (mol)
 ce_model.CalculateEnergies ()
 
 
-logFile.Text ("\n*** Calculating titration curves with GMCT ***\n")
 
-ce_model.CalculateCurvesSerial (directory = "curves")
-
-
-#logFile.Text ("\n*** Calculating titration curves analytically ***\n")
-
-#ce_model.CalculateCurves (analytically = True, directory = "curves_analytic")
+logFile.Text ("\n*** Calculating curves analytically in serial mode ***\n")
+ce_model.nthreads = 1
+ce_model.CalculateCurves (isAnalytic = True,  directory = "curves_analytic_serial")
 
 
+logFile.Text ("\n*** Calculating curves using GMCT in serial mode ***\n")
+ce_model.nthreads = 1
+ce_model.CalculateCurves (isAnalytic = False,  directory = "curves_gmct_serial")
 
-#  logFile.Text ("\n*** Calculating probabilities analytically ***\n")
-#  
-#  ce_model.CalculateProbabilitiesAnalytically ()
-#  
-#  ce_model.SummaryProbabilities ()
-#  
-#  
-#  logFile.Text ("\n*** Calculating probabilities in GMCT ***\n")
-#  
-#  ce_model.CalculateProbabilitiesGMCT ()
-#  
-#  ce_model.SummaryProbabilities ()
+
+logFile.Text ("\n*** Calculating curves analytically in parallel mode ***\n")
+ce_model.nthreads = 4
+ce_model.CalculateCurves (isAnalytic = True,  directory = "curves_analytic_parallel")
+
+
+logFile.Text ("\n*** Calculating curves using GMCT in parallel mode ***\n")
+ce_model.nthreads = 4
+ce_model.CalculateCurves (isAnalytic = False,  directory = "curves_gmct_parallel")
+
 
 #===========================================
 logFile.Footer ()
