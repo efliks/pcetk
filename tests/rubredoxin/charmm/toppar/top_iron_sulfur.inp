@@ -1,0 +1,102 @@
+* Iron-sulfur center Fe(Cys)4
+*
+
+! I used CHARMM 27 with covalent parameters
+! given by Chang & Kim JCTC 2008 and charges
+! averaged from 5 Fe(SCH3)4^{2-} geometries obtained with
+! B3LYP/6311+G(3df,2pd)//B3LYP/TZP:
+!
+! reduced
+! ;       CB      CT2    -0.12    4  ; GMA Mulliken
+! ;      HB1      HA      0.06    5  ;
+! ;      HB2      HA      0.06    6  ;
+! ;       SG      S      -0.93    7  ;
+! ;       FE     FE       1.72    0  ; GMA Mulliken
+!
+! oxidized
+! ;       CB      CT2     0.02    4  ; GMA Mulliken
+! ;      HB1      HA      0.06    5  ;
+! ;      HB2      HA      0.06    6  ;
+! ;       SG      S      -0.75    7  ;
+! ;       FE     FE       1.44    0  ; GMA Mulliken
+
+DECL  -CA
+DECL  -C
+DECL  -O
+DECL  +N
+DECL  +H
+DECL  +CA
+
+DEFA FIRS NONE LAST NONE
+AUTO ANGLES DIHE  ANGL
+
+!==========================
+RESI FE              0.00
+GROUP
+ATOM FE     FE       0.00
+
+
+!==========================
+PRES FSCO           -1.00
+GROUP
+ATOM   1CB    CT2    0.02
+ATOM  1HB1    HA     0.06
+ATOM  1HB2    HA     0.06
+ATOM   1SG    S     -0.75
+ATOM   2CB    CT2    0.02
+ATOM  2HB1    HA     0.06
+ATOM  2HB2    HA     0.06
+ATOM   2SG    S     -0.75
+ATOM   3CB    CT2    0.02
+ATOM  3HB1    HA     0.06
+ATOM  3HB2    HA     0.06
+ATOM   3SG    S     -0.75
+ATOM   4CB    CT2    0.02
+ATOM  4HB1    HA     0.06
+ATOM  4HB2    HA     0.06
+ATOM   4SG    S     -0.75
+ATOM   5FE   FE      1.44
+!
+BOND 5FE 1SG
+BOND 5FE 2SG
+BOND 5FE 3SG
+BOND 5FE 4SG
+!
+DELE ATOM 1HG1
+DELE ATOM 2HG1
+DELE ATOM 3HG1
+DELE ATOM 4HG1
+
+
+!==========================
+PRES FSCR           -2.00
+GROUP
+ATOM   1CB    CT2   -0.12
+ATOM  1HB1    HA     0.06
+ATOM  1HB2    HA     0.06
+ATOM   1SG    S     -0.93
+ATOM   2CB    CT2   -0.12
+ATOM  2HB1    HA     0.06
+ATOM  2HB2    HA     0.06
+ATOM   2SG    S     -0.93
+ATOM   3CB    CT2   -0.12
+ATOM  3HB1    HA     0.06
+ATOM  3HB2    HA     0.06
+ATOM   3SG    S     -0.93
+ATOM   4CB    CT2   -0.12
+ATOM  4HB1    HA     0.06
+ATOM  4HB2    HA     0.06
+ATOM   4SG    S     -0.93
+ATOM   5FE   FE      1.72
+!
+BOND 5FE 1SG
+BOND 5FE 2SG
+BOND 5FE 3SG
+BOND 5FE 4SG
+!
+DELE ATOM 1HG1
+DELE ATOM 2HG1
+DELE ATOM 3HG1
+DELE ATOM 4HG1
+
+END

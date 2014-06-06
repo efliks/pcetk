@@ -1,0 +1,92 @@
+* Make PSF and PDB files
+*
+
+set mol lysozyme
+
+
+!###############################################
+!#                Topology files               #
+!###############################################
+open  read unit  1 card name "toppar/top_all27_prot_na.inp"
+read  rtf  unit  1 card
+close      unit  1
+
+
+!###############################################
+!#               Parameter files               #
+!###############################################
+open  read unit  1 card name "toppar/par_all27_prot_na.inp"
+read  para unit  1 card
+close      unit  1
+
+
+!###############################################
+!#                   Protein                   #
+!###############################################
+open   read     unit 1 card name "protein.pdb"
+read   sequ pdb unit 1
+gene   PRTA first none last none setup
+rewind          unit 1
+read   coor pdb unit 1
+close           unit 1
+
+open   read     unit 1 card name "waters.pdb"
+read   sequ pdb unit 1
+gene   WATA setup noan nodi
+rewind          unit 1
+read   coor pdb unit 1
+close           unit 1
+
+
+!###############################################
+!#                Apply patches                #
+!###############################################
+
+
+!###############################################
+!#              Add missing atoms              #
+!###############################################
+coor    init sele type h* end
+ic      fill pres
+ic      para
+! ic      build
+hbuild
+
+
+!###############################################
+!#              Optimize and save              #
+!###############################################
+open  write         unit 1 card name @mol_pre.pdb
+write coor pdb      unit 1
+close               unit 1
+
+! Fix all but hydrogens, waters and some residues
+cons fix sele .not. (segid WAT* .or. hydrogen) show end
+
+! Optimize
+mini  sd    nstep  50 nprint 20 inbfrq 20
+mini  conj  nstep 100 nprint 20 inbfrq 20
+
+! Release all constraints
+cons fix sele none end
+
+
+stream "toppar/radii.str"
+
+open  write         unit 1 card name @mol.pdb
+write coor pdb      unit 1
+close               unit 1
+                    
+open  write         unit 1 card name @mol.crd
+write coor card     unit 1
+close               unit 1
+
+open  write         unit 1 card name @mol.psf
+write psf card      unit 1
+close               unit 1
+
+open  write         unit 1 card name @mol_xplor.psf
+write psf xplo card unit 1
+close               unit 1
+
+stop

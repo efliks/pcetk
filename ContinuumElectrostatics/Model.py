@@ -130,7 +130,7 @@ class MEADModel (object):
     If there are YAML files in the current directory, they are loaded as well.
 
     If these additional files have names coinciding with the names from the library, the library parameters will be overwritten."""
-    filesLibrary = glob.glob (os.path.join (YAMLPATHIN, "sites/", "*.yaml"))
+    filesLibrary = glob.glob (os.path.join (YAMLPATHIN, "sites", "*.yaml"))
     filesExtra   = glob.glob (os.path.join (os.getcwd (), "*.yaml"))
     filesLibrary.extend (filesExtra)
 
