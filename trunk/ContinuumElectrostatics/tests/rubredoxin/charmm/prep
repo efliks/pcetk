@@ -1,0 +1,10 @@
+#==========
+f=`mktemp -d`
+
+grep -E "^(ATOM  |HETATM)" 4AR3.pdb | grep -Ev "^.{16}[^A ]" | grep -Ev "^(.{12}D|.{13}D)" > $f/atoms
+
+grep -Ev "D8U|D3O|DOD|FE" $f/atoms | ./pdb_recount 2 | ./segid PRTA > protein.pdb
+
+grep     "FE"             $f/atoms | ./pdb_recount 1 | ./segid IRON > fe.pdb
+
+grep -E  "D8U|D3O|DOD" $f/atoms | sed "s/D8U /TP3M/ ; s/D3O /TP3M/ ; s/DOD /TP3M/ ; s/O  /OH2/" | ./pdb_recount 1 | ./segid WATA > water.pdb
