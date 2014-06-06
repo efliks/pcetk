@@ -210,15 +210,15 @@ class MEADModel (object):
       WriteInputFile (filename, lines)
 
 
-  def CalculateCurves (self, isAnalytic = False, resolution = 0.5, directory = "curves", log = logFile):
+  def CalculateCurves (self, isAnalytic = False, curveSampling = 0.5, curveStart = 0.0, curveStop = 14.0, directory = "curves", forceSerial = False, log = logFile):
     """Calculate titration curves."""
     if self.isCalculated:
-      nsteps = int (14.0 / resolution + 1)
+      nsteps = int ((curveStop - curveStart) / curveSampling + 1)
       steps  = []
       tab    = None
 
       if LogFileActive (log):
-        if self.nthreads < 2:
+        if self.nthreads < 2 or forceSerial:
           log.Text ("\nStarting serial run.\n")
         else:
           log.Text ("\nStarting parallel run on %d CPUs.\n" % self.nthreads)
@@ -229,23 +229,24 @@ class MEADModel (object):
         tab.Heading ("pH")
 
 
-      if self.nthreads < 2:
+      if self.nthreads < 2 or forceSerial:
         for step in range (0, nsteps):
+          pH = curveStart + step * curveSampling
           if isAnalytic:
-            result = self.CalculateProbabilitiesAnalytically (pH = step * resolution, log = None)
+            result = self.CalculateProbabilitiesAnalytically (pH = pH, log = None)
           else:
-            result = self.CalculateProbabilitiesGMCT (pH = step * resolution, log = None)
+            result = self.CalculateProbabilitiesGMCT (pH = pH, log = None)
           steps.append (result)
      
           if tab:
             tab.Entry ("%10d"   % step)
-            tab.Entry ("%10.2f" % (step * resolution))
+            tab.Entry ("%10.2f" % pH)
       else:
         limit   = self.nthreads - 1
         batches = []
         batch   = []
         for step in range (0, nsteps):
-          batch.append (CurveThread (self, isAnalytic, step * resolution))
+          batch.append (CurveThread (self, isAnalytic, curveStart + step * curveSampling))
           if len (batch) > limit:
             batches.append (batch)
             batch = []
@@ -255,7 +256,7 @@ class MEADModel (object):
         # If GMCT is to be used, perform a dry run in serial mode to create directories and files
         if not isAnalytic:
           for step in range (0, nsteps):
-            self.CalculateProbabilitiesGMCT (pH = step * resolution, dryRun = True, log = None)
+            self.CalculateProbabilitiesGMCT (pH = curveStart + step * curveSampling, dryRun = True, log = None)
 
         step = 0 
         for batch in batches:
@@ -268,7 +269,7 @@ class MEADModel (object):
             steps.append (thread.sites)
             if tab:
               tab.Entry ("%10d"   % step)
-              tab.Entry ("%10.2f" % (step * resolution))
+              tab.Entry ("%10.2f" % (curveStart + step * curveSampling))
             step = step + 1
 
       if LogFileActive (log):
@@ -287,7 +288,7 @@ class MEADModel (object):
         for instanceIndex, instance in enumerate (site.instances):
           lines = []
           for step in range (0, nsteps):
-            lines.append ("%f %f\n" % (step * resolution, steps[step][siteIndex][instanceIndex]))
+            lines.append ("%f %f\n" % (curveStart + step * curveSampling, steps[step][siteIndex][instanceIndex]))
           filename = os.path.join (directory, "%s_%s.dat" % (site.label, instance.label))
           WriteInputFile (filename, lines)
   
@@ -346,7 +347,7 @@ class MEADModel (object):
     
         # Read probabilities from the output file
         reader = GMCTOutputFileReader (output)
-        reader.Parse ()
+        reader.Parse (temperature = self.temperature)
   
         # Construct a two-dimensional list of M-sites, each site N-instances, initiated with zeros
         sites = []
@@ -482,7 +483,7 @@ class MEADModel (object):
 #      Gmicro = totalGintr - nprotons * protonChemicalPotential + 0.5 * totalInteract
 
 
-  def CalculateEnergies (self, log = logFile):
+  def CalculateElectrostaticEnergies (self, log = logFile):
     """
     Calculate for each instance of each site:
     - self (Born) energy in the model compound
@@ -804,8 +805,18 @@ class MEADModel (object):
         tab.Stop ()
 
  
-  def SummaryProbabilities (self, log = logFile):
+  def SummaryProbabilities (self, reportOnlyUnusual = False, maxProbThreshold = 0.75, log = logFile):
     """List probabilities of occurance of instances."""
+    unusualProtonations = {
+                        "HIS" : ("HSE", "HSD", "fd"),
+                        "ARG" : ("d", ),
+                        "ASP" : ("p", ),
+                        "CYS" : ("d", ),
+                        "GLU" : ("p", ),
+                        "LYS" : ("d", ),
+                        "TYR" : ("d", ),
+                          }
+
     if LogFileActive (log):
       if self.isCalculated:
         maxinstances = 0
@@ -819,27 +830,40 @@ class MEADModel (object):
         tab.Heading ("Probabilities of instances", columnSpan = maxinstances * 2)
 
         for site in self.meadSites:
-          tab.Entry ("%6s" % site.segName)
-          tab.Entry ("%6s" % site.resName)
-          tab.Entry ("%6s" % site.resSerial)
-
           maxProb = 0.
           for instance in site.instances:
             if instance.probability > maxProb: 
-              maxProb = instance.probability
-              maxID   = instance.instID
+              maxLabel = instance.label
+              maxProb  = instance.probability
+              maxID    = instance.instID
 
-          for instance in site.instances:
-            if instance.instID == maxID:
-              label = "*%s" % instance.label
-            else:
-              label = instance.label
-            tab.Entry ("%8s"   % label)
-            tab.Entry ("%8.4f" % instance.probability)
+          skipSite = False
+          if reportOnlyUnusual:
+            if site.resName in unusualProtonations:
+              labels = unusualProtonations[site.resName]
+              if maxLabel not in labels:
+                skipSite = True
 
-          for filler in range (0, maxinstances - len (site.instances)):
-            tab.Entry ("")
-            tab.Entry ("")
+          # If the maximum probability is lower than a certain threshold, do not skip the site in the report
+          if maxProb < maxProbThreshold:
+            skipSite = False
+
+          if not skipSite:
+            tab.Entry ("%6s" % site.segName)
+            tab.Entry ("%6s" % site.resName)
+            tab.Entry ("%6s" % site.resSerial)
+  
+            for instance in site.instances:
+              if instance.instID == maxID:
+                label = "*%s" % instance.label
+              else:
+                label = instance.label
+              tab.Entry ("%8s"   % label)
+              tab.Entry ("%8.4f" % instance.probability)
+  
+            for filler in range (0, maxinstances - len (site.instances)):
+              tab.Entry ("")
+              tab.Entry ("")
         tab.Stop ()
 
 
