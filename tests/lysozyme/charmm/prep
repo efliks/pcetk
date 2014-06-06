@@ -1,6 +1,0 @@
-#==========
-f=1LYZ.pdb
-
-grep ^ATOM $f  | ./segid PRTA > prot.pdb
-
-grep ^HETATM $f  | ./pdb_recount 1 | ./segid WATA > waters.pdb
