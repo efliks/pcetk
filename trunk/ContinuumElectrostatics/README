@@ -13,49 +13,41 @@ experimentally since the available methods, such as calorimetry,
 cannot assign protonation states to individual sites.
 
 The knowledge of these individual protonation states is crucial for
-understanding of many processes of biological importance, such as enzyme 
-catalysis.
-
-On the other hand, a number of theoretical methods have been 
-developed for studying the titration of proteins on a computer.
+understanding of many processes of biological importance, for example
+enzyme catalysis.
 
 The ContinuumElectrostatic module extends the functionality of the 
 pDynamo library with a Poisson-Boltzmann continuum electrostatic model 
-that allows for predictions of protonation states of individual sites.
+that allows calculations of protonation states of individual sites.
 
-The methods implemented in this module build upon earlier developments
-by Don Bashford, extended by Timm Essigke, Matthias Ullmann 
-and Thomas Ullmann.
+The module provides a link between pDynamo and the external solver of 
+the Poisson-Boltzmann equation, namely the MEAD program by Donald Bashford, 
+extended by Timm Essigke.
+
+The electrostatic energies obtained with MEAD can be used to directly calculate 
+protonation state energies, but this is only possible for proteins with less than 
+20 titratable sites.
+
+For larger proteins, the state energies have to be sampled using a Monte Carlo
+method.
+
+The ContinuumElectrostatic module also provides a link to the GMCT program by
+Matthias Ullmann and Thomas Ullmann that can be used to approximate probabilities
+of protonation states.
 
 
 
-#  Many protein residues, ligands and cofactors bind and release
-#  protons depending on the current pH and interactions with
-#  neighboring sites.
 
-#  The available experimental methods for studying the titration 
-#  of proteins, such as calorimetry, are unable to assign 
-#  the protonation states to individual titratable sites.
-#  %
-#  Nuclear magnetic resonance spectroscopy can in principle detect
-#  the positions of hydrogen atoms but it is limited to rather
-#  small proteins.
-#  %
-#  However, the protonation probabilities of 
-#  individual sites in the protein 
-#  can be calculated based on the Poisson-Boltzmann 
-#  electrostatic model (PBE) combined with a
-#  Monte Carlo sampling\cite{Bombarda2006}.
-#  %
-#  The computational studies presented in this thesis highlight the
-#  crucial role of electrostatic calculations in the elucidation
-#  of enzymatic mechanisms\cite{Bombarda2010}.
-#  
-#  %-------------
-#  There are several methods for the calculation of 
-#  protein electrostatic potentials and
-#  interaction energies\cite{Ullmann1999,Fogolari2002}.
-#  %
+The module is similar in behaviour to the multiflex2qmpb.pl program by Timm Essigke.
+
+For the calculated thermodynamic cycle, see Fig. 3.8, p. 82 in Timm's thesis.
+
+MEAD website: http://stjuderesearch.org/site/lab/bashford/
+
+Extended MEAD website: http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=extended-mead
+
+
+
 #  The most frequently used is the 
 #  Poisson-Boltzmann method based on 
 #  the Poisson equation relating the spatial variation 
@@ -64,16 +56,6 @@ and Thomas Ullmann.
 
 
 
-
-ContinuumElectrostatics is a module that provides interface to 
-the MEAD program by Donald Bashford, extended by Timm Essigke.
-
-Developments are under way to interface the module with the GMCT program
-by Matthias Ullmann.
-
-The module is similar in behaviour to the multiflex2qmpb.pl program by Timm Essigke.
-
-For the calculated thermodynamic cycle, see Fig. 3.8, p. 82 in Timm's thesis.
 
 -------
 Copying
