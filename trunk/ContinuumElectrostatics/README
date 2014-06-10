@@ -2,6 +2,69 @@
 Introduction
 ------------
 
+Proteins contain residues and cofactors that bind or release protons 
+depending on the current pH and the interactions with their molecular
+environment.
+
+These titratable residues and cofactors will be refered to as sites.
+
+Unfortunately, the titration of proteins is often difficult to study
+experimentally since the available methods, such as calorimetry, 
+cannot assign protonation states to individual sites.
+
+The knowledge of these individual protonation states is crucial for
+understanding of many processes of biological importance, such as enzyme 
+catalysis.
+
+On the other hand, a number of theoretical methods have been 
+developed for studying the titration of proteins on a computer.
+
+The ContinuumElectrostatic module extends the functionality of the 
+pDynamo library with a Poisson-Boltzmann continuum electrostatic model 
+that allows for predictions of protonation states of individual sites.
+
+The methods implemented in this module build upon earlier developments
+by Don Bashford, extended by Timm Essigke, Matthias Ullmann 
+and Thomas Ullmann.
+
+
+
+#  Many protein residues, ligands and cofactors bind and release
+#  protons depending on the current pH and interactions with
+#  neighboring sites.
+
+#  The available experimental methods for studying the titration 
+#  of proteins, such as calorimetry, are unable to assign 
+#  the protonation states to individual titratable sites.
+#  %
+#  Nuclear magnetic resonance spectroscopy can in principle detect
+#  the positions of hydrogen atoms but it is limited to rather
+#  small proteins.
+#  %
+#  However, the protonation probabilities of 
+#  individual sites in the protein 
+#  can be calculated based on the Poisson-Boltzmann 
+#  electrostatic model (PBE) combined with a
+#  Monte Carlo sampling\cite{Bombarda2006}.
+#  %
+#  The computational studies presented in this thesis highlight the
+#  crucial role of electrostatic calculations in the elucidation
+#  of enzymatic mechanisms\cite{Bombarda2010}.
+#  
+#  %-------------
+#  There are several methods for the calculation of 
+#  protein electrostatic potentials and
+#  interaction energies\cite{Ullmann1999,Fogolari2002}.
+#  %
+#  The most frequently used is the 
+#  Poisson-Boltzmann method based on 
+#  the Poisson equation relating the spatial variation 
+#  of the protein electrostatic potential
+#  to the charge density and dielectric constant. 
+
+
+
+
 ContinuumElectrostatics is a module that provides interface to 
 the MEAD program by Donald Bashford, extended by Timm Essigke.
 
