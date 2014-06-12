@@ -44,11 +44,11 @@ blab        1
 nconfflip   10
 tlimit      3
 itraj       0
-nmcfull     10000
+nmcfull     20000
 temp        %f
 icorr       0
 limit       2
-nmcequi     100
+nmcequi     500
 nmu         1
 mu          %f  %f  0.0  0  0
 """

@@ -1,92 +1,159 @@
-------------
-Introduction
-------------
+===============================================================================
+  1. Introduction
+===============================================================================
 
-Proteins contain residues and cofactors that bind or release protons 
-depending on the current pH and the interactions with their molecular
+Proteins contain residues, cofactors and ligands that bind or release protons 
+depending on the current pH and the interactions with their molecular 
 environment.
 
-These titratable residues and cofactors will be refered to as sites.
+These titratable residues, cofactors and ligands will be referred to as sites.
 
-Unfortunately, the titration of proteins is often difficult to study
-experimentally since the available methods, such as calorimetry, 
-cannot assign protonation states to individual sites.
+The titration of proteins is often difficult to study experimentally because 
+the available methods, such as calorimetry, cannot determine protonation states 
+of individual sites.
 
-The knowledge of these individual protonation states is crucial for
-understanding of many processes of biological importance, for example
-enzyme catalysis.
+The knowledge of these individual protonation states is crucial for 
+understanding of many important processes, for example enzyme catalysis.
 
-The ContinuumElectrostatic module extends the functionality of the 
-pDynamo library with a Poisson-Boltzmann continuum electrostatic model 
-that allows calculations of protonation states of individual sites.
+The ContinuumElectrostatic module extends the functionality of the pDynamo 
+library with a Poisson-Boltzmann continuum electrostatic model that allows for 
+calculations of protonation states of individual sites.
 
-The module provides a link between pDynamo and the external solver of 
-the Poisson-Boltzmann equation, namely the MEAD program by Donald Bashford, 
-extended by Timm Essigke.
+The module provides an interface between pDynamo and the external solver of 
+the Poisson-Boltzmann equation, MEAD.
 
-The electrostatic energies obtained with MEAD can be used to directly calculate 
-protonation state energies, but this is only possible for proteins with less than 
-20 titratable sites.
+MEAD is a program developed by Donald Bashford and extended by Timm Essigke
+and Thomas Ullmann.
 
-For larger proteins, the state energies have to be sampled using a Monte Carlo
-method.
+The electrostatic energy terms obtained with MEAD can be used to calculate 
+energies of all possible protonation states of the protein of interest.
 
-The ContinuumElectrostatic module also provides a link to the GMCT program by
-Matthias Ullmann and Thomas Ullmann that can be used to approximate probabilities
-of protonation states.
+However, analytic evaluation of protonation state energies is only possible 
+for proteins with only a few titratable sites. 
+
+The ContinuumElectrostatic module also provides an interface to the GMCT 
+program by Matthias Ullmann and Thomas Ullmann that can be used to sample 
+protonation state energies using a Monte Carlo method. 
+
+The GMCT interface allows for studying the titration of larger proteins.
 
 
+===============================================================================
+  2. Copying
+===============================================================================
+
+The module is distributed under the CeCILL Free Software License, which is
+a French equivalent of the GNU General Public License.
+
+For details, see the files Licence_CeCILL_V2-en.txt (or 
+Licence_CeCILL_V2-fr.txt for the French version).
 
 
-The module is similar in behaviour to the multiflex2qmpb.pl program by Timm Essigke.
+===============================================================================
+  3. Installation and configuration
+===============================================================================
+
+Before the installation of the ContinuumElectrostatics module, it is necessary 
+to have: 
+- pDynamo 1.8.0
+- Python 2.7 
+- GCC compiler (any version should be fine)
+- Extended MEAD 2.3.0
+- GMCT 1.2.3
+
+Extended MEAD and GMCT can be found on the website of Thomas Ullmann:
+http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=software 
+
+Download the two packages and follow their respective installation 
+instructions.
+
+The ContinuumElectrostatics module requires for its functioning two programs 
+from MEAD, namely "my_2diel_solver" and "my_3diel_solver", and the GMCT's main 
+program, "gmct".
+
+In the next step, check out the latest source code:
+
+svn checkout http://pdynamo-extensions.googlecode.com/svn/trunk/ContinuumElectrostatics/
+
+Note that for checking out the source code you should have Subversion installed 
+as well.
+
+Some parts of the module that implement the state vector are written in C and
+therefore have to be compiled before use. In the future, some more parts of
+the code will be shifted from Python to C.
+
+Go to the subdirectory "extensions/csource" and edit the Makefile. Only the
+uppermost line has to be changed. It defines the directory where you have
+installed pDynamo. After editing, close the file and type in "make" to compile
+the C object file.
+
+Go to the subdirectory "extensions/pyrex" and again edit the Makefile. Change
+the line starting from "INC2" to the location of your pDynamo installation.
+Close the file and type in "make". It should generate a dynamically linked 
+library "StateVector.so" in the "ContinuumElectrostatics" subdirectory.
+
+At this point, the installation is complete.
+
+Before using the module, you have to set the environment variable
+PDYNAMO_CONTINUUMELECTROSTATICS to the directory where you have checked out 
+the source code. Also, you have to add this directory to the PYTHONPATH 
+variable. For example, you can do it this way (in Bash):
+
+export PDYNAMO_CONTINUUMELECTROSTATICS=/home/mikolaj/devel/ContinuumElectrostatics
+
+export PYTHONPATH=$PYTHONPATH:$PDYNAMO_CONTINUUMELECTROSTATICS
+
+
+===============================================================================
+  4. Usage
+===============================================================================
+
+After the installation, look inside the subdirectory "tests" and try running 
+some of the test cases. I will explain how the module should be used based on 
+the test case "sites2". This test uses a trivial polypeptide with only two
+titratable sites, histidine and glutamate. The test "histidine" uses only one
+site. The other tests use real-life proteins.
+
+In the first step, prepare CHARMM topology (psf) and coordinate (crd) files. 
+
+
+The module is similar in behaviour to the multiflex2qmpb.pl program by Timm 
+Essigke.
 
 For the calculated thermodynamic cycle, see Fig. 3.8, p. 82 in Timm's thesis.
 
-MEAD website: http://stjuderesearch.org/site/lab/bashford/
+A pqr file is not needed because the atomic radii are assigned to atoms at 
+runtime.
 
-Extended MEAD website: http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=extended-mead
-
-
-
-#  The most frequently used is the 
-#  Poisson-Boltzmann method based on 
-#  the Poisson equation relating the spatial variation 
-#  of the protein electrostatic potential
-#  to the charge density and dielectric constant. 
+During the initial setup in CHARMM, all titratable residues in the protein 
+should be set to their standard protonation states at pH = 7, i.e. aspartates 
+and glutamates deprotonated, histidines doubly protonated, other residues 
+protonated.
 
 
+===============================================================================
+  4. References
+===============================================================================
+
+MEAD website: 
+http://stjuderesearch.org/site/lab/bashford/
+
+Extended MEAD website: 
+http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=extended-mead
+
+Doctoral thesis of Timm Essigke:
+https://epub.uni-bayreuth.de/655/
 
 
--------
-Copying
--------
-
-The module is distributed under the CeCILL Free Software Licence, which is
-a French equivalent of the GNU open source licence (GNU GPL).
-
-For details, see the files Licence_CeCILL_V2-en.txt (or Licence_CeCILL_V2-fr.txt).
-
------
-Usage
------
-
-For this module to be used, one should in the first step prepare CHARMM
-topology (psf) and coordinate (crd) files for the protein of interest.
-
-A pqr file is not needed because the atomic radii are assigned to atoms at runtime.
-
-During the initial setup in CHARMM, all titratable residues in the protein should 
-be set to their standard protonation states at pH = 7, i.e. aspartates and glutamates 
-deprotonated, histidines doubly protonated, other residues protonated.
+===============================================================================
+  5. Test cases
+===============================================================================
 
 
-----------
-Test cases
-----------
 
-----------
-To-do list
-----------
+===============================================================================
+  6. To-do list
+===============================================================================
 
 - Move parts of WriteJobFiles to the instance class
 
@@ -94,10 +161,14 @@ To-do list
 
 - Coordinates from the FPT file should have their own data structure?
 
-- Efficiency improvements during partitioning of the system and writing job files?
+- Efficiency improvements during writing job files?
 
 - Use arrays instead of lists for interactions (Real1DArray or SymmetricMatrix?)
 
 - Have a column of ETA (Estimated Time for Accomplishment) in MEAD calculations
 
 - Optionally convert kcal/mol (MEAD units) to kJ/mol (pDynamo units)
+
+- Make use of the pqr2SolvAccVol program to speed up the calculations a little bit
+
+- The function calculating Gmicro should be written in C
