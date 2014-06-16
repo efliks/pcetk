@@ -1,0 +1,222 @@
+\documentclass[a4paper,11pt]{article}
+
+% \usepackage{graphicx, overcite, supertabular, color, colordvi, setspace, amssymb, rotating}
+\usepackage{xspace, hyperref}
+
+\pagestyle{plain}
+% \pagestyle{empty}
+
+\linespread{1.6}
+\textwidth       16 cm
+\textheight      22 cm
+\oddsidemargin    0 mm 
+\evensidemargin   0 mm 
+\topmargin      -13 mm
+
+% Prevent indenting paragraphs
+\setlength\parindent{0pt}
+
+%=================================================
+\newcommand{\modulename}{ContinuumElectrostatics\xspace}
+
+
+
+%=================================================
+\begin{document}
+
+\begin{center}
+{\LARGE \bf \modulename}
+
+\vspace{0.5cm}
+{\large User Manual\\
+Last update: \today}
+
+\end{center}
+
+\vspace{2cm}
+
+
+%=================================================
+\section{Introduction}
+%=================================================
+Proteins contain residues, cofactors and ligands that bind or release protons 
+depending on the current pH and the interactions with their molecular 
+environment.
+%
+These titratable residues, cofactors and ligands will be referred to as sites.
+%
+The titration of proteins is often difficult to study experimentally because 
+the available methods, such as calorimetry, cannot determine protonation states 
+of individual sites.
+%
+The knowledge of these individual protonation states is crucial for 
+understanding of many important processes, for example enzyme catalysis.
+
+
+The \modulename module extends the functionality of the pDynamo 
+library with a Poisson-Boltzmann continuum electrostatic model that allows for 
+calculations of protonation states of individual sites.
+%
+The module provides an interface between pDynamo and the external solver of 
+the Poisson-Boltzmann equation, MEAD.
+%
+MEAD is a program developed by Donald Bashford and extended by Timm Essigke
+and Thomas Ullmann.
+%
+The electrostatic energy terms obtained with MEAD can be used to calculate 
+energies of all possible protonation states of the protein of interest.
+%
+However, analytic evaluation of protonation state energies is only possible 
+for proteins with only a few titratable sites. 
+%
+The \modulename module also provides an interface to the GMCT 
+program by Matthias Ullmann and Thomas Ullmann that can be used to sample 
+protonation state energies using a Monte Carlo method. 
+%
+The GMCT interface allows for studying the titration of larger proteins.
+
+
+%=================================================
+% \section{Goals of the \modulename module}
+%=================================================
+% 
+% The module is similar in behaviour to the multiflex2qmpb.pl program by Timm 
+% Essigke.
+% 
+% For the calculated thermodynamic cycle, see Fig. 3.8, p. 82 in Timm's thesis.
+% 
+% A pqr file is not needed because the atomic radii are assigned to atoms at 
+% runtime.
+
+
+%=================================================
+\section{Copying}
+%=================================================
+The module is distributed under the CeCILL Free Software License, which is
+a French equivalent of the GNU General Public License.
+%
+For details, see the files \texttt{Licence\_CeCILL\_V2-en.txt} (or 
+\texttt{Licence\_CeCILL\_V2-fr.txt} for the French version).
+
+
+%=================================================
+\section{Installation and configuration}
+%=================================================
+Before the installation of the \modulename module, it is necessary 
+to have:
+\begin{itemize}
+  \setlength{\itemsep}{2pt}
+  \item pDynamo 1.8.0
+  \item Python 2.7
+  \item GCC (any version should be fine)
+  \item Extended MEAD 2.3.0
+  \item GMCT 1.2.3
+\end{itemize}
+%
+Extended MEAD and GMCT can be found on the website of Thomas Ullmann:
+
+\url{http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=software}
+
+Download the two packages and follow their respective installation 
+instructions.
+%
+The \modulename module requires for its functioning two programs 
+from the MEAD package, namely \texttt{my\_2diel\_solver} and \texttt{my\_3diel\_solver}, 
+and the GMCT's main program, \texttt{gmct}.
+
+\bigskip
+In the next step, check out the latest source code of the module.
+%
+Note that for checking out the source code you should have Subversion installed 
+as well.
+
+\texttt{svn checkout \\
+http://pdynamo-extensions.googlecode.com/svn/trunk/ContinuumElectrostatics/}
+
+
+\bigskip
+Some parts of the module implementing the state vector are written in C and
+therefore have to be compiled before use. In the future, I plan to shift some 
+more parts of the code from Python to C.
+
+\bigskip
+Go to the subdirectory \texttt{extensions/csource} and edit the Makefile. Only the
+uppermost line has to be changed. It defines the directory where you have
+installed pDynamo. After editing, close the file and type in \texttt{make} to compile
+the C object file.
+
+\bigskip
+Go to the subdirectory \texttt{extensions/pyrex} and again edit the Makefile. Change
+the line starting from "INC2" to the location of your pDynamo installation.
+Close the file and type in \texttt{make}. It should generate a dynamically linked 
+library \texttt{StateVector.so} in the \texttt{ContinuumElectrostatics} subdirectory.
+
+\bigskip
+At this point, the installation is complete.
+
+\bigskip
+Before using the module, you have to set the environment variable\\
+\texttt{PDYNAMO\_CONTINUUMELECTROSTATICS} to the directory where you have checked out 
+the source code. Also, you have to add this directory to the \texttt{PYTHONPATH}
+variable. For example, you can do it this way (in Bash):
+
+\bigskip
+\texttt{export \\PDYNAMO\_CONTINUUMELECTROSTATICS=/home/mikolaj/devel/ContinuumElectrostatics}
+
+\texttt{export PYTHONPATH=\$PYTHONPATH:\$PDYNAMO\_CONTINUUMELECTROSTATICS}
+
+
+%=================================================
+\section{Usage}
+%=================================================
+After the installation, it may be worth looking at some of the test cases in 
+the subdirectory \texttt{tests}. I will explain the functioning of the module based 
+on the test case "sites2". This test uses a trivial polypeptide with only two
+titratable sites, histidine and glutamate. The test "histidine" uses only one
+site. The other tests use real-life proteins.
+
+\bigskip
+In the first step, prepare CHARMM topology (psf) and coordinate (crd) files. 
+
+\bigskip
+During the initial setup in CHARMM, all titratable residues in the protein 
+should be set to their standard protonation states at pH = 7, i.e. aspartates 
+and glutamates deprotonated, histidines doubly protonated, other residues 
+protonated.
+
+
+%=================================================
+\section{References}
+%=================================================
+MEAD website: \\
+\url{http://stjuderesearch.org/site/lab/bashford/}
+
+Extended MEAD website:\\ 
+\url{http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=extended-mead}
+
+Doctoral thesis of Timm Essigke:\\
+\url{https://epub.uni-bayreuth.de/655/}
+
+
+%=================================================
+\section{Test cases}
+%=================================================
+
+
+%=================================================
+\section{To-do list}
+%=================================================
+\begin{itemize}
+  \setlength{\itemsep}{2pt}
+  \item Move parts of WriteJobFiles to the instance class
+  \item Rename variables containing filenames so that they start from "file"
+  \item Coordinates from the FPT file should have their own data structure
+  \item Efficiency improvements during writing job files
+  \item Use arrays instead of lists for interactions (Real1DArray or SymmetricMatrix)
+  \item Have a column of ETA (Estimated Time for Accomplishment) in MEAD calculations
+  \item Optionally convert kcal/mol (MEAD units) to kJ/mol (pDynamo units)
+  \item Make use of the pqr2SolvAccVol program to speed up the calculations a little bit
+  \item The function calculating Gmicro should be written in C
+\end{itemize}
+
+\end{document}
