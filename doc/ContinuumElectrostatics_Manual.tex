@@ -1,24 +1,22 @@
 \documentclass[a4paper,11pt]{article}
 
 % \usepackage{graphicx, overcite, supertabular, color, colordvi, setspace, amssymb, rotating}
-\usepackage{xspace, hyperref}
+\usepackage{xspace, hyperref, listings}
 
 \pagestyle{plain}
-% \pagestyle{empty}
-
 \linespread{1.6}
-\textwidth       16 cm
-\textheight      22 cm
-\oddsidemargin    0 mm 
-\evensidemargin   0 mm 
-\topmargin      -13 mm
+\textwidth        16 cm
+\textheight       22 cm
+\oddsidemargin     0 mm 
+\evensidemargin    0 mm 
+\topmargin       -13 mm
 
 % Prevent indenting paragraphs
 \setlength\parindent{0pt}
 
-%=================================================
-\newcommand{\modulename}{ContinuumElectrostatics\xspace}
+\lstset{basicstyle=\ttfamily, frame=shadowbox, breaklines=true, breakatwhitespace=true}
 
+\newcommand{\modulename}{ContinuumElectrostatics\xspace}
 
 
 %=================================================
@@ -28,7 +26,7 @@
 {\LARGE \bf \modulename}
 
 \vspace{0.5cm}
-{\large User Manual\\
+{\Large User Manual\\
 Last update: \today}
 
 \end{center}
@@ -76,17 +74,13 @@ protonation state energies using a Monte Carlo method.
 The GMCT interface allows for studying the titration of larger proteins.
 
 
-%=================================================
-% \section{Goals of the \modulename module}
-%=================================================
-% 
-% The module is similar in behaviour to the multiflex2qmpb.pl program by Timm 
-% Essigke.
-% 
-% For the calculated thermodynamic cycle, see Fig. 3.8, p. 82 in Timm's thesis.
-% 
-% A pqr file is not needed because the atomic radii are assigned to atoms at 
-% runtime.
+In the present document, I focus on the practical side of the 
+electrostatic calculations.
+%
+Other people have done a great work to develop the theory and computational 
+methods the \modulename module is based on.
+%
+%The primary source of information was the doctoral thesis of Timm Essigke.
 
 
 %=================================================
@@ -97,6 +91,36 @@ a French equivalent of the GNU General Public License.
 %
 For details, see the files \texttt{Licence\_CeCILL\_V2-en.txt} (or 
 \texttt{Licence\_CeCILL\_V2-fr.txt} for the French version).
+
+
+%=================================================
+\section{Goals of the \modulename module}
+%=================================================
+I wrote the \modulename module primarily as a pretext to learn how 
+the Poisson-Boltzmann model works in detail.
+%
+I used this model very often during my studies on enzyme catalysis but never had 
+time nor will to learn the details of the theory that was behind.
+%
+I also wanted to better explore the pDynamo library, understand its programming
+concepts and finally extend it with something useful.
+%
+Last but not least, I saw some room for improvement in the previously used 
+tools and scripts. 
+
+The \modulename module is similar in behaviour to the \texttt{multiflex2qmpb.pl} 
+program, which is part of the QMPB package written by Timm Essigke.
+%
+The approach taken here is most compatibile with the original approach 
+by Donald Bashford.
+%
+The key difference is that the treatment of multiprotic sites, such as histidine,
+is improved.
+
+% Talk about non-binary state vector and different energy reference (fully deprotonated system)
+
+% 
+% For the calculated thermodynamic cycle, see Fig. 3.8, p. 82 in Timm's thesis.
 
 
 %=================================================
@@ -130,9 +154,9 @@ In the next step, check out the latest source code of the module.
 Note that for checking out the source code you should have Subversion installed 
 as well.
 
-\texttt{svn checkout \\
-http://pdynamo-extensions.googlecode.com/svn/trunk/ContinuumElectrostatics/}
-
+{\footnotesize \begin{lstlisting}
+svn checkout http://pdynamo-extensions.googlecode.com/svn/trunk/ContinuumElectrostatics/
+\end{lstlisting} }
 
 \bigskip
 Some parts of the module implementing the state vector are written in C and
@@ -160,29 +184,127 @@ Before using the module, you have to set the environment variable\\
 the source code. Also, you have to add this directory to the \texttt{PYTHONPATH}
 variable. For example, you can do it this way (in Bash):
 
-\bigskip
-\texttt{export \\PDYNAMO\_CONTINUUMELECTROSTATICS=/home/mikolaj/devel/ContinuumElectrostatics}
+\newpage
+{\footnotesize \begin{lstlisting}
+export PDYNAMO_CONTINUUMELECTROSTATICS=/home/mikolaj/devel/ContinuumElectrostatics
 
-\texttt{export PYTHONPATH=\$PYTHONPATH:\$PDYNAMO\_CONTINUUMELECTROSTATICS}
-
+export PYTHONPATH=$PYTHONPATH:$PDYNAMO_CONTINUUMELECTROSTATICS
+\end{lstlisting} }
 
 %=================================================
 \section{Usage}
 %=================================================
-After the installation, it may be worth looking at some of the test cases in 
-the subdirectory \texttt{tests}. I will explain the functioning of the module based 
-on the test case "sites2". This test uses a trivial polypeptide with only two
-titratable sites, histidine and glutamate. The test "histidine" uses only one
-site. The other tests use real-life proteins.
+After the installation, it may be worth looking at some of the test cases.
+%
+I will explain the functioning of the module based on the test case "sites2".
+%
+This test uses a trivial polypeptide with only two titratable sites, 
+histidine and glutamate. 
+%
+The test "histidine" uses only one site. The other tests use real-life, 
+although small proteins.
 
-\bigskip
+
+%-------------------------------------------------
+\subsection{Setup of the protein model}
+The electrostatic model used by the \modulename module requires that the protein 
+of interest is described by the CHARMM energy model.
+%
 In the first step, prepare CHARMM topology (psf) and coordinate (crd) files. 
-
-\bigskip
-During the initial setup in CHARMM, all titratable residues in the protein 
+%
+The preperation can be done using the CHARMM program or VMD.
+%
+During the preparation of the protein model, all titratable residues in the protein 
 should be set to their standard protonation states at pH = 7, i.e. aspartates 
 and glutamates deprotonated, histidines doubly protonated, other residues 
 protonated.
+%
+The topology, coordinate and parameter files are loaded at the
+beginning of the script \texttt{sites2.py}:
+
+{\footnotesize \begin{lstlisting}
+par_tab = ["charmm/toppar/par_all27_prot_na.inp", ]
+
+mol  = CHARMMPSFFile_ToSystem ("charmm/testpeptide_xplor.psf", isXPLOR = True, parameters = CHARMMParameterFiles_ToParameters (par_tab))
+
+mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/testpeptide.crd")
+\end{lstlisting} }
+
+
+%-------------------------------------------------
+\subsection{Setup of the continuum electrostatic model}
+In the second step, a continuum electrostatic model is created:
+
+{\footnotesize \begin{lstlisting}
+ce_model = MEADModel (meadPath = "/home/mikolaj/local/bin/", gmctPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 2)
+\end{lstlisting} }
+
+\bigskip
+The parameter "meadPath" tells the directory where the MEAD programs, 
+\texttt{my\_2diel\_solver} and \texttt{my\_3diel\_solver}, are located.
+%
+The parameter "gmctPath" is the location of the \texttt{gmct} program.
+%
+If none of these directories are given, \texttt{/usr/bin} is assumed 
+by default.
+%
+The parameter "scratch" tells the directory where the MEAD job files 
+and output files will be written to.
+%
+If not present, this directory will be created.
+%
+The last parameter, "nthreads", defines the number of threads to be used.
+%
+By default \texttt{nthreads=1}, which means serial run.
+%
+Note that "nthreads" can be any natural number and that the calculations
+scale linearly with the number of threads.
+%
+% The other parameters that can be set include:
+% 
+% \begin{itemize}
+%   \item \texttt{temperature} - sets the temperature, the default is 300\,K
+%   \item \texttt{ionicStrength} - sets the ionic strenght, the default is 0.1 
+% \end{itemize}
+
+\bigskip
+In the next step, the continuum electrostatic model is initialized:
+
+{\footnotesize \begin{lstlisting}
+ce_model.Initialize (mol)
+\end{lstlisting} }
+
+\bigskip
+The initialization means partitioning of the protein into titratable sites and
+a non-titratable background.
+%
+It also means generating model compounds.
+%
+At this point, however, the input files for MEAD are not written and only 
+the necessary data structures inside the MEADModel object are created.
+%
+The \texttt{Initialize} method takes at least one argument, 
+which indicates the CHARMM-based protein model.
+
+\bigskip
+The next two lines print out summaries of the continuum electrostatic
+model and the titratable sites:
+
+{\footnotesize \begin{lstlisting}
+ce_model.Summary ()
+ce_model.SummarySites ()
+\end{lstlisting} }
+
+\bigskip
+After the model has been initialized, the input files necessary for calculations in MEAD
+can be written to the scratch directory:
+
+{\footnotesize \begin{lstlisting}
+ce_model.WriteJobFiles (mol)
+\end{lstlisting} }
+
+% ce_model.CalculateElectrostaticEnergies ()
+
 
 
 %=================================================
