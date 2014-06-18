@@ -7,8 +7,8 @@
 \linespread{1.6}
 \textwidth        16 cm
 \textheight       22 cm
-\oddsidemargin     0 mm 
-\evensidemargin    0 mm 
+\oddsidemargin     0 mm
+\evensidemargin    0 mm
 \topmargin       -13 mm
 
 % Prevent indenting paragraphs
@@ -37,47 +37,47 @@ Last update: \today}
 %=================================================
 \section{Introduction}
 %=================================================
-Proteins contain residues, cofactors and ligands that bind or release protons 
-depending on the current pH and the interactions with their molecular 
+Proteins contain residues, cofactors and ligands that bind or release protons
+depending on the current pH and the interactions with their molecular
 environment.
 %
 These titratable residues, cofactors and ligands will be referred to as sites.
 %
-The titration of proteins is often difficult to study experimentally because 
-the available methods, such as calorimetry, cannot determine protonation states 
+The titration of proteins is often difficult to study experimentally because
+the available methods, such as calorimetry, cannot determine protonation states
 of individual sites.
 %
-The knowledge of these individual protonation states is crucial for 
+The knowledge of these individual protonation states is crucial for
 understanding of many important processes, for example enzyme catalysis.
 
 
-The \modulename module extends the functionality of the pDynamo 
-library with a Poisson-Boltzmann continuum electrostatic model that allows for 
+The \modulename module extends the functionality of the pDynamo
+library with a Poisson-Boltzmann continuum electrostatic model that allows for
 calculations of protonation states of individual sites.
 %
-The module provides an interface between pDynamo and the external solver of 
+The module provides an interface between pDynamo and the external solver of
 the Poisson-Boltzmann equation, MEAD.
 %
 MEAD is a program developed by Donald Bashford and extended by Timm Essigke
 and Thomas Ullmann.
 %
-The electrostatic energy terms obtained with MEAD can be used to calculate 
+The electrostatic energy terms obtained with MEAD can be used to calculate
 energies of all possible protonation states of the protein of interest.
 %
-However, analytic evaluation of protonation state energies is only possible 
-for proteins with only a few titratable sites. 
+However, analytic evaluation of protonation state energies is only possible
+for proteins with only a few titratable sites.
 %
-The \modulename module also provides an interface to the GMCT 
-program by Matthias Ullmann and Thomas Ullmann that can be used to sample 
-protonation state energies using a Monte Carlo method. 
+The \modulename module also provides an interface to the GMCT
+program by Matthias Ullmann and Thomas Ullmann that can be used to sample
+protonation state energies using a Monte Carlo method.
 %
 The GMCT interface allows for studying the titration of larger proteins.
 
 
-In the present document, I focus on the practical side of the 
+In the present document, I focus on the practical side of the
 electrostatic calculations.
 %
-Other people have done a great work to develop the theory and computational 
+Other people have done a great work to develop the theory and computational
 methods the \modulename module is based on.
 %
 %The primary source of information was the doctoral thesis of Timm Essigke.
@@ -89,29 +89,29 @@ methods the \modulename module is based on.
 The module is distributed under the CeCILL Free Software License, which is
 a French equivalent of the GNU General Public License.
 %
-For details, see the files \texttt{Licence\_CeCILL\_V2-en.txt} (or 
+For details, see the files \texttt{Licence\_CeCILL\_V2-en.txt} (or
 \texttt{Licence\_CeCILL\_V2-fr.txt} for the French version).
 
 
 %=================================================
 \section{Goals of the \modulename module}
 %=================================================
-I wrote the \modulename module primarily as a pretext to learn how 
+I wrote the \modulename module primarily as a pretext to learn how
 the Poisson-Boltzmann model works in detail.
 %
-I used this model very often during my studies on enzyme catalysis but never had 
+I used this model very often during my studies on enzyme catalysis but never had
 time nor will to learn the details of the theory that was behind.
 %
 I also wanted to better explore the pDynamo library, understand its programming
 concepts and finally extend it with something useful.
 %
-Last but not least, I saw some room for improvement in the previously used 
-tools and scripts. 
+Last but not least, I saw some room for improvement in the previously used
+tools and scripts.
 
-The \modulename module is similar in behaviour to the \texttt{multiflex2qmpb.pl} 
+The \modulename module is similar in behaviour to the \texttt{multiflex2qmpb.pl}
 program, which is part of the QMPB package written by Timm Essigke.
 %
-The approach taken here is most compatibile with the original approach 
+The approach taken here is most compatibile with the original approach
 by Donald Bashford.
 %
 The key difference is that the treatment of multiprotic sites, such as histidine,
@@ -119,14 +119,14 @@ is improved.
 
 % Talk about non-binary state vector and different energy reference (fully deprotonated system)
 
-% 
+%
 % For the calculated thermodynamic cycle, see Fig. 3.8, p. 82 in Timm's thesis.
 
 
 %=================================================
 \section{Installation and configuration}
 %=================================================
-Before the installation of the \modulename module, it is necessary 
+Before the installation of the \modulename module, it is necessary
 to have:
 \begin{itemize}
   \setlength{\itemsep}{2pt}
@@ -141,17 +141,17 @@ Extended MEAD and GMCT can be found on the website of Thomas Ullmann:
 
 \url{http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=software}
 
-Download the two packages and follow their respective installation 
+Download the two packages and follow their respective installation
 instructions.
 %
-The \modulename module requires for its functioning two programs 
-from the MEAD package, namely \texttt{my\_2diel\_solver} and \texttt{my\_3diel\_solver}, 
+The \modulename module requires for its functioning two programs
+from the MEAD package, namely \texttt{my\_2diel\_solver} and \texttt{my\_3diel\_solver},
 and the GMCT's main program, \texttt{gmct}.
 
 \bigskip
 In the next step, check out the latest source code of the module.
 %
-Note that for checking out the source code you should have Subversion installed 
+Note that for checking out the source code you should have Subversion installed
 as well.
 
 {\footnotesize \begin{lstlisting}
@@ -160,29 +160,39 @@ svn checkout http://pdynamo-extensions.googlecode.com/svn/trunk/ContinuumElectro
 
 \bigskip
 Some parts of the module implementing the state vector are written in C and
-therefore have to be compiled before use. In the future, I plan to shift some 
-more parts of the code from Python to C.
+therefore have to be compiled before use. 
+%
+In the future, I plan to shift some more parts of the module from Python to C.
 
 \bigskip
-Go to the subdirectory \texttt{extensions/csource} and edit the Makefile. Only the
-uppermost line has to be changed. It defines the directory where you have
-installed pDynamo. After editing, close the file and type in \texttt{make} to compile
-the C object file.
+Start from going to the directory \texttt{extensions/csource}.
+%
+Change the uppermost line in the \texttt{Makefile}. 
+%
+This line defines the directory where you have installed pDynamo. 
+%
+After editing, close the file and run "make" to compile the C object file.
 
 \bigskip
-Go to the subdirectory \texttt{extensions/pyrex} and again edit the Makefile. Change
-the line starting from "INC2" to the location of your pDynamo installation.
-Close the file and type in \texttt{make}. It should generate a dynamically linked 
-library \texttt{StateVector.so} in the \texttt{ContinuumElectrostatics} subdirectory.
+Go to the directory \texttt{extensions/pyrex} and again edit the \texttt{Makefile}.
+%
+Change the line starting from "INC2" to the location of your pDynamo installation.
+%
+Close the file and run "make".
+%
+It should generate a dynamically linked library \texttt{StateVector.so} in 
+the \texttt{ContinuumElectrostatics} directory.
 
 \bigskip
 At this point, the installation is complete.
 
 \bigskip
-Before using the module, you have to set the environment variable\\
-\texttt{PDYNAMO\_CONTINUUMELECTROSTATICS} to the directory where you have checked out 
-the source code. Also, you have to add this directory to the \texttt{PYTHONPATH}
-variable. For example, you can do it this way (in Bash):
+Before using the module, the environment variable \texttt{PDYNAMO\_CONTINUUMELECTROSTATICS} 
+should be set to the module's root directory.
+%
+This directory should be also added to the \texttt{PYTHONPATH} variable. 
+%
+This can be done in the following way (in Bash):
 
 \newpage
 {\footnotesize \begin{lstlisting}
@@ -198,25 +208,25 @@ After the installation, it may be worth looking at some of the test cases.
 %
 I will explain the functioning of the module based on the test case "sites2".
 %
-This test uses a trivial polypeptide with only two titratable sites, 
-histidine and glutamate. 
+This test uses a trivial polypeptide with only two titratable sites,
+histidine and glutamate.
 %
-The test "histidine" uses only one site. The other tests use real-life, 
+The test "histidine" uses only one site. The other tests use real-life,
 although small proteins.
 
 
 %-------------------------------------------------
 \subsection{Setup of the protein model}
-The electrostatic model used by the \modulename module requires that the protein 
+The electrostatic model used by the \modulename module requires that the protein
 of interest is described by the CHARMM energy model.
 %
-In the first step, prepare CHARMM topology (psf) and coordinate (crd) files. 
+In the first step, prepare CHARMM topology (PSF) and coordinate (CRD) files.
 %
-The preperation can be done using the CHARMM program or VMD.
+The preperation can be done using the programs CHARMM or VMD.
 %
-During the preparation of the protein model, all titratable residues in the protein 
-should be set to their standard protonation states at pH = 7, i.e. aspartates 
-and glutamates deprotonated, histidines doubly protonated, other residues 
+During the preparation of the protein model, all titratable residues in the protein
+should be set to their standard protonation states at pH = 7, i.e. aspartates
+and glutamates deprotonated, histidines doubly protonated, other residues
 protonated.
 %
 The topology, coordinate and parameter files are loaded at the
@@ -240,15 +250,15 @@ ce_model = MEADModel (meadPath = "/home/mikolaj/local/bin/", gmctPath = "/home/m
 \end{lstlisting} }
 
 \bigskip
-The parameter "meadPath" tells the directory where the MEAD programs, 
+The parameter "meadPath" tells the directory where the MEAD programs,
 \texttt{my\_2diel\_solver} and \texttt{my\_3diel\_solver}, are located.
 %
 The parameter "gmctPath" is the location of the \texttt{gmct} program.
 %
-If none of these directories are given, \texttt{/usr/bin} is assumed 
+If none of these directories are given, \texttt{/usr/bin} is assumed
 by default.
 %
-The parameter "scratch" tells the directory where the MEAD job files 
+The parameter "scratch" tells the directory where the MEAD job files
 and output files will be written to.
 %
 If not present, this directory will be created.
@@ -260,12 +270,15 @@ By default \texttt{nthreads=1}, which means serial run.
 Note that "nthreads" can be any natural number and that the calculations
 scale linearly with the number of threads.
 %
-% The other parameters that can be set include:
-% 
-% \begin{itemize}
-%   \item \texttt{temperature} - sets the temperature, the default is 300\,K
-%   \item \texttt{ionicStrength} - sets the ionic strenght, the default is 0.1 
-% \end{itemize}
+Parallelization is done at the coarse-grain level.
+%
+Since the electrostatic energy terms for a particular instance of a titratable
+site can be calculated independently from energy terms of other instances of other
+sites, each instance is assigned a separate thread.
+%
+A similar approach is taken during the calculations of titration curves,
+where each pH-step of a curve is calculated separately.
+
 
 \bigskip
 In the next step, the continuum electrostatic model is initialized:
@@ -280,15 +293,15 @@ a non-titratable background.
 %
 It also means generating model compounds.
 %
-At this point, however, the input files for MEAD are not written and only 
-the necessary data structures inside the MEADModel object are created.
+At this point, however, the input files for MEAD are not written and only
+the necessary data structures inside the \texttt{MEADModel} object are created.
 %
-The \texttt{Initialize} method takes at least one argument, 
+The \texttt{Initialize} method takes at least one argument,
 which indicates the CHARMM-based protein model.
 
 \bigskip
-The next two lines print out summaries of the continuum electrostatic
-model and the titratable sites:
+The next two lines generate a summary of the continuum electrostatic model and
+write a table of titratable sites:
 
 {\footnotesize \begin{lstlisting}
 ce_model.Summary ()
@@ -303,8 +316,102 @@ can be written to the scratch directory:
 ce_model.WriteJobFiles (mol)
 \end{lstlisting} }
 
-% ce_model.CalculateElectrostaticEnergies ()
+By default, each site is assigned a separate directory, for example
+\texttt{scratch/PRTA/GLU8}.
+%
+Inside the directory, there are PQR files for each instance of the site in the protein
+and in a model compound.
+%
+The other type of files are MGM and OGM files describing lattices used for
+solving the Poisson-Boltzmann equation.
+%
+The \texttt{back.pqr} file defines the non-titratable background.
+%
+The \texttt{protein.pqr} file defines the whole protein and is used to calculate the boundary
+between the protein and the solvent.
+%
+The last file, \texttt{sites.fpt}, contains atomic coordinates and charges of all instances
+and is used for calculating interaction energies between
+different instances of sites in the protein.
 
+
+%-------------------------------------------------
+\subsection{Calculating electrostatic energies}
+At this point, the electrostatic energy terms can be calculated:
+
+{\footnotesize \begin{lstlisting}
+ce_model.CalculateElectrostaticEnergies ()
+\end{lstlisting} }
+
+For each instance of each site, two electrostatic energy terms are calculated, namely
+the Born energy ($G_{\mathrm{Born}}$) and the background energy ($G_{\mathrm{back}}$).
+%
+Born energy is the electrostatic energy of a set of charges interacting with its own
+reaction field.
+%
+Background energy is the electrostatic energy of a set of charges interacting with
+charges from outside of this set.
+%
+The two energies are calculated for a particular instance of a site both in the model compound
+and in the protein.
+%
+The difference
+$(G_{\mathrm{Born, protein}} + G_{\mathrm{back, protein}}) - (G_{\mathrm{Born, model}} + G_{\mathrm{back, model}})$
+is calculated, which is called the homogeneous transfer energy, $G_{\mathrm{homotrans}}$.
+%
+Transferring of a site means moving it from the model compound to the protein.
+%
+In the model compound, the site has a model energy $G_{\mathrm{model}}$, which
+corresponds to the experimentally known $\mathrm{p}K_{\mathrm{a}}$ value of the deprotonation reaction.
+%
+The site in the protein has an intrinsic energy $G_{\mathrm{intr}} = G_{\mathrm{model}} + G_{\mathrm{homotrans}}$.
+%
+The \texttt{my\_2diel\_solver} program calculates $G_{\mathrm{Born, model}}$ and $G_{\mathrm{back, model}}$.
+%
+The \texttt{my\_3diel\_solver} program calculates $G_{\mathrm{Born, protein}}$ and $G_{\mathrm{back, protein}}$
+and, additionally, electrostatic interaction energies of an instance of a site
+with other instances of other sites in the protein.
+%
+The \modulename module collects 
+$G_{\mathrm{Born, protein}}$, $G_{\mathrm{back, protein}}$, 
+$G_{\mathrm{Born, model}}$, $G_{\mathrm{back, model}}$ and interaction energies from MEAD 
+and calculates $G_{\mathrm{homotrans}}$ and $G_{\mathrm{intr}}$ for each instance of each site.
+
+Note that the \texttt{my\_3diel\_solver} program can in principle perform calculations
+in a three-dielectric environment (solvent, protein, vacuum).
+%
+However, the model implemented in the \modulename module only deals with two-dielectric environments, 
+i.e. the solvent phase and the protein/model compound phase.
+
+
+%-------------------------------------------------
+\subsection{Calculating microstate energies}
+
+After the $G_{\mathrm{intr}}$ values and interaction energies have been calculated 
+for all instances of all titratable sites, 
+one can calculate the energy of a particular protonation state of the protein, i.e. 
+the microstate energy, $G_{\mathrm{micro}}$.
+%
+The polypeptide in the "sites2" example contains only two sites, 
+glutamate and histidine,
+so there can be $2^1 * 4^1 = 8$ possible protonation states, because glutamate has two
+instances ("p" and "d") and histidine has four instances ("HSP", "HSD", "HSE", "fully deprotonated").
+%
+For real-life proteins the number of possible protonation states is usually very large.
+
+
+
+%-------------------------------------------------
+\subsection{Calculating protonation probabilities}
+
+The protonation probabilities are calculated at a given pH.
+%
+This can be done analytically for small proteins or using GMCT for larger proteins.
+
+{\footnotesize \begin{lstlisting}
+ce_model.CalculateProbabilitiesAnalytically ()
+ce_model.SummaryProbabilities ()
+\end{lstlisting} }
 
 
 %=================================================
@@ -313,7 +420,7 @@ ce_model.WriteJobFiles (mol)
 MEAD website: \\
 \url{http://stjuderesearch.org/site/lab/bashford/}
 
-Extended MEAD website:\\ 
+Extended MEAD website:\\
 \url{http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=extended-mead}
 
 Doctoral thesis of Timm Essigke:\\
