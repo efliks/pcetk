@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.1.16)  17 JUN 2014 20:07
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.1.16)  18 JUN 2014 18:47
 entering extended mode
  %&-line parsing enabled.
 **ContinuumElectrostatics_Manual
@@ -223,24 +223,27 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <6> on input line 142.
  [3] [4] [5] [6]
-(./ContinuumElectrostatics_Manual.aux) ) 
+[7] [8] (./ContinuumElectrostatics_Manual.aux) ) 
 Here is how much of TeX's memory you used:
- 4757 strings out of 495061
- 70885 string characters out of 1182621
+ 4770 strings out of 495061
+ 71055 string characters out of 1182621
  166591 words of memory out of 3000000
- 7870 multiletter control sequences out of 15000+50000
+ 7873 multiletter control sequences out of 15000+50000
  8829 words of font info for 32 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
  38i,5n,38p,271b,1651s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/share/texmf-texlive/fonts/type1/p
-ublic/amsfonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfo
-nts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12
-.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/
-share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf
--texlive/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
-Output written on ContinuumElectrostatics_Manual.pdf (6 pages, 114291 bytes).
+</usr/share/texmf-texlive/fonts
+/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/publ
+ic/amsfonts/cm/cmmi10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
+/cm/cmmi8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pf
+b></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/shar
+e/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texli
+ve/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/ty
+pe1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf-texlive/fonts/type1/public/
+amsfonts/cm/cmtt9.pfb>
+Output written on ContinuumElectrostatics_Manual.pdf (8 pages, 149483 bytes).
 PDF statistics:
- 130 PDF objects out of 1000 (max. 8388607)
- 38 named destinations out of 1000 (max. 500000)
- 81 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 170 PDF objects out of 1000 (max. 8388607)
+ 48 named destinations out of 1000 (max. 500000)
+ 105 words of extra memory for PDF output out of 10000 (max. 10000000)
 
