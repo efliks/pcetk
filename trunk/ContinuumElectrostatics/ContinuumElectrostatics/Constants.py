@@ -27,7 +27,7 @@ NEXT_RESIDUE     = ("N", "H",  "CA", "HA")
 
 NEXT_RESIDUE_PRO = ("N", "CA", "HA", "CD",  "HD1", "HD2")
 
-NEXT_RESIDUE_GLY = ("N", "H",  "CA", "HA1", "HA2")
+NEXT_RESIDUE_GLY = ("N", "H",  "CA", "HA1", "HA2", "HN")
 
 PROTEIN_RESIDUES = (
    "ALA", "CYS", "ASP", "GLU", "PHE", "GLY", "HIS", "ILE", "LYS", "LEU",

@@ -25,13 +25,18 @@
 \begin{center}
 {\LARGE \bf \modulename}
 
-\vspace{0.5cm}
-{\Large User Manual\\
-Last update: \today}
+{\large
+A pDynamo module for protonation state calculations
+
+\vspace{1.0cm}
+\underline{Mikolaj Feliks}\\
+Institut de Biologie Structurale, Grenoble\\
+Last updated: \today
+}
+
+\vspace{1.0cm}
 
 \end{center}
-
-\vspace{2cm}
 
 
 %=================================================
@@ -58,8 +63,8 @@ calculations of protonation states of individual sites.
 The module provides an interface between pDynamo and the external solver of
 the Poisson-Boltzmann equation, MEAD.
 %
-MEAD is a program developed by Donald Bashford and extended by Timm Essigke
-and Thomas Ullmann.
+MEAD is a program developed by Donald Bashford\cite{Bashford1992} and extended 
+by Timm Essigke\cite{Essigke_PhD} and Thomas Ullmann.
 %
 The electrostatic energy terms obtained with MEAD can be used to calculate
 energies of all possible protonation states of the protein of interest.
@@ -74,11 +79,11 @@ protonation state energies using a Monte Carlo method.
 The GMCT interface allows for studying the titration of larger proteins.
 
 
-In the present document, I focus on the practical side of the
-electrostatic calculations.
+% In the present document, I focus on the practical side of the
+% electrostatic calculations.
 %
-Other people have done a great work to develop the theory and computational
-methods the \modulename module is based on.
+% Other people have done a great work to develop the theory and computational
+% methods the \modulename module is based on.
 %
 %The primary source of information was the doctoral thesis of Timm Essigke.
 
@@ -165,7 +170,7 @@ therefore have to be compiled before use.
 In the future, I plan to shift some more parts of the module from Python to C.
 
 \bigskip
-Start from going to the directory \texttt{extensions/csource}.
+Start from going to the directory \texttt{extensions/csource/}.
 %
 Change the uppermost line in the \texttt{Makefile}. 
 %
@@ -174,14 +179,14 @@ This line defines the directory where you have installed pDynamo.
 After editing, close the file and run "make" to compile the C object file.
 
 \bigskip
-Go to the directory \texttt{extensions/pyrex} and again edit the \texttt{Makefile}.
+Go to the directory \texttt{extensions/pyrex/} and again edit the \texttt{Makefile}.
 %
 Change the line starting from "INC2" to the location of your pDynamo installation.
 %
 Close the file and run "make".
 %
 It should generate a dynamically linked library \texttt{StateVector.so} in 
-the \texttt{ContinuumElectrostatics} directory.
+the \texttt{ContinuumElectrostatics/} directory.
 
 \bigskip
 At this point, the installation is complete.
@@ -197,7 +202,6 @@ This can be done in the following way (in Bash):
 \newpage
 {\footnotesize \begin{lstlisting}
 export PDYNAMO_CONTINUUMELECTROSTATICS=/home/mikolaj/devel/ContinuumElectrostatics
-
 export PYTHONPATH=$PYTHONPATH:$PDYNAMO_CONTINUUMELECTROSTATICS
 \end{lstlisting} }
 
@@ -213,6 +217,16 @@ histidine and glutamate.
 %
 The test "histidine" uses only one site. The other tests use real-life,
 although small proteins.
+
+
+By default, the \modulename module will not empty the scratch directory
+after completing the run.
+%
+Starting the job for the second time will cause reading of the existing 
+scratch files instead of running the calculations anew.
+%
+To avoid this behaviour, remove the scratch directory or declare another one
+during the setup of the continuum electrostatic model.
 
 
 %-------------------------------------------------
@@ -322,8 +336,7 @@ By default, each site is assigned a separate directory, for example
 Inside the directory, there are PQR files for each instance of the site in the protein
 and in a model compound.
 %
-The other type of files are MGM and OGM files describing lattices used for
-solving the Poisson-Boltzmann equation.
+The OGM and MGM files specify parameters of lattices used for solving the Poisson-Boltzmann equation.
 %
 The \texttt{back.pqr} file defines the non-titratable background.
 %
@@ -397,16 +410,61 @@ glutamate and histidine,
 so there can be $2^1 * 4^1 = 8$ possible protonation states, because glutamate has two
 instances ("p" and "d") and histidine has four instances ("HSP", "HSD", "HSE", "fully deprotonated").
 %
-For real-life proteins the number of possible protonation states is usually very large.
+For real-life proteins, the number of protonation states is very large.
+%
+The protonation state of the protein is defined by a state vector.
+%
+Each component of the state vector represents the protonation state of a site in the protein.
+%
+The value of the component indicates the current instance of the site.
+%
+The values of 0 and 1 do not necessarily mean "deprotonated" and "protonated".
+%
+The next few lines of code generate all possible permutations of the state vector and calculate
+their respective microstate energies:
 
+{\footnotesize \begin{lstlisting}
+statevector = StateVector (ce_model)
+increment   = True
+while increment:
+  Gmicro = ce_model.CalculateMicrostateEnergy (statevector, pH = 7.0)
+  statevector.Print (ce_model, title = "Gmicro = %f" % Gmicro)
+  increment = statevector.Increment ()
+\end{lstlisting} }
+
+\bigskip
+In the lowest energy protonation state, the histidine is protonated at 
+positions $\delta$ and $\epsilon$ and the glutamate is deprotonated.
+%
+Dissociation of the $\epsilon$-hydrogen from the histidine requires only 0.7\,kcal/mol.
 
 
 %-------------------------------------------------
 \subsection{Calculating protonation probabilities}
-
-The protonation probabilities are calculated at a given pH.
+% For a given site, the probability of occurance of a particular instance is calculated 
+% from the Boltzmann weighted sum, which takes the form:
+One option for calculating protonation probabilities is to use GMCT externally after 
+the calculations by MEAD are complete.
 %
-This can be done analytically for small proteins or using GMCT for larger proteins.
+This can be done by writing two files, \texttt{gintr.dat} and \texttt{W.dat}, containing 
+the calculated intrinsic energies and interaction energies, respectively.
+
+{\footnotesize \begin{lstlisting}
+ce_model.WriteGintr ()
+ce_model.WriteW ()
+\end{lstlisting} }
+
+
+\bigskip
+In the \modulename module, protonation probabilities can be calculated either analytically for
+small proteins or by using GMCT for larger proteins.
+%
+The following two lines calculate protonation probabilities analytically and report them
+in a table.
+%
+By default, the calculations are done at pH = 7.
+%
+The default behaviour can be changed by passing the "pH" argument. 
 
 {\footnotesize \begin{lstlisting}
 ce_model.CalculateProbabilitiesAnalytically ()
@@ -414,22 +472,91 @@ ce_model.SummaryProbabilities ()
 \end{lstlisting} }
 
 
-%=================================================
-\section{References}
-%=================================================
-MEAD website: \\
-\url{http://stjuderesearch.org/site/lab/bashford/}
+\bigskip
+For comparison, the probabilities are calculated by using GMCT. 
+%
+During the calculations in GMCT, a \texttt{scratch/gmct/} directory will be created
+for storing input and output files.
 
-Extended MEAD website:\\
-\url{http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=extended-mead}
+{\footnotesize \begin{lstlisting}
+ce_model.CalculateProbabilitiesGMCT ()
+ce_model.SummaryProbabilities ()
+\end{lstlisting} }
 
-Doctoral thesis of Timm Essigke:\\
-\url{https://epub.uni-bayreuth.de/655/}
+\bigskip
+The resulting tables show for each site the probability of occurance of each instance. 
+%
+Instances with the highest probability of occurance are marked with "*".
+%
+Optionally, the argument \texttt{reportOnlyUnusual=True} will only show sites 
+in their non-standard  protonation states, for example protonated glutamates.
 
 
-%=================================================
-\section{Test cases}
-%=================================================
+%-------------------------------------------------
+\subsection{Calculating titration curves}
+Titration curves are obtained by calculating protonation probabilities for a given pH-range, 
+usually from 0 to 14.
+
+{\footnotesize \begin{lstlisting}
+ce_model.CalculateCurves (isAnalytic = True, forceSerial = True, directory = "curves_analytic")
+\end{lstlisting} }
+
+\bigskip
+The argument \texttt{isAnalytic=True} tells that the protonation probabilities should be
+calculated analytically.
+%
+Each pH-step will be calculated in a separate thread.
+%
+However, the analytic evaluation of titration curves seems to be very inefficient in parallel 
+mode.
+%
+The argument \texttt{forceSerial=True} will switch on serial mode regardless of the number 
+of threads declared previously.
+%
+For each instance of each site, a data file containing the titration curve will be generated.
+%
+The files will be placed in the directory specified by the argument \texttt{directory}.
+%
+The curves can be plotted in a plotting program, for example Gnuplot.
+
+\bigskip
+The same task can be accomplished by using GMCT in parallel mode:
+
+{\footnotesize \begin{lstlisting}
+ce_model.CalculateCurves (directory = "curves_gmct")
+\end{lstlisting} }
+
+
+%-------------------------------------------------
+\section{Parameter files}
+Parameter files in YAML format reside in the directory \texttt{parameters/}. 
+%
+The file \texttt{radii.yaml} defines a list of atomic radii required for calculating 
+the boundary between the protein phase and the solvent phase.
+%
+The files in the \texttt{sites/} subdirectory define parameters for 
+titratable sites, for example aspartate:
+
+\linespread{0.9}
+{\footnotesize \begin{lstlisting}
+---
+site      : ASP
+atoms     : [CB, HB1, HB2, CG, OD1, OD2]
+instances :
+  - label   : p
+    Gmodel  : -5.487135
+    protons : 1
+    charges : [-0.21,  0.09,  0.09,  0.75, -0.36, -0.36]
+
+  - label   : d
+    Gmodel  : 0.000000
+    protons : 0
+    charges : [-0.28,  0.09,  0.09,  0.62, -0.76, -0.76]
+\end{lstlisting} }
+\linespread{1.6}
+
+\bigskip
+
 
 
 %=================================================
@@ -447,5 +574,25 @@ Doctoral thesis of Timm Essigke:\\
   \item Make use of the pqr2SolvAccVol program to speed up the calculations a little bit
   \item The function calculating Gmicro should be written in C
 \end{itemize}
+
+
+%=================================================
+\section{References}
+%=================================================
+\renewcommand{\refname}{}
+\vspace*{-1.5cm}
+
+\bibliographystyle{acm}
+\bibliography{refs}
+
+% MEAD website: \\
+% \url{http://stjuderesearch.org/site/lab/bashford/}
+% 
+% Extended MEAD website:\\
+% \url{http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=extended-mead}
+% 
+% Doctoral thesis of Timm Essigke:\\
+% \url{https://epub.uni-bayreuth.de/655/}
+
 
 \end{document}

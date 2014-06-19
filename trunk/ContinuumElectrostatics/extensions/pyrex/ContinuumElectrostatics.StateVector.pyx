@@ -82,7 +82,7 @@ cdef class StateVector:
           instance = site.instances[protonation]
           table.Entry (site.segName)
           table.Entry (site.resName)
-          table.Entry (site.resNum)
+          table.Entry (site.resSerial)
           table.Entry ("%s" % instance.label)
           table.Entry ("%d" % protonation)
         table.Stop ()
