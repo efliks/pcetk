@@ -3,7 +3,7 @@
 from pBabel   import CHARMMParameterFiles_ToParameters, CHARMMPSFFile_ToSystem, CHARMMCRDFile_ToCoordinates3
 from pCore    import logFile
 
-from ContinuumElectrostatics import MEADModel
+from ContinuumElectrostatics import MEADModel, StateVector
 
 
 logFile.Header ("Calculate protonation states of two titratable sites in a hypothetical peptide.")
@@ -31,6 +31,25 @@ ce_model.WriteJobFiles (mol)
 ce_model.CalculateElectrostaticEnergies ()
 
 
+#===========================================
+logFile.Text ("\n*** Calculating microstate energies of all states at pH = 7 ***\n")
+
+statevector = StateVector (ce_model)
+increment   = True
+
+while increment:
+  Gmicro = ce_model.CalculateMicrostateEnergy (statevector, pH = 7.0)
+  statevector.Print (ce_model, title = "Gmicro = %f" % Gmicro)
+  increment = statevector.Increment ()
+
+
+#===========================================
+ce_model.WriteGintr ()
+
+ce_model.WriteW ()
+
+
+#===========================================
 logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 analytically ***\n")
 
 ce_model.CalculateProbabilitiesAnalytically ()
@@ -46,11 +65,10 @@ ce_model.CalculateProbabilitiesGMCT ()
 ce_model.SummaryProbabilities ()
 
 
-
+#===========================================
 logFile.Text ("\n*** Calculating titration curves analytically ***\n")
 
 ce_model.CalculateCurves (isAnalytic = True, forceSerial = True, directory = "curves_analytic")
-
 
 
 logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")

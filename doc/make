@@ -1,0 +1,8 @@
+t=ContinuumElectrostatics_manual
+
+rm *.aux
+
+pdflatex   $t
+bibtex     $t
+pdflatex   $t
+pdflatex   $t
