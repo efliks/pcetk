@@ -17,6 +17,7 @@
 \lstset{basicstyle=\ttfamily, frame=shadowbox, breaklines=true, breakatwhitespace=true}
 
 \newcommand{\modulename}{ContinuumElectrostatics\xspace}
+\newcommand{\pka}{$\mathrm{p}K_{\mathrm{a}}$\xspace}
 
 
 %=================================================
@@ -34,7 +35,7 @@ Institut de Biologie Structurale, Grenoble\\
 Last updated: \today
 }
 
-\vspace{1.0cm}
+\vspace{0.5cm}
 
 \end{center}
 
@@ -48,7 +49,12 @@ environment.
 %
 These titratable residues, cofactors and ligands will be referred to as sites.
 %
-The titration of proteins is often difficult to study experimentally because
+Each site exists in at least two charge forms, usually the protonated form and 
+the deprotonated form.
+%
+These different charge forms are called instances.
+%
+The titration of proteins is difficult to study experimentally because
 the available methods, such as calorimetry, cannot determine protonation states
 of individual sites.
 %
@@ -56,36 +62,27 @@ The knowledge of these individual protonation states is crucial for
 understanding of many important processes, for example enzyme catalysis.
 
 
-The \modulename module extends the functionality of the pDynamo
-library with a Poisson-Boltzmann continuum electrostatic model that allows for
-calculations of protonation states of individual sites.
+The \modulename module extends the pDynamo\cite{pDynamo_Field2008}
+library with a Poisson-Boltz\-mann continuum electrostatic 
+model that allows for calculations of protonation states of individual sites.
 %
-The module provides an interface between pDynamo and the external solver of
-the Poisson-Boltzmann equation, MEAD.
+The module links pDynamo to the external solver of the Poisson-Boltzmann 
+equation, MEAD.
 %
-MEAD is a program developed by Donald Bashford\cite{Bashford1992} and extended 
-by Timm Essigke\cite{Essigke_PhD} and Thomas Ullmann.
+MEAD is a program developed by Donald Bashford\cite{Bashford1997} and 
+later extended by Timm Essigke\cite{Essigke_PhD} and Thomas Ullmann.
 %
 The electrostatic energy terms obtained with MEAD can be used to calculate
 energies of all possible protonation states of the protein of interest.
 %
 However, analytic evaluation of protonation state energies is only possible
-for proteins with only a few titratable sites.
+for proteins with usually less than 20 titratable sites.
 %
-The \modulename module also provides an interface to the GMCT
+The \modulename module provides an interface to the GMCT\cite{Ullmann2012}
 program by Matthias Ullmann and Thomas Ullmann that can be used to sample
 protonation state energies using a Monte Carlo method.
 %
-The GMCT interface allows for studying the titration of larger proteins.
-
-
-% In the present document, I focus on the practical side of the
-% electrostatic calculations.
-%
-% Other people have done a great work to develop the theory and computational
-% methods the \modulename module is based on.
-%
-%The primary source of information was the doctoral thesis of Timm Essigke.
+The GMCT interface makes it possible to study the titration of larger proteins.
 
 
 %=================================================
@@ -113,17 +110,19 @@ concepts and finally extend it with something useful.
 Last but not least, I saw some room for improvement in the previously used
 tools and scripts.
 
-The \modulename module is similar in behaviour to the \texttt{multiflex2qmpb.pl}
+The \modulename module is similar in behavior to the \texttt{multiflex2qmpb.pl}
 program, which is part of the QMPB package written by Timm Essigke.
 %
-The approach taken here is most compatibile with the original approach
+The approach taken here is most compatible with the original approach
 by Donald Bashford.
 %
-The key difference is that the treatment of multiprotic sites, such as histidine,
-is improved.
+The key novelty is the improved treatment of multiprotic sites, 
+such as histidine.
+%
+Also, calculations with the \makebox{\modulename} module are a lot faster than 
+before because of the parallelization. 
 
 % Talk about non-binary state vector and different energy reference (fully deprotonated system)
-
 %
 % For the calculated thermodynamic cycle, see Fig. 3.8, p. 82 in Timm's thesis.
 
@@ -185,8 +184,8 @@ Change the line starting from "INC2" to the location of your pDynamo installatio
 %
 Close the file and run "make".
 %
-It should generate a dynamically linked library \texttt{StateVector.so} in 
-the \texttt{ContinuumElectrostatics/} directory.
+It should generate a dynamically linked library, \texttt{StateVector.so}, in 
+the directory \texttt{Continuum\-Electrostatics/}.
 
 \bigskip
 At this point, the installation is complete.
@@ -204,6 +203,7 @@ This can be done in the following way (in Bash):
 export PDYNAMO_CONTINUUMELECTROSTATICS=/home/mikolaj/devel/ContinuumElectrostatics
 export PYTHONPATH=$PYTHONPATH:$PDYNAMO_CONTINUUMELECTROSTATICS
 \end{lstlisting} }
+
 
 %=================================================
 \section{Usage}
@@ -225,18 +225,23 @@ after completing the run.
 Starting the job for the second time will cause reading of the existing 
 scratch files instead of running the calculations anew.
 %
-To avoid this behaviour, remove the scratch directory or declare another one
+To avoid this behavior, remove the scratch directory or declare another one
 during the setup of the continuum electrostatic model.
+
+\textbf{Warning! The energies calculated by the \modulename module are 
+in units of kcal/mol, in contrast to kJ/mol, which are normally used 
+in pDynamo.}
 
 
 %-------------------------------------------------
 \subsection{Setup of the protein model}
 The electrostatic model used by the \modulename module requires that the protein
-of interest is described by the CHARMM energy model.
+of interest is described by the CHARMM energy model\cite{MacKerell1998}.
 %
 In the first step, prepare CHARMM topology (PSF) and coordinate (CRD) files.
 %
-The preperation can be done using the programs CHARMM or VMD.
+The preparation can be done using the programs CHARMM\cite{CHARMM_Brooks1983}
+or VMD\cite{VMD1996}.
 %
 During the preparation of the protein model, all titratable residues in the protein
 should be set to their standard protonation states at pH = 7, i.e. aspartates
@@ -248,9 +253,7 @@ beginning of the script \texttt{sites2.py}:
 
 {\footnotesize \begin{lstlisting}
 par_tab = ["charmm/toppar/par_all27_prot_na.inp", ]
-
 mol  = CHARMMPSFFile_ToSystem ("charmm/testpeptide_xplor.psf", isXPLOR = True, parameters = CHARMMParameterFiles_ToParameters (par_tab))
-
 mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/testpeptide.crd")
 \end{lstlisting} }
 
@@ -375,7 +378,7 @@ is calculated, which is called the homogeneous transfer energy, $G_{\mathrm{homo
 Transferring of a site means moving it from the model compound to the protein.
 %
 In the model compound, the site has a model energy $G_{\mathrm{model}}$, which
-corresponds to the experimentally known $\mathrm{p}K_{\mathrm{a}}$ value of the deprotonation reaction.
+corresponds to the experimentally known \pka value of the deprotonation reaction.
 %
 The site in the protein has an intrinsic energy $G_{\mathrm{intr}} = G_{\mathrm{model}} + G_{\mathrm{homotrans}}$.
 %
@@ -441,7 +444,7 @@ Dissociation of the $\epsilon$-hydrogen from the histidine requires only 0.7\,kc
 
 %-------------------------------------------------
 \subsection{Calculating protonation probabilities}
-% For a given site, the probability of occurance of a particular instance is calculated 
+% For a given site, the probability of occurrence of a particular instance is calculated 
 % from the Boltzmann weighted sum, which takes the form:
 One option for calculating protonation probabilities is to use GMCT externally after 
 the calculations by MEAD are complete.
@@ -464,7 +467,7 @@ in a table.
 %
 By default, the calculations are done at pH = 7.
 %
-The default behaviour can be changed by passing the "pH" argument. 
+The default behavior can be changed by passing the "pH" argument. 
 
 {\footnotesize \begin{lstlisting}
 ce_model.CalculateProbabilitiesAnalytically ()
@@ -484,9 +487,9 @@ ce_model.SummaryProbabilities ()
 \end{lstlisting} }
 
 \bigskip
-The resulting tables show for each site the probability of occurance of each instance. 
+The resulting tables show for each site the probability of occurrence of each instance. 
 %
-Instances with the highest probability of occurance are marked with "*".
+Instances with the highest probability of occurrence are marked with "*".
 %
 Optionally, the argument \texttt{reportOnlyUnusual=True} will only show sites 
 in their non-standard  protonation states, for example protonated glutamates.
@@ -535,9 +538,11 @@ The file \texttt{radii.yaml} defines a list of atomic radii required for calcula
 the boundary between the protein phase and the solvent phase.
 %
 The files in the \texttt{sites/} subdirectory define parameters for 
-titratable sites, for example aspartate:
+titratable sites.
+%
+The listing below shows the parameter file for aspartate:
 
-\linespread{0.9}
+\linespread{0.8}
 {\footnotesize \begin{lstlisting}
 ---
 site      : ASP
@@ -552,45 +557,101 @@ instances :
     Gmodel  : 0.000000
     protons : 0
     charges : [-0.28,  0.09,  0.09,  0.62, -0.76, -0.76]
+...
 \end{lstlisting} }
 \linespread{1.6}
 
+
 \bigskip
+The site's name is defined by the parameter \texttt{site}. 
+%
+\texttt{atoms} defines a list of names of atoms that constitute the site.
+%
+The consecutive lines define instances of the site.
+%
+\texttt{label} is the name of the instance, for example "p" for "protonated".
+%
+\texttt{Gmodel} is the energy of the model compound expressed in kcal/mol.
+%
+$G_{\mathrm{model}}$ has been calculated at the temperature of 300\,K from the 
+\pka value of aspartate, which is 4.0.
+%
+The values of model energies are recalculated if a different temperature is 
+to be used.
+%
+The reason for $G_{\mathrm{model}} = 0$ for the deprotonated instance is that 
+the energies are calculated relative to a reference state, which is a fully 
+deprotonated state.
+%
+The parameter \texttt{protons} tells the number of protons bound to the site and 
+is used during the calculation of the microstate energy.
+%
+Finally, \texttt{charges} is a list of atomic charges that differ between 
+the instances.
+%
+The order of charges is the same as the order of atoms in the \texttt{atoms} list.
+%
+The charges usually come from the CHARMM force field, i.e. they are
+parametrized for the dielectric constant $\epsilon = 4$.
 
+Proteins often contain non-standard titratable sites, for example ligands or cofactors.
+%
+The parameter files describing these sites are automatically loaded from the current directory
+as long as they have the extension "*.yaml".
+%
+If the names of the added sites coincide with the standard names, 
+the parameters for the standard sites will be overwritten.
 
 
 %=================================================
-\section{To-do list}
+\section{Future developments}
 %=================================================
+\linespread{0.8}
+
 \begin{itemize}
-  \setlength{\itemsep}{2pt}
-  \item Move parts of WriteJobFiles to the instance class
-  \item Rename variables containing filenames so that they start from "file"
-  \item Coordinates from the FPT file should have their own data structure
-  \item Efficiency improvements during writing job files
-  \item Use arrays instead of lists for interactions (Real1DArray or SymmetricMatrix)
-  \item Have a column of ETA (Estimated Time for Accomplishment) in MEAD calculations
+  \setlength{\itemsep}{1.0pt}
+  \item Extend the model by including rotameric instances
+  \item Include quantum chemical sites as in QMPB
+  \item Include reduction/oxidation reactions in addition to protonation/deprotonation reactions
+  \item Enclose the MEAD and GMCT codes inside pDynamo
   \item Optionally convert kcal/mol (MEAD units) to kJ/mol (pDynamo units)
-  \item Make use of the pqr2SolvAccVol program to speed up the calculations a little bit
-  \item The function calculating Gmicro should be written in C
+  \item Move parts of the \texttt{WriteJobFiles} method to the instance class
+  \item Improve the efficiency of writing job files
+  \item Calculate ETA (Estimated Time for Accomplishment) during MEAD calculations
+  \item Rename variables containing filenames so that they start from "file"
+  \item Make use of the \texttt{pqr2SolvAccVol} program to speed up calculations 
+  \item Use arrays instead of lists for storing interactions
+  \item Move the method for calculating $G_{\mathrm{micro}}$ from Python to C
 \end{itemize}
+
+\linespread{1.6}
 
 
 %=================================================
 \section{References}
 %=================================================
 \renewcommand{\refname}{}
-\vspace*{-1.5cm}
+\vspace*{-1cm}
 
-\bibliographystyle{acm}
+\linespread{0.8}
+\bibliographystyle{ieeetr}
 \bibliography{refs}
 
-% MEAD website: \\
-% \url{http://stjuderesearch.org/site/lab/bashford/}
-% 
-% Extended MEAD website:\\
-% \url{http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=extended-mead}
-% 
+\linespread{1.6}
+
+
+%-------------------------------------------------
+\subsection*{Websites}
+
+\begin{itemize}
+  \item MEAD (Donald Bashford)\\ \url{http://stjuderesearch.org/site/lab/bashford/}
+
+  \item Extended MEAD (Thomas Ullmann)\\ \url{http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=extended-mead}
+
+  \item GMCT (Thomas Ullmann)\\ \url{http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=gmct-gcem}
+\end{itemize}
+
+
 % Doctoral thesis of Timm Essigke:\\
 % \url{https://epub.uni-bayreuth.de/655/}
 
