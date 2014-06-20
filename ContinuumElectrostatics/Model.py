@@ -18,6 +18,9 @@ from Site                  import MEADSite
 from Instance              import MEADInstance, InstanceThread 
 from Toolbox               import FormatEntry, ConvertAttribute
 from StateVector           import StateVector
+
+# File handling
+from ESTFileReader         import ESTFileReader
 from GMCTOutputFileReader  import GMCTOutputFileReader
 from InputFileWriter       import WriteInputFile
 from PQRFileWriter         import PQRFile_FromSystem
