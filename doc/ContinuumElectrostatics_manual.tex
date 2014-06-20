@@ -52,7 +52,7 @@ These titratable residues, cofactors and ligands will be referred to as sites.
 Each site exists in at least two charge forms, usually the protonated form and 
 the deprotonated form.
 %
-These different charge forms are called instances.
+Different charge forms of a site are called instances.
 %
 The titration of proteins is difficult to study experimentally because
 the available methods, such as calorimetry, cannot determine protonation states
@@ -62,8 +62,8 @@ The knowledge of these individual protonation states is crucial for
 understanding of many important processes, for example enzyme catalysis.
 
 
-The \modulename module extends the pDynamo\cite{pDynamo_Field2008}
-library with a Poisson-Boltz\-mann continuum electrostatic 
+The \modulename module extends the pDynamo software library by 
+Martin Field\cite{pDynamo_Field2008}  with a Poisson-Boltz\-mann continuum electrostatic 
 model that allows for calculations of protonation states of individual sites.
 %
 The module links pDynamo to the external solver of the Poisson-Boltzmann 
@@ -72,7 +72,7 @@ equation, MEAD.
 MEAD is a program developed by Donald Bashford\cite{Bashford1997} and 
 later extended by Timm Essigke\cite{Essigke_PhD} and Thomas Ullmann.
 %
-The electrostatic energy terms obtained with MEAD can be used to calculate
+The electrostatic energy terms obtained by MEAD can be used to calculate
 energies of all possible protonation states of the protein of interest.
 %
 However, analytic evaluation of protonation state energies is only possible
@@ -102,7 +102,7 @@ I wrote the \modulename module primarily as a pretext to learn how
 the Poisson-Boltzmann model works in detail.
 %
 I used this model very often during my studies on enzyme catalysis but never had
-time nor will to learn the details of the theory that was behind.
+time nor pressure to learn the details of the theory that was behind.
 %
 I also wanted to better explore the pDynamo library, understand its programming
 concepts and finally extend it with something useful.
@@ -119,8 +119,8 @@ by Donald Bashford.
 The key novelty is the improved treatment of multiprotic sites, 
 such as histidine.
 %
-Also, calculations with the \makebox{\modulename} module are a lot faster than 
-before because of the parallelization. 
+Also, the calculations with the \makebox{\modulename} module are considerably faster 
+than previously because of the \makebox{parallelization}.
 
 % Talk about non-binary state vector and different energy reference (fully deprotonated system)
 %
@@ -228,8 +228,8 @@ scratch files instead of running the calculations anew.
 To avoid this behavior, remove the scratch directory or declare another one
 during the setup of the continuum electrostatic model.
 
-\textbf{Warning! The energies calculated by the \modulename module are 
-in units of kcal/mol, in contrast to kJ/mol, which are normally used 
+\textbf{Notice! The energies calculated by the \modulename module are 
+given in kcal/mol, in contrast to kJ/mol, which are normally used 
 in pDynamo.}
 
 
