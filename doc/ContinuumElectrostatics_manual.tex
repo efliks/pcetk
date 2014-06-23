@@ -59,18 +59,19 @@ the available methods, such as calorimetry, cannot determine protonation states
 of individual sites.
 %
 The knowledge of these individual protonation states is crucial for
-understanding of many important processes, for example enzyme catalysis.
+understanding of many important processes, for example enzyme catalysis\cite{Bombarda2010}.
 
 
 The \modulename module extends the pDynamo software library by 
 Martin Field\cite{pDynamo_Field2008}  with a Poisson-Boltz\-mann continuum electrostatic 
-model that allows for calculations of protonation states of individual sites.
+model that allows for calculations of protonation states of individual 
+sites\cite{Bashford1992,Ullmann1999,Bombarda2006}.
 %
 The module links pDynamo to the external solver of the Poisson-Boltzmann 
-equation, MEAD.
+equation, MEAD\cite{Bashford1997}.
 %
-MEAD is a program developed by Donald Bashford\cite{Bashford1997} and 
-later extended by Timm Essigke\cite{Essigke_PhD} and Thomas Ullmann.
+MEAD is a program developed by Donald Bashford and 
+later extended by Timm Essigke\cite{Essigke_PhD} and Thomas Ullmann\cite{Thomas_PhD}.
 %
 The electrostatic energy terms obtained by MEAD can be used to calculate
 energies of all possible protonation states of the protein of interest.
@@ -78,7 +79,7 @@ energies of all possible protonation states of the protein of interest.
 However, analytic evaluation of protonation state energies is only possible
 for proteins with usually less than 20 titratable sites.
 %
-The \modulename module provides an interface to the GMCT\cite{Ullmann2012}
+The \modulename module provides an interface to the GMCT\cite{Ullmann2012,Thomas_PhD}
 program by Matthias Ullmann and Thomas Ullmann that can be used to sample
 protonation state energies using a Monte Carlo method.
 %
@@ -111,10 +112,10 @@ Last but not least, I saw some room for improvement in the previously used
 tools and scripts.
 
 The \modulename module is similar in behavior to the \texttt{multiflex2qmpb.pl}
-program, which is part of the QMPB package written by Timm Essigke.
+program, which is part of the QMPB package written by Timm Essigke\cite{Essigke_PhD}.
 %
 The approach taken here is most compatible with the original approach
-by Donald Bashford.
+by Donald Bashford\cite{Bashford1992}.
 %
 The key novelty is the improved treatment of multiprotic sites, 
 such as histidine.
@@ -373,14 +374,14 @@ and in the protein.
 %
 The difference
 $(G_{\mathrm{Born, protein}} + G_{\mathrm{back, protein}}) - (G_{\mathrm{Born, model}} + G_{\mathrm{back, model}})$
-is calculated, which is called the homogeneous transfer energy, $G_{\mathrm{homotrans}}$.
+is calculated, which is called the heterogeneous transfer energy, $G_{\mathrm{heterotrans}}$.
 %
 Transferring of a site means moving it from the model compound to the protein.
 %
 In the model compound, the site has a model energy $G_{\mathrm{model}}$, which
 corresponds to the experimentally known \pka value of the deprotonation reaction.
 %
-The site in the protein has an intrinsic energy $G_{\mathrm{intr}} = G_{\mathrm{model}} + G_{\mathrm{homotrans}}$.
+The site in the protein has an intrinsic energy $G_{\mathrm{intr}} = G_{\mathrm{model}} + G_{\mathrm{heterotrans}}$.
 %
 The \texttt{my\_2diel\_solver} program calculates $G_{\mathrm{Born, model}}$ and $G_{\mathrm{back, model}}$.
 %
@@ -391,7 +392,7 @@ with other instances of other sites in the protein.
 The \modulename module collects 
 $G_{\mathrm{Born, protein}}$, $G_{\mathrm{back, protein}}$, 
 $G_{\mathrm{Born, model}}$, $G_{\mathrm{back, model}}$ and interaction energies from MEAD 
-and calculates $G_{\mathrm{homotrans}}$ and $G_{\mathrm{intr}}$ for each instance of each site.
+and calculates $G_{\mathrm{heterotrans}}$ and $G_{\mathrm{intr}}$ for each instance of each site.
 
 Note that the \texttt{my\_3diel\_solver} program can in principle perform calculations
 in a three-dielectric environment (solvent, protein, vacuum).
@@ -532,13 +533,15 @@ ce_model.CalculateCurves (directory = "curves_gmct")
 
 %-------------------------------------------------
 \section{Parameter files}
-Parameter files in YAML format reside in the directory \texttt{parameters/}. 
+Two parameter formats are recognized, 
+YAML (pDynamo's default format) and EST (QMPB's format).
 %
-The file \texttt{radii.yaml} defines a list of atomic radii required for calculating 
-the boundary between the protein phase and the solvent phase.
+The file \texttt{radii.yaml} defines a list of atomic radii 
+required to calculate the boundary between the protein phase and 
+the solvent phase.
 %
-The files in the \texttt{sites/} subdirectory define parameters for 
-titratable sites.
+The files in the \texttt{sites/} directory define parameters for titratable 
+sites.
 %
 The listing below shows the parameter file for aspartate:
 
@@ -596,11 +599,14 @@ parametrized for the dielectric constant $\epsilon = 4$.
 
 Proteins often contain non-standard titratable sites, for example ligands or cofactors.
 %
-The parameter files describing these sites are automatically loaded from the current directory
-as long as they have the extension "*.yaml".
+The parameter files describing these sites are recognized by their extension and can be
+loaded automatically from the current directory.
 %
-If the names of the added sites coincide with the standard names, 
-the parameters for the standard sites will be overwritten.
+These additional parameter files can be provided both in EST or YAML formats (the EST format
+takes precedence).
+%
+If the names of the new sites coincide with the names of already existing sites, the
+parameters of the existing sites will be overwritten.
 
 
 %=================================================
@@ -644,16 +650,22 @@ the parameters for the standard sites will be overwritten.
 \subsection*{Websites}
 
 \begin{itemize}
+  \item pDynamo (Martin J. Field)\\ \url{http://pdynamo.org}
+
+  \item pDynamo-extensions (Mikolaj Feliks)\\ \url{https://code.google.com/p/pdynamo-extensions/}
+
   \item MEAD (Donald Bashford)\\ \url{http://stjuderesearch.org/site/lab/bashford/}
 
   \item Extended MEAD (Thomas Ullmann)\\ \url{http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=extended-mead}
 
   \item GMCT (Thomas Ullmann)\\ \url{http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=gmct-gcem}
+
+  \item Doctoral thesis of Timm Essigke, which was my primary source of knowledge\\ \url{https://epub.uni-bayreuth.de/655/}
+
+  \item Doctoral thesis of Thomas Ullmann\\ \url{https://epub.uni-bayreuth.de/199/}
+
+%  \item Doctoral thesis of Astrid Klingen\\ \url{https://epub.uni-bayreuth.de/763/}
 \end{itemize}
-
-
-% Doctoral thesis of Timm Essigke:\\
-% \url{https://epub.uni-bayreuth.de/655/}
 
 
 \end{document}

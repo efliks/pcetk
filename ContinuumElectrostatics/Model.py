@@ -128,26 +128,36 @@ class MEADModel (object):
 
 
   def LoadLibraryOfSites (self, log = logFile):
-    """Load a set of YAML files with parameters for titratable sites.
+    """Load a set of YAML or EST files with parameters for titratable sites.
 
-    If there are YAML files in the current directory, they are loaded as well.
+    If there are YAML or EST files in the current directory, they are loaded as well.
 
-    If these additional files have names coinciding with the names from the library, the library parameters will be overwritten."""
+    If these additional files have names coinciding with the names from the library, the library parameters will be overwritten.
+
+    Notice! EST files overwrite YAML files."""
+    directory    = os.getcwd ()
     filesLibrary = glob.glob (os.path.join (YAMLPATHIN, "sites", "*.yaml"))
-    filesExtra   = glob.glob (os.path.join (os.getcwd (), "*.yaml"))
-    filesLibrary.extend (filesExtra)
+    filesExtra   = glob.glob (os.path.join (directory, "*.yaml"))
+    filesEST     = glob.glob (os.path.join (directory, "*.est"))
 
     if LogFileActive (log):
-      for fileExtra in filesExtra:
+      for fileExtra in (filesExtra + filesEST):
         log.Text ("\nIncluded custom file: %s\n" % os.path.basename (fileExtra))
 
     self.librarySites = {}
-
-    for fileSite in filesLibrary:
+    for fileSite in (filesLibrary + filesExtra):
       site      = YAMLUnpickle (fileSite)
       name      = site [ "site"      ]
       atoms     = site [ "atoms"     ]
       instances = site [ "instances" ]
+      self.librarySites[name] = {"atoms" : atoms, "instances" : instances}
+
+    for fileSite in filesEST:
+      reader    = ESTFileReader (fileSite)
+      reader.Parse ()
+      name      = reader.siteLabel
+      atoms     = reader.siteAtoms
+      instances = reader.siteInstances
       self.librarySites[name] = {"atoms" : atoms, "instances" : instances}
 
 

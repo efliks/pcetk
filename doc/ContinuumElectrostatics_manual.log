@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.1.16)  20 JUN 2014 19:17
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.1.16)  23 JUN 2014 17:54
 entering extended mode
  %&-line parsing enabled.
 **ContinuumElectrostatics_manual
@@ -213,47 +213,46 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 137.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 138.
 
 
 (/usr/share/texmf-texlive/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 137.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 138.
  [2]
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 146.
+(Font)              <10.95> on input line 147.
  [3] [4] [5] [6]
-[7] [8] [9] [10] (./ContinuumElectrostatics_manual.bbl)
-Overfull \hbox (10.03125pt too wide) in paragraph at lines 649--650
+[7] [8] [9] [10] (./ContinuumElectrostatics_manual.bbl [11])
+Overfull \hbox (10.03125pt too wide) in paragraph at lines 659--660
 []$\OT1/cmtt/m/n/10.95 http : / / www . bisb . uni-[]bayreuth . de / People / u
 llmannt / index . php ? name = extended-[]mead$[] 
  []
 
-[11] [12] (./ContinuumElectrostatics_manual.aux) ) 
+[12] (./ContinuumElectrostatics_manual.aux) ) 
 Here is how much of TeX's memory you used:
- 4833 strings out of 495061
- 71966 string characters out of 1182621
+ 4843 strings out of 495061
+ 72115 string characters out of 1182621
  195591 words of memory out of 3000000
- 7887 multiletter control sequences out of 15000+50000
+ 7892 multiletter control sequences out of 15000+50000
  10098 words of font info for 36 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
  38i,5n,38p,271b,916s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/share/texmf-texlive/fon
-ts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-texlive/fonts/type1/pu
-blic/amsfonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfon
-ts/cm/cmmi10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi8
-.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/s
-hare/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-t
-exlive/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/
-type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/publi
-c/amsfonts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/
-cm/cmtt10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmtt9.pf
-b>
-Output written on ContinuumElectrostatics_manual.pdf (12 pages, 206525 bytes).
+</usr/share/texmf-texlive/fonts/ty
+pe1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-texlive/fonts/type1/public/
+amsfonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm
+/cmmi10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi8.pfb>
+</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/
+texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-texliv
+e/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1
+/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/ams
+fonts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cm
+tt10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
+Output written on ContinuumElectrostatics_manual.pdf (12 pages, 212227 bytes).
 PDF statistics:
- 252 PDF objects out of 1000 (max. 8388607)
- 91 named destinations out of 1000 (max. 500000)
+ 269 PDF objects out of 1000 (max. 8388607)
+ 96 named destinations out of 1000 (max. 500000)
  113 words of extra memory for PDF output out of 10000 (max. 10000000)
 
