@@ -9,7 +9,7 @@
 
 CurveThread is a class for running parallel calculations of titration curves."""
 
-__version__ = filter (str.isdigit, "$Revision$")
+__version__ = filter (str.isdigit, "$Revision: 58 $")
 
 import os, glob, math, threading, subprocess
 
