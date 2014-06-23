@@ -7,7 +7,7 @@
 #-------------------------------------------------------------------------------
 """Different tools and helper functions."""
 
-__version__ = filter (str.isdigit, "$Revision$")
+__version__ = filter (str.isdigit, "$Revision: 58 $")
 
 
 def FormatEntry (items, header = False):

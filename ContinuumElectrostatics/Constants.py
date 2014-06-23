@@ -7,7 +7,7 @@
 #-------------------------------------------------------------------------------
 """Constants."""
 
-__version__ = filter (str.isdigit, "$Revision$")
+__version__ = filter (str.isdigit, "$Revision: 58 $")
 
 import  os
 

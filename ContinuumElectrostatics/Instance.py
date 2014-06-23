@@ -9,7 +9,7 @@
 
 InstanceThread is a class used for running parallel calculations in MEAD."""
 
-__version__ = filter (str.isdigit, "$Revision$")
+__version__ = filter (str.isdigit, "$Revision: 58 $")
 
 
 from pCore                  import logFile, LogFileActive
