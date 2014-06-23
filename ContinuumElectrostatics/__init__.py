@@ -9,6 +9,8 @@
 
 The model allows for predictions of protonation states of titratable residues in proteins."""
 
+__version__ = filter (str.isdigit, "$Revision$")
+
 from Model                 import MEADModel
                                  
 from StateVector           import StateVector

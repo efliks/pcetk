@@ -7,6 +7,8 @@
 #-------------------------------------------------------------------------------
 """Reading EST parameter files."""
 
+__version__ = filter (str.isdigit, "$Revision$")
+
 import os
 
 from pCore      import logFile, LogFileActive, TextFileReader

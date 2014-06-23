@@ -7,6 +7,8 @@
 #-------------------------------------------------------------------------------
 """MEADSite is a class representing a titratable site."""
 
+__version__ = filter (str.isdigit, "$Revision$")
+
 
 class MEADSite (object):
   """Titratable site.
