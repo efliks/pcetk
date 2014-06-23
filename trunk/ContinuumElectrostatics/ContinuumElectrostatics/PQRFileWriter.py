@@ -5,16 +5,11 @@
 #                          Mikolaj J. Feliks (2014)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
-"""
-A module that handles writing PQR files. These files are needed as an input to extended MEAD.
+"""A module that handles writing PQR files. These files are needed as an input to extended MEAD.
 
-This module is based on the PDBFileWriter module.
-"""
+This module is based on the PDBFileWriter module."""
 
-
-# import itertools, time
-# from pMolecule    import PDYNAMO_VERSION, PeriodicTable, 
-# from ExportImport import _Exporter
+__version__ = filter (str.isdigit, "$Revision$")
 
 
 from pCore        import Coordinates3, TextFileWriter
@@ -38,30 +33,28 @@ class PQRFileWriter (TextFileWriter):
     """
 
     # Code taken from PDBFileWriter
-    if not isinstance (system, System): 
+    if not isinstance (system, System):
       raise TypeError ("Invalid |system| argument.")
 
     sequence = getattr (system, "sequence", None)
-    if sequence is None: 
+    if sequence is None:
       sequence = Sequence.FromAtomContainer (system.atoms, componentLabel = "UNK.1")
 
-    if isinstance (data, Coordinates3): 
+    if isinstance (data, Coordinates3):
       xyz = data
-    else:                                 
+    else:
       xyz = system.coordinates3
 
-    if xyz is None: 
+    if xyz is None:
       raise TypeError ("Unable to obtain coordinate data from |system| or |data| arguments.")
 
-
     natoms = len (system.atoms)
-
-    if natoms != xyz.rows: 
+    if natoms != xyz.rows:
       raise TypeError ("The PQR model and coordinate data are of different lengths.")
 
-    if selection is None: 
+    if selection is None:
       towrite = xrange (natoms)
-    else:                 
+    else:
       towrite = selection
 
     if charges is None:
@@ -75,41 +68,28 @@ class PQRFileWriter (TextFileWriter):
     else:
       if natoms != len (radii):
         raise TypeError ("The PQR model and radii data are of different lengths.")
-   
- 
-    self.Open ()
 
+
+    self.Open ()
     for natm, iatom in enumerate (towrite):
       atom   = system.atoms [iatom]
       charge = charges      [iatom]
       radius = radii        [iatom]
-      
+
       resName, resSeq, iCode = sequence.ParseLabel (atom.parent.label, fields = 3)
       segID     = ""
       chainID   = ""
       atomIndex = 0
 
-#       element = PeriodicTable.Symbol (atom.atomicNumber).upper ()
-#       if element == "*": 
-#         element = ""
-#       entityLabel = atom.parent.parent.label
-#       if useSegmentEntityLabels:
-#         chainID = ""
-#         segID   = entityLabel[0:4]
-#       else:
-#         chainID = entityLabel[0:1]
-#         segID   = ""
-
       label = atom.label
-      if   len (label) >= 4: 
+      if   len (label) >= 4:
         outputlabel = label[0:4]
-      elif label[0:1].isdigit (): 
+      elif label[0:1].isdigit ():
         outputlabel = label
-      else:                        
+      else:
         outputlabel = " " + label
-
       x = xyz[iatom, 0]
-      y = xyz[iatom, 1] 
+      y = xyz[iatom, 1]
       z = xyz[iatom, 2]
 
       self.file.write (_ATOMLINEFORMAT % ("ATOM", atomIndex, outputlabel, " ", resName[0:3], chainID, resSeq[:4], iCode, x, y, z, charge, radius, 0, 0, 0, 0))
@@ -123,8 +103,8 @@ def PQRFile_FromSystem (filename, system, selection = None, charges = None, radi
   outfile = PQRFileWriter (filename)
   outfile.WriteSystem (system, selection = selection, charges = charges, radii = radii)
 
-#  _Exporter.AddHandler ( { System : PQRFile_FromSystem } , [ "PQR" ], "Extended MEAD" )
-
 
 #===============================================================================
-if __name__ == "__main__" : pass
+# Testing
+#===============================================================================
+if __name__ == "__main__": pass

@@ -7,6 +7,8 @@
 #-------------------------------------------------------------------------------
 """A simple writer of text files from lists of strings."""
 
+__version__ = filter (str.isdigit, "$Revision$")
+
 from pCore      import TextFileWriter
 
 

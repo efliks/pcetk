@@ -7,6 +7,8 @@
 #-------------------------------------------------------------------------------
 """Different tools and helper functions."""
 
+__version__ = filter (str.isdigit, "$Revision$")
+
 
 def FormatEntry (items, header = False):
   """Generating headers or format strings for entries in files W.dat and gintr.dat"""

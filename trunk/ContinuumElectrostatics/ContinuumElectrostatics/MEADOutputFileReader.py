@@ -7,6 +7,8 @@
 #-------------------------------------------------------------------------------
 """Reading output files from MEAD."""
 
+__version__ = filter (str.isdigit, "$Revision$")
+
 from pCore      import logFile, LogFileActive, TextFileReader
 
 
