@@ -7,8 +7,9 @@
 #-------------------------------------------------------------------------------
 """Reading EST parameter files."""
 
+import os
+
 from pCore      import logFile, LogFileActive, TextFileReader
-from Constants  import *
 
 
 class ESTFileReader (TextFileReader):
@@ -16,42 +17,52 @@ class ESTFileReader (TextFileReader):
 
   def __init__ (self, name):
     """Constructor."""
-    self.siteLabel = "XXX"
+    self.siteLabel = os.path.splitext (os.path.basename (name))[0]
     TextFileReader.__init__ (self, name)
 
 
-  def Parse (self, temperature = 300.0, log = logFile):
+  def Parse (self, log = logFile):
     """Parse the data on the file."""
     if not self.QPARSED:
-      if LogFileActive (log): self.log = log
+      if LogFileActive (log):
+        self.log = log
 
       self.Open ()
-
-      line    = None
-      convert = -1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * CONSTANT_LN10 * temperature)
+      atoms = []
+      line  = None
 
       try:
         while True:
-          if not line:
-            line = self.GetLine (QWARNING = False)
+          line   = self.GetLine (QWARNING = False)
+          tokens = line.split ()
 
-          if line.startswith ("label"):
-            pass
-          if line.startswith ("Gmodel"):
-            pass
-          if line.startswith ("proton"):
-            pass
-          if line.startswith ("center"):
-            pass
-          if line.startswith (self.siteLabel):
-            pass
+          if tokens[0] == "Gmodel" : Gmodels = map (float, tokens[1:])
+          if tokens[0] == "proton" : protons = map (int, tokens[1:])
+          if tokens[0] == "label"  : labels  = tokens[1:]
+          if tokens[0] == "center" : center  = tokens[1]
+
+          if tokens[0] == self.siteLabel:
+            label   = tokens[1]
+            charges = map (float, tokens[2:])
+            atoms.append ((label, charges))
       except EOFError:
         pass
-
       self.WarningStop ()
       self.Close ()
-      self.log     = None
-      self.QPARSED = True
+      self.log      = None
+      self.QPARSED  = True
+
+      instances = []
+      for instanceIndex, (instanceLabel, instanceGmodel, instanceProtons) in enumerate (zip (labels, Gmodels, protons)):
+        instanceAtoms   = []
+        instanceCharges = []
+        for atomLabel, atomCharges in atoms:
+          instanceAtoms.append (atomLabel)
+          instanceCharges.append (atomCharges[instanceIndex])
+
+        instances.append ({"label" : instanceLabel, "Gmodel" : instanceGmodel, "protons" : instanceProtons, "charges" : instanceCharges})
+      self.siteAtoms     = instanceAtoms
+      self.siteInstances = instances
 
 
 #===============================================================================
