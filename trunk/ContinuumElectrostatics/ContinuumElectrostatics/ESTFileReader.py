@@ -7,7 +7,7 @@
 #-------------------------------------------------------------------------------
 """Reading EST parameter files."""
 
-__lastchanged__ = "$Id :$"
+__lastchanged__ = "$Id$"
 
 import os
 

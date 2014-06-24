@@ -7,7 +7,7 @@
 #-------------------------------------------------------------------------------
 """Reading output files from GMCT."""
 
-__lastchanged__ = "$Id :$"
+__lastchanged__ = "$Id$"
 
 from pCore      import logFile, LogFileActive, TextFileReader
 from Constants  import *

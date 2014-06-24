@@ -7,7 +7,7 @@
 #-------------------------------------------------------------------------------
 """Different tools and helper functions."""
 
-__lastchanged__ = "$Id :$"
+__lastchanged__ = "$Id$"
 
 
 def FormatEntry (items, header = False):
