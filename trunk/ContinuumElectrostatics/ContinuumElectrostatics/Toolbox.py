@@ -9,6 +9,9 @@
 
 __lastchanged__ = "$Id$"
 
+from Error          import ContinuumElectrostaticsError
+from StateVector    import StateVector
+
 
 def FormatEntry (items, header = False):
   """Generating headers or format strings for entries in files W.dat and gintr.dat"""
@@ -42,6 +45,24 @@ def ConvertAttribute (attr):
   else:
     attrstring = str (attr)
   return attrstring
+
+
+def StateVector_FromProbabilities (meadModel):
+  """Create a state vector from the previously calculated probabilities."""
+  if meadModel.isProbability:
+    vector = StateVector (meadModel)
+
+    for siteIndex, site in enumerate (meadModel.meadSites):
+      pairs = []
+      for instanceIndex, instance in enumerate (site.instances):
+        pair = (instance.probability, instanceIndex)
+        pairs.append (pair)
+      maxProbPair = max (pairs)
+      probability, instanceIndex = maxProbPair
+      vector[siteIndex] = instanceIndex
+    return vector
+  else:
+    raise ContinuumElectrostaticsError ("First calculate probabilities at a chosen pH.")
 
 
 #===============================================================================

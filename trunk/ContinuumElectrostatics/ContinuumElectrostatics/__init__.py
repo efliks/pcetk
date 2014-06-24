@@ -12,5 +12,5 @@ The model allows for predictions of protonation states of titratable residues in
 __lastchanged__ = "$Id$"
 
 from Model                 import MEADModel
-                                 
 from StateVector           import StateVector
+from Toolbox               import StateVector_FromProbabilities

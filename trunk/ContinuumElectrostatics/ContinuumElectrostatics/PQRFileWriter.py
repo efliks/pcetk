@@ -5,9 +5,9 @@
 #                          Mikolaj J. Feliks (2014)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
-"""A module that handles writing PQR files. These files are needed as an input to extended MEAD.
+"""A class for writing PQR files. These files are needed as an input to extended MEAD.
 
-This module is based on the PDBFileWriter module."""
+Based on the PDBFileWriter module."""
 
 __lastchanged__ = "$Id$"
 

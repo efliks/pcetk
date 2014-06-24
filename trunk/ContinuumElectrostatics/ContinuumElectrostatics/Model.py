@@ -99,19 +99,20 @@ class MEADModel (object):
     "backPqr"            :  None                    ,
     "proteinPqr"         :  None                    ,
     "sitesFpt"           :  None                    ,
+    "splitToDirectories" :  True                    ,
     "isInitialized"      :  False                   ,
     "isFilesWritten"     :  False                   ,
     "isCalculated"       :  False                   ,
-    "splitToDirectories" :  True                    ,
+    "isProbability"      :  False                   ,
         }
 
   defaultAttributeNames = {
-    "Temperature"       : "temperature"    ,  "Split Directories" : "splitToDirectories" ,
-    "Ionic Strength"    : "ionicStrength"  ,  "Initialized"       : "isInitialized"      ,
-    "Threads"           : "nthreads"       ,  "Files Written"     : "isFilesWritten"     ,
-    "Delete Job Files"  : "deleteJobFiles" ,  "Calculated"        : "isCalculated"       ,
+    "Temperature"       : "temperature"        ,    "Initialized"       : "isInitialized"      ,
+    "Ionic Strength"    : "ionicStrength"      ,    "Files Written"     : "isFilesWritten"     ,
+    "Threads"           : "nthreads"           ,    "Calculated"        : "isCalculated"       ,
+    "Split Directories" : "splitToDirectories" ,    "Calculated prob."  : "isProbability"      ,
+    "Delete Job Files"  : "deleteJobFiles"     ,
         }
-
 
   def __del__ (self):
     """Deallocation."""
@@ -290,6 +291,9 @@ class MEADModel (object):
       if LogFileActive (log):
         tab.Stop ()
         log.Text ("\nCalculating titration curves complete.\n")
+
+      # Set the flag back to False because the probabilities of instances become senseless after the calculation of curves
+      self.isProbability = False
   
       # Write results to files
       if not os.path.exists (directory):
@@ -378,8 +382,11 @@ class MEADModel (object):
             probability                     = reader.probabilities[key][0]
             sites[siteIndex][instanceIndex] = probability
             instance.probability            = probability
-  
-      # Return the two-dimensional list
+
+      # The instances now contain calculated probabilities
+      self.isProbability = True
+
+      # Return the two-dimensional list (useful for calculating titration curves)
       return sites
 
 
@@ -454,7 +461,10 @@ class MEADModel (object):
         for instanceIndex, instance in enumerate (site.instances):
           instance.probability = sites[siteIndex][instanceIndex]
 
-      # Return the two-dimensional list
+      # The instances now contain calculated probabilities
+      self.isProbability = True
+
+      # Return the two-dimensional list (useful for calculating titration curves)
       return sites
 
 
@@ -572,7 +582,13 @@ class MEADModel (object):
 
 
   def Initialize (self, system, excludeSegments = None, excludeResidues = None, log = logFile):
-    """Decompose the system into model compounds, sites and a background charge set."""
+    """Decompose the system into model compounds, sites and a background charge set.
+
+    excludeSegments is a sequence of segment names to exclude.
+
+    excludeResidues is a sequence of three-element sequences (segmentName, residueName, residueSerial).
+
+    It is possible to leave some of the elements blank, for example ("PRTA", "CYS", "") means exclude all cysteines in segment PRTA."""
 
     # Check for the CHARMM energy model
     if system.energyModel.mmModel.label is not "CHARMM":
@@ -587,10 +603,7 @@ class MEADModel (object):
       self.meadSites  = []
 
       if excludeSegments is None:
-        excludeSegments = ["WATA", ]
-
-      if excludeResidues is None:
-        excludeResidues = []  # For example ["ARG", "LYS", ]
+        excludeSegments = ["WATA", "WATB", "WATC", "WATD", ]
 
 
       #============ Go over segments ============
@@ -607,11 +620,61 @@ class MEADModel (object):
             residueName, residueSerial = ParseLabel (residue.label, fields = 2)
 
             # Include residue?
-            if residueName not in excludeResidues:
- 
+            includeResidue = True
+
+            if excludeResidues:
+              for exclSegmentName, exclResidueName, exclResidueSerial in excludeResidues:
+                # FIXME
+                exclResidueSerial = str (exclResidueSerial)
+  
+                if   (    exclSegmentName) and (    exclResidueName) and (    exclResidueSerial):
+                  if exclSegmentName == segmentName and exclResidueName == residueName and exclResidueSerial == residueSerial:
+                    includeResidue = False
+                    break
+  
+                elif (    exclSegmentName) and (    exclResidueName) and (not exclResidueSerial):
+                  if exclSegmentName == segmentName and exclResidueName == residueName:
+                    includeResidue = False
+                    break
+  
+                elif (    exclSegmentName) and (not exclResidueName) and (    exclResidueSerial):
+                  if exclSegmentName == segmentName and exclResidueSerial == residueSerial:
+                    includeResidue = False
+                    break
+  
+                elif (    exclSegmentName) and (not exclResidueName) and (not exclResidueSerial):
+                  if exclSegmentName == segmentName:
+                    includeResidue = False
+                    break
+  
+                elif (not exclSegmentName) and (    exclResidueName) and (    exclResidueSerial):
+                  if exclResidueName == residueName and exclResidueSerial == residueSerial:
+                    includeResidue = False
+                    break
+  
+                elif (not exclSegmentName) and (    exclResidueName) and (not exclResidueSerial):
+                  if exclResidueName == residueName:
+                    includeResidue = False
+                    break
+  
+                elif (not exclSegmentName) and (not exclResidueName) and (    exclResidueSerial):
+                  if exclResidueSerial == residueSerial:
+                    includeResidue = False
+                    break
+  
+                elif (not exclSegmentName) and (not exclResidueName) and (not exclResidueSerial):
+                  includeResidue = False
+                  break
+  
+              if not includeResidue:
+                if LogFileActive (log):
+                  log.Text ("\nExcluding residue: %s %s %s\n" % (segmentName, residueName, residueSerial))
+
+
+            if includeResidue:
+
               # Titratable residue? 
               if residueName in self.librarySites:
-  
                 prevIndices = []
                 nextIndices = []
   
