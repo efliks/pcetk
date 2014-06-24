@@ -9,7 +9,7 @@
 
 CurveThread is a class for running parallel calculations of titration curves."""
 
-__version__ = filter (str.isdigit, "$Revision: 58 $")
+__lastchanged__ = "$Id :$"
 
 import os, glob, math, threading, subprocess
 
@@ -103,7 +103,6 @@ class MEADModel (object):
     "isFilesWritten"     :  False                   ,
     "isCalculated"       :  False                   ,
     "splitToDirectories" :  True                    ,
-    "revision"           :  __version__             ,
         }
 
   defaultAttributeNames = {
@@ -111,7 +110,6 @@ class MEADModel (object):
     "Ionic Strength"    : "ionicStrength"  ,  "Initialized"       : "isInitialized"      ,
     "Threads"           : "nthreads"       ,  "Files Written"     : "isFilesWritten"     ,
     "Delete Job Files"  : "deleteJobFiles" ,  "Calculated"        : "isCalculated"       ,
-    "Code Revision"     : "revision"       ,
         }
 
 

@@ -7,7 +7,7 @@
 #-------------------------------------------------------------------------------
 """Reading EST parameter files."""
 
-__version__ = filter (str.isdigit, "$Revision: 58 $")
+__lastchanged__ = "$Id :$"
 
 import os
 

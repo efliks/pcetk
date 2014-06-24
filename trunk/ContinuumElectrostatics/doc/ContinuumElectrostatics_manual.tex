@@ -1,9 +1,9 @@
 \documentclass[a4paper,11pt]{article}
 
-\usepackage{xspace, hyperref, listings, svn-multi}
+\usepackage{xspace, hyperref, listings}
 
-% The line modified by SVN
-\svnid{$Id$}
+% This line needs package svn-multi
+% \svnid{$Id$}
 
 \pagestyle{plain}
 \linespread{1.6}
@@ -34,7 +34,8 @@ A pDynamo module for protonation state calculations
 \vspace{1.0cm}
 \underline{Mikolaj Feliks}\\
 Institut de Biologie Structurale, Grenoble\\
-Code revision: \svnrev
+
+Last updated: \today %Code revision: \svnrev
 }
 
 \vspace{0.5cm}
@@ -69,10 +70,10 @@ Martin Field\cite{pDynamo_Field2008}  with a Poisson-Boltz\-mann continuum elect
 model that allows for calculations of protonation states of individual 
 sites\cite{Bashford1992,Ullmann1999,Bombarda2006}.
 %
-The module links pDynamo to the external solver of the Poisson-Boltzmann 
+The module connects pDynamo to the external solver of the Poisson-Boltzmann 
 equation, MEAD\cite{Bashford1997}.
 %
-MEAD is a program developed by Donald Bashford and 
+MEAD was developed by Donald Bashford and 
 later extended by Timm Essigke\cite{Essigke_PhD} and Thomas Ullmann\cite{Thomas_PhD}.
 %
 The electrostatic energy terms obtained by MEAD can be used to calculate
@@ -636,6 +637,21 @@ parameters of the existing sites will be overwritten.
 
 
 %=================================================
+\section{Feedback}
+%=================================================
+The \modulename module is in a stage of active development.
+%
+Therefore, bugs are inevitable.
+
+If you found a bug, have a question or wish to comment or contribute to the code, 
+please write to 
+\makebox{\href{mailto:mikolaj.feliks@gmail.com}{mikolaj.feliks@gmail.com}}.
+%
+Alternatively, you can post comments or report problems on the project's website,
+\url{http://code.google.com/p/pdynamo-extensions/}.
+
+
+%=================================================
 \section{References}
 %=================================================
 \renewcommand{\refname}{}
@@ -654,19 +670,17 @@ parameters of the existing sites will be overwritten.
 \begin{itemize}
   \item pDynamo (Martin J. Field)\\ \url{http://pdynamo.org}
 
-  \item pDynamo-extensions (Mikolaj Feliks)\\ \url{https://code.google.com/p/pdynamo-extensions/}
-
   \item MEAD (Donald Bashford)\\ \url{http://stjuderesearch.org/site/lab/bashford/}
 
   \item Extended MEAD (Thomas Ullmann)\\ \url{http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=extended-mead}
 
   \item GMCT (Thomas Ullmann)\\ \url{http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=gmct-gcem}
 
-  \item Doctoral thesis of Timm Essigke, which was my primary source of knowledge\\ \url{https://epub.uni-bayreuth.de/655/}
+  \item Doctoral thesis of Timm Essigke (which was my primary source of knowledge)\\ \url{https://epub.uni-bayreuth.de/655/}
 
   \item Doctoral thesis of Thomas Ullmann\\ \url{https://epub.uni-bayreuth.de/199/}
 
-%  \item Doctoral thesis of Astrid Klingen\\ \url{https://epub.uni-bayreuth.de/763/}
+  \item Doctoral thesis of Astrid Klingen\\ \url{https://epub.uni-bayreuth.de/763/}
 \end{itemize}
 
 
