@@ -7,7 +7,7 @@
 #-------------------------------------------------------------------------------
 """Different tools and helper functions."""
 
-__version__ = filter (str.isdigit, "$Revision: 58 $")
+__lastchanged__ = "$Id :$"
 
 
 def FormatEntry (items, header = False):

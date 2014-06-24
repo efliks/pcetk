@@ -7,7 +7,7 @@
 #-------------------------------------------------------------------------------
 """MEADSite is a class representing a titratable site."""
 
-__version__ = filter (str.isdigit, "$Revision: 58 $")
+__lastchanged__ = "$Id :$"
 
 
 class MEADSite (object):

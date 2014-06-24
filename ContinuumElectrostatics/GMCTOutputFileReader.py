@@ -7,7 +7,7 @@
 #-------------------------------------------------------------------------------
 """Reading output files from GMCT."""
 
-__version__ = filter (str.isdigit, "$Revision: 58 $")
+__lastchanged__ = "$Id :$"
 
 from pCore      import logFile, LogFileActive, TextFileReader
 from Constants  import *
