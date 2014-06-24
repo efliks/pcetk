@@ -9,7 +9,7 @@
 
 CurveThread is a class for running parallel calculations of titration curves."""
 
-__lastchanged__ = "$Id :$"
+__lastchanged__ = "$Id$"
 
 import os, glob, math, threading, subprocess
 

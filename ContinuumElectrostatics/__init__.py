@@ -9,7 +9,7 @@
 
 The model allows for predictions of protonation states of titratable residues in proteins."""
 
-__lastchanged__ = "$Id :$"
+__lastchanged__ = "$Id$"
 
 from Model                 import MEADModel
                                  

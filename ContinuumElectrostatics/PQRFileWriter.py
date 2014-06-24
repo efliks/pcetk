@@ -9,7 +9,7 @@
 
 This module is based on the PDBFileWriter module."""
 
-__lastchanged__ = "$Id :$"
+__lastchanged__ = "$Id$"
 
 
 from pCore        import Coordinates3, TextFileWriter

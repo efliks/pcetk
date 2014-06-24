@@ -7,7 +7,7 @@
 #-------------------------------------------------------------------------------
 """MEADSite is a class representing a titratable site."""
 
-__lastchanged__ = "$Id :$"
+__lastchanged__ = "$Id$"
 
 
 class MEADSite (object):

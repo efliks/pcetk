@@ -7,7 +7,7 @@
 #-------------------------------------------------------------------------------
 """Error handling in the ContinuumElectrostatics module."""
 
-__lastchanged__ = "$Id :$"
+__lastchanged__ = "$Id$"
 
 import exceptions
 

@@ -7,7 +7,7 @@
 #-------------------------------------------------------------------------------
 """A simple writer of text files from lists of strings."""
 
-__lastchanged__ = "$Id :$"
+__lastchanged__ = "$Id$"
 
 from pCore      import TextFileWriter
 
