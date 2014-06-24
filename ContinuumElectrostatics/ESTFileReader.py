@@ -9,9 +9,9 @@
 
 __lastchanged__ = "$Id$"
 
-import os
+from pCore import logFile, LogFileActive, TextFileReader
 
-from pCore      import logFile, LogFileActive, TextFileReader
+import os
 
 
 class ESTFileReader (TextFileReader):
@@ -37,16 +37,16 @@ class ESTFileReader (TextFileReader):
         while True:
           line   = self.GetLine (QWARNING = False)
           tokens = line.split ()
-
-          if tokens[0] == "Gmodel" : Gmodels = map (float, tokens[1:])
-          if tokens[0] == "proton" : protons = map (int, tokens[1:])
-          if tokens[0] == "label"  : labels  = tokens[1:]
-          if tokens[0] == "center" : center  = tokens[1]
-
-          if tokens[0] == self.siteLabel:
-            label   = tokens[1]
-            charges = map (float, tokens[2:])
-            atoms.append ((label, charges))
+          if len (tokens) > 0:
+            if tokens[0] == "Gmodel" : Gmodels = map (float, tokens[1:])
+            if tokens[0] == "proton" : protons = map (int, tokens[1:])
+            if tokens[0] == "label"  : labels  = tokens[1:]
+            if tokens[0] == "center" : center  = tokens[1]
+  
+            if tokens[0] == self.siteLabel:
+              label   = tokens[1]
+              charges = map (float, tokens[2:])
+              atoms.append ((label, charges))
       except EOFError:
         pass
       self.WarningStop ()
