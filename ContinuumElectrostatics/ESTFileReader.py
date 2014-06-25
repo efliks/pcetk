@@ -26,12 +26,13 @@ class ESTFileReader (TextFileReader):
   def Parse (self, log = logFile):
     """Parse the data on the file."""
     if not self.QPARSED:
-      if LogFileActive (log):
-        self.log = log
+      if LogFileActive (log): self.log = log
 
       self.Open ()
-      atoms = []
-      line  = None
+      atoms  = []
+      line   = None
+      # In some files center atom is absent?
+      center = None
 
       try:
         while True:
@@ -65,6 +66,7 @@ class ESTFileReader (TextFileReader):
         instances.append ({"label" : instanceLabel, "Gmodel" : instanceGmodel, "protons" : instanceProtons, "charges" : instanceCharges})
       self.siteAtoms     = instanceAtoms
       self.siteInstances = instances
+      self.siteCenter    = center
 
 
 #===============================================================================

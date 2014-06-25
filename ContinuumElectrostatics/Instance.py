@@ -17,7 +17,7 @@ from pCore                  import logFile, LogFileActive
 from MEADOutputFileReader   import MEADOutputFileReader
 from Error                  import ContinuumElectrostaticsError
 
-import  os, threading, subprocess
+import os, threading, subprocess, time
 
 
 #-------------------------------------------------------------------------------
@@ -35,9 +35,12 @@ class InstanceThread (threading.Thread):
 
   def run (self):
     """The method that runs the calculations."""
+    time0 = time.time ()
     self.instance.CalculateSiteInModelCompound (log = self.log)
     self.instance.CalculateSiteInProtein       (log = self.log)
     self.instance.CalculateGintr               (log = self.log)
+
+    self.time = (time.time () - time0)
 
 
 #-------------------------------------------------------------------------------
@@ -200,8 +203,12 @@ class MEADInstance (object):
         tab.Stop ()
 
 
-  def TableEntry (self, tab = None):
-    """Report calculated energies in a tab."""
+  def TableEntry (self, tab = None, secondsToCompletion = None):
+    """Report calculated energies in a table.
+
+    Optionally, include Estimated Time for Accomplishment (ETA).
+
+    ETA has to be calculated outside of this method."""
     if tab:
       site = self.parent
       tab.Entry (site.segName)
@@ -214,6 +221,10 @@ class MEADInstance (object):
       tab.Entry ("%16.4f" % self.Gback_protein)
       tab.Entry ("%16.4f" % self.Gmodel)
       tab.Entry ("%16.4f" % self.Gintr)
+      if isinstance (secondsToCompletion, float):
+        minutes, seconds = divmod (secondsToCompletion, 60)
+        hours, minutes   = divmod (minutes, 60)
+        tab.Entry ("%16s" % ("%d:%02d:%02d" % (hours, minutes, seconds)))
 
 
 #===============================================================================

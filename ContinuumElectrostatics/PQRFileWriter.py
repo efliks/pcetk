@@ -15,14 +15,14 @@ __lastchanged__ = "$Id$"
 from pCore        import Coordinates3, TextFileWriter
 from pMolecule    import Sequence, System
 
-_ATOMLINEFORMAT = "%-6s%5i %-4s%1s%3s %1s%4s%1s   %8.3f%8.3f%8.3f%10.5f%8.3f%7d%7d%7d%7d\n"
+_ATOMLINEFORMAT = "%-6s%5i %-4s%1s%3s %1s%4d%1s   %8.3f%8.3f%8.3f%10.5f%8.3f%7d%7d%7d%7d\n"
 
 
 #-------------------------------------------------------------------------------
 class PQRFileWriter (TextFileWriter):
   """PQRFileWriter is the class for writing PQR files."""
 
-  def WriteSystem (self, system, data = None, selection = None, charges = None, radii = None):
+  def WriteSystem (self, system, data = None, selection = None, charges = None, radii = None, shiftResidueSerial = 0):
     """Write out a system.
 
     |system|    is the system to be written.
@@ -69,17 +69,20 @@ class PQRFileWriter (TextFileWriter):
       if natoms != len (radii):
         raise TypeError ("The PQR model and radii data are of different lengths.")
 
-
     self.Open ()
+
+
     for natm, iatom in enumerate (towrite):
       atom   = system.atoms [iatom]
       charge = charges      [iatom]
       radius = radii        [iatom]
 
-      resName, resSeq, iCode = sequence.ParseLabel (atom.parent.label, fields = 3)
-      segID     = ""
+      resName, resSerial, iCode = sequence.ParseLabel (atom.parent.label, fields = 3)
+      atomIndex = atom.index
       chainID   = ""
-      atomIndex = 0
+
+      # Shifting is necessary for multi-segment proteins because segments are not recognized by MEAD
+      resSerial = int (resSerial) + shiftResidueSerial
 
       label = atom.label
       if   len (label) >= 4:
@@ -92,7 +95,7 @@ class PQRFileWriter (TextFileWriter):
       y = xyz[iatom, 1]
       z = xyz[iatom, 2]
 
-      self.file.write (_ATOMLINEFORMAT % ("ATOM", atomIndex, outputlabel, " ", resName[0:3], chainID, resSeq[:4], iCode, x, y, z, charge, radius, 0, 0, 0, 0))
+      self.file.write (_ATOMLINEFORMAT % ("ATOM", atomIndex, outputlabel, " ", resName[0:3], chainID, resSerial, iCode, x, y, z, charge, radius, 0, 0, 0, 0))
 
     self.Close ()
 
