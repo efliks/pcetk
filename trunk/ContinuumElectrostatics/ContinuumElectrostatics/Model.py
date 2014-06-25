@@ -11,7 +11,7 @@ CurveThread is a class for running parallel calculations of titration curves."""
 
 __lastchanged__ = "$Id$"
 
-import os, glob, math, threading, subprocess
+import os, glob, math, threading, subprocess, time
 
 from pCore                 import logFile, LogFileActive, Selection, Vector3, YAMLUnpickle, Clone
 from Constants             import *
@@ -153,7 +153,7 @@ class MEADModel (object):
       name      = site [ "site"      ]
       atoms     = site [ "atoms"     ]
       instances = site [ "instances" ]
-      self.librarySites[name] = {"atoms" : atoms, "instances" : instances}
+      self.librarySites[name] = {"atoms" : atoms, "instances" : instances, "center" : None}
 
     for fileSite in filesEST:
       reader    = ESTFileReader (fileSite)
@@ -161,7 +161,8 @@ class MEADModel (object):
       name      = reader.siteLabel
       atoms     = reader.siteAtoms
       instances = reader.siteInstances
-      self.librarySites[name] = {"atoms" : atoms, "instances" : instances}
+      center    = reader.siteCenter
+      self.librarySites[name] = {"atoms" : atoms, "instances" : instances, "center" : center}
 
 
   def WriteW (self, filename = "W.dat", log = logFile):
@@ -529,7 +530,7 @@ class MEADModel (object):
         else:
           log.Text ("\nStarting parallel run on %d CPUs.\n" % self.nthreads)
 
-        tab = log.GetTable (columns = [6, 6, 6, 6, 16, 16, 16, 16, 16, 16])
+        tab = log.GetTable (columns = [6, 6, 6, 6, 16, 16, 16, 16, 16, 16, 16])
         tab.Start ()
         tab.Heading ("Instance of a site", columnSpan = 4)
         tab.Heading ("Gborn_model"  )
@@ -538,15 +539,27 @@ class MEADModel (object):
         tab.Heading ("Gback_protein")
         tab.Heading ("Gmodel"       )
         tab.Heading ("Gintr"        )
+        tab.Heading ("ETA"          )
+
+      # Total number of instances is needed for calculating ETA
+      times      = []
+      ninstances = 0
+      for site in self.meadSites:
+        ninstances = ninstances + len (site.instances)
+
 
       if self.nthreads < 2:
         for meadSite in self.meadSites:
           for instance in meadSite.instances:
+            time0 = time.time ()
             instance.CalculateSiteInModelCompound (log)
             instance.CalculateSiteInProtein (log)
             instance.CalculateGintr (log)
 
-            instance.TableEntry (tab)
+            times.append (time.time () - time0)
+            averageTimePerInstance = sum (times) / len (times)
+            ninstances = ninstances - 1
+            instance.TableEntry (tab, secondsToCompletion = averageTimePerInstance * ninstances)
       else:
         batches = []
         threads = []
@@ -564,15 +577,21 @@ class MEADModel (object):
           batches.append (threads)
 
         for batch in batches:
-          for thread in batch:
-            thread.start ()
-          for thread in batch:
-            thread.join ()
+          for thread in batch: thread.start ()
+          for thread in batch: thread.join ()
+
+          # Collect times of execution
+          nthreads = len (batch)
+          for thread in batch: times.append (thread.time)
+         
+          averageTimePerInstance = sum (times) / len (times) / nthreads
+          ninstances = ninstances - nthreads
+          secondsToCompletion = averageTimePerInstance * ninstances
 
           # Print the results at the end of each batch, otherwise they come in random order
           for thread in batch:
             instance = thread.instance
-            instance.TableEntry (tab)
+            instance.TableEntry (tab, secondsToCompletion = secondsToCompletion)
 
       if tab:
         tab.Stop ()
@@ -598,7 +617,12 @@ class MEADModel (object):
       ParseLabel = system.sequence.ParseLabel
       segments   = system.sequence.children
 
+      # Useful after the interactions are centralized in a common matrix
       instIndexGlobal = 0
+
+      # Needed for multi-segment proteins because MEAD does not support segments
+      segmentIndex    = -1
+
       siteIndex       = 0
       self.meadSites  = []
 
@@ -612,8 +636,9 @@ class MEADModel (object):
 
         # Include segment?
         if segmentName not in excludeSegments:
-          residues  = segment.children
-          nresidues = len (residues)
+          residues     = segment.children
+          nresidues    = len (residues)
+          segmentIndex = segmentIndex + 1
   
           #============ Go over residues ============
           for residueIndex, residue in enumerate (residues):
@@ -771,12 +796,25 @@ class MEADModel (object):
 
 
                 # Calculate the center of geometry
-                center = Vector3 ()
-                natoms = len (siteAtomIndices)
+                centerAtomName  = libSite["center"]
+                centerAtomIndex = None
 
-                for atomIndex in siteAtomIndices:
-                  center.AddScaledVector3 (1.0, system.coordinates3[atomIndex])
-                center.Scale (1.0 / natoms)
+                if centerAtomName:
+                  for atom in residue.children:
+                    if atom.label == centerAtomName:
+                      centerAtomIndex = atom.index
+                      break
+                  if not centerAtomIndex:
+                    raise ContinuumElectrostaticsError ("Atom name %s not found in the current site." % centerAtomName)
+                  center = system.coordinates3[centerAtomIndex]
+
+                else:
+                  center = Vector3 ()
+                  natoms = len (siteAtomIndices)
+
+                  for atomIndex in siteAtomIndices:
+                    center.AddScaledVector3 (1.0, system.coordinates3[atomIndex])
+                  center.Scale (1.0 / natoms)
 
                 # Create a site
                 newSite = MEADSite (
