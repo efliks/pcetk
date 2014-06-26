@@ -5,9 +5,7 @@
 #                          Mikolaj J. Feliks (2014)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
-"""A class for writing PQR files. These files are needed as an input to extended MEAD.
-
-Based on the PDBFileWriter module."""
+"""A class for writing PQR files understandable by MEAD."""
 
 __lastchanged__ = "$Id$"
 
@@ -20,16 +18,16 @@ _ATOMLINEFORMAT = "%-6s%5i %-4s%1s%3s %5d%1s   %8.3f%8.3f%8.3f%10.5f%8.3f%7d%7d%
 
 #-------------------------------------------------------------------------------
 class PQRFileWriter (TextFileWriter):
-  """PQRFileWriter is the class for writing PQR files."""
+  """PQRFileWriter is a class for writing PQR files."""
 
   def WriteSystem (self, system, data = None, selection = None, charges = None, radii = None):
     """Write out a system.
 
     |system|    is the system to be written.
-    |data|      is the data to be written. The coordinates of system are written if |data| is absent.
-    |selection| gives the atoms to write. The default is to write all atoms.
-    |charges|   is the table containing atomic charges. The charges are set to zero if |charges| is absent.
-    |radii|     is the table containing atomic radii. The radii are set to zero if |radii| is absent.
+    |data|      is the coordinate data of the system.
+    |charges|   is a sequence containing atomic charges. If not present, the charges are set to zero.
+    |radii|     is a sequence containing atomic radii. If not present, the radii are set to zero.
+    |selection| defines the atoms to write. The default is to write all atoms.
     """
 
     # Code taken from PDBFileWriter
@@ -84,6 +82,7 @@ class PQRFileWriter (TextFileWriter):
       charge = charges      [iatom]
       radius = radii        [iatom]
 
+      # FIXME
       segName, residue, atomName = ParsePath (atom.path)
       resName, resSerial = residue.split (".")
 

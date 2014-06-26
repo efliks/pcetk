@@ -4,8 +4,10 @@
 #  
 #  gcc -shared ContinuumElectrostatics.StateVector.o ../csource/StateVector.o -o StateVector.so
 
-INC1   = /usr/include/python2.7
-INC2   = /home/mikolaj/local/opt/pDynamo-1.8.0/pCore-1.8.0/extensions/cinclude 
+PDYNAMO_ROOT = /home/mikolaj/local/opt/pDynamo-1.8.0
+
+INC1   = $(PDYNAMO_ROOT)/pCore-1.8.0/extensions/cinclude 
+INC2   = /usr/include/python2.7
 INC3   = ../cinclude
 
 CFLAGS = -fPIC -c -I$(INC1) -I$(INC2) -I$(INC3)
