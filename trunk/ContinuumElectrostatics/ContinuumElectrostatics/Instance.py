@@ -31,6 +31,7 @@ class InstanceThread (threading.Thread):
     threading.Thread.__init__ (self)
     self.instance = instance
     self.log      = log
+    self.time     = 0
 
 
   def run (self):
@@ -155,10 +156,7 @@ class MEADInstance (object):
       prevSiteIndex = -1
   
       for siteIndex, instanceIndex, energy in reader.interactions:
-        if siteIndex == (self.parent.siteID - 1):
-          Wij = 0.0
-        else:
-          Wij = energy
+        Wij = energy if siteIndex != (self.parent.siteID - 1) else 0.
   
         if siteIndex is not prevSiteIndex and siteIndex > 0:
           sites.append (instances)
@@ -175,9 +173,9 @@ class MEADInstance (object):
 
   def CalculateGintr (self, log = logFile):
     """Calculate Gintr of an instance of a site in the protein."""
-    check = all ((self.Gborn_protein, self.Gback_protein, self.Gborn_model, self.Gback_model))
-    if check:
-      self.Gintr = self.Gmodel + (self.Gborn_protein - self.Gborn_model) + (self.Gback_protein - self.Gback_model)
+    # Checking in this way does not work because sometimes the background energy in the model compound is zero (for example for ligands)
+    # check = all ((self.Gborn_protein, self.Gback_protein, self.Gborn_model, self.Gback_model))
+    self.Gintr = self.Gmodel + (self.Gborn_protein - self.Gborn_model) + (self.Gback_protein - self.Gback_model)
 
 
   def PrintInteractions (self, sort = False, log = logFile):
@@ -230,6 +228,7 @@ class MEADInstance (object):
       tab.Entry ("%16.4f" % self.Gback_protein)
       tab.Entry ("%16.4f" % self.Gmodel)
       tab.Entry ("%16.4f" % self.Gintr)
+
       if isinstance (secondsToCompletion, float):
         minutes, seconds = divmod (secondsToCompletion, 60)
         hours, minutes   = divmod (minutes, 60)

@@ -2,6 +2,12 @@
 
 \usepackage{xspace, hyperref, listings}
 
+% The next three lines deal with the underscore character
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+
+
 % This line needs package svn-multi
 % \svnid{$Id$}
 
@@ -182,11 +188,12 @@ This line defines the directory where you have installed pDynamo.
 After editing, close the file and run "make" to compile the C object file.
 
 \bigskip
-Go to the directory \texttt{extensions/pyrex/} and again edit the \texttt{Makefile}.
+Go to the directory \texttt{extensions/pyrex/}.
 %
-Change the line starting from "INC2" to the location of your pDynamo installation.
+In the \texttt{Makefile}, change the line starting from \makebox{"PDYNAMO\_ROOT"}
+to the location of your pDynamo installation.
 %
-Close the file and run "make".
+After closing the file, run "make".
 %
 It should generate a dynamically linked library, \texttt{StateVector.so}, in 
 the directory \texttt{Continuum\-Electrostatics/}.
@@ -676,6 +683,8 @@ Alternatively, you can post comments or report problems on the project's website
   \item GMCT (Thomas Ullmann)\\ \url{http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=gmct-gcem}
 
   \item Doctoral thesis of Timm Essigke (which was my primary source of knowledge)\\ \url{https://epub.uni-bayreuth.de/655/}
+
+% Talk about most informative chapters?
 
   \item Doctoral thesis of Thomas Ullmann\\ \url{https://epub.uni-bayreuth.de/199/}
 
