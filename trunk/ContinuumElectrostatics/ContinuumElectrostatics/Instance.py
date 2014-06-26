@@ -80,30 +80,33 @@ class MEADInstance (object):
 
   def CalculateSiteInModelCompound (self, log = logFile):
     """Calculate Gborn and Gback of a site in the model compound."""
-    if os.path.exists (self.modelLog):
-      pass
-    else:
-      instancePqr        = self.sitePqr  [:-4]
-      modelBackgroundPqr = self.modelPqr [:-4]
+    site  = self.parent
+    model = site.parent
 
-      model   = self.parent.parent
-      command = [os.path.join (model.meadPath, "my_2diel_solver"), "-T", "%f" % model.temperature, "-ionicstr", "%f" % model.ionicStrength, "-epsin", "%f" % 4.0, instancePqr, modelBackgroundPqr]
-
-      try:
-        outFile = open (self.modelLog, "w")
-        subprocess.check_call (command, stderr = outFile, stdout = outFile)
-        outFile.close ()
-      except:
-        raise ContinuumElectrostaticsError ("Failed running command: %s" % " ".join (command))
-
-    reader = MEADOutputFileReader (self.modelLog)
-    reader.Parse ()
-
-    if not hasattr (reader, "born") or not hasattr (reader, "back"):
-      raise ContinuumElectrostaticsError ("Output file %s empty or corrupted. Empty the scratch directory and start anew." % self.modelLog)
-
-    self.Gborn_model = reader.born
-    self.Gback_model = reader.back
+    if model.isFilesWritten:
+      if os.path.exists (self.modelLog):
+        pass
+      else:
+        instancePqr        = self.sitePqr  [:-4]
+        modelBackgroundPqr = self.modelPqr [:-4]
+  
+        model   = self.parent.parent
+        command = [os.path.join (model.meadPath, "my_2diel_solver"), "-T", "%f" % model.temperature, "-ionicstr", "%f" % model.ionicStrength, "-epsin", "%f" % 4.0, instancePqr, modelBackgroundPqr]
+  
+        try:
+          outFile = open (self.modelLog, "w")
+          subprocess.check_call (command, stderr = outFile, stdout = outFile)
+          outFile.close ()
+        except:
+          raise ContinuumElectrostaticsError ("Failed running command: %s" % " ".join (command))
+  
+      reader = MEADOutputFileReader (self.modelLog)
+      reader.Parse ()
+      if not hasattr (reader, "born") or not hasattr (reader, "back"):
+        raise ContinuumElectrostaticsError ("Output file %s empty or corrupted. Empty the scratch directory and start anew." % self.modelLog)
+  
+      self.Gborn_model = reader.born
+      self.Gback_model = reader.back
 
 
   def CalculateSiteInProtein (self, log = logFile):
@@ -112,63 +115,69 @@ class MEADInstance (object):
     Also, calculate Wij between the site and the other sites.
 
     Use fpt-file for other instances of sites."""
-    if os.path.exists (self.siteLog):
-      pass
-    else:
-      model = self.parent.parent
-      sitesFpt             = model.sitesFpt   [:-4]
-      proteinPqr           = model.proteinPqr [:-4]
-      proteinBackgroundPqr = model.backPqr    [:-4]
-      instancePqr          = self.sitePqr     [:-4]
+    site  = self.parent
+    model = site.parent
 
-      # epsin1 is never used but must be given
-
-      # eps2set defines the whole protein
-
-      command = [os.path.join (model.meadPath, "my_3diel_solver"), "-T", "%f" % model.temperature, "-ionicstr", "%f" % model.ionicStrength, "-epsin1", "%f" % 1.0, "-epsin2", "%f" % 4.0, "-eps2set", "%s" % proteinPqr, "-fpt", "%s" % sitesFpt, instancePqr, proteinBackgroundPqr]
-
-      try:
-        outFile = open (self.siteLog, "w")
-        subprocess.check_call (command, stderr = outFile, stdout = outFile)
-        outFile.close ()
-      except:
-        raise ContinuumElectrostaticsError ("Failed running command: %s" % " ".join (command))
-
-    reader = MEADOutputFileReader (self.siteLog)
-    reader.Parse ()
-
-    if not hasattr (reader, "born") or not hasattr (reader, "back") or not hasattr (reader, "interactions"):
-      raise ContinuumElectrostaticsError ("Output file %s empty or corrupted. Empty the scratch directory and start anew." % self.modelLog)
-
-    self.Gborn_protein = reader.born
-    self.Gback_protein = reader.back
-
-    sites         = []
-    instances     = []
-    prevSiteIndex = -1
-
-    for siteIndex, instanceIndex, energy in reader.interactions:
-      if siteIndex == (self.parent.siteID - 1):
-        Wij = 0.0
+    if model.isFilesWritten:
+      if os.path.exists (self.siteLog):
+        pass
       else:
-        Wij = energy
-
-      if siteIndex is not prevSiteIndex and siteIndex > 0:
+        model = self.parent.parent
+        sitesFpt             = model.sitesFpt   [:-4]
+        proteinPqr           = model.proteinPqr [:-4]
+        proteinBackgroundPqr = model.backPqr    [:-4]
+        instancePqr          = self.sitePqr     [:-4]
+  
+        # epsin1 is never used but must be given
+  
+        # eps2set defines the whole protein
+  
+        command = [os.path.join (model.meadPath, "my_3diel_solver"), "-T", "%f" % model.temperature, "-ionicstr", "%f" % model.ionicStrength, "-epsin1", "%f" % 1.0, "-epsin2", "%f" % 4.0, "-eps2set", "%s" % proteinPqr, "-fpt", "%s" % sitesFpt, instancePqr, proteinBackgroundPqr]
+  
+        try:
+          outFile = open (self.siteLog, "w")
+          subprocess.check_call (command, stderr = outFile, stdout = outFile)
+          outFile.close ()
+        except:
+          raise ContinuumElectrostaticsError ("Failed running command: %s" % " ".join (command))
+  
+      reader = MEADOutputFileReader (self.siteLog)
+      reader.Parse ()
+  
+      if not hasattr (reader, "born") or not hasattr (reader, "back") or not hasattr (reader, "interactions"):
+        raise ContinuumElectrostaticsError ("Output file %s empty or corrupted. Empty the scratch directory and start anew." % self.modelLog)
+  
+      self.Gborn_protein = reader.born
+      self.Gback_protein = reader.back
+  
+      sites         = []
+      instances     = []
+      prevSiteIndex = -1
+  
+      for siteIndex, instanceIndex, energy in reader.interactions:
+        if siteIndex == (self.parent.siteID - 1):
+          Wij = 0.0
+        else:
+          Wij = energy
+  
+        if siteIndex is not prevSiteIndex and siteIndex > 0:
+          sites.append (instances)
+          instances = []
+        instances.append (Wij)
+        prevSiteIndex = siteIndex
+  
+      if instances:
         sites.append (instances)
-        instances = []
-      instances.append (Wij)
-      prevSiteIndex = siteIndex
-
-    if instances:
-      sites.append (instances)
-
-# Return it to the calling method? The matrix of interactions should be inside the MEADModel?
-    self.interactions = sites
+  
+  # Return it to the calling method? The matrix of interactions should be inside the MEADModel?
+      self.interactions = sites
 
 
   def CalculateGintr (self, log = logFile):
     """Calculate Gintr of an instance of a site in the protein."""
-    self.Gintr = self.Gmodel + (self.Gborn_protein - self.Gborn_model) + (self.Gback_protein - self.Gback_model)
+    check = all ((self.Gborn_protein, self.Gback_protein, self.Gborn_model, self.Gback_model))
+    if check:
+      self.Gintr = self.Gmodel + (self.Gborn_protein - self.Gborn_model) + (self.Gback_protein - self.Gback_model)
 
 
   def PrintInteractions (self, sort = False, log = logFile):
