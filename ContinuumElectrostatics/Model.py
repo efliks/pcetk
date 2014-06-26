@@ -617,12 +617,8 @@ class MEADModel (object):
       ParseLabel = system.sequence.ParseLabel
       segments   = system.sequence.children
 
-      # Useful after the interactions are centralized in a common matrix
+      # instIndexGlobal becomes useful after the interactions are centralized in a common matrix
       instIndexGlobal = 0
-
-      # Needed for multi-segment proteins because MEAD does not support segments
-      segmentIndex    = -1
-
       siteIndex       = 0
       self.meadSites  = []
 
@@ -636,10 +632,10 @@ class MEADModel (object):
 
         # Include segment?
         if segmentName not in excludeSegments:
-          residues     = segment.children
-          nresidues    = len (residues)
-          segmentIndex = segmentIndex + 1
-  
+          residues  = segment.children
+          nresidues = len (residues)
+ 
+ 
           #============ Go over residues ============
           for residueIndex, residue in enumerate (residues):
             residueName, residueSerial = ParseLabel (residue.label, fields = 2)

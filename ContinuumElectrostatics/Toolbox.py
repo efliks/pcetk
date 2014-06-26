@@ -9,6 +9,7 @@
 
 __lastchanged__ = "$Id$"
 
+from pCore          import logFile, LogFileActive
 from Error          import ContinuumElectrostaticsError
 from StateVector    import StateVector
 
@@ -63,6 +64,22 @@ def StateVector_FromProbabilities (meadModel):
     return vector
   else:
     raise ContinuumElectrostaticsError ("First calculate probabilities at a chosen pH.")
+
+
+def CalculateEnergiesOfSubstates (meadModel, chooseSites, log = logFile):
+  """Calculate energies of substates.
+
+  Substate are generated from a sequence of sites defined in |sites|.
+
+  Each element of the sequence takes the form (segmentName, residueSerial)."""
+  vector = StateVector_FromProbabilities (meadModel)
+
+  siteIndices = []
+  for siteIndex, site in enumerate (meadModel.meadSites):
+    for chooseSegment, chooseSerial in chooseSites:
+      if site.segName == chooseSegment and site.resSerial == chooseSerial:
+        siteIndices.append (siteIndex)
+        break
 
 
 #===============================================================================

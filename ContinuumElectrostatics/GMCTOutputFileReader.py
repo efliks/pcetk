@@ -29,7 +29,6 @@ class GMCTOutputFileReader (TextFileReader):
 
       self.Open ()
       convert       = -1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * CONSTANT_LN10 * temperature)
-      shift         = None
       line          = None
       pHtable       = [] 
       probabilities = {}
@@ -42,14 +41,13 @@ class GMCTOutputFileReader (TextFileReader):
           if line.startswith ("chemical potential"):
             tokens = line.split ()
             mu     = float (tokens[2]) 
-            pH = mu * convert
-            pHtable.append (pH)
+            pHtable.append (mu * convert)
 
             self.GetLine ()
             self.GetLine ()
 
             while True:
-              line   = self.GetLine (QWARNING = False)
+              line = self.GetLine (QWARNING = False)
               if line.startswith ("chemical potential"):
                 break
 

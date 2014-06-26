@@ -31,6 +31,7 @@ class ESTFileReader (TextFileReader):
       self.Open ()
       atoms  = []
       line   = None
+
       # In some files center atom is absent?
       center = None
 
