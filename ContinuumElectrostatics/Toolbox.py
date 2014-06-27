@@ -63,7 +63,7 @@ def StateVector_FromProbabilities (meadModel):
       vector[siteIndex] = instanceIndex
     return vector
   else:
-    raise ContinuumElectrostaticsError ("First calculate probabilities at a chosen pH.")
+    raise ContinuumElectrostaticsError ("First calculate probabilities.")
 
 
 #===============================================================================

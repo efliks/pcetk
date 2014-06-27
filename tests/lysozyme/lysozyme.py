@@ -20,6 +20,7 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/lysozyme.crd")
 #===========================================
 ce_model = MEADModel (meadPath = "/home/mikolaj/local/bin/", gmctPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 1)
 
+# Exclude some residues to speed up the calculations
 exclusions = (
 ("", "CYS", ""),
 ("", "ARG", ""),

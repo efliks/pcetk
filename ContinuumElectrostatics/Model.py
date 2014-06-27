@@ -792,25 +792,23 @@ class MEADModel (object):
 
 
                 # Calculate center of geometry
-                center = Vector3 ()
-                natoms = len (siteAtomIndices)
+                centralAtom = libSite["center"]
+                if centralAtom:
+                  atoms = residue.children
 
-                for atomIndex in siteAtomIndices:
-                  center.AddScaledVector3 (1.0, system.coordinates3[atomIndex])
-                center.Scale (1.0 / natoms)
+                  for atom in atoms:
+                    if atom.label == centralAtom:
+                      centralIndex = atom.index
+                      break
+                  center = system.coordinates3[centralIndex]
 
-#                centerAtomName  = libSite["center"]
-#                centerAtomIndex = None
-#
-#                if centerAtomName:
-#                  atoms = residue.children
-#                  for atom in atoms:
-#                    if atom.label == centerAtomName:
-#                      centerAtomIndex = atom.index
-#                      break
-#                  if not centerAtomIndex:
-#                    raise ContinuumElectrostaticsError ("Atom name %s not found in the current site." % centerAtomName)
-#                  center = system.coordinates3[centerAtomIndex]
+                else:
+                  center = Vector3 ()
+                  natoms = len (siteAtomIndices)
+
+                  for atomIndex in siteAtomIndices:
+                    center.AddScaledVector3 (1.0, system.coordinates3[atomIndex])
+                  center.Scale (1.0 / natoms)
 
 
                 # Create a site

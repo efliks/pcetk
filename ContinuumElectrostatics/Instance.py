@@ -147,33 +147,40 @@ class MEADInstance (object):
   
       if not hasattr (reader, "born") or not hasattr (reader, "back") or not hasattr (reader, "interactions"):
         raise ContinuumElectrostaticsError ("Output file %s empty or corrupted. Empty the scratch directory and start anew." % self.modelLog)
-  
+ 
+ 
       self.Gborn_protein = reader.born
       self.Gback_protein = reader.back
-  
-      sites         = []
-      instances     = []
-      prevSiteIndex = -1
-  
+
+      # Create a list of interactions
+      interactions = []
+      instances    = []
+
+      siteIndexOld    = 99999
+      # Ugly?
+      parentSiteIndex = self.parent.siteID - 1
+
       for siteIndex, instanceIndex, energy in reader.interactions:
-        Wij = energy if siteIndex != (self.parent.siteID - 1) else 0.
-  
-        if siteIndex is not prevSiteIndex and siteIndex > 0:
-          sites.append (instances)
+        if siteIndex > siteIndexOld:
+          interactions.append (instances)
           instances = []
-        instances.append (Wij)
-        prevSiteIndex = siteIndex
-  
+        # Set the interaction energy to zero if the site is interacting with itself
+        if siteIndex == parentSiteIndex:
+          energy = 0.
+        instances.append (energy)
+        siteIndexOld = siteIndex
+
       if instances:
-        sites.append (instances)
-  
-  # Return it to the calling method? The matrix of interactions should be inside the MEADModel?
-      self.interactions = sites
+        interactions.append (instances)
+
+      # Return it to the calling method? The matrix of interactions should be inside the MEADModel?
+      self.interactions = interactions
 
 
   def CalculateGintr (self, log = logFile):
     """Calculate Gintr of an instance of a site in the protein."""
     # Checking in this way does not work because sometimes the background energy in the model compound is zero (for example for ligands)
+    #
     # check = all ((self.Gborn_protein, self.Gback_protein, self.Gborn_model, self.Gback_model))
     self.Gintr = self.Gmodel + (self.Gborn_protein - self.Gborn_model) + (self.Gback_protein - self.Gback_model)
 
