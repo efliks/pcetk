@@ -18,19 +18,24 @@
 
 
 typedef struct {
-  Integer *vector;
-  Integer *maxvector;
-  Integer length;
+  Integer *vector, *maxvector, *substate;
+  Integer length, slength;
 } StateVector;
 
 
 /*extern StateVector *StateVector_Allocate (const Integer length, Status *status);*/
-extern StateVector *StateVector_Allocate       (const Integer length);
-extern void         StateVector_Deallocate     (      StateVector *self);
-extern void         StateVector_Reset          (const StateVector *self);
-extern void         StateVector_ResetToMaximum (const StateVector *self);
-extern Integer      StateVector_GetItem        (const StateVector *self, const Integer index);
-extern Boolean      StateVector_SetItem        (const StateVector *self, const Integer index, const Integer value);
-extern Boolean      StateVector_Increment      (const StateVector *self);
+extern StateVector *StateVector_Allocate          (const Integer length);
+extern void         StateVector_Deallocate        (      StateVector *self);
+extern void         StateVector_Reset             (const StateVector *self);
+extern void         StateVector_ResetToMaximum    (const StateVector *self);
+extern Integer      StateVector_GetItem           (const StateVector *self, const Integer index);
+extern Boolean      StateVector_SetItem           (const StateVector *self, const Integer index, const Integer value);
+extern Boolean      StateVector_Increment         (const StateVector *self);
+
+/* Substate-related functions */
+extern Boolean      StateVector_AllocateSubstate  (      StateVector *self, const Integer nsites);
+extern Boolean      StateVector_SetSubstateItem   (const StateVector *self, const Integer index, const Integer siteIndex);
+extern Boolean      StateVector_IncrementSubstate (const StateVector *self);
+extern void         StateVector_ResetSubstate     (const StateVector *self);
 
 #endif

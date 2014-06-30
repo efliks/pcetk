@@ -3,7 +3,7 @@
 from pBabel   import CHARMMParameterFiles_ToParameters, CHARMMPSFFile_ToSystem, CHARMMCRDFile_ToCoordinates3
 from pCore    import logFile
 
-from ContinuumElectrostatics import MEADModel
+from ContinuumElectrostatics import MEADModel, StateVector_FromProbabilities
 
 
 logFile.Header ("Calculate protonation states in chain A of defensin")
@@ -48,21 +48,48 @@ ce_model.SummaryProbabilities ()
 
 
 #===========================================
-logFile.Text ("\n*** Calculating titration curves analytically ***\n")
+statevector = StateVector_FromProbabilities (ce_model)
+statevector.Print (ce_model)
 
-ce_model.CalculateCurves (isAnalytic = True, forceSerial = True, directory = "curves_analytic")
+substate = (
+("PRTA", 2),
+("PRTA", 17),
+)
+
+statevector.DefineSubstate (ce_model, substate)
+
+statevector.ResetSubstate ()
+Gmicro     = ce_model.CalculateMicrostateEnergy (statevector, pH = 7.0)
+statevector.Print (ce_model, title = "State: %d, Gmicro: %f" % (0, Gmicro))
+
+#  statevector.Print (ce_model)
+#  
+#  increment  = True
+#  stateCount = 0
+#  
+#  while increment:
+#    Gmicro     = ce_model.CalculateMicrostateEnergy (statevector, pH = 7.0)
+#    statevector.Print (ce_model, title = "State: %d, Gmicro: %f" % (stateCount, Gmicro))
+#    increment  = statevector.IncrementSubstate ()
+#    stateCount = stateCount + 1
 
 
-
-logFile.Text ("\n*** Calculating titration curves using GMCT in serial mode ***\n")
-
-ce_model.CalculateCurves (forceSerial = True, directory = "curves_gmct")
-
-
-
-logFile.Text ("\n*** Calculating titration curves using GMCT in parallel mode ***\n")
-
-ce_model.CalculateCurves (directory = "curves_gmct_parallel")
+#===========================================
+#  logFile.Text ("\n*** Calculating titration curves analytically ***\n")
+#  
+#  ce_model.CalculateCurves (isAnalytic = True, forceSerial = True, directory = "curves_analytic")
+#  
+#  
+#  
+#  logFile.Text ("\n*** Calculating titration curves using GMCT in serial mode ***\n")
+#  
+#  ce_model.CalculateCurves (forceSerial = True, directory = "curves_gmct")
+#  
+#  
+#  
+#  logFile.Text ("\n*** Calculating titration curves using GMCT in parallel mode ***\n")
+#  
+#  ce_model.CalculateCurves (directory = "curves_gmct_parallel")
 
 
 #===========================================
