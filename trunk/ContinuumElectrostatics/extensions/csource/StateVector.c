@@ -18,6 +18,9 @@ StateVector *StateVector_Allocate (const Integer length) {
     self->maxvector = NULL;
     self->length    = length;
 
+    self->substate  = NULL;
+    self->slength   = 0;
+
     if (length > 0) {
       MEMORY_ALLOCATEARRAY (self->vector, length, Integer);
       if (self->vector == NULL) {
@@ -34,10 +37,32 @@ StateVector *StateVector_Allocate (const Integer length) {
   return self;
 }
 
+Boolean StateVector_AllocateSubstate (StateVector *self, const Integer nsites) {
+  if (self->substate != NULL) {
+    /* Substate already allocated */
+    return False;
+  }
+  else {
+    MEMORY_ALLOCATEARRAY (self->substate, nsites, Integer);
+    if (self->substate == NULL) {
+      /* Substate allocation failed */
+      return False;
+    }
+    self->slength = nsites;
+    return True;
+  }
+}
+
 void StateVector_Deallocate (StateVector *self) {
   if (self != NULL) {
     MEMORY_DEALLOCATE (self->maxvector);
     MEMORY_DEALLOCATE (self->vector);
+
+    /* Deallocate substate, if exists */
+    if (self->substate != NULL) {
+      MEMORY_DEALLOCATE (self->substate);
+    }
+
     MEMORY_DEALLOCATE (self);
   }
 }
@@ -110,4 +135,53 @@ Boolean StateVector_Increment (const StateVector *self) {
     }
   }
   return False;
+}
+
+Boolean StateVector_SetSubstateItem (const StateVector *self, const Integer index, const Integer siteIndex) {
+  if (index < 0 || index > (self->length - 1)) {
+    return False;
+  }
+  else if (siteIndex < 0 || (siteIndex > self->slength - 1)) {
+    return False;
+  }
+  else {
+    self->substate[index] = siteIndex;
+    return True;
+  }
+}
+
+void StateVector_ResetSubstate (const StateVector *self) {
+  Integer i;
+  Integer *siteIndex = self->substate;
+
+  if (self->substate != NULL) {
+    for (i = 0; i < self->slength; i++, siteIndex++) {
+      self->vector[*siteIndex] = 0;
+    }
+  }
+}
+
+Boolean StateVector_IncrementSubstate (const StateVector *self) {
+  Integer i, site, maxsite;
+  Integer *siteIndex = self->substate;
+
+  if (self->substate != NULL) {
+    for (i = 0; i < self->slength; i++, siteIndex++) {
+      site    = self->vector    [*siteIndex];
+      maxsite = self->maxvector [*siteIndex];
+  
+      if (site < maxsite) {
+        site++;
+        self->vector[*siteIndex] = site;
+        return True;
+      }
+      else {
+        self->vector[*siteIndex] = 0;
+      }
+    }
+    return False;
+  }
+  else {
+    return False;
+  }
 }
