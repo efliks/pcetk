@@ -211,7 +211,7 @@ class MEADInstance (object):
         for Wij, segName, resName, resSerial, label in instances:
           tab.Entry (segName)
           tab.Entry (resName)
-          tab.Entry (resSerial)
+          tab.Entry ("%d" % resSerial)
           tab.Entry (label)
           tab.Entry ("%16.4f" % Wij)
         tab.Stop ()
@@ -227,7 +227,7 @@ class MEADInstance (object):
       site = self.parent
       tab.Entry (site.segName)
       tab.Entry (site.resName)
-      tab.Entry (site.resSerial)
+      tab.Entry ("%d" % site.resSerial)
       tab.Entry (self.label)
       tab.Entry ("%16.4f" % self.Gborn_model)
       tab.Entry ("%16.4f" % self.Gback_model)

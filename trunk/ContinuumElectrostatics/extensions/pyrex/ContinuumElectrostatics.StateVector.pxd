@@ -7,6 +7,8 @@
 #-------------------------------------------------------------------------------
 from pCore.cDefinitions    cimport Boolean, CFalse, CTrue, Integer
 
+__lastchanged__ = "$Id$"
+
 
 # Include the file StateVector.h in the generated C code
 cdef extern from "StateVector.h":

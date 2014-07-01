@@ -319,7 +319,7 @@ class MEADModel (object):
   def CalculateProbabilitiesGMCT (self, pH = 7.0, dryRun = False, log = logFile):
     """Use GMCT to estimate protonation probabilities.
 
-    With dryRun = True, GMCT is not called and only the directories and files are created. This is necessary in the parallel mode because the function mkdir does not work with multiple threads."""
+    With |dryRun = True|, GMCT is not called and only the directories and files are created. This is necessary in the parallel mode because the function mkdir does not work with multiple threads."""
     if self.isCalculated:
       potential = -CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10 * pH
       project   = "job"
@@ -379,7 +379,7 @@ class MEADModel (object):
     
         for siteIndex, site in enumerate (self.meadSites):
           for instanceIndex, instance in enumerate (site.instances):
-            key                             = "conf_%s_%s%s_%s" % (site.segName, site.resName, site.resSerial, instance.label)
+            key                             = "conf_%s_%s%d_%s" % (site.segName, site.resName, site.resSerial, instance.label)
             probability                     = reader.probabilities[key][0]
             sites[siteIndex][instanceIndex] = probability
             instance.probability            = probability
@@ -603,9 +603,9 @@ class MEADModel (object):
   def Initialize (self, system, excludeSegments = None, excludeResidues = None, log = logFile):
     """Decompose the system into model compounds, sites and a background charge set.
 
-    excludeSegments is a sequence of segment names to exclude.
+    |excludeSegments| is a sequence of segment names to exclude.
 
-    excludeResidues is a sequence of three-element sequences (segmentName, residueName, residueSerial).
+    |excludeResidues| is a sequence of three-element sequences (segmentName, residueName, residueSerial).
 
     It is possible to leave some of the elements blank, for example ("PRTA", "CYS", "") means exclude all cysteines in segment PRTA."""
 
@@ -639,15 +639,13 @@ class MEADModel (object):
           #============ Go over residues ============
           for residueIndex, residue in enumerate (residues):
             residueName, residueSerial = ParseLabel (residue.label, fields = 2)
+            residueSerial = int (residueSerial)
 
             # Include residue?
             includeResidue = True
 
             if excludeResidues:
               for exclSegmentName, exclResidueName, exclResidueSerial in excludeResidues:
-                # FIXME
-                exclResidueSerial = str (exclResidueSerial)
-  
                 if   (    exclSegmentName) and (    exclResidueName) and (    exclResidueSerial):
                   if exclSegmentName == segmentName and exclResidueName == residueName and exclResidueSerial == residueSerial:
                     includeResidue = False
@@ -689,7 +687,7 @@ class MEADModel (object):
   
               if not includeResidue:
                 if LogFileActive (log):
-                  log.Text ("\nExcluding residue: %s %s %s\n" % (segmentName, residueName, residueSerial))
+                  log.Text ("\nExcluding residue: %s %s %d\n" % (segmentName, residueName, residueSerial))
 
 
             if includeResidue:
@@ -703,6 +701,7 @@ class MEADModel (object):
                 if residueIndex > 1:
                   prevResidue = residues[residueIndex - 1]
                   prevResidueName, prevResidueSerial = ParseLabel (prevResidue.label, fields = 2)
+                  prevResidueSerial = int (prevResidueSerial)
   
                   if prevResidueName in PROTEIN_RESIDUES:
                     prevNames = PREV_RESIDUE
@@ -715,6 +714,7 @@ class MEADModel (object):
                 if residueIndex < (nresidues - 1):
                   nextResidue = residues[residueIndex + 1]
                   nextResidueName, nextResidueSerial = ParseLabel (nextResidue.label, fields = 2)
+                  nextResidueSerial = int (nextResidueSerial)
   
                   if nextResidueName in PROTEIN_RESIDUES:
                     if   nextResidueName == "PRO":
@@ -758,19 +758,19 @@ class MEADModel (object):
                   Gmodel   = instance [ "Gmodel"  ] * 300.0 / self.temperature
 
                   if self.splitToDirectories:
-                    modelPqr  = os.path.join (self.scratch, segmentName, "%s%s" % (residueName, residueSerial), "%s_%s.%s" % ("model", label, "pqr"))
-                    modelLog  = os.path.join (self.scratch, segmentName, "%s%s" % (residueName, residueSerial), "%s_%s.%s" % ("model", label, "out"))
-                    modelGrid = os.path.join (self.scratch, segmentName, "%s%s" % (residueName, residueSerial), "%s_%s.%s" % ("model", label, "mgm"))
-                    sitePqr   = os.path.join (self.scratch, segmentName, "%s%s" % (residueName, residueSerial), "%s_%s.%s" % ("site",  label, "pqr"))
-                    siteLog   = os.path.join (self.scratch, segmentName, "%s%s" % (residueName, residueSerial), "%s_%s.%s" % ("site",  label, "out"))
-                    siteGrid  = os.path.join (self.scratch, segmentName, "%s%s" % (residueName, residueSerial), "%s_%s.%s" % ("site",  label, "ogm"))
+                    modelPqr  = os.path.join (self.scratch, segmentName, "%s%d" % (residueName, residueSerial), "%s_%s.%s" % ("model", label, "pqr"))
+                    modelLog  = os.path.join (self.scratch, segmentName, "%s%d" % (residueName, residueSerial), "%s_%s.%s" % ("model", label, "out"))
+                    modelGrid = os.path.join (self.scratch, segmentName, "%s%d" % (residueName, residueSerial), "%s_%s.%s" % ("model", label, "mgm"))
+                    sitePqr   = os.path.join (self.scratch, segmentName, "%s%d" % (residueName, residueSerial), "%s_%s.%s" % ("site",  label, "pqr"))
+                    siteLog   = os.path.join (self.scratch, segmentName, "%s%d" % (residueName, residueSerial), "%s_%s.%s" % ("site",  label, "out"))
+                    siteGrid  = os.path.join (self.scratch, segmentName, "%s%d" % (residueName, residueSerial), "%s_%s.%s" % ("site",  label, "ogm"))
                   else:
-                    modelPqr  = os.path.join (self.scratch, "%s_%s_%s_%s_%s.%s" % ("model", segmentName, residueName, residueSerial, label, "pqr"))
-                    modelLog  = os.path.join (self.scratch, "%s_%s_%s_%s_%s.%s" % ("model", segmentName, residueName, residueSerial, label, "out"))
-                    modelGrid = os.path.join (self.scratch, "%s_%s_%s_%s_%s.%s" % ("model", segmentName, residueName, residueSerial, label, "mgm"))
-                    sitePqr   = os.path.join (self.scratch, "%s_%s_%s_%s_%s.%s" % ("site",  segmentName, residueName, residueSerial, label, "pqr"))
-                    siteLog   = os.path.join (self.scratch, "%s_%s_%s_%s_%s.%s" % ("site",  segmentName, residueName, residueSerial, label, "out"))
-                    siteGrid  = os.path.join (self.scratch, "%s_%s_%s_%s_%s.%s" % ("site",  segmentName, residueName, residueSerial, label, "ogm"))
+                    modelPqr  = os.path.join (self.scratch, "%s_%s_%s_%d_%s.%s" % ("model", segmentName, residueName, residueSerial, label, "pqr"))
+                    modelLog  = os.path.join (self.scratch, "%s_%s_%s_%d_%s.%s" % ("model", segmentName, residueName, residueSerial, label, "out"))
+                    modelGrid = os.path.join (self.scratch, "%s_%s_%s_%d_%s.%s" % ("model", segmentName, residueName, residueSerial, label, "mgm"))
+                    sitePqr   = os.path.join (self.scratch, "%s_%s_%s_%d_%s.%s" % ("site",  segmentName, residueName, residueSerial, label, "pqr"))
+                    siteLog   = os.path.join (self.scratch, "%s_%s_%s_%d_%s.%s" % ("site",  segmentName, residueName, residueSerial, label, "out"))
+                    siteGrid  = os.path.join (self.scratch, "%s_%s_%s_%d_%s.%s" % ("site",  segmentName, residueName, residueSerial, label, "ogm"))
 
                   # Set the parent later
                   newInstance = MEADInstance (
@@ -845,6 +845,7 @@ class MEADModel (object):
         #============ Go over residues ============
         for residue in residues:
           residueName, residueSerial = ParseLabel (residue.label, fields = 2)
+          residueSerial = int (residueSerial)
 
           # Remove residues not defined in PROTEIN_RESIDUES, usually waters and ions
           if residueName not in REMOVE_RESIDUES:
@@ -908,7 +909,7 @@ class MEADModel (object):
           tab.Entry ("%d" % site.siteID)
           tab.Entry (site.segName)
           tab.Entry (site.resName)
-          tab.Entry (site.resSerial)
+          tab.Entry ("%d" % site.resSerial)
           tab.Entry ("%d" % len (site.instances))
           tab.Entry ("%10.3f" % site.center[0])
           tab.Entry ("%10.3f" % site.center[1])
@@ -962,7 +963,7 @@ class MEADModel (object):
           if not skipSite:
             tab.Entry ("%6s" % site.segName)
             tab.Entry ("%6s" % site.resName)
-            tab.Entry ("%6s" % site.resSerial)
+            tab.Entry ("%6d" % site.resSerial)
   
             for instance in site.instances:
               if instance.instID == maxID:

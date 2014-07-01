@@ -48,24 +48,6 @@ def ConvertAttribute (attr):
   return attrstring
 
 
-def StateVector_FromProbabilities (meadModel):
-  """Create a state vector from the previously calculated probabilities."""
-  if meadModel.isProbability:
-    vector = StateVector (meadModel)
-
-    for siteIndex, site in enumerate (meadModel.meadSites):
-      pairs = []
-      for instanceIndex, instance in enumerate (site.instances):
-        pair = (instance.probability, instanceIndex)
-        pairs.append (pair)
-      maxProbPair = max (pairs)
-      probability, instanceIndex = maxProbPair
-      vector[siteIndex] = instanceIndex
-    return vector
-  else:
-    raise ContinuumElectrostaticsError ("First calculate probabilities.")
-
-
 #===============================================================================
 # Testing
 #===============================================================================

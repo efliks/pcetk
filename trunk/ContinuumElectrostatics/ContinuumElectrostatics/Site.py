@@ -20,7 +20,7 @@ class MEADSite (object):
                   "siteID"           : None ,
                   "segName"          : None ,
                   "resName"          : None ,
-                  "resSerial"        : None ,
+                  "resSerial"        : None , # <--Keep it as integer
                   "instances"        : None ,
                   "center"           : None ,
                   "modelAtomIndices" : None ,
