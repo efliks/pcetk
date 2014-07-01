@@ -33,9 +33,10 @@ extern Boolean      StateVector_SetItem           (const StateVector *self, cons
 extern Boolean      StateVector_Increment         (const StateVector *self);
 
 /* Substate-related functions */
-extern Boolean      StateVector_AllocateSubstate  (      StateVector *self, const Integer nsites);
-extern Boolean      StateVector_SetSubstateItem   (const StateVector *self, const Integer index, const Integer siteIndex);
-extern Boolean      StateVector_IncrementSubstate (const StateVector *self);
 extern void         StateVector_ResetSubstate     (const StateVector *self);
+extern Boolean      StateVector_AllocateSubstate  (      StateVector *self, const Integer nsites);
+extern Boolean      StateVector_IncrementSubstate (const StateVector *self);
+extern Boolean      StateVector_SetSubstateItem   (const StateVector *self, const Integer selectedSiteIndex, const Integer index);
+extern Integer      StateVector_GetSubstateItem   (const StateVector *self, const Integer index);
 
 #endif
