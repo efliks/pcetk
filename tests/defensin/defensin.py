@@ -3,7 +3,7 @@
 from pBabel   import CHARMMParameterFiles_ToParameters, CHARMMPSFFile_ToSystem, CHARMMCRDFile_ToCoordinates3
 from pCore    import logFile
 
-from ContinuumElectrostatics import MEADModel, StateVector_FromProbabilities
+from ContinuumElectrostatics import MEADModel, SubstateEnergies, StateVector_FromProbabilities
 
 
 logFile.Header ("Calculate protonation states in chain A of defensin")
@@ -48,20 +48,14 @@ ce_model.SummaryProbabilities ()
 
 
 #===========================================
-statevector = StateVector_FromProbabilities (ce_model)
-
 substate = (
-("PRTA", 2),
-("PRTA", 14),
+("PRTA", "ASP" , 2),
+("PRTA", "GLU", 14),
+("PRTA", "ARG", 15),
+("PRTA", "CYS", 31),
 )
 
-statevector.DefineSubstate (ce_model, substate)
-statevector.ResetSubstate ()
-
-increment = True
-while increment:
-  statevector.Print (ce_model, title = "Gmicro: %f" % ce_model.CalculateMicrostateEnergy (statevector, pH = 7.0))
-  increment = statevector.IncrementSubstate ()
+SubstateEnergies (ce_model, substate)
 
 
 

@@ -7,6 +7,8 @@
 #-------------------------------------------------------------------------------
 from pCore    import logFile, LogFileActive, CLibraryError
 
+__lastchanged__ = "$Id$"
+
 
 cdef class StateVector:
   """A class defining the state vector."""
@@ -94,14 +96,14 @@ cdef class StateVector:
 
           table.Entry (site.segName)
           table.Entry (site.resName)
-          table.Entry (site.resSerial)
-          table.Entry ("%s" % instance.label)
+          table.Entry ("%d" % site.resSerial)
+          table.Entry (instance.label)
           table.Entry ("%d" % instanceIndex)
-          table.Entry ("%s" % substate)
+          table.Entry (substate)
         table.Stop ()
 
 
-  def DefineSubstate (self, meadModel, selectedSites, log = logFile):
+  def DefineSubstate (self, meadModel, selectedSites):
     """Define a substate.
 
     |selectedSites| is a sequence of two-element sequences (segmentName, residueSerial)"""
@@ -113,7 +115,7 @@ cdef class StateVector:
       foundSite = False
 
       for siteIndex, site in enumerate (meadModel.meadSites):
-        if site.segName == selectedSegment and int (site.resSerial) == selectedSerial:
+        if site.segName == selectedSegment and site.resSerial == selectedSerial:
           StateVector_SetSubstateItem (self.cObject, siteIndex, substateSiteIndex)
           foundSite = True
           break

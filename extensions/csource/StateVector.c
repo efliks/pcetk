@@ -175,13 +175,13 @@ void StateVector_ResetSubstate (const StateVector *self) {
   }
 }
 
+/* Maybe this is not the fastest solution */
 Boolean StateVector_IncrementSubstate (const StateVector *self) {
   Integer i, site, maxsite;
   Integer *siteIndex = self->substate;
 
   if (self->substate != NULL) {
     for (i = 0; i < self->slength; i++, siteIndex++) {
-      /* Maybe this is not the fastest solution */
       site    = self->vector    [*siteIndex];
       maxsite = self->maxvector [*siteIndex];
   

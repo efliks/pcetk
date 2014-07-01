@@ -542,6 +542,71 @@ ce_model.CalculateCurves (directory = "curves_gmct")
 
 
 %-------------------------------------------------
+\subsection{Calculating microstate energies of substates}
+From the calculated protonation probabilities, one can generate a state vector describing
+the lowest energy protonation state:
+
+{\footnotesize \begin{lstlisting}
+vector = StateVector_FromProbabilities (ce_model)
+\end{lstlisting} }
+
+\bigskip
+The microstate energy ($G_{\mathrm{micro}}$) in the lowest energy protonation state can 
+be calculated in the following way:
+
+{\footnotesize \begin{lstlisting}
+Gmicro = ce_model.CalculateMicrostateEnergy (vector)
+\end{lstlisting} }
+
+\bigskip
+By changing the values (=instances) of selected components (=sites) of the state vector, 
+one can calculate energies for a series of substates of the lowest energy state.
+
+However, substate energies can be calculated easier with the \texttt{SubstateEnergies} function:
+
+{\footnotesize \begin{lstlisting}
+substate = (("PRTA", "ASP",  2), ("PRTA", "GLU", 14), ("PRTA", "ARG", 15), ("PRTA", "CYS", 31))
+SubstateEnergies (ce_model, substate)
+\end{lstlisting} }
+
+\bigskip
+The above code was taken from the test case "defensin".
+%
+The code will generate a table of substates with their corresponding relative energies:
+
+\linespread{0.8}
+{\footnotesize \begin{lstlisting}
+-----------------------------------------------------------------------
+ State  Gmicro   PRTA ASP 2    PRTA GLU 14   PRTA ARG 15   PRTA CYS 31
+-----------------------------------------------------------------------
+     1     0.00      d             d             p             p       
+     2     4.55      p             d             p             p       
+     3     6.69      d             d             d             p       
+     4     7.38      d             d             p             d       
+     5    10.05      d             p             p             p       
+     6    11.21      p             d             d             p       
+     7    11.71      p             d             p             d       
+     8    14.26      d             d             d             d       
+     9    14.86      p             p             p             p       
+    10    16.62      d             p             d             p       
+    11    16.70      d             p             p             d       
+    12    18.57      p             d             d             d       
+    13    21.30      p             p             p             d       
+    14    21.40      p             p             d             p       
+    15    23.47      d             p             d             d       
+    16    28.03      p             p             d             d       
+-----------------------------------------------------------------------
+\end{lstlisting} }
+\linespread{1.6}
+
+\bigskip
+In the lowest energy state, Asp2 and Glu14 are deprotonated, while Arg15 and Cys31
+are protonated.
+%
+Protonating Asp2 requires about 4.6\,kcal/mol.
+
+
+%-------------------------------------------------
 \section{Parameter files}
 Two parameter formats are recognized, 
 YAML (pDynamo's default format) and EST (QMPB's format).
@@ -554,6 +619,8 @@ The files in the \texttt{sites/} directory define parameters for titratable
 sites.
 %
 The listing below shows the parameter file for aspartate:
+
+\newpage
 
 \linespread{0.8}
 {\footnotesize \begin{lstlisting}
