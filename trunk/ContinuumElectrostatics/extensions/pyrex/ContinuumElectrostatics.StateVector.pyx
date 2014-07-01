@@ -18,12 +18,17 @@ cdef class StateVector:
 
   def __getitem__ (self, index):
     """Get an item."""
-    return StateVector_GetItem (self.cObject, index)
+    item = StateVector_GetItem (self.cObject, index)
+    if item < 0:
+      raise CLibraryError ("Vector index out of range.")
+    return item
 
 
   def __setitem__ (self, index, value):
     """Set an item."""
-    StateVector_SetItem (self.cObject, index, value)
+    ok = StateVector_SetItem (self.cObject, index, value)
+    if not ok:
+      raise CLibraryError ("Vector index out of range or wrong value.")
 
 
   def __dealloc__ (self):
@@ -55,16 +60,16 @@ cdef class StateVector:
     if (self.cObject == NULL): 
       raise CLibraryError ("Memory allocation failure.")
 
-    for isite, site in enumerate (meadModel.meadSites):
+    for siteIndex, site in enumerate (meadModel.meadSites):
       ninstances = len (site.instances)
-      self.cObject.maxvector[isite] = ninstances - 1
+      self.cObject.maxvector[siteIndex] = ninstances - 1
 
 
   def Print (self, meadModel = None, title = None, log = logFile):
     """Print the state vector."""
     if LogFileActive (log):
       if meadModel:
-        table = log.GetTable (columns = [7, 7, 7, 8, 8])
+        table = log.GetTable (columns = [7, 7, 7, 8, 8, 2])
         table.Start ()
         if title is None:
           table.Title ("State vector")
@@ -72,46 +77,49 @@ cdef class StateVector:
           table.Title (title)
 
         table.Heading ("Site", columnSpan = 3)
-        table.Heading ("Instance", columnSpan = 2)
+        table.Heading ("Instance", columnSpan = 3)
 
-        # Faster than: for i in range (0, self.cObject.length):
-        for 0 <= i < self.cObject.length:
-          site        = meadModel.meadSites[i]
-          protonation = self.cObject.vector[i]
-  
-          instance = site.instances[protonation]
+        for 0 <= siteIndex < self.cObject.length:
+          substate = "  "
+
+          if self.cObject.substate != NULL:
+            for 0 <= j < self.cObject.slength:
+              selectedSiteIndex = StateVector_GetSubstateItem (self.cObject, j)
+              if selectedSiteIndex == siteIndex:
+                substate = " @"
+
+          site          = meadModel.meadSites [siteIndex]
+          instanceIndex = self.cObject.vector [siteIndex]
+          instance      = site.instances      [instanceIndex]
+
           table.Entry (site.segName)
           table.Entry (site.resName)
           table.Entry (site.resSerial)
           table.Entry ("%s" % instance.label)
-          table.Entry ("%d" % protonation)
+          table.Entry ("%d" % instanceIndex)
+          table.Entry ("%s" % substate)
         table.Stop ()
 
 
-  def DefineSubstate (self, meadModel, selectedSites):
+  def DefineSubstate (self, meadModel, selectedSites, log = logFile):
     """Define a substate.
 
     |selectedSites| is a sequence of two-element sequences (segmentName, residueSerial)"""
-    nsites = len (selectedSites)
-    if not (StateVector_AllocateSubstate (self.cObject, nsites)):
+    ok = StateVector_AllocateSubstate (self.cObject, len (selectedSites))
+    if not ok:
       raise CLibraryError ("Memory allocation failure.")
 
-    for selectedSiteIndex, selectedSite in enumerate (selectedSites):
-      selectedSegment, selectedSerial = selectedSite
-
-      # FIXME
-      selectedSerial = str (selectedSerial)
-
+    for substateSiteIndex, (selectedSegment, selectedSerial) in enumerate (selectedSites):
       foundSite = False
+
       for siteIndex, site in enumerate (meadModel.meadSites):
-        if site.segName == selectedSegment and site.resSerial == selectedSerial:
+        if site.segName == selectedSegment and int (site.resSerial) == selectedSerial:
+          StateVector_SetSubstateItem (self.cObject, siteIndex, substateSiteIndex)
           foundSite = True
           break
 
       if not foundSite:
         raise CLibraryError ("Site %s %d not found." % (selectedSegment, selectedSerial))
-
-      StateVector_SetSubstateItem (self.cObject, selectedSiteIndex, siteIndex)
 
 
   def IncrementSubstate (self):

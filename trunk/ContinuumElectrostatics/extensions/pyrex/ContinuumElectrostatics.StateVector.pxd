@@ -23,17 +23,16 @@ cdef extern from "StateVector.h":
   cdef void          StateVector_Deallocate        (CStateVector *self)
   cdef void          StateVector_Reset             (CStateVector *self)
   cdef void          StateVector_ResetToMaximum    (CStateVector *self)
-  # FIXME: Integers to Booleans!
-  cdef Integer       StateVector_GetItem           (CStateVector *self, Integer index)
-  cdef Integer       StateVector_SetItem           (CStateVector *self, Integer index, Integer value)
-  cdef Integer       StateVector_Increment         (CStateVector *self)
+  cdef Boolean       StateVector_GetItem           (CStateVector *self, Integer index)
+  cdef Boolean       StateVector_SetItem           (CStateVector *self, Integer index, Integer value)
+  cdef Boolean       StateVector_Increment         (CStateVector *self)
 
   # Substate-related functions
-  # FIXME: Integers to Booleans!
-  cdef Integer       StateVector_AllocateSubstate  (CStateVector *self, Integer nsites)
-  cdef Integer       StateVector_SetSubstateItem   (CStateVector *self, Integer index, Integer siteIndex)
-  cdef Integer       StateVector_IncrementSubstate (CStateVector *self)
-  cdef void          StateVector_ResetSubstate     (CStateVector *self)
+  cdef void         StateVector_ResetSubstate     (CStateVector *self)
+  cdef Boolean      StateVector_AllocateSubstate  (CStateVector *self, Integer nsites)
+  cdef Boolean      StateVector_IncrementSubstate (CStateVector *self)
+  cdef Boolean      StateVector_SetSubstateItem   (CStateVector *self, Integer selectedSiteIndex, Integer index)
+  cdef Integer      StateVector_GetSubstateItem   (CStateVector *self, Integer index)
 
 #-------------------------------------------------------------------------------
 cdef class StateVector:

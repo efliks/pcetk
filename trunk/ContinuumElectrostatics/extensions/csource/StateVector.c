@@ -87,7 +87,7 @@ void StateVector_ResetToMaximum (const StateVector *self) {
 
 Integer StateVector_GetItem (const StateVector *self, const Integer index) {
   if (index < 0 || index > (self->length - 1)) {
-    return -1000;
+    return -1;
   }
   else {
     return self->vector[index];
@@ -137,16 +137,30 @@ Boolean StateVector_Increment (const StateVector *self) {
   return False;
 }
 
-Boolean StateVector_SetSubstateItem (const StateVector *self, const Integer index, const Integer siteIndex) {
-  if (index < 0 || index > (self->length - 1)) {
+/*  
+    |selectedSiteIndex| is an index of the site to increment within the substate
+
+    |index| is an index in the substate's array of selectedSiteIndices
+*/
+Boolean StateVector_SetSubstateItem (const StateVector *self, const Integer selectedSiteIndex, const Integer index) {
+  if (index < 0 || index > (self->slength - 1)) {
     return False;
   }
-  else if (siteIndex < 0 || (siteIndex > self->slength - 1)) {
+  else if (selectedSiteIndex < 0 || (selectedSiteIndex > self->length - 1)) {
     return False;
   }
   else {
-    self->substate[index] = siteIndex;
+    self->substate[index] = selectedSiteIndex;
     return True;
+  }
+}
+
+Integer StateVector_GetSubstateItem (const StateVector *self, const Integer index) {
+  if (index < 0 || index > (self->slength - 1)) {
+    return -1;
+  }
+  else {
+    return self->substate[index];
   }
 }
 
@@ -167,6 +181,7 @@ Boolean StateVector_IncrementSubstate (const StateVector *self) {
 
   if (self->substate != NULL) {
     for (i = 0; i < self->slength; i++, siteIndex++) {
+      /* Maybe this is not the fastest solution */
       site    = self->vector    [*siteIndex];
       maxsite = self->maxvector [*siteIndex];
   

@@ -49,29 +49,20 @@ ce_model.SummaryProbabilities ()
 
 #===========================================
 statevector = StateVector_FromProbabilities (ce_model)
-statevector.Print (ce_model)
 
 substate = (
 ("PRTA", 2),
-("PRTA", 17),
+("PRTA", 14),
 )
 
 statevector.DefineSubstate (ce_model, substate)
-
 statevector.ResetSubstate ()
-Gmicro     = ce_model.CalculateMicrostateEnergy (statevector, pH = 7.0)
-statevector.Print (ce_model, title = "State: %d, Gmicro: %f" % (0, Gmicro))
 
-#  statevector.Print (ce_model)
-#  
-#  increment  = True
-#  stateCount = 0
-#  
-#  while increment:
-#    Gmicro     = ce_model.CalculateMicrostateEnergy (statevector, pH = 7.0)
-#    statevector.Print (ce_model, title = "State: %d, Gmicro: %f" % (stateCount, Gmicro))
-#    increment  = statevector.IncrementSubstate ()
-#    stateCount = stateCount + 1
+increment = True
+while increment:
+  statevector.Print (ce_model, title = "Gmicro: %f" % ce_model.CalculateMicrostateEnergy (statevector, pH = 7.0))
+  increment = statevector.IncrementSubstate ()
+
 
 
 #===========================================
