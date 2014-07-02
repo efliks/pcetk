@@ -52,7 +52,6 @@ sites = (
 ("PRTA", "ASP" , 2),
 ("PRTA", "GLU", 14),
 ("PRTA", "ARG", 15),
-("PRTA", "CYS", 30),
 )
 
 substate = MEADSubstate (ce_model, sites, pH = 7.0)
