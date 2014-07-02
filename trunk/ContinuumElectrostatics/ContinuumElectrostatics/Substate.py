@@ -80,7 +80,7 @@ class MEADSubstate (object):
         log.Text ("\nCalculating substate energies at pH=%.1f complete.\n" % self.pH)
 
 
-  def Summary (self, relativeEnergy = True, log = logFile):
+  def Summary (self, relativeEnergy = True, roundCharge = True, log = logFile):
     """Summarize calculated substate energies in a table."""
     if self.isCalculated:
       indicesOfSites = self.indicesOfSites
@@ -90,10 +90,12 @@ class MEADSubstate (object):
       nsites         = len (indicesOfSites)
 
       if LogFileActive (log):
-        tab = log.GetTable (columns = [6, 9] + [14] * nsites)
+        tab = log.GetTable (columns = [6, 9, 8, 8] + [14] * nsites)
         tab.Start ()
         tab.Heading ("State")
         tab.Heading ("Gmicro")
+        tab.Heading ("Charge")
+        tab.Heading ("Protons")
     
         for siteIndex in indicesOfSites:
           site = model.meadSites[siteIndex]
@@ -102,14 +104,28 @@ class MEADSubstate (object):
         for stateIndex, (energy, indicesOfInstances) in enumerate (substates):
           tab.Entry ("%6d"   % (stateIndex + 1))
           if relativeEnergy:
-            tab.Entry ("%9.2f" % (energy - zeroEnergy))
-          else:
-            tab.Entry ("%9.2f" % energy)
-    
+            energy = energy - zeroEnergy
+          tab.Entry ("%9.2f" % energy)
+
+          nprotons = 0
+          charge   = 0.
+          labels   = []
           for siteIndex, instanceIndex in zip (indicesOfSites, indicesOfInstances):
             site     = model.meadSites     [siteIndex]
             instance = site.instances  [instanceIndex]
-            tab.Entry (instance.label.center (14))
+            nprotons = nprotons + instance.protons
+            charge   = charge + sum (instance.charges) 
+            labels.append (instance.label)
+
+          # Charges should ALWAYS sum up to integer values
+          if roundCharge:
+            tab.Entry ("%d" % round (charge))
+          else:
+            tab.Entry ("%.1f" % charge)
+          tab.Entry ("%d"   % nprotons)
+
+          for label in labels:
+            tab.Entry (label.center (14))
         tab.Stop ()
 
 
