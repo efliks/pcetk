@@ -25,10 +25,15 @@ class MEADSubstate (object):
     indicesOfSites = []
   
     for selectedSegment, selectedResidueName, selectedResidueSerial in selectedSites:
+      foundSite = False
       for siteIndex, site in enumerate (meadModel.meadSites):
         if site.segName == selectedSegment and site.resSerial == selectedResidueSerial:
           indicesOfSites.append (siteIndex)
+          foundSite = True
           break
+
+      if not foundSite:
+        raise ContinuumElectrostaticsError ("Site %s %s %d not found." % (selectedSegment, selectedResidueName, selectedResidueSerial))
       pairs.append ([selectedSegment, selectedResidueSerial])
 
     vector = StateVector_FromProbabilities (meadModel)
@@ -72,7 +77,7 @@ class MEADSubstate (object):
       self.isCalculated = True
 
       if LogFileActive (log):
-        log.Text ("\nCalculating substate energies complete.\n")
+        log.Text ("\nCalculating substate energies at pH=%.1f complete.\n" % self.pH)
 
 
   def Summary (self, relativeEnergy = True, log = logFile):
