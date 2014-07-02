@@ -13,4 +13,4 @@ __lastchanged__ = "$Id$"
 
 from Model             import MEADModel
 from StateVector       import StateVector
-from Substate          import StateVector_FromProbabilities, SubstateEnergies
+from Substate          import StateVector_FromProbabilities, MEADSubstate

@@ -11,6 +11,7 @@ CurveThread is a class for running parallel calculations of titration curves."""
 
 __lastchanged__ = "$Id$"
 
+
 import os, glob, math, threading, subprocess, time
 
 from pCore                 import logFile, LogFileActive, Selection, Vector3, YAMLUnpickle, Clone
@@ -113,6 +114,7 @@ class MEADModel (object):
     "Split Directories" : "splitToDirectories" ,    "Calculated prob."  : "isProbability"      ,
     "Delete Job Files"  : "deleteJobFiles"     ,
         }
+
 
   def __del__ (self):
     """Deallocation."""
@@ -519,7 +521,7 @@ class MEADModel (object):
     - interaction energy   between the site and the background charge set of the protein
     - interaction energies between the site and the other sites in their different protonation forms
 
-    Finally, use the calculated homotransfer energies to calculate Gintr from Gmodel.
+    Finally, use the calculated heterotransfer energies to calculate Gintr from Gmodel.
     """
     if self.isFilesWritten:
       tab = None
