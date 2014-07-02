@@ -562,16 +562,21 @@ Gmicro = ce_model.CalculateMicrostateEnergy (vector)
 \bigskip
 By changing the values (=instances) of selected components (=sites) of the state vector, 
 one can calculate energies for a series of substates of the lowest energy state.
-
-However, substate energies can be calculated easier with the \texttt{SubstateEnergies} function:
+%
+On the other hand, substate energies can be calculated easier with the \texttt{MEADSubstate} class:
 
 {\footnotesize \begin{lstlisting}
-substate = (("PRTA", "ASP",  2), ("PRTA", "GLU", 14), ("PRTA", "ARG", 15), ("PRTA", "CYS", 31))
-SubstateEnergies (ce_model, substate)
+sites = (("PRTA", "ASP",  2), ("PRTA", "GLU", 14), ("PRTA", "ARG", 15), ("PRTA", "CYS", 31))
+substate = MEADSubstate (ce_model, sites, pH = 7.0)
+substate.CalculateSubstateEnergies ()
+substate.Summary ()
 \end{lstlisting} }
 
 \bigskip
 The above code was taken from the test case "defensin".
+%
+Note that \texttt{pH = 7.0} is an optional argument and that the given pH should be the same
+as the pH used during the calculation of protonation probabilities.
 %
 The code will generate a table of substates with their corresponding relative energies:
 
@@ -699,9 +704,7 @@ parameters of the existing sites will be overwritten.
   \item Include reduction/oxidation reactions in addition to protonation/deprotonation reactions
   \item Enclose the MEAD and GMCT codes inside pDynamo
   \item Optionally convert kcal/mol (MEAD units) to kJ/mol (pDynamo units)
-  \item Move parts of the \texttt{WriteJobFiles} method to the instance class
   \item Improve the efficiency of writing job files
-  \item Rename variables containing filenames so that they start from "file"
   \item Make use of the \texttt{pqr2SolvAccVol} program to speed up calculations 
   \item Use arrays instead of lists for storing interactions
   \item Move the method for calculating $G_{\mathrm{micro}}$ from Python to C

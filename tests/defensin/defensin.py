@@ -3,7 +3,7 @@
 from pBabel   import CHARMMParameterFiles_ToParameters, CHARMMPSFFile_ToSystem, CHARMMCRDFile_ToCoordinates3
 from pCore    import logFile
 
-from ContinuumElectrostatics import MEADModel, SubstateEnergies, StateVector_FromProbabilities
+from ContinuumElectrostatics import MEADModel, StateVector_FromProbabilities, MEADSubstate
 
 
 logFile.Header ("Calculate protonation states in chain A of defensin")
@@ -48,14 +48,18 @@ ce_model.SummaryProbabilities ()
 
 
 #===========================================
-substate = (
+sites = (
 ("PRTA", "ASP" , 2),
 ("PRTA", "GLU", 14),
 ("PRTA", "ARG", 15),
 ("PRTA", "CYS", 31),
 )
 
-SubstateEnergies (ce_model, substate)
+substate = MEADSubstate (ce_model, sites, pH = 7.0)
+
+substate.CalculateSubstateEnergies ()
+
+substate.Summary ()
 
 
 
