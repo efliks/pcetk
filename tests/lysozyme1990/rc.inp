@@ -1,7 +1,7 @@
 * Make PSF and PDB files
 *
 
-set mol lysozyme
+set mol lysozyme1990
 
 
 !###############################################
@@ -41,6 +41,10 @@ close           unit 1
 !###############################################
 !#                Apply patches                #
 !###############################################
+patch DISU PRTA   6 PRTA 127 setup
+patch DISU PRTA  30 PRTA 115 setup
+patch DISU PRTA  64 PRTA  80 setup
+patch DISU PRTA  76 PRTA  94 setup
 
 
 !###############################################
@@ -71,7 +75,7 @@ mini  conj  nstep 100 nprint 20 inbfrq 20
 cons fix sele none end
 
 
-stream "toppar/radii.str"
+! stream "toppar/radii.str"
 
 open  write         unit 1 card name @mol.pdb
 write coor pdb      unit 1
