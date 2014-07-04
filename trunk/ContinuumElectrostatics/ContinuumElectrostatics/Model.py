@@ -757,7 +757,7 @@ class MEADModel (object):
                   label    = instance [ "label"   ]
                   protons  = instance [ "protons" ]
                   charges  = instance [ "charges" ]
-                  Gmodel   = instance [ "Gmodel"  ] * 300.0 / self.temperature
+                  Gmodel   = instance [ "Gmodel"  ] * self.temperature / 300.
 
                   if self.splitToDirectories:
                     modelPqr  = os.path.join (self.scratch, segmentName, "%s%d" % (residueName, residueSerial), "%s_%s.%s" % ("model", label, "pqr"))
