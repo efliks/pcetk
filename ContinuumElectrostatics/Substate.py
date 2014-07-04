@@ -122,7 +122,7 @@ class MEADSubstate (object):
             tab.Entry ("%d" % round (charge))
           else:
             tab.Entry ("%.1f" % charge)
-          tab.Entry ("%d"   % nprotons)
+          tab.Entry ("%d" % nprotons)
 
           for label in labels:
             tab.Entry (label.center (14))
