@@ -14,7 +14,7 @@ __lastchanged__ = "$Id$"
 
 import os, glob, math, threading, subprocess, time
 
-from pCore                 import logFile, LogFileActive, Selection, Vector3, YAMLUnpickle, Clone
+from pCore                 import logFile, LogFileActive, Selection, Vector3, YAMLUnpickle, Clone, Integer1DArray, Real1DArray, Real2DArray
 from Constants             import *
 from Error                 import ContinuumElectrostaticsError
 from Site                  import MEADSite
@@ -105,6 +105,9 @@ class MEADModel (object):
     "isFilesWritten"     :  False                   ,
     "isCalculated"       :  False                   ,
     "isProbability"      :  False                   ,
+    "arrayProtons"       :  None                    ,
+    "arrayIntrinsic"     :  None                    ,
+    "arrayInteractions"  :  None                    ,
         }
 
   defaultAttributeNames = {
@@ -524,7 +527,19 @@ class MEADModel (object):
     Finally, use the calculated heterotransfer energies to calculate Gintr from Gmodel.
     """
     if self.isFilesWritten:
-      tab = None
+      # Total number of instances is needed for allocating arrays and calculating ETA
+      ninstances = 0
+      for site in self.meadSites:
+        ninstances = ninstances + len (site.instances)
+
+      # These arrays are accessed by the methods from the Instance class
+      self.arrayProtons      = Integer1DArray (ninstances)
+      self.arrayIntrinsic    = Real1DArray (ninstances)
+      self.arrayInteractions = Real2DArray (ninstances, ninstances)
+
+
+      times = []
+      tab   = None
 
       if LogFileActive (log):
         if self.nthreads < 2:
@@ -542,13 +557,6 @@ class MEADModel (object):
         tab.Heading ("Gmodel"       )
         tab.Heading ("Gintr"        )
         tab.Heading ("ETA"          )
-
-      # Total number of instances is needed for calculating ETA
-      times      = []
-      ninstances = 0
-      for site in self.meadSites:
-        ninstances = ninstances + len (site.instances)
-
 
       if self.nthreads < 2:
         for meadSite in self.meadSites:
