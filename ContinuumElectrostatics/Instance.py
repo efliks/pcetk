@@ -171,29 +171,15 @@ class MEADInstance (object):
 
       if instances:
         interactions.append (instances)
-
-      # The line below will become obsolete
       self.interactions = interactions
-
-      globalIndex = 0
-      for instances in interactions:
-        for energy in instances:
-         model.arrayInteractions [self.instIndexGlobal, globalIndex] = energy
-         globalIndex = globalIndex + 1
 
 
   def CalculateGintr (self, log = logFile):
     """Calculate Gintr of an instance of a site in the protein."""
-    # Do not include the background energy of the model compound because it can sometimes be zero (for example in ligands)
+    # For checking, do not include the background energy of the model compound because sometimes it can be zero (for example in ligands)
     check = all ((self.Gborn_protein, self.Gback_protein, self.Gborn_model))
     if check:
       self.Gintr = self.Gmodel + (self.Gborn_protein - self.Gborn_model) + (self.Gback_protein - self.Gback_model)
-      site  = self.parent
-      model = site.parent
-      model.arrayIntrinsic[self.instIndexGlobal] = self.Gintr
-
-      # This cannot be done during the initialization of the instance because at that time the instance's parent is not known
-      model.arrayProtons[self.instIndexGlobal] = self.protons
 
 
   def PrintInteractions (self, sort = False, log = logFile):
