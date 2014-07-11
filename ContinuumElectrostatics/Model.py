@@ -187,21 +187,18 @@ class MEADModel (object):
       entry  = FormatEntry (items)
       lines  = [header]
 
-      for sitea in self.meadSites:
-        for insta in sitea.instances:
-          for siteb in self.meadSites:
-            for instb in siteb.instances:
-              Wij      = insta.interactions[siteb.siteID - 1][instb.instID - 1]
-              Wji      = instb.interactions[sitea.siteID - 1][insta.instID - 1]
-              Wij_symm = 0.5 * (Wij + Wji)
-              Wij_err  = Wij_symm - Wij
-              line = entry % (
-                      sitea.siteID, insta.instID, sitea.label, insta.label,
-                      siteb.siteID, instb.instID, siteb.label, instb.label,
-                      Wij_symm, Wij, Wij_err
-                             )
-              lines.append (line)
 
+      for aindex, asite in enumerate (self.meadSites):
+        for aaindex, ainstance in enumerate (asite.instances):
+
+          for bindex, bsite in enumerate (self.meadSites):
+            for bbindex, binstance in enumerate (bsite.instances):
+
+              wij       = ainstance.interactions [bindex] [bbindex]
+              wji       = binstance.interactions [aindex] [aaindex]
+              symmetric = (wij + wji) * 0.5
+              error     = symmetric - wij
+              lines.append (entry % (aindex + 1, aaindex + 1, asite.label, ainstance.label, bindex + 1, bbindex + 1, bsite.label, binstance.label, symmetric, wij, error))
       WriteInputFile (filename, lines)
 
 
@@ -224,8 +221,7 @@ class MEADModel (object):
 
       for site in self.meadSites:
         for instance in site.instances:
-          line          = entry % (site.siteID, instance.instID, site.label, instance.label, instance.Gintr, instance.protons)
-          lines.append (line)
+          lines.append (entry % (site.siteID, instance.instID, site.label, instance.label, instance.Gintr, instance.protons))
       WriteInputFile (filename, lines)
 
 
