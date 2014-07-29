@@ -14,7 +14,7 @@ __lastchanged__ = "$Id$"
 
 import os, glob, math, threading, subprocess, time
 
-from pCore                 import logFile, LogFileActive, Selection, Vector3, YAMLUnpickle, Clone
+from pCore                 import logFile, LogFileActive, Selection, Vector3, YAMLUnpickle, Clone, Integer1DArray, Real1DArray, Real2DArray
 from Constants             import *
 from Error                 import ContinuumElectrostaticsError
 from Site                  import MEADSite
@@ -105,6 +105,9 @@ class MEADModel (object):
     "isFilesWritten"     :  False                   ,
     "isCalculated"       :  False                   ,
     "isProbability"      :  False                   ,
+    "arrayProtons"       :  None                    ,
+    "arrayIntrinsic"     :  None                    ,
+    "arrayInteractions"  :  None                    ,
         }
 
   defaultAttributeNames = {
@@ -116,11 +119,13 @@ class MEADModel (object):
         }
 
 
+  #===============================================================================
   def __del__ (self):
     """Deallocation."""
     if self.deleteJobFiles: self.DeleteJobFiles ()
 
 
+  #===============================================================================
   def __init__ (self, log = logFile, *arguments, **keywordArguments):
     """Constructor."""
     for (key, value) in self.__class__.defaultAttributes.iteritems (): setattr (self, key, value)
@@ -132,6 +137,7 @@ class MEADModel (object):
     self.LoadLibraryOfSites (log = log)
 
 
+  #===============================================================================
   def LoadLibraryOfSites (self, log = logFile):
     """Load a set of YAML or EST files with parameters for titratable sites.
 
@@ -167,6 +173,7 @@ class MEADModel (object):
       self.librarySites[name] = {"atoms" : atoms, "instances" : instances, "center" : center}
 
 
+  #===============================================================================
   def WriteW (self, filename = "W.dat", log = logFile):
     """Write an interaction matrix compatible with GMCT."""
     if self.isCalculated:
@@ -202,6 +209,7 @@ class MEADModel (object):
       WriteInputFile (filename, lines)
 
 
+  #===============================================================================
   def WriteGintr (self, filename = "gintr.dat", log = logFile):
     """Iterate over instances and write a gintr.dat file compatible with GMCT.
 
@@ -225,6 +233,7 @@ class MEADModel (object):
       WriteInputFile (filename, lines)
 
 
+  #===============================================================================
   def CalculateCurves (self, isAnalytic = False, curveSampling = 0.5, curveStart = 0.0, curveStop = 14.0, directory = "curves", forceSerial = False, log = logFile):
     """Calculate titration curves."""
     if self.isCalculated:
@@ -314,6 +323,7 @@ class MEADModel (object):
         log.Text ("\nWriting curve files complete.\n")
 
 
+  #===============================================================================
   def CalculateProbabilitiesGMCT (self, pH = 7.0, dryRun = False, log = logFile):
     """Use GMCT to estimate protonation probabilities.
 
@@ -389,6 +399,7 @@ class MEADModel (object):
       return sites
 
 
+  #===============================================================================
   def CalculateProbabilitiesAnalytically (self, pH = 7.0, log = logFile):
     """For each site, calculate the probability of occurance of each instance, using the Boltzmann weighted sum."""
     if self.isCalculated:
@@ -400,10 +411,9 @@ class MEADModel (object):
       increment     = True
       stateEnergies = []
       stateVector   = StateVector (self)
-      stateVector.Reset ()
 
       while increment:
-        energy    = self.CalculateMicrostateEnergy (stateVector, pH = pH)
+        energy    = stateVector.CalculateMicrostateEnergy (self, pH = pH)
         increment = stateVector.Increment ()
         stateEnergies.append (energy)
 
@@ -467,46 +477,36 @@ class MEADModel (object):
       return sites
 
 
+  #===============================================================================
   def CalculateMicrostateEnergy (self, stateVector, pH = 7.0):
     """Calculate energy of a protonation state (=microstate).
 
-    The protonation state is defined by a state vector. 
-
-    The energy is calculated at a given pH."""
+    This method works slower than its counterpart in the StateVector class and is therefore not recommended to use.
+    """
     Gmicro = None
     if self.isCalculated:
-      totalGintr    = 0.
-      totalInteract = 0.
-      nprotons      = 0
       nsites        = len (self.meadSites)
+      totalGintr    = 0.
+      totalProtons  = 0
+      totalInteract = 0.
 
-      for siteIndex in range (0, nsites):
-        site          = self.meadSites [siteIndex]
-        instanceIndex = stateVector    [siteIndex]
-        instance      = site.instances [instanceIndex]
-        Gintr         = instance.Gintr
-        cprotons      = instance.protons
-        interactions  = instance.interactions
-        totalGintr    = totalGintr + Gintr
-        nprotons      = nprotons + cprotons
+      for siteIndex in range (nsites):
+        instanceGlobalIndex = stateVector [siteIndex]
+        Gintr               = self.arrayIntrinsic [instanceGlobalIndex]
+        nprotons            = self.arrayProtons   [instanceGlobalIndex]
+        totalGintr          = totalGintr + Gintr
+        totalProtons        = totalProtons + nprotons
 
-        for siteIndexInner in range (0, siteIndex):
-          instanceIndexInner = stateVector  [siteIndexInner]
-          interaction        = interactions [siteIndexInner]
-          totalInteract      = totalInteract + interaction [instanceIndexInner]
-      Gmicro = totalGintr - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10 * pH) + totalInteract
+        for siteIndexInner in range (siteIndex):
+          instanceGlobalIndexInner = stateVector [siteIndexInner]
+          interaction   = self.arrayInteractions [instanceGlobalIndex, instanceGlobalIndexInner]
+          totalInteract = totalInteract + interaction
 
+      Gmicro = totalGintr - totalProtons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10 * pH) + totalInteract
     return Gmicro
-# Slower but more accurate?
-#        for siteIndexInner in range (0, nsites):
-#          instanceIndexInner = stateVector  [siteIndexInner]
-#          interaction        = interactions [siteIndexInner]
-#          totalInteract      = totalInteract + interaction [instanceIndexInner]
-#
-#      protonChemicalPotential = -CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10 * pH
-#      Gmicro = totalGintr - nprotons * protonChemicalPotential + 0.5 * totalInteract
 
 
+  #===============================================================================
   def CalculateElectrostaticEnergies (self, log = logFile):
     """
     Calculate for each instance of each site:
@@ -579,7 +579,7 @@ class MEADModel (object):
           # Collect times of execution
           nthreads = len (batch)
           for thread in batch: times.append (thread.time)
-         
+
           averageTimePerInstance = sum (times) / len (times) / nthreads
           ninstances = ninstances - nthreads
           secondsToCompletion = averageTimePerInstance * ninstances
@@ -596,6 +596,7 @@ class MEADModel (object):
       self.isCalculated = True
 
 
+  #===============================================================================
   def Initialize (self, system, excludeSegments = None, excludeResidues = None, log = logFile):
     """Decompose the system into model compounds, sites and a background charge set.
 
@@ -864,9 +865,25 @@ class MEADModel (object):
       # Define FPT-file
       self.sitesFpt = os.path.join (self.scratch, "site.fpt")
 
+      # Determine total number of instances
+      ninstances = 0
+      for site in self.meadSites:
+        ninstances = ninstances + len (site.instances)
+
+      # Initialize an array for storing protons
+      self.arrayProtons = Integer1DArray (ninstances)
+      for site in self.meadSites:
+        for instance in site.instances:
+            self.arrayProtons[instance.instIndexGlobal] = instance.protons
+
+      # Initialize arrays for storing intrinsic energies and interaction energies
+      self.arrayIntrinsic    = Real1DArray (ninstances)
+      self.arrayInteractions = Real2DArray (ninstances, ninstances)
+
       self.isInitialized = True
 
 
+  #===============================================================================
   def Summary (self, log = logFile):
     """Summary."""
     if LogFileActive (log):
@@ -890,6 +907,7 @@ class MEADModel (object):
       summary.Stop ()
 
 
+  #===============================================================================
   def SummarySites (self, log = logFile):
     """List titratable residues."""
     if LogFileActive (log):
@@ -913,6 +931,7 @@ class MEADModel (object):
         tab.Stop ()
 
  
+  #===============================================================================
   def SummaryProbabilities (self, reportOnlyUnusual = False, maxProbThreshold = 0.75, log = logFile):
     """List probabilities of occurance of instances."""
     unusualProtonations = {
@@ -975,6 +994,7 @@ class MEADModel (object):
         tab.Stop ()
 
 
+  #===============================================================================
   def DeleteJobFiles (self):
     """Delete job files."""
     files = []
@@ -999,6 +1019,7 @@ class MEADModel (object):
       pass
 
 
+  #===============================================================================
   def WriteJobFiles (self, system, log = logFile):
     """Write files: PQR, FPT, OGM and MGM."""
     if self.isInitialized:

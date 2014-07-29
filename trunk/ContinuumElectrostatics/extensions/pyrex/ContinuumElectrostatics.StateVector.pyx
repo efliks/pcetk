@@ -46,7 +46,7 @@ cdef class StateVector:
 
 
   def Reset (self):
-    """Set all components of the vector to zero."""
+    """Set all components of the vector to their minimum values (formerly zeros)."""
     StateVector_Reset (self.cObject)
 
 
@@ -57,14 +57,27 @@ cdef class StateVector:
 
   def __init__ (self, meadModel):
     """Constructor."""
-    nsites       = len (meadModel.meadSites)
+    nsites = len (meadModel.meadSites)
+
     self.cObject = StateVector_Allocate (nsites)
     if (self.cObject == NULL): 
       raise CLibraryError ("Memory allocation failure.")
 
     for siteIndex, site in enumerate (meadModel.meadSites):
-      ninstances = len (site.instances)
-      self.cObject.maxvector[siteIndex] = ninstances - 1
+# New-style state vector
+      indices = []
+      for instance in site.instances:
+         indices.append (instance.instIndexGlobal)
+      self.cObject.minvector[siteIndex] = min (indices)
+      self.cObject.maxvector[siteIndex] = max (indices)
+
+    # Always reset the vector after initialization
+    StateVector_Reset (self.cObject)
+
+# Old-style state vector
+#      ninstances = len (site.instances)
+#      self.cObject.minvector[siteIndex] = 0
+#      self.cObject.maxvector[siteIndex] = ninstances - 1
 
 
   def Print (self, meadModel = None, title = None, log = logFile):
@@ -90,10 +103,13 @@ cdef class StateVector:
               if selectedSiteIndex == siteIndex:
                 substate = " @"
 
-          site          = meadModel.meadSites [siteIndex]
-          instanceIndex = self.cObject.vector [siteIndex]
-          instance      = site.instances      [instanceIndex]
+          site = meadModel.meadSites [siteIndex]
+          for instanceIndex, instance in enumerate (site.instances):
+            if instance.instIndexGlobal == self.cObject.vector [siteIndex]:
+              break
+          instance = site.instances [instanceIndex]
 
+          #instanceIndex = self.cObject.vector [siteIndex]
           table.Entry (site.segName)
           table.Entry (site.resName)
           table.Entry ("%d" % site.resSerial)
@@ -132,5 +148,21 @@ cdef class StateVector:
 
 
   def ResetSubstate (self):
-    """Set all components of the substate to zero."""
+    """Set all components of the substate to their minimum values (formerly zeros)."""
     StateVector_ResetSubstate (self.cObject)
+
+
+  def CalculateMicrostateEnergy (self, meadModel, pH = 7.0):
+    """Calculate energy of a protonation state (=microstate)."""
+    cdef Integer1DArray  arrayProtons
+    cdef Real1DArray     arrayIntrinsic
+    cdef Real2DArray     arrayInteractions
+    cdef Real            Gmicro
+
+    if meadModel.isCalculated:
+      arrayProtons      = meadModel.arrayProtons
+      arrayIntrinsic    = meadModel.arrayIntrinsic
+      arrayInteractions = meadModel.arrayInteractions
+  
+      Gmicro = StateVector_CalculateMicrostateEnergy (self.cObject, arrayProtons.cObject, arrayIntrinsic.cObject, arrayInteractions.cObject, pH, meadModel.temperature)
+    return Gmicro

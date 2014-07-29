@@ -55,9 +55,7 @@ class MEADInstance (object):
                   "instID"          : None ,
                   "instIndexGlobal" : None ,
                   "label"           : None ,
-                  "protons"         : None ,
                   "charges"         : None ,
-                  "interactions"    : None ,
                   "modelPqr"        : None ,
                   "modelLog"        : None ,
                   "modelGrid"       : None ,
@@ -65,12 +63,15 @@ class MEADInstance (object):
                   "siteLog"         : None ,
                   "siteGrid"        : None ,
                   "Gmodel"          : None ,
-                  "Gintr"           : None ,
                   "Gborn_model"     : None ,
                   "Gback_model"     : None ,
                   "Gborn_protein"   : None ,
                   "Gback_protein"   : None ,
                   "probability"     : None ,
+                  \
+                  "Gintr"           : None ,
+                  "protons"         : None ,
+                  "interactions"    : None ,
                       }
 
   def __init__ (self, *arguments, **keywordArguments):
@@ -90,8 +91,6 @@ class MEADInstance (object):
       else:
         instancePqr        = self.sitePqr  [:-4]
         modelBackgroundPqr = self.modelPqr [:-4]
-  
-        model   = self.parent.parent
         command = [os.path.join (model.meadPath, "my_2diel_solver"), "-T", "%f" % model.temperature, "-ionicstr", "%f" % model.ionicStrength, "-epsin", "%f" % 4.0, instancePqr, modelBackgroundPqr]
   
         try:
@@ -100,12 +99,12 @@ class MEADInstance (object):
           outFile.close ()
         except:
           raise ContinuumElectrostaticsError ("Failed running command: %s" % " ".join (command))
-  
       reader = MEADOutputFileReader (self.modelLog)
       reader.Parse ()
-      if not hasattr (reader, "born") or not hasattr (reader, "back"):
+
+      checks = [hasattr (reader, "born"), hasattr (reader, "back")]
+      if not all (checks):
         raise ContinuumElectrostaticsError ("Output file %s empty or corrupted. Empty the scratch directory and start anew." % self.modelLog)
-  
       self.Gborn_model = reader.born
       self.Gback_model = reader.back
 
@@ -123,7 +122,6 @@ class MEADInstance (object):
       if os.path.exists (self.siteLog):
         pass
       else:
-        model = self.parent.parent
         sitesFpt             = model.sitesFpt   [:-4]
         proteinPqr           = model.proteinPqr [:-4]
         proteinBackgroundPqr = model.backPqr    [:-4]
@@ -141,21 +139,18 @@ class MEADInstance (object):
           outFile.close ()
         except:
           raise ContinuumElectrostaticsError ("Failed running command: %s" % " ".join (command))
-  
       reader = MEADOutputFileReader (self.siteLog)
       reader.Parse ()
-  
-      if not hasattr (reader, "born") or not hasattr (reader, "back") or not hasattr (reader, "interactions"):
+ 
+      checks = [hasattr (reader, "born"), hasattr (reader, "back"), hasattr (reader, "interactions")]
+      if not all (checks):
         raise ContinuumElectrostaticsError ("Output file %s empty or corrupted. Empty the scratch directory and start anew." % self.modelLog)
- 
- 
       self.Gborn_protein = reader.born
       self.Gback_protein = reader.back
 
       # Create a list of interactions
-      interactions = []
-      instances    = []
-
+      interactions    = []
+      instances       = []
       siteIndexOld    = 99999
       parentSiteIndex = self.parent.siteID - 1
 
@@ -171,15 +166,29 @@ class MEADInstance (object):
 
       if instances:
         interactions.append (instances)
+
+      # Copy the interactions to the centralized array
+      indexGlobal = 0
+      for site in interactions:
+        for instance in site:
+          energy = instance
+          model.arrayInteractions[self.instIndexGlobal, indexGlobal] = energy
+          indexGlobal = indexGlobal + 1
+
+      # This won't be needed in the future
       self.interactions = interactions
 
 
   def CalculateGintr (self, log = logFile):
     """Calculate Gintr of an instance of a site in the protein."""
-    # For checking, do not include the background energy of the model compound because sometimes it can be zero (for example in ligands)
-    check = all ((self.Gborn_protein, self.Gback_protein, self.Gborn_model))
-    if check:
+    # For checking, do not include the background energy of the model compound because it can sometimes be zero (for example in ligands)
+    checks = [self.Gborn_protein, self.Gback_protein, self.Gborn_model]
+    if all (checks):
       self.Gintr = self.Gmodel + (self.Gborn_protein - self.Gborn_model) + (self.Gback_protein - self.Gback_model)
+
+      site  = self.parent
+      model = site.parent
+      model.arrayIntrinsic[self.instIndexGlobal] = self.Gintr
 
 
   def PrintInteractions (self, sort = False, log = logFile):

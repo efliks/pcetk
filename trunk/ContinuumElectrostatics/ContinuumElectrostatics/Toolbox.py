@@ -9,10 +9,6 @@
 
 __lastchanged__ = "$Id$"
 
-from pCore          import logFile, LogFileActive
-from Error          import ContinuumElectrostaticsError
-from StateVector    import StateVector
-
 
 def FormatEntry (items, header = False):
   """Generating headers or format strings for entries in files W.dat and gintr.dat"""
