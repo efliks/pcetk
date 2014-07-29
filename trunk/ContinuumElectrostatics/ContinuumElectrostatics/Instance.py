@@ -51,8 +51,8 @@ class MEADInstance (object):
   For the time being, the instances only differ in charges. There are no rotameric instances."""
 
   defaultAttributes = {
-                  "parent"          : None , # <--This should point to the instance's site
-                  "instID"          : None ,
+                  "parent"          : None ,
+                  "instIndex"       : None ,
                   "instIndexGlobal" : None ,
                   "label"           : None ,
                   "charges"         : None ,
@@ -73,6 +73,23 @@ class MEADInstance (object):
                   "protons"         : None ,
                   "interactions"    : None ,
                       }
+
+#  @property
+#  def Gintr (self):
+#    return self.parent.parent.arrayIntrinsic[self.instIndexGlobal]
+#
+#  @Gintr.setter
+#  def Gintr (self, value):
+#    self.parent.parent.arrayIntrinsic[self.instIndexGlobal] = value
+#
+#  @property
+#  def protons (self):
+#    return self.parent.parent.arrayProtons[self.instIndexGlobal]
+#
+#  @protons.setter
+#  def protons (self, value):
+#    self.parent.parent.arrayProtons[self.instIndexGlobal] = value
+
 
   def __init__ (self, *arguments, **keywordArguments):
     """Constructor."""
@@ -152,7 +169,7 @@ class MEADInstance (object):
       interactions    = []
       instances       = []
       siteIndexOld    = 99999
-      parentSiteIndex = self.parent.siteID - 1
+      parentSiteIndex = self.parent.siteIndex
 
       for siteIndex, instanceIndex, energy in reader.interactions:
         if siteIndex > siteIndexOld:
@@ -202,8 +219,8 @@ class MEADInstance (object):
 
         for site in model.meadSites:
           for instance in site.instances:
-            s   = site.siteID     - 1
-            i   = instance.instID - 1
+            s   = site.siteIndex
+            i   = instance.instIndex
             Wij = self.interactions[s][i]
             instances.append ([Wij, site.segName, site.resName, site.resSerial, instance.label])
         if sort: 
