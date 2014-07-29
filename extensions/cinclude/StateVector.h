@@ -10,21 +10,30 @@
 
 #include "Boolean.h"
 #include "Integer.h"
+#include "Real.h"
 #include "Memory.h"
-#include "Status.h"
+#include "Integer1DArray.h"
+#include "Real1DArray.h"
+#include "Real2DArray.h"
+
 
 #define CONSTANT_MOLAR_GAS_KCAL_MOL  0.001987165392
 #define CONSTANT_LN10                2.302585092994
 
 
 typedef struct {
-  Integer *vector, *maxvector, *substate;
+  /* Global indices of instances  */
+  Integer *vector, *minvector, *maxvector, *substate;
+
+  /* Local indices of instances  */
+
   Integer length, slength;
 } StateVector;
 
 
-/*extern StateVector *StateVector_Allocate (const Integer length, Status *status);*/
 extern StateVector *StateVector_Allocate          (const Integer length);
+extern StateVector *StateVector_Clone             (const StateVector *self);
+extern void         StateVector_CopyTo            (const StateVector *self, StateVector *other);
 extern void         StateVector_Deallocate        (      StateVector *self);
 extern void         StateVector_Reset             (const StateVector *self);
 extern void         StateVector_ResetToMaximum    (const StateVector *self);
@@ -38,5 +47,8 @@ extern Boolean      StateVector_AllocateSubstate  (      StateVector *self, cons
 extern Boolean      StateVector_IncrementSubstate (const StateVector *self);
 extern Boolean      StateVector_SetSubstateItem   (const StateVector *self, const Integer selectedSiteIndex, const Integer index);
 extern Integer      StateVector_GetSubstateItem   (const StateVector *self, const Integer index);
+
+/* Calculate microstate energy */
+extern Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const Real2DArray *interactions, const Real pH, const Real temperature);
 
 #endif

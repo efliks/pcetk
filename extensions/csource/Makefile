@@ -1,4 +1,4 @@
-PDYNAMO_ROOT = /home/mikolaj/local/opt/pDynamo-1.8.0-vanilla
+PDYNAMO_ROOT = /home/mikolaj/local/opt/pDynamo-1.8.0
 
 INC1         = $(PDYNAMO_ROOT)/pCore-1.8.0/extensions/cinclude 
 INC2         = ../cinclude

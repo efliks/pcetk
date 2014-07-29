@@ -38,7 +38,11 @@ statevector = StateVector (ce_model)
 increment   = True
 
 while increment:
-  Gmicro = ce_model.CalculateMicrostateEnergy (statevector, pH = 7.0)
+  # Slow
+  #Gmicro = ce_model.CalculateMicrostateEnergy (statevector, pH = 7.0)
+
+  # Fast
+  Gmicro = statevector.CalculateMicrostateEnergy (ce_model, pH = 7.0)
   statevector.Print (ce_model, title = "Gmicro = %f" % Gmicro)
   increment = statevector.Increment ()
 
