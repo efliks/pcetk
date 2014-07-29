@@ -174,21 +174,24 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def WriteW (self, filename = "W.dat", log = logFile):
+  def WriteW (self, filename = "W.dat", precision = 3, log = logFile):
     """Write an interaction matrix compatible with GMCT."""
+    if precision < 3 or precision > 8:
+      raise ContinuumElectrostaticsError ("Wrong value for precision (%d)." % precision)
+
     if self.isCalculated:
       items = (
-         ("idSite1"  , ( 8,   0) ),
-         ("idInst1"  , ( 8,   0) ),
-         ("labSite1" , (14,  -1) ),
-         ("labInst1" , (14,  -1) ),
-         ("idSite2"  , ( 8,   0) ),
-         ("idInst2"  , ( 8,   0) ),
-         ("labSite2" , (14,  -1) ),
-         ("labInst2" , (14,  -1) ),
-         ("Wij_symm" , (16,   8) ),
-         ("Wij"      , (16,   8) ),
-         ("Wij_err"  , (16,   8) ),
+         ("idSite1"  , (            8,          0) ),
+         ("idInst1"  , (            8,          0) ),
+         ("labSite1" , (           14,         -1) ),
+         ("labInst1" , (           14,         -1) ),
+         ("idSite2"  , (            8,          0) ),
+         ("idInst2"  , (            8,          0) ),
+         ("labSite2" , (           14,         -1) ),
+         ("labInst2" , (           14,         -1) ),
+         ("Wij_symm" , (precision * 4,  precision) ),
+         ("Wij"      , (precision * 4,  precision) ),
+         ("Wij_err"  , (precision * 4,  precision) ),
               )
       header = FormatEntry (items, header = True)
       entry  = FormatEntry (items)
@@ -201,8 +204,8 @@ class MEADModel (object):
           for bindex, bsite in enumerate (self.meadSites):
             for bbindex, binstance in enumerate (bsite.instances):
 
-              wij       = ainstance.interactions [bindex] [bbindex]
-              wji       = binstance.interactions [aindex] [aaindex]
+              wij = self.arrayInteractions [ainstance.instIndexGlobal, binstance.instIndexGlobal]
+              wji = self.arrayInteractions [binstance.instIndexGlobal, ainstance.instIndexGlobal]
               symmetric = (wij + wji) * 0.5
               error     = symmetric - wij
               lines.append (entry % (aindex + 1, aaindex + 1, asite.label, ainstance.label, bindex + 1, bbindex + 1, bsite.label, binstance.label, symmetric, wij, error))
@@ -210,18 +213,21 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def WriteGintr (self, filename = "gintr.dat", log = logFile):
+  def WriteGintr (self, filename = "gintr.dat", precision = 3, log = logFile):
     """Iterate over instances and write a gintr.dat file compatible with GMCT.
 
     This file contains Gintr of each instance of each site."""
+    if precision < 3 or precision > 8:
+      raise ContinuumElectrostaticsError ("Wrong value for precision (%d)." % precision)
+
     if self.isCalculated:
       items = (
-         ("siteID"    , (12,  0) ),
-         ("instID"    , (12,  0) ),
-         ("siteLabel" , (16, -1) ),
-         ("instLabel" , (16, -1) ),
-         ("Gintr"     , (16,  8) ),
-         ("protons"   , (12,  0) ),
+         ("siteID"    , (           12,          0) ),
+         ("instID"    , (           12,          0) ),
+         ("siteLabel" , (           16,         -1) ),
+         ("instLabel" , (           16,         -1) ),
+         ("Gintr"     , (precision * 4,  precision) ),
+         ("protons"   , (           12,          0) ),
               )
       header = FormatEntry (items, header = True)
       entry  = FormatEntry (items)
@@ -229,7 +235,7 @@ class MEADModel (object):
 
       for site in self.meadSites:
         for instance in site.instances:
-          lines.append (entry % (site.siteID, instance.instID, site.label, instance.label, instance.Gintr, instance.protons))
+          lines.append (entry % (site.siteIndex + 1, instance.instIndex + 1, site.label, instance.label, instance.Gintr, instance.protons))
       WriteInputFile (filename, lines)
 
 
@@ -771,7 +777,7 @@ class MEADModel (object):
 
                   # Set the parent later
                   newInstance = MEADInstance (
-                                 instID          = instIndex + 1   ,
+                                 instIndex       = instIndex       ,
                                  instIndexGlobal = instIndexGlobal ,
                                  label           = label           ,
                                  protons         = protons         ,
@@ -811,7 +817,7 @@ class MEADModel (object):
                 # Create a site
                 newSite = MEADSite (
                                parent           = self             ,
-                               siteID           = siteIndex + 1    ,
+                               siteIndex        = siteIndex        ,
                                segName          = segmentName      ,
                                resName          = residueName      ,
                                resSerial        = residueSerial    ,
@@ -920,7 +926,7 @@ class MEADModel (object):
         tab.Heading ("Center", columnSpan = 3)
 
         for site in self.meadSites:
-          tab.Entry ("%d" % site.siteID)
+          tab.Entry ("%d" % (site.siteIndex + 1))
           tab.Entry (site.segName)
           tab.Entry (site.resName)
           tab.Entry ("%d" % site.resSerial)
@@ -961,8 +967,8 @@ class MEADModel (object):
           for instance in site.instances:
             if instance.probability > maxProb: 
               maxLabel = instance.label
+              maxIndex = instance.instIndex
               maxProb  = instance.probability
-              maxID    = instance.instID
 
           skipSite = False
           if reportOnlyUnusual:
@@ -981,7 +987,7 @@ class MEADModel (object):
             tab.Entry ("%6d" % site.resSerial)
   
             for instance in site.instances:
-              if instance.instID == maxID:
+              if instance.instIndex == maxIndex:
                 label = "*%s" % instance.label
               else:
                 label = instance.label

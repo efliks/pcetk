@@ -17,7 +17,7 @@ class MEADSite (object):
 
   defaultAttributes = {
                   "parent"           : None , # <--This should point to the MEAD model
-                  "siteID"           : None ,
+                  "siteIndex"        : None ,
                   "segName"          : None ,
                   "resName"          : None ,
                   "resSerial"        : None , # <--Keep it as integer
@@ -25,7 +25,6 @@ class MEADSite (object):
                   "center"           : None ,
                   "modelAtomIndices" : None ,
                   "siteAtomIndices"  : None ,
-                  "label"            : None ,
                       }
 
   def __init__ (self, *arguments, **keywordArguments):
@@ -33,7 +32,8 @@ class MEADSite (object):
     for (key, value) in self.__class__.defaultAttributes.iteritems (): setattr (self, key, value)
     for (key, value) in                 keywordArguments.iteritems (): setattr (self, key, value)
 
-    self.label = "%s_%s%s" % (self.segName, self.resName, self.resSerial)
+  @property
+  def label (self): return "%s_%s%s" % (self.segName, self.resName, self.resSerial)
 
 
 #===============================================================================
