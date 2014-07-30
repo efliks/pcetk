@@ -198,17 +198,17 @@ class MEADModel (object):
       lines  = [header]
 
 
-      for aindex, asite in enumerate (self.meadSites):
-        for aaindex, ainstance in enumerate (asite.instances):
+      for asite in self.meadSites:
+        for ainstance in asite.instances:
 
-          for bindex, bsite in enumerate (self.meadSites):
-            for bbindex, binstance in enumerate (bsite.instances):
+          for bsite in self.meadSites:
+            for binstance in bsite.instances:
 
               wij = self.arrayInteractions [ainstance.instIndexGlobal, binstance.instIndexGlobal]
               wji = self.arrayInteractions [binstance.instIndexGlobal, ainstance.instIndexGlobal]
               symmetric = (wij + wji) * 0.5
               error     = symmetric - wij
-              lines.append (entry % (aindex + 1, aaindex + 1, asite.label, ainstance.label, bindex + 1, bbindex + 1, bsite.label, binstance.label, symmetric, wij, error))
+              lines.append (entry % (asite.siteIndex + 1, ainstance.instIndex + 1, asite.label, ainstance.label, bsite.siteIndex + 1, binstance.instIndex + 1, bsite.label, binstance.label, symmetric, wij, error))
       WriteInputFile (filename, lines)
 
 
@@ -487,7 +487,7 @@ class MEADModel (object):
   def CalculateMicrostateEnergy (self, stateVector, pH = 7.0):
     """Calculate energy of a protonation state (=microstate).
 
-    This method works slower than its counterpart in the StateVector class and is therefore not recommended to use.
+    This method works a lot slower than its counterpart in the StateVector class and is therefore not recommended to use.
     """
     Gmicro = None
     if self.isCalculated:
