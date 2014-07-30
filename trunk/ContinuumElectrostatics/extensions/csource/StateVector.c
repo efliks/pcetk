@@ -39,6 +39,7 @@ StateVector *StateVector_Allocate (const Integer length) {
         MEMORY_DEALLOCATE (self);
       }
     }
+    StateVector_Reset (self);
   }
   return self;
 }
@@ -241,7 +242,7 @@ Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integ
 
   for (siteIndex = 0, instanceIndex = self->vector; siteIndex < self->length; siteIndex++, instanceIndex++) {
     nprotons += Integer1DArray_Item (protons, *instanceIndex);
-    Gintr    += Real1DArray_Item (intrinsic, *instanceIndex);
+    Gintr += Real1DArray_Item (intrinsic, *instanceIndex);
 
     for (siteIndexInner = 0, instanceIndexInner = self->vector; siteIndexInner < siteIndex; siteIndexInner++, instanceIndexInner++) {
       W += Real2DArray_Item (interactions, *instanceIndex, *instanceIndexInner);

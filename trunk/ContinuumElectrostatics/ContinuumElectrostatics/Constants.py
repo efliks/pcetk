@@ -12,7 +12,7 @@ __lastchanged__ = "$Id$"
 import  os
 
 
-CONSTANT_MOLAR_GAS_KCAL_MOL = 0.001987165392 # Gas constant expressed in kcal/(K*mol)
+CONSTANT_MOLAR_GAS_KCAL_MOL = 0.001987165392 # Gas constant (R) expressed in kcal/(K*mol)
 CONSTANT_LN10               = 2.302585092994
 
 # Only valid for T=300 K

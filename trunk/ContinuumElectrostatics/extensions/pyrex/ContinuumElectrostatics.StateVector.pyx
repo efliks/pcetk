@@ -58,26 +58,17 @@ cdef class StateVector:
   def __init__ (self, meadModel):
     """Constructor."""
     nsites = len (meadModel.meadSites)
-
     self.cObject = StateVector_Allocate (nsites)
+
     if (self.cObject == NULL): 
       raise CLibraryError ("Memory allocation failure.")
 
     for siteIndex, site in enumerate (meadModel.meadSites):
-# New-style state vector
       indices = []
       for instance in site.instances:
-         indices.append (instance.instIndexGlobal)
+        indices.append (instance.instIndexGlobal)
       self.cObject.minvector[siteIndex] = min (indices)
       self.cObject.maxvector[siteIndex] = max (indices)
-
-    # Always reset the vector after initialization
-    StateVector_Reset (self.cObject)
-
-# Old-style state vector
-#      ninstances = len (site.instances)
-#      self.cObject.minvector[siteIndex] = 0
-#      self.cObject.maxvector[siteIndex] = ninstances - 1
 
 
   def Print (self, meadModel = None, title = None, log = logFile):
@@ -105,11 +96,10 @@ cdef class StateVector:
 
           site = meadModel.meadSites [siteIndex]
           for instanceIndex, instance in enumerate (site.instances):
-            if instance.instIndexGlobal == self.cObject.vector [siteIndex]:
+            if instance.instIndexGlobal == self.cObject.vector[siteIndex]:
               break
-          instance = site.instances [instanceIndex]
+          instance = site.instances[instanceIndex]
 
-          #instanceIndex = self.cObject.vector [siteIndex]
           table.Entry (site.segName)
           table.Entry (site.resName)
           table.Entry ("%d" % site.resSerial)
