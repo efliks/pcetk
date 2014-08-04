@@ -68,27 +68,53 @@ class MEADInstance (object):
                   "Gborn_protein"   : None ,
                   "Gback_protein"   : None ,
                   "probability"     : None ,
-                  \
-                  "Gintr"           : None ,
-                  "protons"         : None ,
-                  "interactions"    : None ,
                       }
 
-#  @property
-#  def Gintr (self):
-#    return self.parent.parent.arrayIntrinsic[self.instIndexGlobal]
-#
-#  @Gintr.setter
-#  def Gintr (self, value):
-#    self.parent.parent.arrayIntrinsic[self.instIndexGlobal] = value
-#
-#  @property
-#  def protons (self):
-#    return self.parent.parent.arrayProtons[self.instIndexGlobal]
-#
-#  @protons.setter
-#  def protons (self, value):
-#    self.parent.parent.arrayProtons[self.instIndexGlobal] = value
+  @property
+  def Gintr (self):
+    model = self.parent.parent
+    if model._intrinsic:
+      return model._intrinsic[self.instIndexGlobal]
+    else:
+      return None
+
+  @Gintr.setter
+  def Gintr (self, value):
+    model = self.parent.parent
+    if model._intrinsic:
+      model._intrinsic[self.instIndexGlobal] = value
+    else:
+      pass
+
+  @property
+  def protons (self):
+    model = self.parent.parent
+    if model._protons:
+      return model._protons[self.instIndexGlobal]
+    else:
+      return None
+
+  @protons.setter
+  def protons (self, value):
+    model = self.parent.parent
+    if model._protons:
+      model._protons[self.instIndexGlobal] = value
+    else:
+      pass
+
+  @property
+  def interactions (self):
+    model = self.parent.parent
+    if model._interactions:
+      sites = []
+      for site in model.meadSites:
+        instances = []
+        for instance in site.instances:
+          instances.append (model._interactions[self.instIndexGlobal, instance.instIndexGlobal])
+        sites.append (instances)
+      return sites
+    else:
+      return None
 
 
   def __init__ (self, *arguments, **keywordArguments):
@@ -189,11 +215,8 @@ class MEADInstance (object):
       for site in interactions:
         for instance in site:
           energy = instance
-          model.arrayInteractions[self.instIndexGlobal, indexGlobal] = energy
+          model._interactions[self.instIndexGlobal, indexGlobal] = energy
           indexGlobal = indexGlobal + 1
-
-      # This won't be needed in the future
-      self.interactions = interactions
 
 
   def CalculateGintr (self, log = logFile):
@@ -203,26 +226,21 @@ class MEADInstance (object):
     if all (checks):
       self.Gintr = self.Gmodel + (self.Gborn_protein - self.Gborn_model) + (self.Gback_protein - self.Gback_model)
 
-      site  = self.parent
-      model = site.parent
-      model.arrayIntrinsic[self.instIndexGlobal] = self.Gintr
-
 
   def PrintInteractions (self, sort = False, log = logFile):
     """Print interactions of an instance of a site with other instances of other sites."""
     if LogFileActive (log):
-      site  = self.parent
-      model = site.parent
+      site         = self.parent
+      model        = site.parent
+      interactions = self.interactions
 
       if model.isCalculated:
         instances = []
 
         for site in model.meadSites:
           for instance in site.instances:
-            s   = site.siteIndex
-            i   = instance.instIndex
-            Wij = self.interactions[s][i]
-            instances.append ([Wij, site.segName, site.resName, site.resSerial, instance.label])
+            wij = interactions[site.siteIndex][instance.instIndex]
+            instances.append ([wij, site.segName, site.resName, site.resSerial, instance.label])
         if sort: 
           instances.sort ()
 
@@ -231,12 +249,12 @@ class MEADInstance (object):
         tab.Heading ("Instance of a site", columnSpan = 4)
         tab.Heading ("Wij")
 
-        for Wij, segName, resName, resSerial, label in instances:
+        for wij, segName, resName, resSerial, label in instances:
           tab.Entry (segName)
           tab.Entry (resName)
           tab.Entry ("%d" % resSerial)
           tab.Entry (label)
-          tab.Entry ("%16.4f" % Wij)
+          tab.Entry ("%16.4f" % wij)
         tab.Stop ()
 
 
@@ -259,7 +277,7 @@ class MEADInstance (object):
       tab.Entry ("%16.4f" % self.Gmodel)
       tab.Entry ("%16.4f" % self.Gintr)
 
-      if isinstance (secondsToCompletion, float):
+      if secondsToCompletion:
         minutes, seconds = divmod (secondsToCompletion, 60)
         hours, minutes   = divmod (minutes, 60)
         tab.Entry ("%16s" % ("%d:%02d:%02d" % (hours, minutes, seconds)))
