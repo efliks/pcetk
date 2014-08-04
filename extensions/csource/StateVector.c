@@ -39,11 +39,11 @@ StateVector *StateVector_Allocate (const Integer length) {
         MEMORY_DEALLOCATE (self);
       }
     }
-    StateVector_Reset (self);
   }
   return self;
 }
 
+/*
 StateVector *StateVector_Clone (const StateVector *self) {
   StateVector *clone = NULL;
   if (self != NULL) {
@@ -83,22 +83,7 @@ void StateVector_CopyTo (const StateVector *self, StateVector *other) {
     }
   }
 }
-
-Boolean StateVector_AllocateSubstate (StateVector *self, const Integer nsites) {
-  if (self->substate != NULL) {
-    /* Substate already allocated */
-    return False;
-  }
-  else {
-    MEMORY_ALLOCATEARRAY (self->substate, nsites, Integer);
-    if (self->substate == NULL) {
-      /* Substate allocation failed */
-      return False;
-    }
-    self->slength = nsites;
-    return True;
-  }
-}
+*/
 
 void StateVector_Deallocate (StateVector *self) {
   if (self != NULL) {
@@ -131,7 +116,40 @@ void StateVector_ResetToMaximum (const StateVector *self) {
   }
 }
 
+/*
+ Get a local index of an instance of a site, usually 0 and 1 for most sites or 0, 1, 2, 3 for histidines
+*/
 Integer StateVector_GetItem (const StateVector *self, const Integer index) {
+  if (index < 0 || index > (self->length - 1)) {
+    return -1;
+  }
+  else {
+    return (self->vector[index] - self->minvector[index]);
+  }
+}
+
+Boolean StateVector_SetItem (const StateVector *self, const Integer index, const Integer value) {
+  Integer valueActual;
+
+  if (index < 0 || index > (self->length - 1)) {
+    return False;
+  }
+  else {
+    valueActual = value + self->minvector[index];
+    if (valueActual < self->minvector[index] || valueActual > self->maxvector[index]) {
+      return False;
+    }
+    else {
+      self->vector[index] = valueActual;
+      return True;
+    }
+  }
+}
+
+/*
+ Get the actual content of the state vector, i.e. global index of an instance in the central arrays (arrayProtons, arrayIntrinsic, arrayInteractions)
+*/
+Integer StateVector_GetActualItem (const StateVector *self, const Integer index) {
   if (index < 0 || index > (self->length - 1)) {
     return -1;
   }
@@ -140,7 +158,7 @@ Integer StateVector_GetItem (const StateVector *self, const Integer index) {
   }
 }
 
-Boolean StateVector_SetItem (const StateVector *self, const Integer index, const Integer value) {
+Boolean StateVector_SetActualItem (const StateVector *self, const Integer index, const Integer value) {
   if (index < 0 || index > (self->length - 1)) {
     return False;
   }
@@ -171,6 +189,25 @@ Boolean StateVector_Increment (const StateVector *self) {
     }
   }
   return False;
+}
+
+/*-----------------------------------------------------------------------------
+  Substate-related functions
+-----------------------------------------------------------------------------*/
+Boolean StateVector_AllocateSubstate (StateVector *self, const Integer nsites) {
+  if (self->substate != NULL) {
+    /* Substate already allocated */
+    return False;
+  }
+  else {
+    MEMORY_ALLOCATEARRAY (self->substate, nsites, Integer);
+    if (self->substate == NULL) {
+      /* Substate allocation failed */
+      return False;
+    }
+    self->slength = nsites;
+    return True;
+  }
 }
 
 /*  
@@ -236,6 +273,9 @@ Boolean StateVector_IncrementSubstate (const StateVector *self) {
   }
 }
 
+/*-----------------------------------------------------------------------------
+  Calculating microstate energy
+-----------------------------------------------------------------------------*/
 Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const Real2DArray *interactions, const Real pH, const Real temperature) {
   Real Gintr = 0.0, W = 0.0;
   Integer nprotons = 0, siteIndex, siteIndexInner, *instanceIndex, *instanceIndexInner;

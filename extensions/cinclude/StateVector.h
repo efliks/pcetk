@@ -22,23 +22,23 @@
 
 
 typedef struct {
-  /* Global indices of instances  */
   Integer *vector, *minvector, *maxvector, *substate;
-
-  /* Local indices of instances  */
-
   Integer length, slength;
 } StateVector;
 
-
-extern StateVector *StateVector_Allocate          (const Integer length);
+/*
 extern StateVector *StateVector_Clone             (const StateVector *self);
 extern void         StateVector_CopyTo            (const StateVector *self, StateVector *other);
+*/
+
+extern StateVector *StateVector_Allocate          (const Integer length);
 extern void         StateVector_Deallocate        (      StateVector *self);
 extern void         StateVector_Reset             (const StateVector *self);
 extern void         StateVector_ResetToMaximum    (const StateVector *self);
 extern Integer      StateVector_GetItem           (const StateVector *self, const Integer index);
 extern Boolean      StateVector_SetItem           (const StateVector *self, const Integer index, const Integer value);
+extern Integer      StateVector_GetActualItem     (const StateVector *self, const Integer index);
+extern Boolean      StateVector_SetActualItem     (const StateVector *self, const Integer index, const Integer value);
 extern Boolean      StateVector_Increment         (const StateVector *self);
 
 /* Substate-related functions */
@@ -48,7 +48,7 @@ extern Boolean      StateVector_IncrementSubstate (const StateVector *self);
 extern Boolean      StateVector_SetSubstateItem   (const StateVector *self, const Integer selectedSiteIndex, const Integer index);
 extern Integer      StateVector_GetSubstateItem   (const StateVector *self, const Integer index);
 
-/* Calculate microstate energy */
+/* Calculating microstate energy */
 extern Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const Real2DArray *interactions, const Real pH, const Real temperature);
 
 #endif

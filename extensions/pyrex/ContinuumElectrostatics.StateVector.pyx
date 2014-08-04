@@ -33,6 +33,21 @@ cdef class StateVector:
       raise CLibraryError ("Vector index out of range or wrong value.")
 
 
+  def GetActualItem (self, index):
+    """Get an actual item."""
+    item = StateVector_GetActualItem (self.cObject, index)
+    if item < 0:
+      raise CLibraryError ("Vector index out of range.")
+    return item
+
+
+  def SetActualItem (self, index, value):
+    """Set an actual item."""
+    ok = StateVector_SetActualItem (self.cObject, index, value)
+    if not ok:
+      raise CLibraryError ("Vector index out of range or wrong value.")
+
+
   def __dealloc__ (self):
     """Deallocate."""
     StateVector_Deallocate (self.cObject)
@@ -69,6 +84,9 @@ cdef class StateVector:
         indices.append (instance.instIndexGlobal)
       self.cObject.minvector[siteIndex] = min (indices)
       self.cObject.maxvector[siteIndex] = max (indices)
+
+    # Always reset the state vector after initialization
+    StateVector_Reset (self.cObject)
 
 
   def Print (self, meadModel = None, title = None, log = logFile):
@@ -147,7 +165,7 @@ cdef class StateVector:
     cdef Integer1DArray  arrayProtons
     cdef Real1DArray     arrayIntrinsic
     cdef Real2DArray     arrayInteractions
-    cdef Real            Gmicro
+    cdef Real            Gmicro = 0.
 
     if meadModel.isCalculated:
       arrayProtons      = meadModel.arrayProtons

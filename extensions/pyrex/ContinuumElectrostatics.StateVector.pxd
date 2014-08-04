@@ -30,8 +30,10 @@ cdef extern from "StateVector.h":
   cdef void          StateVector_Deallocate        (CStateVector *self)
   cdef void          StateVector_Reset             (CStateVector *self)
   cdef void          StateVector_ResetToMaximum    (CStateVector *self)
-  cdef Boolean       StateVector_GetItem           (CStateVector *self, Integer index)
+  cdef Integer       StateVector_GetItem           (CStateVector *self, Integer index)
   cdef Boolean       StateVector_SetItem           (CStateVector *self, Integer index, Integer value)
+  cdef Integer       StateVector_GetActualItem     (CStateVector *self, Integer index)
+  cdef Boolean       StateVector_SetActualItem     (CStateVector *self, Integer index, Integer value)
   cdef Boolean       StateVector_Increment         (CStateVector *self)
 
   # Substate-related functions
@@ -41,7 +43,7 @@ cdef extern from "StateVector.h":
   cdef Boolean      StateVector_SetSubstateItem    (CStateVector *self, Integer selectedSiteIndex, Integer index)
   cdef Integer      StateVector_GetSubstateItem    (CStateVector *self, Integer index)
 
-  # Calculate microstate energy
+  # Calculating microstate energy
   cdef Real         StateVector_CalculateMicrostateEnergy (CStateVector *self, CInteger1DArray *protons, CReal1DArray *intrinsic, CReal2DArray *interactions, Real pH, Real temperature)
 
 #-------------------------------------------------------------------------------

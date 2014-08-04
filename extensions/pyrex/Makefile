@@ -1,16 +1,13 @@
-PDYNAMO_ROOT = /home/mikolaj/local/opt/pDynamo-1.8.0
-
-INC1   = $(PDYNAMO_ROOT)/pCore-1.8.0/extensions/cinclude 
-INC2   = /usr/include/python2.7
-INC3   = ../cinclude
-
-CFLAGS = -fPIC -c -I$(INC1) -I$(INC2) -I$(INC3)
-CC     = gcc
+PDYNAMO_PCORE = /home/mikolaj/local/opt/pDynamo-1.8.0/pCore-1.8.0
+PY_INCLUDE    = /usr/include/python2.7
+C_INCLUDE     = ../cinclude
+CFLAGS        = -fPIC -c -I$(PDYNAMO_PCORE)/extensions/cinclude -I$(C_INCLUDE) -I$(PY_INCLUDE)
+CC            = gcc
 
 all: pyrex compile link install
 
 pyrex:
-	python pyrex_compile.py
+	python pyrex_compile.py $(PDYNAMO_PCORE)
 
 compile: ContinuumElectrostatics.StateVector.c
 	$(CC) $(CFLAGS) ContinuumElectrostatics.StateVector.c -o ContinuumElectrostatics.StateVector.o

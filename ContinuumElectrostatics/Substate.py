@@ -60,7 +60,7 @@ class MEADSubstate (object):
       vector.ResetSubstate ()
     
       while increment:
-        Gmicro = self.model.CalculateMicrostateEnergy (vector, pH = self.pH)
+        Gmicro = vector.CalculateMicrostateEnergy (self.model, pH = self.pH)
         indicesOfInstances = []
         for siteIndex in indicesOfSites:
           indicesOfInstances.append (vector[siteIndex])

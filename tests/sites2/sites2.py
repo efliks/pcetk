@@ -35,47 +35,43 @@ ce_model.WriteGintr ()
 ce_model.WriteW ()
 
 
-#  #===========================================
-#  logFile.Text ("\n*** Calculating microstate energies of all states at pH = 7 ***\n")
-#  
-#  statevector = StateVector (ce_model)
-#  increment   = True
-#  
-#  while increment:
-#    # Slow
-#    #Gmicro = ce_model.CalculateMicrostateEnergy (statevector, pH = 7.0)
-#  
-#    # Fast
-#    Gmicro = statevector.CalculateMicrostateEnergy (ce_model, pH = 7.0)
-#    statevector.Print (ce_model, title = "Gmicro = %f" % Gmicro)
-#    increment = statevector.Increment ()
-#  
-#  
-#  #===========================================
-#  logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 analytically ***\n")
-#  
-#  ce_model.CalculateProbabilitiesAnalytically ()
-#  
-#  ce_model.SummaryProbabilities ()
-#  
-#  
-#  
-#  logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 using GMCT ***\n")
-#  
-#  ce_model.CalculateProbabilitiesGMCT ()
-#  
-#  ce_model.SummaryProbabilities ()
-#  
-#  
-#  #===========================================
-#  logFile.Text ("\n*** Calculating titration curves analytically ***\n")
-#  
-#  ce_model.CalculateCurves (isAnalytic = True, forceSerial = True, directory = "curves_analytic")
-#  
-#  
-#  logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")
-#  
-#  ce_model.CalculateCurves (directory = "curves_gmct")
+#===========================================
+logFile.Text ("\n*** Calculating microstate energies of all states at pH = 7 ***\n")
+
+statevector = StateVector (ce_model)
+increment   = True
+
+while increment:
+  Gmicro = statevector.CalculateMicrostateEnergy (ce_model, pH = 7.0)
+  statevector.Print (ce_model, title = "Gmicro = %f" % Gmicro)
+  increment = statevector.Increment ()
+
+
+#===========================================
+logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 analytically ***\n")
+
+ce_model.CalculateProbabilitiesAnalytically ()
+
+ce_model.SummaryProbabilities ()
+
+
+
+logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 using GMCT ***\n")
+
+ce_model.CalculateProbabilitiesGMCT ()
+
+ce_model.SummaryProbabilities ()
+
+
+#===========================================
+logFile.Text ("\n*** Calculating titration curves analytically ***\n")
+
+ce_model.CalculateCurves (isAnalytic = True, forceSerial = True, directory = "curves_analytic")
+
+
+logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")
+
+ce_model.CalculateCurves (directory = "curves_gmct")
 
 
 #===========================================
