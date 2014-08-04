@@ -180,18 +180,22 @@ class MEADModel (object):
       raise ContinuumElectrostaticsError ("Wrong value for precision (%d)." % precision)
 
     if self.isCalculated:
+      spacing = precision * 2
+      if spacing < 10:
+        spacing = 10
+
       items = (
-         ("idSite1"  , (            8,          0) ),
-         ("idInst1"  , (            8,          0) ),
-         ("labSite1" , (           14,         -1) ),
-         ("labInst1" , (           14,         -1) ),
-         ("idSite2"  , (            8,          0) ),
-         ("idInst2"  , (            8,          0) ),
-         ("labSite2" , (           14,         -1) ),
-         ("labInst2" , (           14,         -1) ),
-         ("Wij_symm" , (precision * 4,  precision) ),
-         ("Wij"      , (precision * 4,  precision) ),
-         ("Wij_err"  , (precision * 4,  precision) ),
+         ("idSite1"  , (      8,          0) ),
+         ("idInst1"  , (      8,          0) ),
+         ("labSite1" , (     14,         -1) ),
+         ("labInst1" , (     14,         -1) ),
+         ("idSite2"  , (      8,          0) ),
+         ("idInst2"  , (      8,          0) ),
+         ("labSite2" , (     14,         -1) ),
+         ("labInst2" , (     14,         -1) ),
+         ("Wij_symm" , (spacing,  precision) ),
+         ("Wij"      , (spacing,  precision) ),
+         ("Wij_err"  , (spacing,  precision) ),
               )
       header = FormatEntry (items, header = True)
       entry  = FormatEntry (items)
@@ -221,13 +225,16 @@ class MEADModel (object):
       raise ContinuumElectrostaticsError ("Wrong value for precision (%d)." % precision)
 
     if self.isCalculated:
+      spacing = precision * 2
+      if spacing < 10:
+        spacing = 10
       items = (
-         ("siteID"    , (           12,          0) ),
-         ("instID"    , (           12,          0) ),
-         ("siteLabel" , (           16,         -1) ),
-         ("instLabel" , (           16,         -1) ),
-         ("Gintr"     , (precision * 4,  precision) ),
-         ("protons"   , (           12,          0) ),
+         ("siteID"    , (     12,          0) ),
+         ("instID"    , (     12,          0) ),
+         ("siteLabel" , (     16,         -1) ),
+         ("instLabel" , (     16,         -1) ),
+         ("Gintr"     , (spacing,  precision) ),
+         ("protons"   , (     12,          0) ),
               )
       header = FormatEntry (items, header = True)
       entry  = FormatEntry (items)
@@ -347,10 +354,10 @@ class MEADModel (object):
       if not os.path.exists (dirCalc): os.makedirs (dirCalc)
 
       fileGint = os.path.join (dirConf, "%s.gint" % project)
-      if not os.path.exists (fileGint): self.WriteGintr (fileGint)
+      if not os.path.exists (fileGint): self.WriteGintr (fileGint, precision = 8)
 
       fileInter = os.path.join (dirConf, "%s.inter" % project)
-      if not os.path.exists (fileInter): self.WriteW (fileInter)
+      if not os.path.exists (fileInter): self.WriteW (fileInter, precision = 8)
 
       fileConf = os.path.join (dirCalc, "%s.conf" % project)
       if not os.path.exists (fileConf): WriteInputFile (fileConf, ["conf  0.0  0.0  0.0\n"])
@@ -481,35 +488,6 @@ class MEADModel (object):
 
       # Return the two-dimensional list (useful for calculating titration curves)
       return sites
-
-
-  #===============================================================================
-  def CalculateMicrostateEnergy (self, stateVector, pH = 7.0):
-    """Calculate energy of a protonation state (=microstate).
-
-    This method works a lot slower than its counterpart in the StateVector class and is therefore not recommended to use.
-    """
-    Gmicro = None
-    if self.isCalculated:
-      nsites        = len (self.meadSites)
-      totalGintr    = 0.
-      totalProtons  = 0
-      totalInteract = 0.
-
-      for siteIndex in range (nsites):
-        instanceGlobalIndex = stateVector [siteIndex]
-        Gintr               = self.arrayIntrinsic [instanceGlobalIndex]
-        nprotons            = self.arrayProtons   [instanceGlobalIndex]
-        totalGintr          = totalGintr + Gintr
-        totalProtons        = totalProtons + nprotons
-
-        for siteIndexInner in range (siteIndex):
-          instanceGlobalIndexInner = stateVector [siteIndexInner]
-          interaction   = self.arrayInteractions [instanceGlobalIndex, instanceGlobalIndexInner]
-          totalInteract = totalInteract + interaction
-
-      Gmicro = totalGintr - totalProtons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10 * pH) + totalInteract
-    return Gmicro
 
 
   #===============================================================================

@@ -2,15 +2,20 @@
 
 import Cython.Compiler.Main as main
 
-import os, glob
+import os, glob, sys
 
 
-pdynamo_pcore      =  os.getenv ("PDYNAMO_PCORE")
-current_directory  =  os.getcwd ()
+# If getenv does not work, set the pCore directory manually, for example:
+# pdynamo_pcore = "/home/mikolaj/local/opt/pDynamo-1.8.0/pCore-1.8.0"
+if len (sys.argv) < 2:
+  pdynamo_pcore = os.getenv ("PDYNAMO_PCORE")
+else:
+  pdynamo_pcore = sys.argv[1]
 
-pxd_directories = [current_directory, os.path.join (pdynamo_pcore, "extensions/pyrex")]
+current_directory  = os.getcwd ()
+pxd_directories    = [current_directory, os.path.join (pdynamo_pcore, "extensions/pyrex")]
 
-# Compile all files in pyrex directory
+# Compile all files in the pyrex directory
 sources = glob.glob (os.path.join (current_directory, "*.pyx"))
 
 for source in sources:

@@ -146,7 +146,7 @@ to have:
   \setlength{\itemsep}{2pt}
   \item pDynamo 1.8.0
   \item Python 2.7
-  \item Pyrex 0.9.8.5 (optionally, for recompiling Pyrex sources)
+  \item Cython 0.15.1 (optionally, for recompiling Pyrex sources)
   \item GCC (any version should be fine)
   \item Extended MEAD 2.3.0
   \item GMCT 1.2.3
@@ -174,30 +174,28 @@ svn checkout http://pdynamo-extensions.googlecode.com/svn/trunk/ContinuumElectro
 \end{lstlisting} }
 
 \bigskip
-Some parts of the module implementing the state vector are written in C and
-therefore have to be compiled before use. 
-%
-In the future, I plan to shift some more parts of the module from Python to C.
+Some parts of the module implementing the state vector and the calculation of the microstate energy
+are written in C and therefore have to be compiled before use. 
 
 \bigskip
 Start from going to the directory \texttt{extensions/csource/}.
 %
-Change the uppermost line in the \texttt{Makefile}. 
+Change the uppermost line in the \texttt{Makefile}, starting from "PDYNAMO\_PCORE".
 %
-This line defines the directory where you have installed pDynamo. 
+This line defines the location of the pCore module of your pDynamo installation.
 %
-After editing, close the file and run "make" to compile the C object file.
+After editing, close the file and run "make" to generate an object file.
 
 \bigskip
 Go to the directory \texttt{extensions/pyrex/}.
 %
-In the \texttt{Makefile}, change the line starting from \makebox{"PDYNAMO\_ROOT"}
-to the location of your pDynamo installation.
+Adjust the line starting from \makebox{"PDYNAMO\_PCORE"} in the \texttt{Makefile}.
 %
 After closing the file, run "make".
 %
-It should generate a dynamically linked library, \texttt{StateVector.so}, in 
-the directory \texttt{Continuum\-Electrostatics/}.
+It should generate library \texttt{StateVector.so} in the directory \texttt{Continuum\-Electrostatics/}.
+%
+In case of problems, it may be necessary to manually specify the location of the pCore module in the {\texttt{pyrex\_compile.py} script.
 
 \bigskip
 At this point, the installation is complete.
@@ -442,7 +440,7 @@ their respective microstate energies:
 statevector = StateVector (ce_model)
 increment   = True
 while increment:
-  Gmicro = ce_model.CalculateMicrostateEnergy (statevector, pH = 7.0)
+  Gmicro = vector.CalculateMicrostateEnergy (ce_model, pH = 7.0)
   statevector.Print (ce_model, title = "Gmicro = %f" % Gmicro)
   increment = statevector.Increment ()
 \end{lstlisting} }
@@ -556,7 +554,7 @@ The microstate energy ($G_{\mathrm{micro}}$) in the lowest energy protonation st
 be calculated in the following way:
 
 {\footnotesize \begin{lstlisting}
-Gmicro = ce_model.CalculateMicrostateEnergy (vector)
+Gmicro = vector.CalculateMicrostateEnergy (ce_model)
 \end{lstlisting} }
 
 \bigskip
@@ -698,8 +696,6 @@ parameters of the existing sites will be overwritten.
   \item Optionally convert kcal/mol (MEAD units) to kJ/mol (pDynamo units)
   \item Improve the efficiency of writing job files
   \item Make use of the \texttt{pqr2SolvAccVol} program to speed up calculations 
-  \item Use arrays instead of lists for storing interactions
-  \item Move the method for calculating $G_{\mathrm{micro}}$ from Python to C
 \end{itemize}
 
 \linespread{1.6}
