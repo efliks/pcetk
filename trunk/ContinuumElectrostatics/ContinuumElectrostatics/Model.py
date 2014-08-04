@@ -105,9 +105,9 @@ class MEADModel (object):
     "isFilesWritten"     :  False                   ,
     "isCalculated"       :  False                   ,
     "isProbability"      :  False                   ,
-    "arrayProtons"       :  None                    ,
-    "arrayIntrinsic"     :  None                    ,
-    "arrayInteractions"  :  None                    ,
+    "_protons"           :  None                    ,
+    "_intrinsic"         :  None                    ,
+    "_interactions"      :  None                    ,
         }
 
   defaultAttributeNames = {
@@ -208,8 +208,8 @@ class MEADModel (object):
           for bsite in self.meadSites:
             for binstance in bsite.instances:
 
-              wij = self.arrayInteractions [ainstance.instIndexGlobal, binstance.instIndexGlobal]
-              wji = self.arrayInteractions [binstance.instIndexGlobal, ainstance.instIndexGlobal]
+              wij = self._interactions [ainstance.instIndexGlobal, binstance.instIndexGlobal]
+              wji = self._interactions [binstance.instIndexGlobal, ainstance.instIndexGlobal]
               symmetric = (wij + wji) * 0.5
               error     = symmetric - wij
               lines.append (entry % (asite.siteIndex + 1, ainstance.instIndex + 1, asite.label, ainstance.label, bsite.siteIndex + 1, binstance.instIndex + 1, bsite.label, binstance.label, symmetric, wij, error))
@@ -598,10 +598,12 @@ class MEADModel (object):
       ParseLabel = system.sequence.ParseLabel
       segments   = system.sequence.children
 
-      # instIndexGlobal becomes useful after the interactions are centralized in a common matrix
       instIndexGlobal = 0
       siteIndex       = 0
       self.meadSites  = []
+
+      # A temporary list of protons is needed because the central array of protons is initialized only after the initialization of all instances
+      protons         = []
 
       if excludeSegments is None:
         excludeSegments = ["WATA", "WATB", "WATC", "WATD", ]
@@ -733,10 +735,10 @@ class MEADModel (object):
                 instances        = []
   
                 for instIndex, instance in enumerate (libSiteInstances):
-                  label    = instance [ "label"   ]
-                  protons  = instance [ "protons" ]
+                  nprotons = instance [ "protons" ]
                   charges  = instance [ "charges" ]
                   Gmodel   = instance [ "Gmodel"  ] * self.temperature / 300.
+                  label    = instance [ "label"   ]
 
                   if self.splitToDirectories:
                     modelPqr  = os.path.join (self.scratch, segmentName, "%s%d" % (residueName, residueSerial), "%s_%s.%s" % ("model", label, "pqr"))
@@ -753,12 +755,14 @@ class MEADModel (object):
                     siteLog   = os.path.join (self.scratch, "%s_%s_%s_%d_%s.%s" % ("site",  segmentName, residueName, residueSerial, label, "out"))
                     siteGrid  = os.path.join (self.scratch, "%s_%s_%s_%d_%s.%s" % ("site",  segmentName, residueName, residueSerial, label, "ogm"))
 
-                  # Set the parent later
+                  # Remember the number of protons of the current instance
+                  protons.append (nprotons)
+
+                  # To be set later: parent, protons
                   newInstance = MEADInstance (
                                  instIndex       = instIndex       ,
                                  instIndexGlobal = instIndexGlobal ,
                                  label           = label           ,
-                                 protons         = protons         ,
                                  charges         = charges         ,
                                  Gmodel          = Gmodel          ,
                                  modelPqr        = modelPqr        ,
@@ -849,20 +853,22 @@ class MEADModel (object):
       # Define FPT-file
       self.sitesFpt = os.path.join (self.scratch, "site.fpt")
 
-      # Determine total number of instances
+
+      # Determine total number of instances (or: len (protons))
       ninstances = 0
       for site in self.meadSites:
         ninstances = ninstances + len (site.instances)
 
-      # Initialize an array for storing protons
-      self.arrayProtons = Integer1DArray (ninstances)
+      # Initialize an array of protons
+      self._protons = Integer1DArray (ninstances)
       for site in self.meadSites:
         for instance in site.instances:
-            self.arrayProtons[instance.instIndexGlobal] = instance.protons
+            self._protons[instance.instIndexGlobal] = protons[instance.instIndexGlobal]
+            # Or: instance.protons = protons[instance.instIndexGlobal]
 
-      # Initialize arrays for storing intrinsic energies and interaction energies
-      self.arrayIntrinsic    = Real1DArray (ninstances)
-      self.arrayInteractions = Real2DArray (ninstances, ninstances)
+      # Initialize arrays of intrinsic energies and interaction energies
+      self._intrinsic    = Real1DArray (ninstances)
+      self._interactions = Real2DArray (ninstances, ninstances)
 
       self.isInitialized = True
 

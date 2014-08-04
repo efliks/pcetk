@@ -117,7 +117,7 @@ void StateVector_ResetToMaximum (const StateVector *self) {
 }
 
 /*
- Get a local index of an instance of a site, usually 0 and 1 for most sites or 0, 1, 2, 3 for histidines
+ Get the local index of an instance of a site, usually 0 and 1 for most sites or 0, 1, 2, 3 for histidines
 */
 Integer StateVector_GetItem (const StateVector *self, const Integer index) {
   if (index < 0 || index > (self->length - 1)) {
@@ -147,7 +147,7 @@ Boolean StateVector_SetItem (const StateVector *self, const Integer index, const
 }
 
 /*
- Get the actual content of the state vector, i.e. global index of an instance in the central arrays (arrayProtons, arrayIntrinsic, arrayInteractions)
+ Get the actual content of the state vector, i.e. global index of an instance in the central arrays (_protons, _intrinsic, _interactions)
 */
 Integer StateVector_GetActualItem (const StateVector *self, const Integer index) {
   if (index < 0 || index > (self->length - 1)) {

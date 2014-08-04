@@ -162,15 +162,15 @@ cdef class StateVector:
 
   def CalculateMicrostateEnergy (self, meadModel, pH = 7.0):
     """Calculate energy of a protonation state (=microstate)."""
-    cdef Integer1DArray  arrayProtons
-    cdef Real1DArray     arrayIntrinsic
-    cdef Real2DArray     arrayInteractions
+    cdef Integer1DArray  protons
+    cdef Real1DArray     intrinsic
+    cdef Real2DArray     interactions
     cdef Real            Gmicro = 0.
 
     if meadModel.isCalculated:
-      arrayProtons      = meadModel.arrayProtons
-      arrayIntrinsic    = meadModel.arrayIntrinsic
-      arrayInteractions = meadModel.arrayInteractions
+      protons      = meadModel._protons
+      intrinsic    = meadModel._intrinsic
+      interactions = meadModel._interactions
   
-      Gmicro = StateVector_CalculateMicrostateEnergy (self.cObject, arrayProtons.cObject, arrayIntrinsic.cObject, arrayInteractions.cObject, pH, meadModel.temperature)
+      Gmicro = StateVector_CalculateMicrostateEnergy (self.cObject, protons.cObject, intrinsic.cObject, interactions.cObject, pH, meadModel.temperature)
     return Gmicro
