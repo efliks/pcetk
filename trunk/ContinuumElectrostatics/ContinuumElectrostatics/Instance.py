@@ -277,7 +277,7 @@ class MEADInstance (object):
       tab.Entry ("%16.4f" % self.Gmodel)
       tab.Entry ("%16.4f" % self.Gintr)
 
-      if secondsToCompletion:
+      if isinstance (secondsToCompletion, float):
         minutes, seconds = divmod (secondsToCompletion, 60)
         hours, minutes   = divmod (minutes, 60)
         tab.Entry ("%16s" % ("%d:%02d:%02d" % (hours, minutes, seconds)))
