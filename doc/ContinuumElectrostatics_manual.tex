@@ -193,9 +193,9 @@ Adjust the line starting from \makebox{"PDYNAMO\_PCORE"} in the \texttt{Makefile
 %
 After closing the file, run "make".
 %
-It should generate library \texttt{StateVector.so} in the directory \texttt{Continuum\-Electrostatics/}.
+If you also want to recompile the Pyrex sources, run "make all" instead.
 %
-In case of problems, it may be necessary to manually specify the location of the pCore module in the {\texttt{pyrex\_compile.py} script.
+In case the Pyrex compilation fails, it may be necessary to manually specify the location of the pCore module in the {\texttt{pyrex\_compile.py} script.
 
 \bigskip
 At this point, the installation is complete.
@@ -546,7 +546,7 @@ From the calculated protonation probabilities, one can generate a state vector d
 the lowest energy protonation state:
 
 {\footnotesize \begin{lstlisting}
-vector = StateVector_FromProbabilities (ce_model)
+vector_lowest = StateVector_FromProbabilities (ce_model)
 \end{lstlisting} }
 
 \bigskip
@@ -554,7 +554,7 @@ The microstate energy ($G_{\mathrm{micro}}$) in the lowest energy protonation st
 be calculated in the following way:
 
 {\footnotesize \begin{lstlisting}
-Gmicro = vector.CalculateMicrostateEnergy (ce_model)
+Gmicro = vector_lowest.CalculateMicrostateEnergy (ce_model)
 \end{lstlisting} }
 
 \bigskip

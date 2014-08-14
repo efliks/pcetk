@@ -4,7 +4,12 @@ C_INCLUDE     = ../cinclude
 CFLAGS        = -fPIC -c -I$(PDYNAMO_PCORE)/extensions/cinclude -I$(C_INCLUDE) -I$(PY_INCLUDE)
 CC            = gcc
 
+
+default: compile link install
+	@echo "\n*** Use 'make all' if you want to recompile Pyrex sources ***\n"
+
 all: pyrex compile link install
+
 
 pyrex:
 	python pyrex_compile.py $(PDYNAMO_PCORE)
