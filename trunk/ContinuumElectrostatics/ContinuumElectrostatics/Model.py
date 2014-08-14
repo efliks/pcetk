@@ -185,17 +185,17 @@ class MEADModel (object):
         spacing = 10
 
       items = (
-         ("idSite1"  , (      8,          0) ),
-         ("idInst1"  , (      8,          0) ),
-         ("labSite1" , (     14,         -1) ),
-         ("labInst1" , (     14,         -1) ),
-         ("idSite2"  , (      8,          0) ),
-         ("idInst2"  , (      8,          0) ),
-         ("labSite2" , (     14,         -1) ),
-         ("labInst2" , (     14,         -1) ),
-         ("Wij_symm" , (spacing,  precision) ),
-         ("Wij"      , (spacing,  precision) ),
-         ("Wij_err"  , (spacing,  precision) ),
+         ( "idSite1"  , (      8,          0) ),
+         ( "idInst1"  , (      8,          0) ),
+         ( "labSite1" , (     14,         -1) ),
+         ( "labInst1" , (     14,         -1) ),
+         ( "idSite2"  , (      8,          0) ),
+         ( "idInst2"  , (      8,          0) ),
+         ( "labSite2" , (     14,         -1) ),
+         ( "labInst2" , (     14,         -1) ),
+         ( "Wij_symm" , (spacing,  precision) ),
+         ( "Wij"      , (spacing,  precision) ),
+         ( "Wij_err"  , (spacing,  precision) ),
               )
       header = FormatEntry (items, header = True)
       entry  = FormatEntry (items)
@@ -229,12 +229,12 @@ class MEADModel (object):
       if spacing < 10:
         spacing = 10
       items = (
-         ("siteID"    , (     12,          0) ),
-         ("instID"    , (     12,          0) ),
-         ("siteLabel" , (     16,         -1) ),
-         ("instLabel" , (     16,         -1) ),
-         ("Gintr"     , (spacing,  precision) ),
-         ("protons"   , (     12,          0) ),
+         ( "siteID"    , (     12,          0) ),
+         ( "instID"    , (     12,          0) ),
+         ( "siteLabel" , (     16,         -1) ),
+         ( "instLabel" , (     16,         -1) ),
+         ( "Gintr"     , (spacing,  precision) ),
+         ( "protons"   , (     12,          0) ),
               )
       header = FormatEntry (items, header = True)
       entry  = FormatEntry (items)
@@ -904,20 +904,24 @@ class MEADModel (object):
       if self.isInitialized:
         tab = log.GetTable (columns = [8, 8, 8, 8, 10, 10, 10, 10])
         tab.Start ()
-        tab.Heading ("SiteID")
-        tab.Heading ("Site", columnSpan = 3)
-        tab.Heading ("Instances")
-        tab.Heading ("Center", columnSpan = 3)
+        tab.Heading ("SiteID"),
+        tab.Heading ("Site", columnSpan = 3),
+        tab.Heading ("Instances"),
+        tab.Heading ("Center", columnSpan = 3),
 
         for site in self.meadSites:
-          tab.Entry ("%d" % (site.siteIndex + 1))
-          tab.Entry (site.segName)
-          tab.Entry (site.resName)
-          tab.Entry ("%d" % site.resSerial)
-          tab.Entry ("%d" % len (site.instances))
-          tab.Entry ("%10.3f" % site.center[0])
-          tab.Entry ("%10.3f" % site.center[1])
-          tab.Entry ("%10.3f" % site.center[2])
+          entries = (
+              ( "%d"      %  (site.siteIndex + 1) ),
+              ( "%s"      %  site.segName         ),
+              ( "%s"      %  site.resName         ),
+              ( "%d"      %  site.resSerial       ),
+              ( "%d"      %  len (site.instances) ),
+              ( "%10.3f"  %  site.center[0]       ),
+              ( "%10.3f"  %  site.center[1]       ),
+              ( "%10.3f"  %  site.center[2]       ),
+                    )
+          for entry in entries:
+            tab.Entry (entry)
         tab.Stop ()
 
  

@@ -250,11 +250,15 @@ class MEADInstance (object):
         tab.Heading ("Wij")
 
         for wij, segName, resName, resSerial, label in instances:
-          tab.Entry (segName)
-          tab.Entry (resName)
-          tab.Entry ("%d" % resSerial)
-          tab.Entry (label)
-          tab.Entry ("%16.4f" % wij)
+          entries = (
+               ( "%s"     % segName   ),
+               ( "%s"     % resName   ),
+               ( "%d"     % resSerial ),
+               ( "%s"     % label     ),
+               ( "%16.4f" % wij       ),
+                    )
+          for entry in entries:
+            tab.Entry (entry)
         tab.Stop ()
 
 
@@ -266,16 +270,20 @@ class MEADInstance (object):
     ETA has to be calculated outside of this method."""
     if tab:
       site = self.parent
-      tab.Entry (site.segName)
-      tab.Entry (site.resName)
-      tab.Entry ("%d" % site.resSerial)
-      tab.Entry (self.label)
-      tab.Entry ("%16.4f" % self.Gborn_model)
-      tab.Entry ("%16.4f" % self.Gback_model)
-      tab.Entry ("%16.4f" % self.Gborn_protein)
-      tab.Entry ("%16.4f" % self.Gback_protein)
-      tab.Entry ("%16.4f" % self.Gmodel)
-      tab.Entry ("%16.4f" % self.Gintr)
+      entries = (
+            ( "%s"     % site.segName       ),
+            ( "%s"     % site.resName       ),
+            ( "%d"     % site.resSerial     ),
+            ( "%s"     % self.label         ),
+            ( "%16.4f" % self.Gborn_model   ),
+            ( "%16.4f" % self.Gback_model   ),
+            ( "%16.4f" % self.Gborn_protein ),
+            ( "%16.4f" % self.Gback_protein ),
+            ( "%16.4f" % self.Gmodel        ),
+            ( "%16.4f" % self.Gintr         ),
+                )
+      for entry in entries:
+        tab.Entry (entry)
 
       if isinstance (secondsToCompletion, float):
         minutes, seconds = divmod (secondsToCompletion, 60)
