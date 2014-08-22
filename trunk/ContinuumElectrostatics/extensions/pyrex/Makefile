@@ -1,20 +1,19 @@
 PDYNAMO_PCORE = /home/mikolaj/local/opt/pDynamo-1.8.0/pCore-1.8.0
 PY_INCLUDE    = /usr/include/python2.7
-C_INCLUDE     = ../cinclude
-CFLAGS        = -fPIC -c -I$(PDYNAMO_PCORE)/extensions/cinclude -I$(C_INCLUDE) -I$(PY_INCLUDE)
+CFLAGS        = -fPIC -c -I$(PDYNAMO_PCORE)/extensions/cinclude -I$(PY_INCLUDE) -I../cinclude 
 CC            = gcc
 
 
-default: compile link install
+default: compile link
 	@echo "\n*** Use 'make all' if you want to recompile Pyrex sources ***\n"
 
-all: pyrex compile link install
+all: pyrex compile link
 
 
-pyrex:
+pyrex: ContinuumElectrostatics.StateVector.pyx ContinuumElectrostatics.StateVector.pxd
 	python pyrex_compile.py $(PDYNAMO_PCORE)
 
-compile: ContinuumElectrostatics.StateVector.c
+compile: ContinuumElectrostatics.StateVector.c ../cinclude/StateVector.h
 	$(CC) $(CFLAGS) ContinuumElectrostatics.StateVector.c -o ContinuumElectrostatics.StateVector.o
 
 link: ContinuumElectrostatics.StateVector.o ../csource/StateVector.o
@@ -24,4 +23,4 @@ install: StateVector.so
 	mv StateVector.so ../../ContinuumElectrostatics/
 
 clean:
-	rm ContinuumElectrostatics.StateVector.c ContinuumElectrostatics.StateVector.o
+	rm ContinuumElectrostatics.StateVector.o
