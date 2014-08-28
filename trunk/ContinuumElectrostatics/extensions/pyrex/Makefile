@@ -4,23 +4,24 @@ CFLAGS        = -fPIC -c -I$(PDYNAMO_PCORE)/extensions/cinclude -I$(PY_INCLUDE) 
 CC            = gcc
 
 
-default: compile link
-	@echo "\n*** Use 'make all' if you want to recompile Pyrex sources ***\n"
+default: StateVector.so
+	@echo "\n*** Use 'make clean_all' and then 'make' if you want to recompile Pyrex sources ***\n"
 
-all: pyrex compile link
+StateVector.so: ../csource/StateVector.o ContinuumElectrostatics.StateVector.o
+	$(CC) -shared ContinuumElectrostatics.StateVector.o ../csource/StateVector.o -o StateVector.so
 
-
-pyrex: ContinuumElectrostatics.StateVector.pyx ContinuumElectrostatics.StateVector.pxd
-	python pyrex_compile.py $(PDYNAMO_PCORE)
-
-compile: ContinuumElectrostatics.StateVector.c ../cinclude/StateVector.h
+ContinuumElectrostatics.StateVector.o: ContinuumElectrostatics.StateVector.c
 	$(CC) $(CFLAGS) ContinuumElectrostatics.StateVector.c -o ContinuumElectrostatics.StateVector.o
 
-link: ContinuumElectrostatics.StateVector.o ../csource/StateVector.o
-	$(CC) -shared ContinuumElectrostatics.StateVector.o ../csource/StateVector.o -o StateVector.so
+ContinuumElectrostatics.StateVector.c: ContinuumElectrostatics.StateVector.pyx ContinuumElectrostatics.StateVector.pxd
+	python pyrex_compile.py $(PDYNAMO_PCORE)
 
 install: StateVector.so
 	mv StateVector.so ../../ContinuumElectrostatics/
 
 clean:
-	rm ContinuumElectrostatics.StateVector.o
+	if [ -e ContinuumElectrostatics.StateVector.o ]; then rm ContinuumElectrostatics.StateVector.o ; fi
+
+clean_all:
+	if [ -e ContinuumElectrostatics.StateVector.o ]; then rm ContinuumElectrostatics.StateVector.o ; fi
+	if [ -e ContinuumElectrostatics.StateVector.c ]; then rm ContinuumElectrostatics.StateVector.c ; fi
