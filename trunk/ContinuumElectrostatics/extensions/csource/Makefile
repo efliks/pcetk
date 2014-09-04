@@ -1,4 +1,4 @@
-# PDYNAMO_PCORE comes from the Makefile in the pyrex directory
+# PDYNAMO_PCORE comes from the Makefile in the cython directory
 
 CFLAGS        = -fPIC -c -W -Wall -pedantic -I$(PDYNAMO_PCORE)/extensions/cinclude -I../cinclude
 CC            = gcc
