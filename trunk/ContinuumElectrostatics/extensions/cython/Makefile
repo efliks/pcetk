@@ -7,6 +7,9 @@ CC            = gcc
 default: StateVector.so
 	@echo "\n*** Use 'make clean_all' and then 'make' if you want to recompile Pyrex sources ***\n"
 
+../csource/StateVector.o:
+	+$(MAKE) -C ../csource
+
 StateVector.so: ../csource/StateVector.o ContinuumElectrostatics.StateVector.o
 	$(CC) -shared ContinuumElectrostatics.StateVector.o ../csource/StateVector.o -o StateVector.so
 
@@ -21,7 +24,8 @@ install: StateVector.so
 
 clean:
 	if [ -e ContinuumElectrostatics.StateVector.o ]; then rm ContinuumElectrostatics.StateVector.o ; fi
+	if [ -e StateVector.so                        ]; then rm StateVector.so                        ; fi
+	+$(MAKE) -C ../csource clean
 
-clean_all:
-	if [ -e ContinuumElectrostatics.StateVector.o ]; then rm ContinuumElectrostatics.StateVector.o ; fi
+clean_all: clean
 	if [ -e ContinuumElectrostatics.StateVector.c ]; then rm ContinuumElectrostatics.StateVector.c ; fi

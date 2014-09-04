@@ -1,12 +1,10 @@
-PDYNAMO_PCORE = /home/mikolaj/local/opt/pDynamo-1.8.0/pCore-1.8.0
+# PDYNAMO_PCORE comes from the Makefile in the pyrex directory
+
 CFLAGS        = -fPIC -c -W -Wall -pedantic -I$(PDYNAMO_PCORE)/extensions/cinclude -I../cinclude
 CC            = gcc
-
-all: StateVector.o
-	@echo "*** C library generated ***"
 
 StateVector.o: StateVector.c ../cinclude/StateVector.h
 	$(CC) $(CFLAGS) StateVector.c -o StateVector.o
 
 clean:
-	rm StateVector.o
+	if [ -e StateVector.o ] ; then rm StateVector.o ; fi

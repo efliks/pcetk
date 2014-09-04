@@ -146,7 +146,7 @@ to have:
   \setlength{\itemsep}{2pt}
   \item pDynamo 1.8.0
   \item Python 2.7
-  \item Cython 0.15.1 (optionally, for recompiling Pyrex sources)
+  \item Cython 0.15.1 (optionally, for recompiling Cython sources)
   \item GCC (any version should be fine)
   \item Extended MEAD 2.3.0
   \item GMCT 1.2.3
@@ -178,24 +178,17 @@ Some parts of the module implementing the state vector and the calculation of th
 are written in C and therefore have to be compiled before use. 
 
 \bigskip
-Start from going to the directory \texttt{extensions/csource/}.
+Go to the directory \texttt{extensions/cython/}.
 %
-Change the uppermost line in the \texttt{Makefile}, starting from "PDYNAMO\_PCORE".
+In the \texttt{Makefile}, edit the first line starting from \makebox{"PDYNAMO\_PCORE"}.
 %
-This line defines the location of the pCore module of your pDynamo installation.
-%
-After editing, close the file and run "make" to generate an object file.
-
-\bigskip
-Go to the directory \texttt{extensions/pyrex/}.
-%
-Adjust the line starting from \makebox{"PDYNAMO\_PCORE"} in the \texttt{Makefile}.
+It should define the location of the pCore module of the present pDynamo installation.
 %
 After closing the file, run "make".
 %
-If you also want to recompile the Pyrex sources, precede "make" by running "make clean\_all". 
+If you also want to recompile the Cython sources, precede "make" by running "make clean\_all". 
 %
-In case the Pyrex compilation fails, it may be necessary to manually specify the location of the pCore module in the {\texttt{pyrex\_compile.py} script.
+In case the Cython compilation fails, it may be necessary to manually specify the location of the pCore module in the {\texttt{cython\_compile.py} script.
 %
 Finally, run "make install" to install the compiled library.
 
@@ -212,7 +205,7 @@ This can be done in the following way (in Bash):
 
 \newpage
 {\footnotesize \begin{lstlisting}
-export PDYNAMO_CONTINUUMELECTROSTATICS=/home/mikolaj/devel/ContinuumElectrostatics
+export \ PDYNAMO_CONTINUUMELECTROSTATICS=/home/mikolaj/devel/ContinuumElectrostatics
 export PYTHONPATH=$PYTHONPATH:$PDYNAMO_CONTINUUMELECTROSTATICS
 \end{lstlisting} }
 
