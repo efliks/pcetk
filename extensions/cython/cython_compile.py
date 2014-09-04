@@ -15,7 +15,7 @@ else:
 current_directory  = os.getcwd ()
 pxd_directories    = [current_directory, os.path.join (pdynamo_pcore, "extensions/pyrex")]
 
-# Compile all files in the pyrex directory
+# Compile all files in the cython directory
 sources = glob.glob (os.path.join (current_directory, "*.pyx"))
 
 for source in sources:

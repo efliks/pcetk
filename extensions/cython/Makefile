@@ -5,7 +5,7 @@ CC            = gcc
 
 
 default: StateVector.so
-	@echo "\n*** Use 'make clean_all' and then 'make' if you want to recompile Pyrex sources ***\n"
+	@echo "\n*** Use 'make clean_all' and then 'make' if you want to recompile Cython sources ***\n"
 
 ../csource/StateVector.o:
 	+$(MAKE) -C ../csource
@@ -17,7 +17,7 @@ ContinuumElectrostatics.StateVector.o: ContinuumElectrostatics.StateVector.c
 	$(CC) $(CFLAGS) ContinuumElectrostatics.StateVector.c -o ContinuumElectrostatics.StateVector.o
 
 ContinuumElectrostatics.StateVector.c: ContinuumElectrostatics.StateVector.pyx ContinuumElectrostatics.StateVector.pxd
-	python pyrex_compile.py $(PDYNAMO_PCORE)
+	python cython_compile.py $(PDYNAMO_PCORE)
 
 install: StateVector.so
 	mv StateVector.so ../../ContinuumElectrostatics/
