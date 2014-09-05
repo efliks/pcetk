@@ -43,48 +43,6 @@ StateVector *StateVector_Allocate (const Integer length) {
   return self;
 }
 
-/*
-StateVector *StateVector_Clone (const StateVector *self) {
-  StateVector *clone = NULL;
-  if (self != NULL) {
-    clone = StateVector_Allocate (self->length);
-    StateVector_CopyTo (self, clone);
-  }
-
-  return clone;
-}
-
-void StateVector_CopyTo (const StateVector *self, StateVector *other) {
-  Integer i, length, *src, *dst;
-
-  if (self != NULL && other != NULL) {
-    other->length    = self->length;
-    other->slength   = self->slength;
-
-    length = self->length;
-    if (length > other->length) {
-      length = other->length;
-    }
-
-    for (i = 0, src = self->vector, dst = other->vector; i < length; i++, src++, dst++) {
-      *dst = *src;
-    }
-    for (i = 0, src = self->minvector, dst = other->minvector; i < length; i++, src++, dst++) {
-      *dst = *src;
-    }
-    for (i = 0, src = self->maxvector, dst = other->maxvector; i < length; i++, src++, dst++) {
-      *dst = *src;
-    }
-
-    if (self->substate != NULL && other->substate != NULL) {
-      for (i = 0, src = self->substate, dst = other->substate; i < length; i++, src++, dst++) {
-        *dst = *src;
-      }
-    }
-  }
-}
-*/
-
 void StateVector_Deallocate (StateVector *self) {
   if (self != NULL) {
     MEMORY_DEALLOCATE (self->maxvector);
@@ -290,3 +248,46 @@ Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integ
   }
   return (Gintr - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * temperature * CONSTANT_LN10 * pH) + W);
 }
+
+
+/*
+StateVector *StateVector_Clone (const StateVector *self) {
+  StateVector *clone = NULL;
+  if (self != NULL) {
+    clone = StateVector_Allocate (self->length);
+    StateVector_CopyTo (self, clone);
+  }
+
+  return clone;
+}
+
+void StateVector_CopyTo (const StateVector *self, StateVector *other) {
+  Integer i, length, *src, *dst;
+
+  if (self != NULL && other != NULL) {
+    other->length    = self->length;
+    other->slength   = self->slength;
+
+    length = self->length;
+    if (length > other->length) {
+      length = other->length;
+    }
+
+    for (i = 0, src = self->vector, dst = other->vector; i < length; i++, src++, dst++) {
+      *dst = *src;
+    }
+    for (i = 0, src = self->minvector, dst = other->minvector; i < length; i++, src++, dst++) {
+      *dst = *src;
+    }
+    for (i = 0, src = self->maxvector, dst = other->maxvector; i < length; i++, src++, dst++) {
+      *dst = *src;
+    }
+
+    if (self->substate != NULL && other->substate != NULL) {
+      for (i = 0, src = self->substate, dst = other->substate; i < length; i++, src++, dst++) {
+        *dst = *src;
+      }
+    }
+  }
+}
+*/
