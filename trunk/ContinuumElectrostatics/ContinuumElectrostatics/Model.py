@@ -924,7 +924,7 @@ class MEADModel (object):
             tab.Entry (entry)
         tab.Stop ()
 
- 
+
   #===============================================================================
   def SummaryProbabilities (self, reportOnlyUnusual = False, maxProbThreshold = 0.75, log = logFile):
     """List probabilities of occurance of instances."""
@@ -939,7 +939,7 @@ class MEADModel (object):
                           }
 
     if LogFileActive (log):
-      if self.isCalculated:
+      if self.isProbability:
         maxinstances = 0
         for site in self.meadSites:
           ninstances = len (site.instances)
@@ -986,6 +986,74 @@ class MEADModel (object):
               tab.Entry ("")
               tab.Entry ("")
         tab.Stop ()
+
+
+  #===============================================================================
+  def SedScript_FromProbabilities (self, filename = "his_repl.sed", overwrite = False, log = logFile):
+    """Generate a sed-script for substituting histidines in the source PDB file based on the calculated probabilities."""
+    if not self.isProbability:
+        raise ContinuumElectrostaticsError ("First calculate probabilities.")
+
+    if not overwrite:
+        if os.path.exists (filename):
+            raise ContinuumElectrostaticsError ("File %s already exists." % filename)
+
+    # First take care of histidines
+    lines = []
+    for site in self.meadSites:
+        if site.resName in ("HIS", "HSP"):
+            instances = []
+            for instance in site.instances:
+                instances.append ([instance.probability, instance.instIndex])
+            instances.sort ()
+
+            mostProbValue, mostProbIndex = instances[-1]
+            mostProbLabel = site.instances[mostProbIndex].label
+            lines.append ("/H.. .%4d/  s/H../%3s/  # %.4f\n" % (site.resSerial, mostProbLabel, mostProbValue))
+
+    # Then everything else
+    unusualProtonations = {
+                        "ARG" : ("d", ),
+                        "ASP" : ("p", ),
+                        "CYS" : ("d", ),
+                        "GLU" : ("p", ),
+                        "LYS" : ("d", ),
+                        "TYR" : ("d", ),
+                          }
+    translateLabels = {
+                    "p" :   "protonated",
+                    "d" : "deprotonated",
+                      }
+    warnings = []
+
+    for site in self.meadSites:
+        if site.resName not in ("HIS", "HSP"):
+            instances = []
+            for instance in site.instances:
+                instances.append ([instance.probability, instance.instIndex])
+            instances.sort ()
+
+            mostProbValue, mostProbIndex = instances[-1]
+            mostProbLabel = site.instances[mostProbIndex].label
+
+            if site.resName in unusualProtonations:
+                unusualLabels = unusualProtonations[site.resName]
+                if mostProbLabel in unusualLabels:
+                    if    site.resName == "ASP":
+                        lines.append ("# patch ASPP %4s %4d setup  ! %.4f\n" % (site.segName, site.resSerial, mostProbValue))
+                    elif  site.resName == "GLU":
+                        lines.append ("# patch GLUP %4s %4d setup  ! %.4f\n" % (site.segName, site.resSerial, mostProbValue))
+                    else:
+                        warnings.append ("# Warning: %4s %3s %4d is %s with probability of %.4f\n" % (site.segName, site.resName, site.resSerial, translateLabels[mostProbLabel], mostProbValue))
+            else:
+                warnings.append ("# Unknown residue: %4s %3s %4d (most probable instance is \"%s\" with probability of %.4f)\n" % (site.segName, site.resName, site.resSerial, mostProbLabel, mostProbValue))
+    lines.extend (warnings)
+
+    # Write the sed script to disk
+    WriteInputFile (filename, lines)
+
+    if LogFileActive (log):
+        log.Text ("\nWrote file: %s\n" % filename)
 
 
   #===============================================================================
