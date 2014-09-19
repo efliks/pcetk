@@ -49,13 +49,6 @@ class MEADSite (object):
         mostProbValue = instance.probability
         mostProbIndex = instance.instIndex
         mostProbLabel = instance.label
-    #instances = []
-    #for instance in self.instances:
-    #  instances.append ([instance.probability, instance.instIndex, instance.label])
-    #
-    #instances.sort ()
-    #mostProbValue, mostProbIndex, mostProbLabel = instances[-1]
-
     return (mostProbValue, mostProbIndex, mostProbLabel)
 
 
@@ -68,7 +61,6 @@ class MEADSite (object):
     instances = []
     for instance in self.instances:
       instances.append ([instance.probability, instance.instIndex])
-
     instances.sort ()
     indices = [index for probability, index in instances]
     return indices 
