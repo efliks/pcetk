@@ -108,6 +108,7 @@ class MEADModel (object):
     "_protons"           :  None                    ,
     "_intrinsic"         :  None                    ,
     "_interactions"      :  None                    ,
+    "_probabilities"     :  None                    ,
         }
 
   defaultAttributeNames = {
@@ -863,12 +864,13 @@ class MEADModel (object):
       self._protons = Integer1DArray (ninstances)
       for site in self.meadSites:
         for instance in site.instances:
-            self._protons[instance.instIndexGlobal] = protons[instance.instIndexGlobal]
-            # Or: instance.protons = protons[instance.instIndexGlobal]
+          self._protons[instance.instIndexGlobal] = protons[instance.instIndexGlobal]
+          # Or: instance.protons = protons[instance.instIndexGlobal]
 
       # Initialize arrays of intrinsic energies and interaction energies
-      self._intrinsic    = Real1DArray (ninstances)
-      self._interactions = Real2DArray (ninstances, ninstances)
+      self._intrinsic     = Real1DArray (ninstances)
+      self._interactions  = Real2DArray (ninstances, ninstances)
+      self._probabilities = Real1DArray (ninstances)
 
       self.isInitialized = True
 

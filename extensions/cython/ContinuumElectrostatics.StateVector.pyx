@@ -20,6 +20,7 @@ cdef class StateVector:
 
   def __getitem__ (self, index):
     """Get an item."""
+    cdef Integer item
     item = StateVector_GetItem (self.cObject, index)
     if item < 0:
       raise CLibraryError ("Vector index out of range.")
@@ -28,13 +29,15 @@ cdef class StateVector:
 
   def __setitem__ (self, index, value):
     """Set an item."""
-    ok = StateVector_SetItem (self.cObject, index, value)
-    if not ok:
+    cdef Boolean status
+    status = StateVector_SetItem (self.cObject, index, value)
+    if status == CFalse:
       raise CLibraryError ("Vector index out of range or wrong value.")
 
 
   def GetActualItem (self, index):
     """Get an actual item."""
+    cdef Integer item
     item = StateVector_GetActualItem (self.cObject, index)
     if item < 0:
       raise CLibraryError ("Vector index out of range.")
@@ -43,8 +46,9 @@ cdef class StateVector:
 
   def SetActualItem (self, index, value):
     """Set an actual item."""
-    ok = StateVector_SetActualItem (self.cObject, index, value)
-    if not ok:
+    cdef Boolean status
+    status = StateVector_SetActualItem (self.cObject, index, value)
+    if status == CFalse:
       raise CLibraryError ("Vector index out of range or wrong value.")
 
 
@@ -57,7 +61,12 @@ cdef class StateVector:
     """Generate a new state incrementing the state vector.
 
     Return False after the incrementation has finished."""
-    return StateVector_Increment (self.cObject)
+    cdef Boolean status
+    status = StateVector_Increment (self.cObject)
+    if status == CFalse:
+      return False
+    else:
+      return True
 
 
   def Reset (self):
@@ -72,25 +81,45 @@ cdef class StateVector:
 
   def __init__ (self, meadModel):
     """Constructor."""
-    nsites = len (meadModel.meadSites)
-    self.cObject = StateVector_Allocate (nsites)
+    cdef Integer numberOfSites
+    cdef Integer indexSite
+    cdef Integer indexDown
+    cdef Integer indexUp
+    cdef Integer index
+
+    numberOfSites = len (meadModel.meadSites)
+    self.cObject = StateVector_Allocate (numberOfSites)
 
     if (self.cObject == NULL): 
-      raise CLibraryError ("Memory allocation failure.")
+      raise CLibraryError ("Cannot allocate state vector.")
 
-    for siteIndex, site in enumerate (meadModel.meadSites):
-      indices = []
+    for indexSite from 0 <= indexSite < numberOfSites:
+      indexDown = 9999
+      indexUp   = 0
+      site      = meadModel.meadSites[indexSite]
+
       for instance in site.instances:
-        indices.append (instance.instIndexGlobal)
-      self.cObject.minvector[siteIndex] = min (indices)
-      self.cObject.maxvector[siteIndex] = max (indices)
+        index = instance.instIndexGlobal
+        if index < indexDown:
+          indexDown = index
+        if index > indexUp:
+          indexUp = index
+      self.cObject.minvector[indexSite] = indexDown
+      self.cObject.maxvector[indexSite] = indexUp
 
     # Always reset the state vector after initialization
     StateVector_Reset (self.cObject)
 
 
+# *** Try to further improve this method with data types from C ***
   def Print (self, meadModel = None, title = None, log = logFile):
     """Print the state vector."""
+    cdef Integer siteIndex
+    cdef Integer selectedSiteIndex
+    cdef Integer instanceIndex
+    cdef Integer ninstances
+    cdef Integer j
+
     if LogFileActive (log):
       if meadModel:
         table = log.GetTable (columns = [7, 7, 7, 8, 8, 2])
@@ -103,17 +132,20 @@ cdef class StateVector:
         table.Heading ("Site", columnSpan = 3)
         table.Heading ("Instance", columnSpan = 3)
 
-        for 0 <= siteIndex < self.cObject.length:
+        for siteIndex from 0 <= siteIndex < self.cObject.length:
           substate = "  "
 
           if self.cObject.substate != NULL:
-            for 0 <= j < self.cObject.slength:
+            for j from 0 <= j < self.cObject.slength:
               selectedSiteIndex = StateVector_GetSubstateItem (self.cObject, j)
               if selectedSiteIndex == siteIndex:
                 substate = " @"
 
-          site = meadModel.meadSites [siteIndex]
-          for instanceIndex, instance in enumerate (site.instances):
+          site = meadModel.meadSites[siteIndex]
+          ninstances = len (site.instances)
+
+          for instanceIndex from 0 <= instanceIndex < ninstances:
+            instance = site.instances[instanceIndex]
             if instance.instIndexGlobal == self.cObject.vector[siteIndex]:
               break
           instance = site.instances[instanceIndex]
@@ -127,24 +159,35 @@ cdef class StateVector:
         table.Stop ()
 
 
+# *** Try to further improve this method with data types from C ***
   def DefineSubstate (self, meadModel, selectedSites):
     """Define a substate.
 
     |selectedSites| is a sequence of two-element sequences (segmentName, residueSerial)"""
-    ok = StateVector_AllocateSubstate (self.cObject, len (selectedSites))
-    if not ok:
+    cdef Boolean status
+    cdef Boolean foundSite
+    cdef Integer siteIndex
+    cdef Integer substateSiteIndex
+    cdef Integer nselected  = len (selectedSites)
+    cdef Integer nsites     = len (meadModel.meadSites)
+
+    status = StateVector_AllocateSubstate (self.cObject, nselected)
+    if status == CFalse:
       raise CLibraryError ("Memory allocation failure.")
 
-    for substateSiteIndex, (selectedSegment, selectedSerial) in enumerate (selectedSites):
-      foundSite = False
+    for substateSiteIndex from 0 <= substateSiteIndex < nselected:
+      selectedSegment, selectedSerial = selectedSites[substateSiteIndex]
+      foundSite = CFalse
 
-      for siteIndex, site in enumerate (meadModel.meadSites):
+      for siteIndex from 0 <= siteIndex < nsites:
+        site = meadModel.meadSites[siteIndex]
+
         if site.segName == selectedSegment and site.resSerial == selectedSerial:
           StateVector_SetSubstateItem (self.cObject, siteIndex, substateSiteIndex)
-          foundSite = True
+          foundSite = CTrue
           break
 
-      if not foundSite:
+      if foundSite == CFalse:
         raise CLibraryError ("Site %s %d not found." % (selectedSegment, selectedSerial))
 
 
@@ -152,7 +195,12 @@ cdef class StateVector:
     """Generate a new substate. 
 
     Return False after the incrementation has finished."""
-    return StateVector_IncrementSubstate (self.cObject)
+    cdef Boolean status
+    status = StateVector_IncrementSubstate (self.cObject)
+    if status == CFalse:
+      return False
+    else:
+      return True
 
 
   def ResetSubstate (self):
@@ -162,15 +210,13 @@ cdef class StateVector:
 
   def CalculateMicrostateEnergy (self, meadModel, pH = 7.0):
     """Calculate energy of a protonation state (=microstate)."""
-    cdef Integer1DArray  protons
-    cdef Real1DArray     intrinsic
-    cdef Real2DArray     interactions
-    cdef Real            Gmicro = 0.
+    cdef Real            Gmicro       = 0.
+    cdef Real            _pH          = pH
+    cdef Real            _temperature = meadModel.temperature
+    cdef Integer1DArray  protons      = meadModel._protons
+    cdef Real1DArray     intrinsic    = meadModel._intrinsic
+    cdef Real2DArray     interactions = meadModel._interactions
 
     if meadModel.isCalculated:
-      protons      = meadModel._protons
-      intrinsic    = meadModel._intrinsic
-      interactions = meadModel._interactions
-  
-      Gmicro = StateVector_CalculateMicrostateEnergy (self.cObject, protons.cObject, intrinsic.cObject, interactions.cObject, pH, meadModel.temperature)
+      Gmicro = StateVector_CalculateMicrostateEnergy (self.cObject, protons.cObject, intrinsic.cObject, interactions.cObject, _pH, _temperature)
     return Gmicro
