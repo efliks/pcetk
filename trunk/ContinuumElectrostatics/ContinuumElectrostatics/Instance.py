@@ -67,7 +67,6 @@ class MEADInstance (object):
                   "Gback_model"     : None ,
                   "Gborn_protein"   : None ,
                   "Gback_protein"   : None ,
-                  "probability"     : None ,
                       }
 
   @property
@@ -116,13 +115,31 @@ class MEADInstance (object):
     else:
       return None
 
+  @property
+  def probability (self):
+    model = self.parent.parent
+    if model._probabilities:
+      return model._probabilities[self.instIndexGlobal]
+    else:
+      return None
 
+  @probability.setter
+  def probability (self, value):
+    model = self.parent.parent
+    if model._probabilities:
+      model._probabilities[self.instIndexGlobal] = value
+    else:
+      pass
+
+
+  #===============================================================================
   def __init__ (self, *arguments, **keywordArguments):
     """Constructor."""
     for (key, value) in self.__class__.defaultAttributes.iteritems (): setattr (self, key, value)
     for (key, value) in                 keywordArguments.iteritems (): setattr (self, key, value)
 
 
+  #===============================================================================
   def CalculateSiteInModelCompound (self, log = logFile):
     """Calculate Gborn and Gback of a site in the model compound."""
     site  = self.parent
@@ -152,6 +169,7 @@ class MEADInstance (object):
       self.Gback_model = reader.back
 
 
+  #===============================================================================
   def CalculateSiteInProtein (self, log = logFile):
     """Calculate Gborn and Gback of a site in protein environment.
 
@@ -219,6 +237,7 @@ class MEADInstance (object):
           indexGlobal = indexGlobal + 1
 
 
+  #===============================================================================
   def CalculateGintr (self, log = logFile):
     """Calculate Gintr of an instance of a site in the protein."""
     # For checking, do not include the background energy of the model compound because it can sometimes be zero (for example in ligands)
@@ -227,6 +246,7 @@ class MEADInstance (object):
       self.Gintr = self.Gmodel + (self.Gborn_protein - self.Gborn_model) + (self.Gback_protein - self.Gback_model)
 
 
+  #===============================================================================
   def PrintInteractions (self, sort = False, log = logFile):
     """Print interactions of an instance of a site with other instances of other sites."""
     if LogFileActive (log):
@@ -262,6 +282,7 @@ class MEADInstance (object):
         tab.Stop ()
 
 
+  #===============================================================================
   def TableEntry (self, tab = None, secondsToCompletion = None):
     """Report calculated energies in a table.
 

@@ -26,7 +26,7 @@ cdef extern from "StateVector.h":
 
   cdef CStateVector *StateVector_Allocate          (Integer size)
   cdef CStateVector *StateVector_Clone             (CStateVector *self)
-  cdef               StateVector_CopyTo            (CStateVector *self, CStateVector *other)
+  cdef void          StateVector_CopyTo            (CStateVector *self, CStateVector *other)
   cdef void          StateVector_Deallocate        (CStateVector *self)
   cdef void          StateVector_Reset             (CStateVector *self)
   cdef void          StateVector_ResetToMaximum    (CStateVector *self)
