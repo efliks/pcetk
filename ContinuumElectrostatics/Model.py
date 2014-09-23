@@ -146,7 +146,7 @@ class MEADModel (object):
 
     If these additional files have names coinciding with the names from the library, the library parameters will be overwritten.
 
-    Notice! EST files overwrite YAML files."""
+    Notice! EST files have a priority over YAML files."""
     directory    = os.getcwd ()
     filesLibrary = glob.glob (os.path.join (YAMLPATHIN, "sites", "*.yaml"))
     filesExtra   = glob.glob (os.path.join (directory, "*.yaml"))
@@ -211,7 +211,7 @@ class MEADModel (object):
 
               wij = self._interactions [ainstance.instIndexGlobal, binstance.instIndexGlobal]
               wji = self._interactions [binstance.instIndexGlobal, ainstance.instIndexGlobal]
-              symmetric = (wij + wji) * 0.5
+              symmetric = (wij + wji) * .5
               error     = symmetric - wij
               lines.append (entry % (asite.siteIndex + 1, ainstance.instIndex + 1, asite.label, ainstance.label, bsite.siteIndex + 1, binstance.instIndex + 1, bsite.label, binstance.label, symmetric, wij, error))
       WriteInputFile (filename, lines)
@@ -579,6 +579,69 @@ class MEADModel (object):
         log.Text ("\nCalculating electrostatic energies complete.\n")
 
       self.isCalculated = True
+
+
+  #===============================================================================
+  def SymmetrizeInteractions (self):
+    """Symmetrize interaction energies inside the matrix of interactions."""
+    pass
+
+
+  #===============================================================================
+  # Real2DArray_IsSymmetric from pDynamo is not available
+  #
+  def CheckIfSymmetric (self, threshold = 0.03, log = logFile):
+    """After calculating electrostatic energies, check the symmetricity of the matrix of interactions."""
+    if self.isCalculated:
+      columnWidth = 26
+      isSymmetric = True
+      report      = []
+      pairs       = []
+
+      # This fragment of code comes from WriteW  
+      for asite in self.meadSites:
+        for ainstance in asite.instances:
+
+          for bsite in self.meadSites:
+            for binstance in bsite.instances:
+
+              wij = self._interactions [ainstance.instIndexGlobal, binstance.instIndexGlobal]
+              wji = self._interactions [binstance.instIndexGlobal, ainstance.instIndexGlobal]
+              symmetric = (wij + wji) * .5
+              deviation = abs (symmetric - wij)
+              if deviation > threshold:
+                isSymmetric = False
+                ai = ainstance.instIndexGlobal
+                bi = binstance.instIndexGlobal
+                if (ai, bi) not in pairs:
+                  report.append ([ainstance, binstance, deviation])
+                  pairs.append ((ai, bi))
+                  pairs.append ((bi, ai))
+  
+      if LogFileActive (log):
+        if not isSymmetric:
+          table = log.GetTable (columns = [columnWidth, columnWidth, columnWidth])
+          table.Start ()
+          table.Title ("Deviations inside the matrix of interactions (threshold: %.6f)" % threshold)
+          table.Heading ("Instance of site A")
+          table.Heading ("Instance of site B")
+          table.Heading ("Deviation")
+    
+          for ainstance, binstance, deviation in report:
+            asite = ainstance.parent
+            entry = "%4s %4s %4d %4s" % (asite.segName, asite.resName, asite.resSerial, ainstance.label)
+            table.Entry (entry.center (columnWidth))
+  
+            bsite = binstance.parent
+            entry = "%4s %4s %4d %4s" % (bsite.segName, bsite.resName, bsite.resSerial, binstance.label)
+            table.Entry (entry.center (columnWidth))
+  
+            entry = "%.6f" % deviation
+            table.Entry (entry.center (columnWidth))
+          table.Stop ()
+        else:
+          log.Text ("\nMatrix of interactions is symmetric within the threshold of %.6f kcal/mol\n" % threshold)
+      return isSymmetric
 
 
   #===============================================================================
