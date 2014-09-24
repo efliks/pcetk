@@ -588,10 +588,10 @@ class MEADModel (object):
 
 
   #===============================================================================
-  # Real2DArray_IsSymmetric from pDynamo is not available
-  #
   def CheckIfSymmetric (self, threshold = 0.03, log = logFile):
     """After calculating electrostatic energies, check the symmetricity of the matrix of interactions."""
+  # Real2DArray_IsSymmetric from pDynamo is not available
+
     if self.isCalculated:
       columnWidth = 26
       isSymmetric = True
@@ -615,8 +615,9 @@ class MEADModel (object):
                 bi = binstance.instIndexGlobal
                 if (ai, bi) not in pairs:
                   report.append ([ainstance, binstance, deviation])
-                  pairs.append ((ai, bi))
-                  pairs.append ((bi, ai))
+                  pa = (ai, bi)
+                  pb = (bi, ai)
+                  pairs.extend ((pa, pb))
   
       if LogFileActive (log):
         if not isSymmetric:
