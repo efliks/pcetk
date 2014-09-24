@@ -12,7 +12,7 @@ CurveThread is a class for running parallel calculations of titration curves."""
 __lastchanged__ = "$Id$"
 
 
-import os, glob, math, threading, subprocess, time
+import os, glob, threading, subprocess, time
 
 from pCore                 import logFile, LogFileActive, Selection, Vector3, YAMLUnpickle, Clone, Integer1DArray, Real1DArray, Real2DArray
 from Constants             import *
@@ -417,77 +417,71 @@ class MEADModel (object):
   def CalculateProbabilitiesAnalytically (self, pH = 7.0, log = logFile):
     """For each site, calculate the probability of occurance of each instance, using the Boltzmann weighted sum."""
     if self.isCalculated:
-      nsites = len (self.meadSites)
-      if nsites > ANALYTIC_SITES:
-        raise ContinuumElectrostaticsError ("Too many sites for analytic treatment (%d)\n" % nsites)
-  
-      # Calculate all state energies
-      increment     = True
-      stateEnergies = []
-      stateVector   = StateVector (self)
+      nstates = 1
+      for meadSite in self.meadSites:
+        ninstances = len (meadSite.instances)
+        nstates = nstates * ninstances
+        if nstates > ANALYTIC_STATES:
+          raise ContinuumElectrostaticsError ("Maximum number of states (%d) exceeded." % ANALYTIC_STATES)
 
-      while increment:
-        energy    = stateVector.CalculateMicrostateEnergy (self, pH = pH)
-        increment = stateVector.Increment ()
-        stateEnergies.append (energy)
+      if LogFileActive (log):
+        log.Text ("\nNumber of possible protonation states: %d\n" % nstates)
 
-      # Find the minimum energy
-      energyZero = min (stateEnergies)
+      # Calculate all state energies and find the minimum energy
+      stateVector = StateVector (self)
+      bfactors    = Real1DArray (nstates)
+
+      for stateIndex in xrange (nstates):
+        energy = stateVector.CalculateMicrostateEnergy (self, pH = pH)
+        if stateIndex < 1:
+          energyZero = energy
+        else:
+          if energy < energyZero:
+            energyZero = energy
+        bfactors[stateIndex] = energy
+        stateVector.Increment ()
   
       if LogFileActive (log):
-        log.Text ("\nSearching for the minimum energy complete.\n")
-  
+        log.Text ("\nCalculating state energies complete.\n")
+
       # Go over all calculated state energies and calculate Boltzmann factors
-      bfactors = []
-      beta     = -1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature)
-      nstates  = len (stateEnergies)
-      for stateIndex in range (0, nstates):
-        bfactor = math.exp (beta * (stateEnergies[stateIndex] - energyZero))
-        bfactors.append (bfactor)
-  
+      bfactors.AddScalar (-1. * energyZero)
+      bfactors.Scale (-1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature))
+      bfactors.Exp ()
+ 
       if LogFileActive (log):
         log.Text ("\nCalculating Boltzmann factors complete.\n")
- 
-      # Construct a two-dimensional list of M-sites, each site N-instances, initiated with zeros
-      sites = []
-      for site in self.meadSites:
-        instances = []
-        for instance in site.instances:
-          instances.append (0.)
-        sites.append (instances)
 
-      # Calculate the probabilities 
+      # Calculate probabilities 
+      nsites = len (self.meadSites)
+      self._probabilities.Set (0.)
       stateVector.Reset ()
-      increment  = True
-      stateIndex = 0
 
-      while increment:
-        for siteIndex, site in enumerate (self.meadSites):
-          instanceIndex                   = stateVector[siteIndex]
-          probability                     = sites[siteIndex][instanceIndex]
-          probability                     = probability + bfactors[stateIndex]
-          sites[siteIndex][instanceIndex] = probability
-        increment  = stateVector.Increment ()
-        stateIndex = stateIndex + 1
+      for stateIndex in xrange (nstates):
+        for index in xrange (nsites):
+          activeInstanceGlobalIndex = stateVector.GetActualItem (index)
+          self._probabilities[activeInstanceGlobalIndex] += bfactors[stateIndex]
+        stateVector.Increment ()
 
-      bsum = 1.0 / sum (bfactors)
-      for siteIndex, site in enumerate (sites):
-        for instanceIndex, instance in enumerate (site):
-          probability                     = sites[siteIndex][instanceIndex] * bsum
-          sites[siteIndex][instanceIndex] = probability
+      bsum = bfactors.Sum ()
+      self._probabilities.Scale (1. / bsum)
   
       if LogFileActive (log):
         log.Text ("\nCalculating protonation probabilities complete.\n")
 
-      # Copy the calculated probabilities into the MEADModel
-      for siteIndex, site in enumerate (self.meadSites):
-        for instanceIndex, instance in enumerate (site.instances):
-          instance.probability = sites[siteIndex][instanceIndex]
-
       # The instances now contain calculated probabilities
       self.isProbability = True
 
-      # Return the two-dimensional list (useful for calculating titration curves)
+      # Create a two two-dimensional list (useful for calculating titration curves)
+      # FIXME: Possible malfunctioning in parallel mode?
+      sites = []
+      for site in self.meadSites:
+        instances = []
+        for instance in site.instances:
+          instances.append (instance.probability)
+        sites.append (instances)
+
+      # Return the two-dimensional list
       return sites
 
 
@@ -591,7 +585,6 @@ class MEADModel (object):
   def CheckIfSymmetric (self, threshold = 0.03, log = logFile):
     """After calculating electrostatic energies, check the symmetricity of the matrix of interactions."""
   # Real2DArray_IsSymmetric from pDynamo is not available
-
     if self.isCalculated:
       columnWidth = 26
       isSymmetric = True
@@ -605,25 +598,25 @@ class MEADModel (object):
           for bsite in self.meadSites:
             for binstance in bsite.instances:
 
-              wij = self._interactions [ainstance.instIndexGlobal, binstance.instIndexGlobal]
-              wji = self._interactions [binstance.instIndexGlobal, ainstance.instIndexGlobal]
+              ai   = ainstance.instIndexGlobal
+              bi   = binstance.instIndexGlobal
+              wij  = self._interactions [ai, bi]
+              wji  = self._interactions [bi, ai]
               symmetric = (wij + wji) * .5
               deviation = abs (symmetric - wij)
               if deviation > threshold:
                 isSymmetric = False
-                ai = ainstance.instIndexGlobal
-                bi = binstance.instIndexGlobal
                 if (ai, bi) not in pairs:
-                  report.append ([ainstance, binstance, deviation])
                   pa = (ai, bi)
                   pb = (bi, ai)
                   pairs.extend ((pa, pb))
+                  report.append ([ainstance, binstance, deviation])
   
       if LogFileActive (log):
         if not isSymmetric:
           table = log.GetTable (columns = [columnWidth, columnWidth, columnWidth])
           table.Start ()
-          table.Title ("Deviations inside the matrix of interactions (threshold: %.6f)" % threshold)
+          table.Title ("Deviations inside the matrix of interactions (threshold: %.4f)" % threshold)
           table.Heading ("Instance of site A")
           table.Heading ("Instance of site B")
           table.Heading ("Deviation")
@@ -637,11 +630,11 @@ class MEADModel (object):
             entry = "%4s %4s %4d %4s" % (bsite.segName, bsite.resName, bsite.resSerial, binstance.label)
             table.Entry (entry.center (columnWidth))
   
-            entry = "%.6f" % deviation
+            entry = "%.4f" % deviation
             table.Entry (entry.center (columnWidth))
           table.Stop ()
         else:
-          log.Text ("\nMatrix of interactions is symmetric within the threshold of %.6f kcal/mol\n" % threshold)
+          log.Text ("\nMatrix of interactions is symmetric within the threshold of %.4f kcal/mol\n" % threshold)
       return isSymmetric
 
 
