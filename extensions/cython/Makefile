@@ -1,5 +1,7 @@
 PDYNAMO_PCORE = /home/mikolaj/local/opt/pDynamo-1.8.0/pCore-1.8.0
 PY_INCLUDE    = /usr/include/python2.7
+
+# The options -fdata-sections and -ffunction-sections are for not linking the unused code
 CFLAGS        = -fPIC -c -I$(PDYNAMO_PCORE)/extensions/cinclude -I$(PY_INCLUDE) -I../cinclude 
 CC            = gcc
 
@@ -7,11 +9,12 @@ CC            = gcc
 default: StateVector.so
 	@echo "\n*** Use 'make clean_all' and then 'make' if you want to recompile Cython sources ***\n"
 
-../csource/StateVector.o:
+../csource/StateVector.a:
 	+$(MAKE) -C ../csource
 
-StateVector.so: ../csource/StateVector.o ContinuumElectrostatics.StateVector.o
-	$(CC) -shared ContinuumElectrostatics.StateVector.o ../csource/StateVector.o -o StateVector.so
+#-Wl,--gc-sections 
+StateVector.so: ../csource/StateVector.a ContinuumElectrostatics.StateVector.o
+	$(CC) -shared ContinuumElectrostatics.StateVector.o ../csource/StateVector.a -o StateVector.so
 
 ContinuumElectrostatics.StateVector.o: ContinuumElectrostatics.StateVector.c
 	$(CC) $(CFLAGS) ContinuumElectrostatics.StateVector.c -o ContinuumElectrostatics.StateVector.o

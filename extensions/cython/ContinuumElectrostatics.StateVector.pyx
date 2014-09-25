@@ -5,7 +5,11 @@
 #                          Mikolaj J. Feliks (2014)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
-from pCore    import logFile, LogFileActive, CLibraryError
+from pCore      import logFile, LogFileActive, CLibraryError
+# from Constants  import ANALYTIC_STATES
+
+ANALYTIC_STATES = 67108864
+
 
 __lastchanged__ = "$Id$"
 
@@ -23,7 +27,7 @@ cdef class StateVector:
     cdef Integer item
     item = StateVector_GetItem (self.cObject, index)
     if item < 0:
-      raise CLibraryError ("Vector index out of range.")
+      raise CLibraryError ("Index out of range.")
     return item
 
 
@@ -32,7 +36,7 @@ cdef class StateVector:
     cdef Boolean status
     status = StateVector_SetItem (self.cObject, index, value)
     if status == CFalse:
-      raise CLibraryError ("Vector index out of range or wrong value.")
+      raise CLibraryError ("Index out of range or wrong value.")
 
 
   def GetActualItem (self, index):
@@ -40,7 +44,7 @@ cdef class StateVector:
     cdef Integer item
     item = StateVector_GetActualItem (self.cObject, index)
     if item < 0:
-      raise CLibraryError ("Vector index out of range.")
+      raise CLibraryError ("Index out of range.")
     return item
 
 
@@ -49,7 +53,7 @@ cdef class StateVector:
     cdef Boolean status
     status = StateVector_SetActualItem (self.cObject, index, value)
     if status == CFalse:
-      raise CLibraryError ("Vector index out of range or wrong value.")
+      raise CLibraryError ("Index out of range or wrong value.")
 
 
   def __dealloc__ (self):
@@ -220,3 +224,28 @@ cdef class StateVector:
     if meadModel.isCalculated:
       Gmicro = StateVector_CalculateMicrostateEnergy (self.cObject, protons.cObject, intrinsic.cObject, interactions.cObject, _pH, _temperature)
     return Gmicro
+
+
+#  def CalculateProbabilitiesAnalytically (self, meadModel, pH = 7.0, log = logFile):
+#    """Calculate probabilities of protonation states analytically."""
+#    cdef Boolean         status
+#    cdef Integer         nstates = 1, ninstances
+#    cdef Real            _pH           = pH
+#    cdef Real            _temperature  = meadModel.temperature
+#    cdef Integer1DArray  protons       = meadModel._protons
+#    cdef Real1DArray     intrinsic     = meadModel._intrinsic
+#    cdef Real2DArray     interactions  = meadModel._interactions
+#    cdef Real1DArray     probabilities = meadModel._probabilities
+#
+#    for meadSite in meadModel.meadSites:
+#      ninstances = len (meadSite.instances)
+#      nstates = nstates * ninstances
+#      if nstates > ANALYTIC_STATES:
+#        raise CLibraryError ("Maximum number of states (%d) exceeded." % ANALYTIC_STATES)
+#
+#    if LogFileActive (log):
+#      log.Text ("\nNumber of possible protonation states: %d\n" % nstates)
+#
+#    status = StateVector_CalculateProbabilitiesAnalytically (self.cObject, protons.cObject, intrinsic.cObject, interactions.cObject, _pH, _temperature, nstates, probabilities.cObject)
+#    if status == CFalse:
+#      raise CLibraryError ("Cannot allocate Boltzmann factors.")

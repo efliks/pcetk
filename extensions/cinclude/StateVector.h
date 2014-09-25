@@ -12,6 +12,7 @@
 #include "Integer.h"
 #include "Real.h"
 #include "Memory.h"
+#include "Status.h"
 #include "Integer1DArray.h"
 #include "Real1DArray.h"
 #include "Real2DArray.h"
@@ -50,5 +51,8 @@ extern Integer      StateVector_GetSubstateItem   (const StateVector *self, cons
 
 /* Calculating microstate energy */
 extern Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const Real2DArray *interactions, const Real pH, const Real temperature);
+
+/* Calculating probabilities of protonation states analytically */
+extern Boolean StateVector_CalculateProbabilitiesAnalytically (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const Real2DArray *interactions, const Real pH, const Real temperature, const Integer nstates, Real1DArray *probabilities);
 
 #endif
