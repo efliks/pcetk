@@ -9,12 +9,15 @@ CC            = gcc
 default: StateVector.so
 	@echo "\n*** Use 'make clean_all' and then 'make' if you want to recompile Cython sources ***\n"
 
-../csource/StateVector.a:
+../csource/StateVector.o:
 	+$(MAKE) -C ../csource
 
+../csource/lib/libpcore.a:
+	+$(MAKE) -C ../csource/lib
+
 #-Wl,--gc-sections 
-StateVector.so: ../csource/StateVector.a ContinuumElectrostatics.StateVector.o
-	$(CC) -shared ContinuumElectrostatics.StateVector.o ../csource/StateVector.a -o StateVector.so
+StateVector.so: ../csource/StateVector.o ../csource/lib/libpcore.a ContinuumElectrostatics.StateVector.o
+	$(CC) -shared ContinuumElectrostatics.StateVector.o ../csource/StateVector.o ../csource/lib/libpcore.a -o StateVector.so
 
 ContinuumElectrostatics.StateVector.o: ContinuumElectrostatics.StateVector.c
 	$(CC) $(CFLAGS) ContinuumElectrostatics.StateVector.c -o ContinuumElectrostatics.StateVector.o
@@ -32,3 +35,4 @@ clean:
 
 clean_all: clean
 	if [ -e ContinuumElectrostatics.StateVector.c ]; then rm ContinuumElectrostatics.StateVector.c ; fi
+	+$(MAKE) -C ../csource clean_all

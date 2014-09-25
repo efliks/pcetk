@@ -25,18 +25,20 @@ StateVector *StateVector_Allocate (const Integer length) {
       if (self->vector == NULL) {
         MEMORY_DEALLOCATE (self);
       }
-
-      MEMORY_ALLOCATEARRAY (self->minvector, length, Integer);
-      if (self->minvector == NULL) {
-        MEMORY_DEALLOCATE (self->vector);
-        MEMORY_DEALLOCATE (self);
-      }
-
-      MEMORY_ALLOCATEARRAY (self->maxvector, length, Integer);
-      if (self->maxvector == NULL) {
-        MEMORY_DEALLOCATE (self->minvector);
-        MEMORY_DEALLOCATE (self->vector);
-        MEMORY_DEALLOCATE (self);
+      else {
+        MEMORY_ALLOCATEARRAY (self->minvector, length, Integer);
+        if (self->minvector == NULL) {
+          MEMORY_DEALLOCATE (self->vector);
+          MEMORY_DEALLOCATE (self);
+        }
+        else {
+          MEMORY_ALLOCATEARRAY (self->maxvector, length, Integer);
+          if (self->maxvector == NULL) {
+            MEMORY_DEALLOCATE (self->minvector);
+            MEMORY_DEALLOCATE (self->vector);
+            MEMORY_DEALLOCATE (self);
+          }
+        }
       }
     }
   }
@@ -252,7 +254,6 @@ Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integ
 /*-----------------------------------------------------------------------------
   Calculating probabilities analytically
 -----------------------------------------------------------------------------*/
-/*
 Boolean StateVector_CalculateProbabilitiesAnalytically (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const Real2DArray *interactions, const Real pH, const Real temperature, const Integer nstates, Real1DArray *probabilities) {
   Real1DArray *bfactors;
   Real        *bfactor;
@@ -296,14 +297,13 @@ Boolean StateVector_CalculateProbabilitiesAnalytically (const StateVector *self,
     StateVector_Increment (self);
   }
 
-  bsum = Real1DArray_Sum (probabilities);
+  bsum = Real1DArray_Sum (bfactors);
   Real1DArray_Scale (probabilities, 1. / bsum);
 
   Real1DArray_Deallocate (&bfactors);
 
   return True;
 }
-*/
 
 
 /*
