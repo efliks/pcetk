@@ -417,20 +417,24 @@ class MEADModel (object):
   def CalculateProbabilitiesAnalytically (self, pH = 7.0, log = logFile):
     """For each site, calculate the probability of occurance of each instance, using the Boltzmann weighted sum."""
     if self.isCalculated:
+# This does not work until I resolve the problem with linking
+#      vector = StateVector (self)
+#      vector.CalculateProbabilitiesAnalytically (self, pH = pH)
+
       nstates = 1
       for meadSite in self.meadSites:
         ninstances = len (meadSite.instances)
         nstates = nstates * ninstances
         if nstates > ANALYTIC_STATES:
           raise ContinuumElectrostaticsError ("Maximum number of states (%d) exceeded." % ANALYTIC_STATES)
-
+ 
       if LogFileActive (log):
         log.Text ("\nNumber of possible protonation states: %d\n" % nstates)
-
+ 
       # Calculate all state energies and find the minimum energy
       stateVector = StateVector (self)
       bfactors    = Real1DArray (nstates)
-
+ 
       for stateIndex in xrange (nstates):
         energy = stateVector.CalculateMicrostateEnergy (self, pH = pH)
         if stateIndex < 1:
@@ -440,32 +444,32 @@ class MEADModel (object):
             energyZero = energy
         bfactors[stateIndex] = energy
         stateVector.Increment ()
-  
+   
       if LogFileActive (log):
         log.Text ("\nCalculating state energies complete.\n")
-
+ 
       # Go over all calculated state energies and calculate Boltzmann factors
       bfactors.AddScalar (-1. * energyZero)
       bfactors.Scale (-1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature))
       bfactors.Exp ()
- 
+  
       if LogFileActive (log):
         log.Text ("\nCalculating Boltzmann factors complete.\n")
-
+ 
       # Calculate probabilities 
       nsites = len (self.meadSites)
       self._probabilities.Set (0.)
       stateVector.Reset ()
-
+ 
       for stateIndex in xrange (nstates):
         for index in xrange (nsites):
           activeInstanceGlobalIndex = stateVector.GetActualItem (index)
           self._probabilities[activeInstanceGlobalIndex] += bfactors[stateIndex]
         stateVector.Increment ()
-
+ 
       bsum = bfactors.Sum ()
       self._probabilities.Scale (1. / bsum)
-  
+   
       if LogFileActive (log):
         log.Text ("\nCalculating protonation probabilities complete.\n")
 

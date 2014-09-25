@@ -249,6 +249,62 @@ Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integ
   return (Gintr - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * temperature * CONSTANT_LN10 * pH) + W);
 }
 
+/*-----------------------------------------------------------------------------
+  Calculating probabilities analytically
+-----------------------------------------------------------------------------*/
+/*
+Boolean StateVector_CalculateProbabilitiesAnalytically (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const Real2DArray *interactions, const Real pH, const Real temperature, const Integer nstates, Real1DArray *probabilities) {
+  Real1DArray *bfactors;
+  Real        *bfactor;
+  Real         energy, energyZero, bsum;
+  Integer     *activeInstanceGlobalIndex;
+  Integer      stateIndex, siteIndex;
+  Status       status;
+
+  bfactors = Real1DArray_Allocate (nstates, &status);
+  if (bfactors == NULL) {
+    return False;
+  }
+
+  for (stateIndex = 0, bfactor = bfactors->data; stateIndex < nstates; stateIndex++, bfactor++) {
+    energy = StateVector_CalculateMicrostateEnergy (self, protons, intrinsic, interactions, pH, temperature);
+
+    if (stateIndex < 1) {
+      energyZero = energy;
+    }
+    else {
+      if (energy < energyZero) {
+        energyZero = energy;
+      }
+    }
+
+    *bfactor = energy;
+    StateVector_Increment (self);
+  }
+
+  Real1DArray_AddScalar (bfactors, -energyZero);
+  Real1DArray_Scale (bfactors, -1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * temperature));
+  Real1DArray_Exp (bfactors);
+
+  Real1DArray_Set (probabilities, 0.);
+  StateVector_Reset (self);
+
+  for (stateIndex = 0, bfactor = bfactors->data; stateIndex < nstates; stateIndex++, bfactor++) {
+    for (siteIndex = 0, activeInstanceGlobalIndex = self->vector; siteIndex < self->length; siteIndex++, activeInstanceGlobalIndex++) {
+      probabilities->data[*activeInstanceGlobalIndex] += *bfactor;
+    }
+    StateVector_Increment (self);
+  }
+
+  bsum = Real1DArray_Sum (probabilities);
+  Real1DArray_Scale (probabilities, 1. / bsum);
+
+  Real1DArray_Deallocate (&bfactors);
+
+  return True;
+}
+*/
+
 
 /*
 StateVector *StateVector_Clone (const StateVector *self) {

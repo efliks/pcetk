@@ -46,6 +46,10 @@ cdef extern from "StateVector.h":
   # Calculating microstate energy
   cdef Real         StateVector_CalculateMicrostateEnergy (CStateVector *self, CInteger1DArray *protons, CReal1DArray *intrinsic, CReal2DArray *interactions, Real pH, Real temperature)
 
+  # Calculating probabilities of protonation states analytically
+  cdef Boolean      StateVector_CalculateProbabilitiesAnalytically (CStateVector *self, CInteger1DArray *protons, CReal1DArray *intrinsic, CReal2DArray *interactions, Real pH, Real temperature, Integer nstates, CReal1DArray *probabilities)
+
+
 #-------------------------------------------------------------------------------
 cdef class StateVector:
   cdef CStateVector     *cObject
