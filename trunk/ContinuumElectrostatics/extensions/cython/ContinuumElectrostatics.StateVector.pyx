@@ -6,10 +6,8 @@
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
 from pCore      import logFile, LogFileActive, CLibraryError
-# from Constants  import ANALYTIC_STATES
 
-ANALYTIC_STATES = 67108864
-
+DEF ANALYTIC_STATES = 67108864
 
 __lastchanged__ = "$Id$"
 
@@ -226,26 +224,25 @@ cdef class StateVector:
     return Gmicro
 
 
-#  def CalculateProbabilitiesAnalytically (self, meadModel, pH = 7.0, log = logFile):
-#    """Calculate probabilities of protonation states analytically."""
-#    cdef Boolean         status
-#    cdef Integer         nstates = 1, ninstances
-#    cdef Real            _pH           = pH
-#    cdef Real            _temperature  = meadModel.temperature
-#    cdef Integer1DArray  protons       = meadModel._protons
-#    cdef Real1DArray     intrinsic     = meadModel._intrinsic
-#    cdef Real2DArray     interactions  = meadModel._interactions
-#    cdef Real1DArray     probabilities = meadModel._probabilities
-#
-#    for meadSite in meadModel.meadSites:
-#      ninstances = len (meadSite.instances)
-#      nstates = nstates * ninstances
-#      if nstates > ANALYTIC_STATES:
-#        raise CLibraryError ("Maximum number of states (%d) exceeded." % ANALYTIC_STATES)
-#
-#    if LogFileActive (log):
-#      log.Text ("\nNumber of possible protonation states: %d\n" % nstates)
-#
-#    status = StateVector_CalculateProbabilitiesAnalytically (self.cObject, protons.cObject, intrinsic.cObject, interactions.cObject, _pH, _temperature, nstates, probabilities.cObject)
-#    if status == CFalse:
-#      raise CLibraryError ("Cannot allocate Boltzmann factors.")
+  def CalculateProbabilitiesAnalytically (self, meadModel, pH = 7.0):
+    """Calculate probabilities of protonation states analytically."""
+    cdef Boolean         status
+    cdef Integer         nstates = 1, ninstances
+    cdef Real            _pH             = pH
+    cdef Real            _temperature    = meadModel.temperature
+    cdef Integer1DArray  protons         = meadModel._protons
+    cdef Real1DArray     intrinsic       = meadModel._intrinsic
+    cdef Real2DArray     interactions    = meadModel._interactions
+    cdef Real1DArray     probabilities   = meadModel._probabilities
+
+    for meadSite in meadModel.meadSites:
+      ninstances = len (meadSite.instances)
+      nstates = nstates * ninstances
+      if nstates > ANALYTIC_STATES:
+        raise CLibraryError ("Maximum number of states (%d) exceeded." % ANALYTIC_STATES)
+
+    status = StateVector_CalculateProbabilitiesAnalytically (self.cObject, protons.cObject, intrinsic.cObject, interactions.cObject, _pH, _temperature, nstates, probabilities.cObject)
+    if status == CFalse:
+      raise CLibraryError ("Cannot allocate Boltzmann factors.")
+
+    return nstates
