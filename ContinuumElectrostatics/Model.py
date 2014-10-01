@@ -14,11 +14,11 @@ __lastchanged__ = "$Id$"
 
 import os, glob, threading, subprocess, time
 
-from pCore                 import logFile, LogFileActive, Selection, Vector3, YAMLUnpickle, Clone, Integer1DArray, Real1DArray, Real2DArray
+from pCore                 import logFile, LogFileActive, Selection, YAMLUnpickle, Clone, Integer1DArray, Real1DArray, Real2DArray
 from Constants             import *
 from Error                 import ContinuumElectrostaticsError
 from Site                  import MEADSite
-from Instance              import MEADInstance, InstanceThread 
+from Instance              import InstanceThread 
 from Toolbox               import FormatEntry, ConvertAttribute
 from StateVector           import StateVector
 
@@ -534,14 +534,14 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def CheckIfSymmetric (self, threshold = 0.03, log = logFile):
+  def CheckIfSymmetric (self, threshold=0.03, log=logFile):
     """After calculating electrostatic energies, check the symmetricity of the matrix of interactions."""
   # Real2DArray_IsSymmetric from pDynamo is not available
     if self.isCalculated:
-      columnWidth = 26
-      isSymmetric = True
-      report      = []
-      pairs       = []
+      columnWidth  = 26
+      isSymmetric  = True
+      report       = []
+      pairs        = []
 
       # This fragment of code comes from WriteW  
       for asite in self.meadSites:
@@ -549,13 +549,14 @@ class MEADModel (object):
 
           for bsite in self.meadSites:
             for binstance in bsite.instances:
-
               ai   = ainstance.instIndexGlobal
-              bi   = binstance.instIndexGlobal
               wij  = self._interactions [ai, bi]
+              bi   = binstance.instIndexGlobal
               wji  = self._interactions [bi, ai]
+
               symmetric = (wij + wji) * .5
               deviation = abs (symmetric - wij)
+
               if deviation > threshold:
                 isSymmetric = False
                 if (ai, bi) not in pairs:
@@ -591,7 +592,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def Initialize (self, system, excludeSegments = None, excludeResidues = None, log = logFile):
+  def Initialize (self, system, excludeSegments=None, excludeResidues=None, includeTermini=False, log=logFile):
     """Decompose the system into model compounds, sites and a background charge set.
 
     |excludeSegments| is a sequence of segment names to exclude.
@@ -685,6 +686,61 @@ class MEADModel (object):
 
             if includeResidue:
 
+              #===================================================
+              # Consider termini?
+              if includeTermini:
+                  libSite = None
+
+                  # Check for C-terminus
+                  if residueIndex > (nresidues - 2):
+                    pass
+                    #libSite = self.librarySites["CTER"]
+
+                  # Check for N-terminus
+                  elif residueIndex < 1:
+                    pass
+                    #if   residueName == "GLY":
+                    #    libSite = self.librarySites["GLYP"]
+                    #elif residueName == "PRO":
+                    #    libSite = self.librarySites["PROP"]
+                    #else:
+                    #    libSite = self.librarySites["NTER"]
+
+                  if libSite:
+                    libSiteAtoms     = libSite["atoms"]
+                    atoms            = residue.children
+                    modelAtomIndices = []
+                    siteAtomIndices  = []
+                    
+                    for libAtomName in libSiteAtoms:
+                      for atom in atoms:
+                        if libAtomName == atom.label:
+                          siteAtomIndices.append (atom.index)
+
+                    # Including termini requires that they have been appropriately patched in CHARMM
+                    if len (siteAtomIndices) != len (libSiteAtoms):
+                      raise ContinuumElectrostaticsError ("Cannot include termini because of missing atoms.")
+
+                    newSite = MEADSite (
+                          parent           = self              ,
+                          siteIndex        = siteIndex         ,
+                          segName          = segmentName       ,
+                          resName          = residueName       ,
+                          resSerial        = residueSerial     ,
+                          modelAtomIndices = modelAtomIndices  ,
+                          siteAtomIndices  = siteAtomIndices   ,
+                                       )
+                    newSite.CalculateCenterOfGeometry (system, libSite["center"])
+                    protonsOfInstances, updatedIndexGlobal = newSite._CreateInstances (libSite["instances"], instIndexGlobal)
+                    
+                    protons.extend (protonsOfInstances)
+                    instIndexGlobal = updatedIndexGlobal
+                    
+                    self.meadSites.append (newSite)
+                    siteIndex = siteIndex + 1
+              #===================================================
+
+
               # Titratable residue? 
               if residueName in self.librarySites:
                 prevIndices = []
@@ -725,7 +781,6 @@ class MEADModel (object):
                 # Collect atom indices 
                 libSite          = self.librarySites[residueName]
                 libSiteAtoms     = libSite["atoms"]
-
                 atoms            = residue.children
                 modelAtomIndices = prevIndices
                 siteAtomIndices  = []
@@ -740,87 +795,27 @@ class MEADModel (object):
                 modelAtomIndices.extend (nextIndices)
 
 
-                # Create instances
-                libSiteInstances = libSite["instances"]
-                instances        = []
-  
-                for instIndex, instance in enumerate (libSiteInstances):
-                  nprotons = instance [ "protons" ]
-                  charges  = instance [ "charges" ]
-                  Gmodel   = instance [ "Gmodel"  ] * self.temperature / 300.
-                  label    = instance [ "label"   ]
-
-                  if self.splitToDirectories:
-                    modelPqr  = os.path.join (self.scratch, segmentName, "%s%d" % (residueName, residueSerial), "%s_%s.%s" % ("model", label, "pqr"))
-                    modelLog  = os.path.join (self.scratch, segmentName, "%s%d" % (residueName, residueSerial), "%s_%s.%s" % ("model", label, "out"))
-                    modelGrid = os.path.join (self.scratch, segmentName, "%s%d" % (residueName, residueSerial), "%s_%s.%s" % ("model", label, "mgm"))
-                    sitePqr   = os.path.join (self.scratch, segmentName, "%s%d" % (residueName, residueSerial), "%s_%s.%s" % ("site",  label, "pqr"))
-                    siteLog   = os.path.join (self.scratch, segmentName, "%s%d" % (residueName, residueSerial), "%s_%s.%s" % ("site",  label, "out"))
-                    siteGrid  = os.path.join (self.scratch, segmentName, "%s%d" % (residueName, residueSerial), "%s_%s.%s" % ("site",  label, "ogm"))
-                  else:
-                    modelPqr  = os.path.join (self.scratch, "%s_%s_%s_%d_%s.%s" % ("model", segmentName, residueName, residueSerial, label, "pqr"))
-                    modelLog  = os.path.join (self.scratch, "%s_%s_%s_%d_%s.%s" % ("model", segmentName, residueName, residueSerial, label, "out"))
-                    modelGrid = os.path.join (self.scratch, "%s_%s_%s_%d_%s.%s" % ("model", segmentName, residueName, residueSerial, label, "mgm"))
-                    sitePqr   = os.path.join (self.scratch, "%s_%s_%s_%d_%s.%s" % ("site",  segmentName, residueName, residueSerial, label, "pqr"))
-                    siteLog   = os.path.join (self.scratch, "%s_%s_%s_%d_%s.%s" % ("site",  segmentName, residueName, residueSerial, label, "out"))
-                    siteGrid  = os.path.join (self.scratch, "%s_%s_%s_%d_%s.%s" % ("site",  segmentName, residueName, residueSerial, label, "ogm"))
-
-                  # Remember the number of protons of the current instance
-                  protons.append (nprotons)
-
-                  # To be set later: parent, protons
-                  newInstance = MEADInstance (
-                                 instIndex       = instIndex       ,
-                                 instIndexGlobal = instIndexGlobal ,
-                                 label           = label           ,
-                                 charges         = charges         ,
-                                 Gmodel          = Gmodel          ,
-                                 modelPqr        = modelPqr        ,
-                                 modelLog        = modelLog        ,
-                                 modelGrid       = modelGrid       ,
-                                 sitePqr         = sitePqr         ,
-                                 siteLog         = siteLog         ,
-                                 siteGrid        = siteGrid        ,
-                                             )
-                  instances.append (newInstance)
-                  instIndexGlobal = instIndexGlobal + 1
-
+                # Create a site (add instances later)
+                newSite = MEADSite (
+                               parent           = self              ,
+                               siteIndex        = siteIndex         ,
+                               segName          = segmentName       ,
+                               resName          = residueName       ,
+                               resSerial        = residueSerial     ,
+                               modelAtomIndices = modelAtomIndices  ,
+                               siteAtomIndices  = siteAtomIndices   ,
+                                   )
 
                 # Calculate center of geometry
-                centralAtom = libSite["center"]
-                if centralAtom:
-                  atoms = residue.children
+                newSite.CalculateCenterOfGeometry (system, libSite["center"])
 
-                  for atom in atoms:
-                    if atom.label == centralAtom:
-                      centralIndex = atom.index
-                      break
-                  center = system.coordinates3[centralIndex]
+                # Add instances to the newly created site
+                protonsOfInstances, updatedIndexGlobal = newSite._CreateInstances (libSite["instances"], instIndexGlobal)
 
-                else:
-                  center = Vector3 ()
-                  natoms = len (siteAtomIndices)
+                protons.extend (protonsOfInstances)
+                instIndexGlobal = updatedIndexGlobal
 
-                  for atomIndex in siteAtomIndices:
-                    center.AddScaledVector3 (1.0, system.coordinates3[atomIndex])
-                  center.Scale (1.0 / natoms)
-
-
-                # Create a site
-                newSite = MEADSite (
-                               parent           = self             ,
-                               siteIndex        = siteIndex        ,
-                               segName          = segmentName      ,
-                               resName          = residueName      ,
-                               resSerial        = residueSerial    ,
-                               modelAtomIndices = modelAtomIndices ,
-                               siteAtomIndices  = siteAtomIndices  ,
-                               instances        = instances        ,
-                               center           = center           ,
-                                   )
-                for instance in newSite.instances:
-                  instance.parent = newSite    # <--Setting parents
-
+                # Add the newly created site to the list of sites
                 self.meadSites.append (newSite)
                 siteIndex = siteIndex + 1
 
