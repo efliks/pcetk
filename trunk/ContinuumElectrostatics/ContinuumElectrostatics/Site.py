@@ -9,10 +9,16 @@
 
 __lastchanged__ = "$Id$"
 
+from pCore       import Vector3
+from Error       import ContinuumElectrostaticsError
+from Instance    import MEADInstance
 
+import os
+
+
+#-------------------------------------------------------------------------------
 class MEADSite (object):
   """Titratable site.
-
   Each site has at least two instances (protonated and deprotonated)."""
 
   defaultAttributes = {
@@ -28,15 +34,44 @@ class MEADSite (object):
                       }
 
   @property
-  def label (self): return "%s_%s%s" % (self.segName, self.resName, self.resSerial)
+  def label (self):
+    return "%s_%s%s" % (self.segName, self.resName, self.resSerial)
 
 
+  #===============================================================================
   def __init__ (self, *arguments, **keywordArguments):
     """Constructor."""
     for (key, value) in self.__class__.defaultAttributes.iteritems (): setattr (self, key, value)
     for (key, value) in                 keywordArguments.iteritems (): setattr (self, key, value)
 
 
+  #===============================================================================
+  def CalculateCenterOfGeometry (self, system, centralAtom=None):
+    """Calculate center of geometry of a site."""
+    if centralAtom:
+      atoms = residue.children
+      centralIndex = -1
+      for atom in atoms:
+        if atom.label == centralAtom:
+          centralIndex = atom.index
+          break
+      if centralIndex > 0:
+          center = system.coordinates3[centralIndex]
+      else:
+        raise ContinuumElectrostaticsError ("Cannot find central atom %s in site %s %s %d" % (centralAtom, self.segName, self.resName, self.resSerial))
+
+    else:
+      center = Vector3 ()
+      natoms = len (self.siteAtomIndices)
+      for atomIndex in self.siteAtomIndices:
+        center.AddScaledVector3 (1., system.coordinates3[atomIndex])
+      center.Scale (1. / natoms)
+
+    # Set the center of geometry
+    self.center = center
+
+
+  #===============================================================================
   def GetMostProbableInstance (self):
     """Return the index, label and probability of the most probable instance of a site."""
     model = self.parent
@@ -52,6 +87,7 @@ class MEADSite (object):
     return (mostProbValue, mostProbIndex, mostProbLabel)
 
 
+  #===============================================================================
   def GetSortedIndices (self):
     """Get a list of indices of instances sorted by increasing probability."""
     model = self.parent
@@ -64,6 +100,50 @@ class MEADSite (object):
     instances.sort ()
     indices = [index for probability, index in instances]
     return indices 
+
+
+  #===============================================================================
+  def _CreateFilename (self, prefix, label, postfix):
+    model = self.parent
+    if model.splitToDirectories:
+        return os.path.join (model.scratch, self.segName, "%s%d" % (self.resName, self.resSerial), "%s_%s.%s" % (prefix, label, postfix))
+    else:
+        return os.path.join (model.scratch, "%s_%s_%s_%d_%s.%s" % (prefix, self.segName, self.resName, self.resSerial, label, postfix))
+
+
+  #===============================================================================
+  def _CreateInstances (self, templatesOfInstances, instIndexGlobal):
+    """Create instances of a site."""
+    protons    = []
+    instances  = []
+    meadModel  = self.parent
+  
+    for instIndex, instance in enumerate (templatesOfInstances):
+      newInstance = MEADInstance (
+          parent          = self                                                           ,
+          instIndex       = instIndex                                                      ,
+          instIndexGlobal = instIndexGlobal                                                ,
+          label           = instance [ "label"   ]                                         ,
+          charges         = instance [ "charges" ]                                         ,
+          Gmodel          = instance [ "Gmodel"  ] * meadModel.temperature / 300.          ,
+          modelPqr        = self._CreateFilename ("model", instance [ "label"   ], "pqr")  ,
+          modelLog        = self._CreateFilename ("model", instance [ "label"   ], "out")  ,
+          modelGrid       = self._CreateFilename ("model", instance [ "label"   ], "mgm")  ,
+          sitePqr         = self._CreateFilename ("site",  instance [ "label"   ], "pqr")  ,
+          siteLog         = self._CreateFilename ("site",  instance [ "label"   ], "out")  ,
+          siteGrid        = self._CreateFilename ("site",  instance [ "label"   ], "ogm")  ,
+                                 )
+      instances.append (newInstance)
+      instIndexGlobal = instIndexGlobal + 1
+
+      # Set the protons later because they come from the central array
+
+      # Remember the number of protons of the current instance
+      nprotons  = instance [ "protons" ]
+      protons.append (nprotons)
+
+    self.instances = instances
+    return (protons, instIndexGlobal)
 
 
 #===============================================================================
