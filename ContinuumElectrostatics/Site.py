@@ -117,8 +117,9 @@ class MEADSite (object):
     protons    = []
     instances  = []
     meadModel  = self.parent
-  
+
     for instIndex, instance in enumerate (templatesOfInstances):
+      # Set the protons later because they come from the central array
       newInstance = MEADInstance (
           parent          = self                                                           ,
           instIndex       = instIndex                                                      ,
@@ -135,8 +136,6 @@ class MEADSite (object):
                                  )
       instances.append (newInstance)
       instIndexGlobal = instIndexGlobal + 1
-
-      # Set the protons later because they come from the central array
 
       # Remember the number of protons of the current instance
       nprotons  = instance [ "protons" ]
