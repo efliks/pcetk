@@ -8,6 +8,10 @@
 #ifndef _STATEVECTOR
 #define _STATEVECTOR
 
+/* memcpy comes from here */
+#include <stdlib.h>
+#include <string.h>
+
 #include "Boolean.h"
 #include "Integer.h"
 #include "Real.h"
@@ -21,18 +25,15 @@
 #define CONSTANT_MOLAR_GAS_KCAL_MOL  0.001987165392
 #define CONSTANT_LN10                2.302585092994
 
-
 typedef struct {
   Integer *vector, *minvector, *maxvector, *substate;
   Integer length, slength;
 } StateVector;
 
-/*
-extern StateVector *StateVector_Clone             (const StateVector *self);
-extern void         StateVector_CopyTo            (const StateVector *self, StateVector *other);
-*/
 
 extern StateVector *StateVector_Allocate          (const Integer length);
+extern StateVector *StateVector_Clone             (const StateVector *self);
+extern Boolean      StateVector_CopyTo            (const StateVector *self, StateVector *other);
 extern void         StateVector_Deallocate        (      StateVector *self);
 extern void         StateVector_Reset             (const StateVector *self);
 extern void         StateVector_ResetToMaximum    (const StateVector *self);

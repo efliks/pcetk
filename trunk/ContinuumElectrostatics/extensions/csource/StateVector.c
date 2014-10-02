@@ -60,6 +60,46 @@ void StateVector_Deallocate (StateVector *self) {
   }
 }
 
+StateVector *StateVector_Clone (const StateVector *self) {
+  StateVector *clone = NULL;
+  if (self != NULL) {
+    clone = StateVector_Allocate (self->length);
+    StateVector_CopyTo (self, clone);
+  }
+
+  return clone;
+}
+
+Boolean StateVector_CopyTo (const StateVector *self, StateVector *other) {
+  Boolean result;
+
+  /* Check for different lengths */
+  if (self->length != other->length) {
+    StateVector_Deallocate (other);
+    other = StateVector_Allocate (self->length);
+
+    if (other == NULL) {
+      return False;
+    }
+  }
+
+  /* Copy */
+  memcpy (other->vector    , self->vector    , other->length * sizeof (Integer));
+  memcpy (other->minvector , self->minvector , other->length * sizeof (Integer));
+  memcpy (other->maxvector , self->maxvector , other->length * sizeof (Integer));
+
+  /* Copy substate? */
+  if (self->substate != NULL) {
+    result = StateVector_AllocateSubstate (other, self->slength);
+    if (result == False) {
+      return False;
+    }
+    memcpy (other->substate, self->substate, other->slength * sizeof (Integer));
+  }
+
+  return True;
+}
+
 void StateVector_Reset (const StateVector *self) {
   Integer   i;
   Integer   *v = self->vector, *m = self->minvector;
@@ -237,7 +277,7 @@ Boolean StateVector_IncrementSubstate (const StateVector *self) {
   Calculating microstate energy
 -----------------------------------------------------------------------------*/
 Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const Real2DArray *interactions, const Real pH, const Real temperature) {
-  Real Gintr = 0.0, W = 0.0;
+  Real Gintr = 0., W = 0.;
   Integer nprotons = 0, siteIndex, siteIndexInner, *instanceIndex, *instanceIndexInner;
 
   for (siteIndex = 0, instanceIndex = self->vector; siteIndex < self->length; siteIndex++, instanceIndex++) {
@@ -304,46 +344,3 @@ Boolean StateVector_CalculateProbabilitiesAnalytically (const StateVector *self,
 
   return True;
 }
-
-
-/*
-StateVector *StateVector_Clone (const StateVector *self) {
-  StateVector *clone = NULL;
-  if (self != NULL) {
-    clone = StateVector_Allocate (self->length);
-    StateVector_CopyTo (self, clone);
-  }
-
-  return clone;
-}
-
-void StateVector_CopyTo (const StateVector *self, StateVector *other) {
-  Integer i, length, *src, *dst;
-
-  if (self != NULL && other != NULL) {
-    other->length    = self->length;
-    other->slength   = self->slength;
-
-    length = self->length;
-    if (length > other->length) {
-      length = other->length;
-    }
-
-    for (i = 0, src = self->vector, dst = other->vector; i < length; i++, src++, dst++) {
-      *dst = *src;
-    }
-    for (i = 0, src = self->minvector, dst = other->minvector; i < length; i++, src++, dst++) {
-      *dst = *src;
-    }
-    for (i = 0, src = self->maxvector, dst = other->maxvector; i < length; i++, src++, dst++) {
-      *dst = *src;
-    }
-
-    if (self->substate != NULL && other->substate != NULL) {
-      for (i = 0, src = self->substate, dst = other->substate; i < length; i++, src++, dst++) {
-        *dst = *src;
-      }
-    }
-  }
-}
-*/
