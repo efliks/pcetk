@@ -21,17 +21,12 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/testpeptide.crd")
 ce_model = MEADModel (meadPath = "/home/mikolaj/local/bin/", gmctPath = "/home/mikolaj/local/bin/", scratch = "mead", nthreads = 4)
 
 ce_model.Initialize (mol)
-
 ce_model.Summary ()
-
 ce_model.SummarySites ()
-
 ce_model.WriteJobFiles (mol)
-
-ce_model.CalculateElectrostaticEnergies ()
+ce_model.CalculateElectrostaticEnergies (calculateETA=False)
 
 ce_model.WriteGintr ()
-
 ce_model.WriteW ()
 
 
@@ -49,28 +44,21 @@ while increment:
 
 #===========================================
 logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 analytically ***\n")
-
 ce_model.CalculateProbabilitiesAnalytically ()
-
 ce_model.SummaryProbabilities ()
 
 
-
 logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 using GMCT ***\n")
-
 ce_model.CalculateProbabilitiesGMCT ()
-
 ce_model.SummaryProbabilities ()
 
 
 #===========================================
 logFile.Text ("\n*** Calculating titration curves analytically ***\n")
-
 ce_model.CalculateCurves (isAnalytic = True, forceSerial = True, directory = "curves_analytic")
 
 
 logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")
-
 ce_model.CalculateCurves (directory = "curves_gmct")
 
 

@@ -438,7 +438,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def CalculateElectrostaticEnergies (self, log = logFile):
+  def CalculateElectrostaticEnergies (self, calculateETA=True, log=logFile):
     """
     Calculate for each instance of each site:
     - self (Born) energy in the model compound
@@ -464,16 +464,27 @@ class MEADModel (object):
         else:
           log.Text ("\nStarting parallel run on %d CPUs.\n" % self.nthreads)
 
-        tab = log.GetTable (columns = [6, 6, 6, 6, 16, 16, 16, 16, 16, 16, 16])
+        heads = [ ("Instance of a site" , 4),
+                  ("Gborn_model"        , 0),
+                  ("Gback_model"        , 0),
+                  ("Gborn_protein"      , 0),
+                  ("Gback_protein"      , 0),
+                  ("Gmodel"             , 0),
+                  ("Gintr"              , 0), ]
+        columns = [6, 6, 6, 6, 16, 16, 16, 16, 16, 16]
+
+        if calculateETA:
+          headings.append (("ETA", 0))
+          columns.append (16)
+
+        tab = log.GetTable (columns = columns)
         tab.Start ()
-        tab.Heading ("Instance of a site", columnSpan = 4)
-        tab.Heading ("Gborn_model"  )
-        tab.Heading ("Gback_model"  )
-        tab.Heading ("Gborn_protein")
-        tab.Heading ("Gback_protein")
-        tab.Heading ("Gmodel"       )
-        tab.Heading ("Gintr"        )
-        tab.Heading ("ETA"          )
+        for head, span in heads:
+          if span > 0:
+            tab.Heading (head, columnSpan = span)
+          else:
+            tab.Heading (head)
+
 
       if self.nthreads < 2:
         for meadSite in self.meadSites:
@@ -483,10 +494,13 @@ class MEADModel (object):
             instance.CalculateSiteInProtein (log)
             instance.CalculateGintr (log)
 
-            times.append (time.time () - time0)
-            averageTimePerInstance = sum (times) / len (times)
-            ninstances = ninstances - 1
-            instance.TableEntry (tab, secondsToCompletion = averageTimePerInstance * ninstances)
+            if calculateETA:
+              times.append (time.time () - time0)
+              averageTimePerInstance = sum (times) / len (times)
+              ninstances = ninstances - 1
+              instance.TableEntry (tab, secondsToCompletion = averageTimePerInstance * ninstances)
+            else:
+              instance.TableEntry (tab)
       else:
         batches = []
         threads = []
@@ -507,14 +521,17 @@ class MEADModel (object):
           for thread in batch: thread.start ()
           for thread in batch: thread.join ()
 
-          # Collect times of execution
-          nthreads = len (batch)
-          for thread in batch: times.append (thread.time)
-
-          averageTimePerInstance = sum (times) / len (times) / nthreads
-          ninstances = ninstances - nthreads
-          secondsToCompletion = averageTimePerInstance * ninstances
-
+          secondsToCompletion = None
+          if calculateETA:
+            # Collect times of execution
+            nthreads = len (batch)
+            for thread in batch:
+              times.append (thread.time)
+  
+            averageTimePerInstance = sum (times) / len (times) / nthreads
+            ninstances = ninstances - nthreads
+            secondsToCompletion = averageTimePerInstance * ninstances
+  
           # Print the results at the end of each batch, otherwise they come in random order
           for thread in batch:
             instance = thread.instance
@@ -686,59 +703,33 @@ class MEADModel (object):
 
             if includeResidue:
 
-              #===================================================
-              # Consider termini?
+              #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+              terminus = None
+              excludeTerminusNames = []
+
               if includeTermini:
-                  libSite = None
+                if residueName in PROTEIN_RESIDUES:
 
                   # Check for C-terminus
                   if residueIndex > (nresidues - 2):
-                    pass
-                    #libSite = self.librarySites["CTER"]
+                    terminus       = "CTER"
+                    libTerminus    = self.librarySites[terminus]
+                    terminusSerial = residueSerial + 1
 
                   # Check for N-terminus
-                  elif residueIndex < 1:
-                    pass
-                    #if   residueName == "GLY":
-                    #    libSite = self.librarySites["GLYP"]
-                    #elif residueName == "PRO":
-                    #    libSite = self.librarySites["PROP"]
-                    #else:
-                    #    libSite = self.librarySites["NTER"]
+                  #elif residueIndex < 1:
+                  #  if   residueName == "GLY":
+                  #    terminus = "GLYP"
+                  #  elif residueName == "PRO":
+                  #    terminus = "PROP"
+                  #  else:
+                  #    terminus = "NTER"
+                  #  libTerminus    = self.librarySites[terminus]
+                  #  terminusSerial = residueSerial - 1
 
-                  if libSite:
-                    libSiteAtoms     = libSite["atoms"]
-                    atoms            = residue.children
-                    modelAtomIndices = []
-                    siteAtomIndices  = []
-                    
-                    for libAtomName in libSiteAtoms:
-                      for atom in atoms:
-                        if libAtomName == atom.label:
-                          siteAtomIndices.append (atom.index)
-
-                    # Including termini requires that they have been appropriately patched in CHARMM
-                    if len (siteAtomIndices) != len (libSiteAtoms):
-                      raise ContinuumElectrostaticsError ("Cannot include termini because of missing atoms.")
-
-                    newSite = MEADSite (
-                          parent           = self              ,
-                          siteIndex        = siteIndex         ,
-                          segName          = segmentName       ,
-                          resName          = residueName       ,
-                          resSerial        = residueSerial     ,
-                          modelAtomIndices = modelAtomIndices  ,
-                          siteAtomIndices  = siteAtomIndices   ,
-                                       )
-                    newSite.CalculateCenterOfGeometry (system, libSite["center"])
-                    protonsOfInstances, updatedIndexGlobal = newSite._CreateInstances (libSite["instances"], instIndexGlobal)
-                    
-                    protons.extend (protonsOfInstances)
-                    instIndexGlobal = updatedIndexGlobal
-                    
-                    self.meadSites.append (newSite)
-                    siteIndex = siteIndex + 1
-              #===================================================
+                  if terminus:
+                    excludeTerminusNames = libTerminus["atoms"]
+              #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 
               # Titratable residue? 
@@ -791,7 +782,8 @@ class MEADModel (object):
                       siteAtomIndices.append (atom.index)
 
                 for atom in atoms:
-                  modelAtomIndices.append (atom.index)
+                  if atom.label not in excludeTerminusNames:
+                    modelAtomIndices.append (atom.index)
                 modelAtomIndices.extend (nextIndices)
 
 
@@ -818,6 +810,62 @@ class MEADModel (object):
                 # Add the newly created site to the list of sites
                 self.meadSites.append (newSite)
                 siteIndex = siteIndex + 1
+
+
+              #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+              if terminus:
+                libSiteAtoms     = libTerminus["atoms"]
+                atoms            = residue.children
+                siteAtomIndices  = []
+                modelAtomIndices = []
+
+                for libAtomName in libSiteAtoms:
+                  found = False
+                  for atom in atoms:
+                    if libAtomName == atom.label:
+                      siteAtomIndices.append (atom.index)
+                      found = True
+                      break
+                  if not found:
+                    raise ContinuumElectrostaticsError ("Cannot include terminus because of missing atom: %s" % libAtomName)
+
+                # Construct a model compound
+                if residueIndex > 1:
+                  prevResidue = residues[residueIndex - 1]
+                  prevNames = PREV_RESIDUE
+                  for atom in prevResidue.children:
+                    if atom.label in prevNames:
+                      modelAtomIndices.append (atom.index)
+
+                # Do not include atoms in the model compound which are already part of another site
+                if self.librarySites.has_key (residueName):
+                  excludeSiteNames = self.librarySites[residueName]["atoms"]
+                else:
+                  excludeSiteNames = []
+
+                for atom in atoms:
+                  if atom.label not in excludeSiteNames:
+                    modelAtomIndices.append (atom.index)
+
+                newSite = MEADSite (
+                      parent           = self              ,
+                      siteIndex        = siteIndex         ,
+                      segName          = segmentName       ,
+                      resName          = terminus          ,
+                      resSerial        = terminusSerial    ,
+                      modelAtomIndices = modelAtomIndices  ,
+                      siteAtomIndices  = siteAtomIndices   ,
+                                   )
+                newSite.CalculateCenterOfGeometry (system, libSite["center"])
+                protonsOfInstances, updatedIndexGlobal = newSite._CreateInstances (libSite["instances"], instIndexGlobal)
+                
+                protons.extend (protonsOfInstances)
+                instIndexGlobal = updatedIndexGlobal
+                
+                self.meadSites.append (newSite)
+                siteIndex = siteIndex + 1
+              #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
 
 
       # Construct the background set of charges and the protein (to be used as eps2set_region)

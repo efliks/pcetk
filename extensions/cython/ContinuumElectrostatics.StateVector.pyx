@@ -20,7 +20,31 @@ cdef class StateVector:
     return self.cObject.length
 
 
-  def __getitem__ (self, index):
+  def __getmodule__ (self):
+    """Return the module name."""
+    return "ContinuumElectrostatics.StateVector"
+
+
+  def __dealloc__ (self):
+    """Deallocate."""
+    StateVector_Deallocate (self.cObject)
+
+
+#  def __copy__ (self):
+#    """Copying."""
+#    return self.__deepcopy__ ()
+#
+#
+#  def __deepcopy__ (self):
+#    """Copying."""
+#    cdef StateVector clone
+#    clone.cObject = StateVector_Clone (self.cObject)
+#    if clone.cObject == NULL:
+#      raise CLibraryError ("Cannot copy vector.")
+#    return clone
+
+
+  def __getitem__ (self, Integer index):
     """Get an item."""
     cdef Integer item
     item = StateVector_GetItem (self.cObject, index)
@@ -29,7 +53,7 @@ cdef class StateVector:
     return item
 
 
-  def __setitem__ (self, index, value):
+  def __setitem__ (self, Integer index, Integer value):
     """Set an item."""
     cdef Boolean status
     status = StateVector_SetItem (self.cObject, index, value)
@@ -37,7 +61,43 @@ cdef class StateVector:
       raise CLibraryError ("Index out of range or wrong value.")
 
 
-  def GetActualItem (self, index):
+  def __init__ (self, meadModel):
+    """Constructor."""
+    cdef Integer numberOfSites
+    cdef Integer indexSite
+    cdef Integer indexDown
+    cdef Integer indexUp
+    cdef Integer index
+
+    numberOfSites = len (meadModel.meadSites)
+    self.cObject = StateVector_Allocate (numberOfSites)
+    if (self.cObject == NULL): 
+      raise CLibraryError ("Cannot allocate state vector.")
+
+    for indexSite from 0 <= indexSite < numberOfSites:
+      indexDown = 9999
+      indexUp   = 0
+      site      = meadModel.meadSites[indexSite]
+
+      for instance in site.instances:
+        index = instance.instIndexGlobal
+        if index < indexDown:
+          indexDown = index
+        if index > indexUp:
+          indexUp = index
+      self.cObject.minvector[indexSite] = indexDown
+      self.cObject.maxvector[indexSite] = indexUp
+
+    # Always reset the state vector after initialization
+    StateVector_Reset (self.cObject)
+
+
+  def CopyTo (StateVector self, StateVector other):
+    """In-place copy of one state vector to another."""
+    StateVector_CopyTo (self.cObject, other.cObject)
+
+
+  def GetActualItem (self, Integer index):
     """Get an actual item."""
     cdef Integer item
     item = StateVector_GetActualItem (self.cObject, index)
@@ -46,17 +106,12 @@ cdef class StateVector:
     return item
 
 
-  def SetActualItem (self, index, value):
+  def SetActualItem (self, Integer index, Integer value):
     """Set an actual item."""
     cdef Boolean status
     status = StateVector_SetActualItem (self.cObject, index, value)
     if status == CFalse:
       raise CLibraryError ("Index out of range or wrong value.")
-
-
-  def __dealloc__ (self):
-    """Deallocate."""
-    StateVector_Deallocate (self.cObject)
 
 
   def Increment (self):
@@ -81,40 +136,8 @@ cdef class StateVector:
     StateVector_ResetToMaximum (self.cObject)
 
 
-  def __init__ (self, meadModel):
-    """Constructor."""
-    cdef Integer numberOfSites
-    cdef Integer indexSite
-    cdef Integer indexDown
-    cdef Integer indexUp
-    cdef Integer index
-
-    numberOfSites = len (meadModel.meadSites)
-    self.cObject = StateVector_Allocate (numberOfSites)
-
-    if (self.cObject == NULL): 
-      raise CLibraryError ("Cannot allocate state vector.")
-
-    for indexSite from 0 <= indexSite < numberOfSites:
-      indexDown = 9999
-      indexUp   = 0
-      site      = meadModel.meadSites[indexSite]
-
-      for instance in site.instances:
-        index = instance.instIndexGlobal
-        if index < indexDown:
-          indexDown = index
-        if index > indexUp:
-          indexUp = index
-      self.cObject.minvector[indexSite] = indexDown
-      self.cObject.maxvector[indexSite] = indexUp
-
-    # Always reset the state vector after initialization
-    StateVector_Reset (self.cObject)
-
-
 # *** Try to further improve this method with data types from C ***
-  def Print (self, meadModel = None, title = None, log = logFile):
+  def Print (self, meadModel=None, title=None, log=logFile):
     """Print the state vector."""
     cdef Integer siteIndex
     cdef Integer selectedSiteIndex
@@ -210,26 +233,25 @@ cdef class StateVector:
     StateVector_ResetSubstate (self.cObject)
 
 
-  def CalculateMicrostateEnergy (self, meadModel, pH = 7.0):
+  def CalculateMicrostateEnergy (self, meadModel, Real pH=7.0):
     """Calculate energy of a protonation state (=microstate)."""
     cdef Real            Gmicro       = 0.
-    cdef Real            _pH          = pH
-    cdef Real            _temperature = meadModel.temperature
+    cdef Real            temperature  = meadModel.temperature
     cdef Integer1DArray  protons      = meadModel._protons
     cdef Real1DArray     intrinsic    = meadModel._intrinsic
     cdef Real2DArray     interactions = meadModel._interactions
 
     if meadModel.isCalculated:
-      Gmicro = StateVector_CalculateMicrostateEnergy (self.cObject, protons.cObject, intrinsic.cObject, interactions.cObject, _pH, _temperature)
+      Gmicro = StateVector_CalculateMicrostateEnergy (self.cObject, protons.cObject, intrinsic.cObject, interactions.cObject, pH, temperature)
     return Gmicro
 
 
-  def CalculateProbabilitiesAnalytically (self, meadModel, pH = 7.0):
+  def CalculateProbabilitiesAnalytically (self, meadModel, Real pH=7.0):
     """Calculate probabilities of protonation states analytically."""
     cdef Boolean         status
-    cdef Integer         nstates = 1, ninstances
-    cdef Real            _pH             = pH
-    cdef Real            _temperature    = meadModel.temperature
+    cdef Integer         nstates = 1
+    cdef Integer         ninstances
+    cdef Real            temperature     = meadModel.temperature
     cdef Integer1DArray  protons         = meadModel._protons
     cdef Real1DArray     intrinsic       = meadModel._intrinsic
     cdef Real2DArray     interactions    = meadModel._interactions
@@ -241,7 +263,7 @@ cdef class StateVector:
       if nstates > ANALYTIC_STATES:
         raise CLibraryError ("Maximum number of states (%d) exceeded." % ANALYTIC_STATES)
 
-    status = StateVector_CalculateProbabilitiesAnalytically (self.cObject, protons.cObject, intrinsic.cObject, interactions.cObject, _pH, _temperature, nstates, probabilities.cObject)
+    status = StateVector_CalculateProbabilitiesAnalytically (self.cObject, protons.cObject, intrinsic.cObject, interactions.cObject, pH, temperature, nstates, probabilities.cObject)
     if status == CFalse:
       raise CLibraryError ("Cannot allocate Boltzmann factors.")
 

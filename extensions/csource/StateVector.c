@@ -8,6 +8,9 @@
 #include "StateVector.h"
 
 
+/*=============================================================================
+  Allocation, deallocation, copying, etc.
+=============================================================================*/
 StateVector *StateVector_Allocate (const Integer length) {
   StateVector *self = NULL;
 
@@ -72,7 +75,6 @@ StateVector *StateVector_Clone (const StateVector *self) {
 
 Boolean StateVector_CopyTo (const StateVector *self, StateVector *other) {
   Boolean result;
-
   /* Check for different lengths */
   if (self->length != other->length) {
     StateVector_Deallocate (other);
@@ -100,6 +102,10 @@ Boolean StateVector_CopyTo (const StateVector *self, StateVector *other) {
   return True;
 }
 
+
+/*=============================================================================
+  Functions relatated to items
+=============================================================================*/
 void StateVector_Reset (const StateVector *self) {
   Integer   i;
   Integer   *v = self->vector, *m = self->minvector;
@@ -116,9 +122,10 @@ void StateVector_ResetToMaximum (const StateVector *self) {
   }
 }
 
-/*
- Get the local index of an instance of a site, usually 0 and 1 for most sites or 0, 1, 2, 3 for histidines
-*/
+/*-----------------------------------------------------------------------------
+ Get the local index of an instance of a site, usually 0 and 1 for 
+ most sites or 0, 1, 2, 3 for histidines
+-----------------------------------------------------------------------------*/
 Integer StateVector_GetItem (const StateVector *self, const Integer index) {
   if (index < 0 || index > (self->length - 1)) {
     return -1;
@@ -146,9 +153,10 @@ Boolean StateVector_SetItem (const StateVector *self, const Integer index, const
   }
 }
 
-/*
- Get the actual content of the state vector, i.e. global index of an instance in the central arrays (_protons, _intrinsic, _interactions)
-*/
+/*-----------------------------------------------------------------------------
+ Get the actual content of the state vector, i.e. global index of 
+ an instance in the central arrays (_protons, _intrinsic, _interactions)
+-----------------------------------------------------------------------------*/
 Integer StateVector_GetActualItem (const StateVector *self, const Integer index) {
   if (index < 0 || index > (self->length - 1)) {
     return -1;
@@ -171,10 +179,12 @@ Boolean StateVector_SetActualItem (const StateVector *self, const Integer index,
   }
 }
 
-/* Incrementation algorithm by Timm Essigke 
+/*-----------------------------------------------------------------------------
+ Incrementation algorithm by Timm Essigke 
 
-One could write a code that prevents zeroing the state vector after the last iteration
-*/
+ One could write a code that prevents zeroing the state vector after 
+ the last iteration
+-----------------------------------------------------------------------------*/
 Boolean StateVector_Increment (const StateVector *self) {
   Integer i;
   Integer *v = self->vector, *minv = self->minvector, *maxv = self->maxvector;
@@ -191,9 +201,10 @@ Boolean StateVector_Increment (const StateVector *self) {
   return False;
 }
 
-/*-----------------------------------------------------------------------------
-  Substate-related functions
------------------------------------------------------------------------------*/
+
+/*=============================================================================
+  Functions related to substate
+=============================================================================*/
 Boolean StateVector_AllocateSubstate (StateVector *self, const Integer nsites) {
   if (self->substate != NULL) {
     /* Substate already allocated */
@@ -210,11 +221,11 @@ Boolean StateVector_AllocateSubstate (StateVector *self, const Integer nsites) {
   }
 }
 
-/*  
-    |selectedSiteIndex| is an index of the site to increment within the substate
+/*-----------------------------------------------------------------------------
+ |selectedSiteIndex| is an index of the site to increment within the substate
 
-    |index| is an index in the substate's array of selectedSiteIndices
-*/
+ |index| is an index in the substate's array of selectedSiteIndices
+-----------------------------------------------------------------------------*/
 Boolean StateVector_SetSubstateItem (const StateVector *self, const Integer selectedSiteIndex, const Integer index) {
   if (index < 0 || index > (self->slength - 1)) {
     return False;
@@ -273,9 +284,10 @@ Boolean StateVector_IncrementSubstate (const StateVector *self) {
   }
 }
 
-/*-----------------------------------------------------------------------------
+
+/*=============================================================================
   Calculating microstate energy
------------------------------------------------------------------------------*/
+=============================================================================*/
 Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const Real2DArray *interactions, const Real pH, const Real temperature) {
   Real Gintr = 0., W = 0.;
   Integer nprotons = 0, siteIndex, siteIndexInner, *instanceIndex, *instanceIndexInner;
@@ -291,9 +303,10 @@ Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integ
   return (Gintr - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * temperature * CONSTANT_LN10 * pH) + W);
 }
 
-/*-----------------------------------------------------------------------------
+
+/*=============================================================================
   Calculating probabilities analytically
------------------------------------------------------------------------------*/
+=============================================================================*/
 Boolean StateVector_CalculateProbabilitiesAnalytically (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const Real2DArray *interactions, const Real pH, const Real temperature, const Integer nstates, Real1DArray *probabilities) {
   Real1DArray *bfactors;
   Real        *bfactor;

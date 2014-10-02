@@ -26,26 +26,19 @@ exclusions = (
 )
 
 ce_model.Initialize (mol, excludeResidues = exclusions)
-
 ce_model.Summary ()
-
 ce_model.SummarySites ()
-
 ce_model.WriteJobFiles (mol)
-
 ce_model.CalculateElectrostaticEnergies ()
 
 
 logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 using GMCT ***\n")
-
 ce_model.CalculateProbabilitiesGMCT ()
-
 ce_model.SummaryProbabilities ()
 
 
 
 logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")
-
 ce_model.CalculateCurves (directory = "curves_gmct")
 
 

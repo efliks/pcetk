@@ -10,6 +10,8 @@
 
 /* memcpy comes from here */
 #include <stdlib.h>
+
+/* Needed, otherwise warnings */
 #include <string.h>
 
 #include "Boolean.h"
