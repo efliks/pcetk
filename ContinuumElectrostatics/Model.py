@@ -912,17 +912,17 @@ class MEADModel (object):
       for site in self.meadSites:
         ninstances = ninstances + len (site.instances)
 
-      # Initialize an array of protons
-      self._protons = Integer1DArray (ninstances)
+      # Allocate arrays of protons, intrinsic energies, interaction energies and probabilities
+      self._protons       = Integer1DArray (ninstances)
+      self._intrinsic     = Real1DArray    (ninstances)
+      self._interactions  = Real2DArray    (ninstances, ninstances)
+      self._probabilities = Real1DArray    (ninstances)
+
+      # Initialize the array of protons
       for site in self.meadSites:
         for instance in site.instances:
           self._protons[instance.instIndexGlobal] = protons[instance.instIndexGlobal]
           # Or: instance.protons = protons[instance.instIndexGlobal]
-
-      # Initialize arrays of intrinsic energies and interaction energies
-      self._intrinsic     = Real1DArray (ninstances)
-      self._interactions  = Real2DArray (ninstances, ninstances)
-      self._probabilities = Real1DArray (ninstances)
 
       self.isInitialized = True
 
