@@ -296,8 +296,24 @@ Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integ
     nprotons += Integer1DArray_Item (protons, *instanceIndex);
     Gintr += Real1DArray_Item (intrinsic, *instanceIndex);
 
-    for (siteIndexInner = 0, instanceIndexInner = self->vector; siteIndexInner < siteIndex; siteIndexInner++, instanceIndexInner++) {
+    for (siteIndexInner = 0, instanceIndexInner = self->vector; siteIndexInner <= siteIndex; siteIndexInner++, instanceIndexInner++) {
       W += Real2DArray_Item (interactions, *instanceIndex, *instanceIndexInner);
+    }
+  }
+  return (Gintr - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * temperature * CONSTANT_LN10 * pH) + W);
+}
+
+/* Calculate using symmetric matrix of interactions */
+Real StateVector_CalculateMicrostateEnergy_FromSymmetricMatrix (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const SymmetricMatrix *symmetricmatrix, const Real pH, const Real temperature) {
+  Real Gintr = 0., W = 0.;
+  Integer nprotons = 0, siteIndex, siteIndexInner, *instanceIndex, *instanceIndexInner;
+
+  for (siteIndex = 0, instanceIndex = self->vector; siteIndex < self->length; siteIndex++, instanceIndex++) {
+    nprotons += Integer1DArray_Item (protons, *instanceIndex);
+    Gintr += Real1DArray_Item (intrinsic, *instanceIndex);
+
+    for (siteIndexInner = 0, instanceIndexInner = self->vector; siteIndexInner <= siteIndex; siteIndexInner++, instanceIndexInner++) {
+      W += SymmetricMatrix_Item (symmetricmatrix, *instanceIndex, *instanceIndexInner);
     }
   }
   return (Gintr - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * temperature * CONSTANT_LN10 * pH) + W);
@@ -307,7 +323,7 @@ Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integ
 /*=============================================================================
   Calculating probabilities analytically
 =============================================================================*/
-Boolean StateVector_CalculateProbabilitiesAnalytically (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const Real2DArray *interactions, const Real pH, const Real temperature, const Integer nstates, Real1DArray *probabilities) {
+Boolean StateVector_CalculateProbabilitiesAnalytically (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const Real2DArray *interactions, const SymmetricMatrix *symmetricmatrix, const Real pH, const Real temperature, const Integer nstates, Real1DArray *probabilities) {
   Real1DArray *bfactors;
   Real        *bfactor;
   Real         energy, energyZero, bsum;
@@ -321,7 +337,12 @@ Boolean StateVector_CalculateProbabilitiesAnalytically (const StateVector *self,
   }
 
   for (stateIndex = 0, bfactor = bfactors->data; stateIndex < nstates; stateIndex++, bfactor++) {
-    energy = StateVector_CalculateMicrostateEnergy (self, protons, intrinsic, interactions, pH, temperature);
+    if (symmetricmatrix == NULL) {
+      energy = StateVector_CalculateMicrostateEnergy (self, protons, intrinsic, interactions, pH, temperature);
+    }
+    else {
+      energy = StateVector_CalculateMicrostateEnergy_FromSymmetricMatrix (self, protons, intrinsic, symmetricmatrix, pH, temperature);
+    }
 
     if (stateIndex < 1) {
       energyZero = energy;
