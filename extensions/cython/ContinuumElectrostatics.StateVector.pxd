@@ -9,6 +9,7 @@ from pCore.cDefinitions     cimport Boolean, CFalse, CTrue, Integer, Real
 from pCore.Integer1DArray   cimport CInteger1DArray, Integer1DArray
 from pCore.Real1DArray      cimport CReal1DArray, Real1DArray
 from pCore.Real2DArray      cimport CReal2DArray, Real2DArray
+from pCore.SymmetricMatrix  cimport CSymmetricMatrix, SymmetricMatrix
 
 __lastchanged__ = "$Id$"
 
@@ -45,9 +46,10 @@ cdef extern from "StateVector.h":
 
   # Calculating microstate energy
   cdef Real         StateVector_CalculateMicrostateEnergy (CStateVector *self, CInteger1DArray *protons, CReal1DArray *intrinsic, CReal2DArray *interactions, Real pH, Real temperature)
+  cdef Real         StateVector_CalculateMicrostateEnergy_FromSymmetricMatrix (CStateVector *self, CInteger1DArray *protons, CReal1DArray *intrinsic, CSymmetricMatrix *symmetricmatrix, Real pH, Real temperature)
 
   # Calculating probabilities of protonation states analytically
-  cdef Boolean      StateVector_CalculateProbabilitiesAnalytically (CStateVector *self, CInteger1DArray *protons, CReal1DArray *intrinsic, CReal2DArray *interactions, Real pH, Real temperature, Integer nstates, CReal1DArray *probabilities)
+  cdef Boolean      StateVector_CalculateProbabilitiesAnalytically (CStateVector *self, CInteger1DArray *protons, CReal1DArray *intrinsic, CReal2DArray *interactions, CSymmetricMatrix *symmetricmatrix, Real pH, Real temperature, Integer nstates, CReal1DArray *probabilities)
 
 
 #-------------------------------------------------------------------------------

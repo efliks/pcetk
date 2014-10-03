@@ -14,7 +14,7 @@ __lastchanged__ = "$Id$"
 
 import os, glob, threading, subprocess, time
 
-from pCore                 import logFile, LogFileActive, Selection, YAMLUnpickle, Clone, Integer1DArray, Real1DArray, Real2DArray
+from pCore                 import logFile, LogFileActive, Selection, YAMLUnpickle, Clone, Integer1DArray, Real1DArray, Real2DArray, SymmetricMatrix
 from Constants             import *
 from Error                 import ContinuumElectrostaticsError
 from Site                  import MEADSite
@@ -109,6 +109,7 @@ class MEADModel (object):
     "_intrinsic"         :  None                    ,
     "_interactions"      :  None                    ,
     "_probabilities"     :  None                    ,
+    "_symmetricmatrix"   :  None                    ,
         }
 
   defaultAttributeNames = {
@@ -438,7 +439,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def CalculateElectrostaticEnergies (self, calculateETA=True, log=logFile):
+  def CalculateElectrostaticEnergies (self, calculateETA=True, symmetrizeInteractions=False, log=logFile):
     """
     Calculate for each instance of each site:
     - self (Born) energy in the model compound
@@ -539,71 +540,109 @@ class MEADModel (object):
         tab.Stop ()
         log.Text ("\nCalculating electrostatic energies complete.\n")
 
+      if symmetrizeInteractions:
+        self.SymmetrizeInteractions (log)
+
       self.isCalculated = True
 
 
   #===============================================================================
-  def SymmetrizeInteractions (self):
+  def SymmetrizeInteractions (self, log=logFile):
     """Symmetrize interaction energies inside the matrix of interactions."""
-    pass
+    if self.isCalculated:
+      if self._symmetricmatrix is None:
+        ninstances = len (self._protons)
+        self._symmetricmatrix = SymmetricMatrix (ninstances)
+
+        for i in xrange (ninstances):
+          for j in xrange (i + 1):
+            self._symmetricmatrix[i, j] = .5 * (self._interactions[i, j] + self._interactions[j, i])
+
+        if LogFileActive (log):
+          log.Text ("\nSymmetrizing interactions complete.\n")
 
 
   #===============================================================================
+  def _GetInstanceByGlobalIndex (self, instIndexGlobal):
+    """Search for instance based on the given global index"""
+    instanceToReturn = None
+
+    if self.isInitialized:
+      ninstances = len (self._protons)
+      if instIndexGlobal < 0 or instIndexGlobal > (ninstances - 1):
+        raise ContinuumElectrostaticsError ("Instance index out of range.")
+  
+      for site in self.meadSites:
+        for instance in site.instances:
+          if instance.instIndexGlobal == instIndexGlobal:
+            break
+      instanceToReturn = instance
+    return instanceToReturn
+
+
+  #===============================================================================
+  # Real2DArray_IsSymmetric from pDynamo is not available
+
   def CheckIfSymmetric (self, threshold=0.03, log=logFile):
     """After calculating electrostatic energies, check the symmetricity of the matrix of interactions."""
-  # Real2DArray_IsSymmetric from pDynamo is not available
+    isSymmetric  = False
+    maxDeviation = 0.
+
     if self.isCalculated:
-      columnWidth  = 26
       isSymmetric  = True
+      ninstances   = len (self._protons)
       report       = []
-      pairs        = []
 
-      # This fragment of code comes from WriteW  
-      for asite in self.meadSites:
-        for ainstance in asite.instances:
+      for row in xrange (ninstances):
+        for column in xrange (ninstances):
+          symmetry  = .5 * (self._interactions[row, column] + self._interactions[column, row])
+          deviation = symmetry - self._interactions[row, column]
 
-          for bsite in self.meadSites:
-            for binstance in bsite.instances:
-              ai   = ainstance.instIndexGlobal
-              wij  = self._interactions [ai, bi]
-              bi   = binstance.instIndexGlobal
-              wji  = self._interactions [bi, ai]
+          absoluteDeviation = abs (deviation)
+          if absoluteDeviation > threshold:
+            isSymmetric = False
+            report.append ([row, column, deviation])
 
-              symmetric = (wij + wji) * .5
-              deviation = abs (symmetric - wij)
+          if absoluteDeviation > maxDeviation:
+            maxDeviation = absoluteDeviation
+ 
+ 
+      if not isSymmetric:
+        if LogFileActive (log):
+          heads = [ ("Instance of a site A" , 4),
+                    ("Instance of a site B" , 4),
+                    ("Deviation"            , 0), ]
+          columns = (7, 7, 7, 7, 7, 7, 7, 7, 12)
+          gaps = ("%7s", "%7s", "%7d", "%7s")
 
-              if deviation > threshold:
-                isSymmetric = False
-                if (ai, bi) not in pairs:
-                  pa = (ai, bi)
-                  pb = (bi, ai)
-                  pairs.extend ((pa, pb))
-                  report.append ([ainstance, binstance, deviation])
-  
-      if LogFileActive (log):
-        if not isSymmetric:
-          table = log.GetTable (columns = [columnWidth, columnWidth, columnWidth])
-          table.Start ()
-          table.Title ("Deviations inside the matrix of interactions (threshold: %.4f)" % threshold)
-          table.Heading ("Instance of site A")
-          table.Heading ("Instance of site B")
-          table.Heading ("Deviation")
-    
-          for ainstance, binstance, deviation in report:
-            asite = ainstance.parent
-            entry = "%4s %4s %4d %4s" % (asite.segName, asite.resName, asite.resSerial, ainstance.label)
-            table.Entry (entry.center (columnWidth))
-  
-            bsite = binstance.parent
-            entry = "%4s %4s %4d %4s" % (bsite.segName, bsite.resName, bsite.resSerial, binstance.label)
-            table.Entry (entry.center (columnWidth))
-  
-            entry = "%.4f" % deviation
-            table.Entry (entry.center (columnWidth))
-          table.Stop ()
-        else:
-          log.Text ("\nMatrix of interactions is symmetric within the threshold of %.4f kcal/mol\n" % threshold)
-      return isSymmetric
+          tab = log.GetTable (columns = columns)
+          tab.Start ()
+          tab.Title ("Deviations of interactions")
+          for head, span in heads:
+            if span > 0:
+              tab.Heading (head, columnSpan = span)
+            else:
+              tab.Heading (head)
+
+          for row, column, deviation in report:
+            ainstance = self._GetInstanceByGlobalIndex (row)
+            asite     = ainstance.parent
+            for gap, content in zip (gaps, (asite.segName, asite.resName, asite.resSerial, ainstance.label)):
+              tab.Entry (gap % content)
+
+            binstance = self._GetInstanceByGlobalIndex (column)
+            bsite     = binstance.parent
+            for gap, content in zip (gaps, (bsite.segName, bsite.resName, bsite.resSerial, binstance.label)):
+              tab.Entry (gap % content)
+
+            tab.Entry ("%.3f" % deviation)
+          tab.Stop ()
+
+      if isSymmetric:
+        if LogFileActive (log):
+          log.Text ("\nInteractions are symmetric within the given threshold.\n")
+
+    return (isSymmetric, maxDeviation)
 
 
   #===============================================================================
@@ -926,10 +965,10 @@ class MEADModel (object):
         ninstances = ninstances + len (site.instances)
 
       # Allocate arrays of protons, intrinsic energies, interaction energies and probabilities
-      self._protons       = Integer1DArray (ninstances)
-      self._intrinsic     = Real1DArray    (ninstances)
-      self._interactions  = Real2DArray    (ninstances, ninstances)
-      self._probabilities = Real1DArray    (ninstances)
+      self._protons         = Integer1DArray  (ninstances)
+      self._intrinsic       = Real1DArray     (ninstances)
+      self._interactions    = Real2DArray     (ninstances, ninstances)
+      self._probabilities   = Real1DArray     (ninstances)
 
       # Initialize the array of protons
       for site in self.meadSites:
