@@ -472,11 +472,9 @@ class MEADModel (object):
                   ("Gmodel"             , 0),
                   ("Gintr"              , 0), ]
         columns = [6, 6, 6, 6, 16, 16, 16, 16, 16, 16]
-
         if calculateETA:
           headings.append (("ETA", 0))
           columns.append (16)
-
         tab = log.GetTable (columns = columns)
         tab.Start ()
         for head, span in heads:
@@ -612,11 +610,13 @@ class MEADModel (object):
   def Initialize (self, system, excludeSegments=None, excludeResidues=None, includeTermini=False, log=logFile):
     """Decompose the system into model compounds, sites and a background charge set.
 
-    |excludeSegments| is a sequence of segment names to exclude.
+    |excludeSegments| is a sequence of segment names to exclude from the model, usually segments of water molecules.
 
     |excludeResidues| is a sequence of three-element sequences (segmentName, residueName, residueSerial).
 
-    It is possible to leave some of the elements blank, for example ("PRTA", "CYS", "") means exclude all cysteines in segment PRTA."""
+    It is possible to leave some of the elements blank, for example ("PRTA", "CYS", "") means exclude all cysteines in segment PRTA.
+
+    Only C-terminus is supported and the support is experimental."""
 
     # Check for the CHARMM energy model
     if system.energyModel.mmModel.label is not "CHARMM":
@@ -703,7 +703,7 @@ class MEADModel (object):
 
             if includeResidue:
 
-              #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+              #============= Start experimental code =============
               terminus = None
               excludeTerminusNames = []
 
@@ -729,7 +729,7 @@ class MEADModel (object):
 
                   if terminus:
                     excludeTerminusNames = libTerminus["atoms"]
-              #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+              #============== End experimental code ==============
 
 
               # Titratable residue? 
@@ -775,11 +775,20 @@ class MEADModel (object):
                 atoms            = residue.children
                 modelAtomIndices = prevIndices
                 siteAtomIndices  = []
+                missingNames     = []
 
                 for libAtomName in libSiteAtoms:
+                  index = -1
                   for atom in atoms:
                     if libAtomName == atom.label:
-                      siteAtomIndices.append (atom.index)
+                      index = atom.index
+                      break
+                  if index >= 0:
+                    siteAtomIndices.append (index)
+                  else:
+                    missingNames.append (libAtomName)
+                if missingNames:
+                  raise ContinuumElectrostaticsError ("Cannot include site %s %s %d because of missing atoms: %s" % (segmentName, residueName, residueSerial, " ".join (missingNames)))
 
                 for atom in atoms:
                   if atom.label not in excludeTerminusNames:
@@ -794,8 +803,8 @@ class MEADModel (object):
                                segName          = segmentName       ,
                                resName          = residueName       ,
                                resSerial        = residueSerial     ,
-                               modelAtomIndices = modelAtomIndices  ,
                                siteAtomIndices  = siteAtomIndices   ,
+                               modelAtomIndices = modelAtomIndices  ,
                                    )
 
                 # Calculate center of geometry
@@ -812,22 +821,26 @@ class MEADModel (object):
                 siteIndex = siteIndex + 1
 
 
-              #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+              #============= Start experimental code =============
               if terminus:
                 libSiteAtoms     = libTerminus["atoms"]
                 atoms            = residue.children
                 siteAtomIndices  = []
                 modelAtomIndices = []
+                missingNames     = []
 
                 for libAtomName in libSiteAtoms:
-                  found = False
+                  index = -1
                   for atom in atoms:
                     if libAtomName == atom.label:
-                      siteAtomIndices.append (atom.index)
-                      found = True
+                      index = atom.index
                       break
-                  if not found:
-                    raise ContinuumElectrostaticsError ("Cannot include terminus because of missing atom: %s" % libAtomName)
+                  if index >= 0:
+                    siteAtomIndices.append (index)
+                  else:
+                    missingNames.append (libAtomName)
+                if missingNames:
+                  raise ContinuumElectrostaticsError ("Cannot include terminus %s %s %d because of missing atoms: %s" % (segmentName, residueName, residueSerial, " ".join (missingNames)))
 
                 # Construct a model compound
                 if residueIndex > 1:
@@ -853,8 +866,8 @@ class MEADModel (object):
                       segName          = segmentName       ,
                       resName          = terminus          ,
                       resSerial        = terminusSerial    ,
-                      modelAtomIndices = modelAtomIndices  ,
                       siteAtomIndices  = siteAtomIndices   ,
+                      modelAtomIndices = modelAtomIndices  ,
                                    )
                 newSite.CalculateCenterOfGeometry (system, libSite["center"])
                 protonsOfInstances, updatedIndexGlobal = newSite._CreateInstances (libSite["instances"], instIndexGlobal)
@@ -864,7 +877,7 @@ class MEADModel (object):
                 
                 self.meadSites.append (newSite)
                 siteIndex = siteIndex + 1
-              #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+              #============== End experimental code ==============
 
 
 

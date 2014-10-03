@@ -29,8 +29,8 @@ class MEADSite (object):
                   "resSerial"        : None , # <--Keep it as integer
                   "instances"        : None ,
                   "center"           : None ,
-                  "modelAtomIndices" : None ,
                   "siteAtomIndices"  : None ,
+                  "modelAtomIndices" : None ,
                       }
 
   @property
