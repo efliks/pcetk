@@ -46,7 +46,6 @@ extern Integer      StateVector_GetActualItem     (const StateVector *self, cons
 extern Boolean      StateVector_SetActualItem     (const StateVector *self, const Integer index, const Integer value);
 extern Boolean      StateVector_Increment         (const StateVector *self);
 
-
 /* Substate-related functions */
 extern void         StateVector_ResetSubstate     (const StateVector *self);
 extern Boolean      StateVector_AllocateSubstate  (      StateVector *self, const Integer nsites);
@@ -54,14 +53,10 @@ extern Boolean      StateVector_IncrementSubstate (const StateVector *self);
 extern Boolean      StateVector_SetSubstateItem   (const StateVector *self, const Integer selectedSiteIndex, const Integer index);
 extern Integer      StateVector_GetSubstateItem   (const StateVector *self, const Integer index);
 
-
 /* Calculating microstate energy */
-extern Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const Real2DArray *interactions, const Real pH, const Real temperature);
-
-extern Real StateVector_CalculateMicrostateEnergy_FromSymmetricMatrix (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const SymmetricMatrix *symmetricmatrix, const Real pH, const Real temperature);
-
+extern Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const SymmetricMatrix *symmetricmatrix, const Real pH, const Real temperature);
 
 /* Calculating probabilities of protonation states analytically */
-extern Boolean StateVector_CalculateProbabilitiesAnalytically (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const Real2DArray *interactions, const SymmetricMatrix *symmetricmatrix, const Real pH, const Real temperature, const Integer nstates, Real1DArray *probabilities);
+extern Boolean StateVector_CalculateProbabilitiesAnalytically (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const SymmetricMatrix *symmetricmatrix, const Real pH, const Real temperature, const Integer nstates, Real1DArray *probabilities);
 
 #endif
