@@ -120,6 +120,21 @@ class MEADModel (object):
     "Delete Job Files"  : "deleteJobFiles"     ,
         }
 
+  @property
+  def ninstances (self):
+    # The easiest way of getting the total number of instances
+    if self._protons is not None:
+      return len (self._protons)
+    else:
+      return 0
+
+  @property
+  def nsites (self):
+    if self.meadSites is not None:
+      return len (self.meadSites)
+    else:
+      return 0
+
 
   #===============================================================================
   def __del__ (self):
@@ -439,7 +454,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def CalculateElectrostaticEnergies (self, calculateETA=True, symmetrizeInteractions=False, log=logFile):
+  def CalculateElectrostaticEnergies (self, calculateETA=True, asymmetricThreshold=0.03, log=logFile):
     """
     Calculate for each instance of each site:
     - self (Born) energy in the model compound
@@ -452,12 +467,9 @@ class MEADModel (object):
     Finally, use the calculated heterotransfer energies to calculate Gintr from Gmodel.
     """
     if self.isFilesWritten:
-      # Total number of instances is needed for calculating ETA
-      ninstances = 0
-      for site in self.meadSites:
-        ninstances = ninstances + len (site.instances)
-      times = []
-      tab   = None
+      ninstances = self.ninstances
+      times      = []
+      tab        = None
 
       if LogFileActive (log):
         if self.nthreads < 2:
@@ -540,26 +552,22 @@ class MEADModel (object):
         tab.Stop ()
         log.Text ("\nCalculating electrostatic energies complete.\n")
 
-      if symmetrizeInteractions:
-        self.SymmetrizeInteractions (log)
+
+      isSymmetric, maxDeviation = self._CheckIfSymmetric (threshold=asymmetricThreshold, log=log)
+
+      #if LogFileActive (log):
+      #  if not isSymmetric:
+      #    log.Text ("\nWarning: maximum deviation of interactions is %.3f\n" % maxDeviation)
+
+      # Symmetrize interaction energies inside the matrix of interactions
+      for i in xrange (self.ninstances):
+        for j in xrange (i + 1):
+          self._symmetricmatrix[i, j] = .5 * (self._interactions[i, j] + self._interactions[j, i])
+
+      if LogFileActive (log):
+        log.Text ("\nSymmetrizing interactions complete.\n")
 
       self.isCalculated = True
-
-
-  #===============================================================================
-  def SymmetrizeInteractions (self, log=logFile):
-    """Symmetrize interaction energies inside the matrix of interactions."""
-    if self.isCalculated:
-      if self._symmetricmatrix is None:
-        ninstances = len (self._protons)
-        self._symmetricmatrix = SymmetricMatrix (ninstances)
-
-        for i in xrange (ninstances):
-          for j in xrange (i + 1):
-            self._symmetricmatrix[i, j] = .5 * (self._interactions[i, j] + self._interactions[j, i])
-
-        if LogFileActive (log):
-          log.Text ("\nSymmetrizing interactions complete.\n")
 
 
   #===============================================================================
@@ -568,8 +576,7 @@ class MEADModel (object):
     instanceToReturn = None
 
     if self.isInitialized:
-      ninstances = len (self._protons)
-      if instIndexGlobal < 0 or instIndexGlobal > (ninstances - 1):
+      if instIndexGlobal < 0 or instIndexGlobal > (self.ninstances - 1):
         raise ContinuumElectrostaticsError ("Instance index out of range.")
   
       for site in self.meadSites:
@@ -583,14 +590,14 @@ class MEADModel (object):
   #===============================================================================
   # Real2DArray_IsSymmetric from pDynamo is not available
 
-  def CheckIfSymmetric (self, threshold=0.03, log=logFile):
+  def _CheckIfSymmetric (self, threshold=0.03, log=logFile):
     """After calculating electrostatic energies, check the symmetricity of the matrix of interactions."""
     isSymmetric  = False
     maxDeviation = 0.
 
     if self.isCalculated:
       isSymmetric  = True
-      ninstances   = len (self._protons)
+      ninstances   = self.ninstances
       report       = []
 
       for row in xrange (ninstances):
@@ -959,16 +966,17 @@ class MEADModel (object):
       self.sitesFpt = os.path.join (self.scratch, "site.fpt")
 
 
-      # Determine total number of instances (or: len (protons))
+      # Determine total number of instances
       ninstances = 0
       for site in self.meadSites:
         ninstances = ninstances + len (site.instances)
 
       # Allocate arrays of protons, intrinsic energies, interaction energies and probabilities
-      self._protons         = Integer1DArray  (ninstances)
-      self._intrinsic       = Real1DArray     (ninstances)
-      self._interactions    = Real2DArray     (ninstances, ninstances)
-      self._probabilities   = Real1DArray     (ninstances)
+      self._protons          =  Integer1DArray   (ninstances)
+      self._intrinsic        =  Real1DArray      (ninstances)
+      self._interactions     =  Real2DArray      (ninstances, ninstances)
+      self._probabilities    =  Real1DArray      (ninstances)
+      self._symmetricmatrix  =  SymmetricMatrix  (ninstances)
 
       # Initialize the array of protons
       for site in self.meadSites:
@@ -993,13 +1001,8 @@ class MEADModel (object):
         attrConv = ConvertAttribute (attr)
         summary.Entry (key, attrConv)
 
-      nsites     = len (self.meadSites)
-      ninstances = 0
-      for site in self.meadSites:
-        ninstances = ninstances + len (site.instances)
-
-      summary.Entry ("Number Of Sites",     "%s" % nsites)
-      summary.Entry ("Number Of Instances", "%s" % ninstances)
+      summary.Entry ("Number Of Sites",     "%s" % self.nsites)
+      summary.Entry ("Number Of Instances", "%s" % self.ninstances)
       summary.Stop ()
 
 

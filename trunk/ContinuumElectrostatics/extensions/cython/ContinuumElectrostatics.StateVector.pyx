@@ -71,7 +71,7 @@ cdef class StateVector:
 
     numberOfSites = len (meadModel.meadSites)
     self.cObject = StateVector_Allocate (numberOfSites)
-    if (self.cObject == NULL): 
+    if (self.cObject == NULL):
       raise CLibraryError ("Cannot allocate state vector.")
 
     for indexSite from 0 <= indexSite < numberOfSites:
@@ -217,7 +217,7 @@ cdef class StateVector:
 
 
   def IncrementSubstate (self):
-    """Generate a new substate. 
+    """Generate a new substate.
 
     Return False after the incrementation has finished."""
     cdef Boolean status
@@ -235,50 +235,41 @@ cdef class StateVector:
 
   def CalculateMicrostateEnergy (self, meadModel, Real pH=7.0):
     """Calculate energy of a protonation state (=microstate)."""
-    cdef Real             Gmicro        = 0.
-    cdef Real             temperature   = meadModel.temperature
-    cdef Integer1DArray   protons       = meadModel._protons
-    cdef Real1DArray      intrinsic
-    cdef Real2DArray      interactions
-    cdef SymmetricMatrix  symmetricmatrix
+    cdef Real             Gmicro           =  0.
+    cdef Real             temperature      =  meadModel.temperature
+    cdef Integer1DArray   protons          =  meadModel._protons
+    cdef Real1DArray      intrinsic        =  meadModel._intrinsic
+    cdef SymmetricMatrix  symmetricmatrix  =  meadModel._symmetricmatrix
 
     if meadModel.isCalculated:
-      intrinsic    = meadModel._intrinsic
-
-      if meadModel._symmetricmatrix is not None:
-        symmetricmatrix = meadModel._symmetricmatrix
-        Gmicro = StateVector_CalculateMicrostateEnergy_FromSymmetricMatrix (self.cObject, protons.cObject, intrinsic.cObject, symmetricmatrix.cObject, pH, temperature)
-      else:
-        interactions = meadModel._interactions
-        Gmicro = StateVector_CalculateMicrostateEnergy (self.cObject, protons.cObject, intrinsic.cObject, interactions.cObject, pH, temperature)
+      Gmicro = StateVector_CalculateMicrostateEnergy (self.cObject, protons.cObject, intrinsic.cObject, symmetricmatrix.cObject, pH, temperature)
     return Gmicro
 
 
-  def CalculateProbabilitiesAnalytically (self, meadModel, Real pH=7.0):
-    """Calculate probabilities of protonation states analytically."""
-    cdef Boolean          status
-    cdef Integer          nstates          = 1
-    cdef Integer          ninstances       
-    cdef Real             temperature      = meadModel.temperature
-    cdef Integer1DArray   protons          = meadModel._protons
-    cdef Real1DArray      intrinsic        = meadModel._intrinsic
-    cdef Real2DArray      interactions     = meadModel._interactions
-    cdef Real1DArray      probabilities    = meadModel._probabilities
-    cdef SymmetricMatrix  symmetricmatrix
+  def GetNumberOfStates (self, meadModel):
+    """Calculate total number of possible protonation states."""
+    cdef Integer nstates    = 1
+    cdef Integer ninstances
 
     for meadSite in meadModel.meadSites:
       ninstances = len (meadSite.instances)
       nstates = nstates * ninstances
       if nstates > ANALYTIC_STATES:
         raise CLibraryError ("Maximum number of states (%d) exceeded." % ANALYTIC_STATES)
+    return nstates
 
-    if meadModel._symmetricmatrix is not None:
-      symmetricmatrix = meadModel._symmetricmatrix
-      status = StateVector_CalculateProbabilitiesAnalytically (self.cObject, protons.cObject, intrinsic.cObject, NULL,                 symmetricmatrix.cObject, pH, temperature, nstates, probabilities.cObject)
-    else:
-      status = StateVector_CalculateProbabilitiesAnalytically (self.cObject, protons.cObject, intrinsic.cObject, interactions.cObject, NULL,                    pH, temperature, nstates, probabilities.cObject)
 
+  def CalculateProbabilitiesAnalytically (self, meadModel, Real pH=7.0):
+    """Calculate probabilities of protonation states analytically."""
+    cdef Boolean          status
+    cdef Integer          nstates          =  self.GetNumberOfStates (meadModel)
+    cdef Real             temperature      =  meadModel.temperature
+    cdef Integer1DArray   protons          =  meadModel._protons
+    cdef Real1DArray      intrinsic        =  meadModel._intrinsic
+    cdef Real1DArray      probabilities    =  meadModel._probabilities
+    cdef SymmetricMatrix  symmetricmatrix  =  meadModel._symmetricmatrix
+
+    status = StateVector_CalculateProbabilitiesAnalytically (self.cObject, protons.cObject, intrinsic.cObject, symmetricmatrix.cObject, pH, temperature, nstates, probabilities.cObject)
     if status == CFalse:
       raise CLibraryError ("Cannot allocate Boltzmann factors.")
-
     return nstates

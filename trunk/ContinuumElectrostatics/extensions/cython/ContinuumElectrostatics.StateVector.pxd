@@ -45,11 +45,10 @@ cdef extern from "StateVector.h":
   cdef Integer      StateVector_GetSubstateItem    (CStateVector *self, Integer index)
 
   # Calculating microstate energy
-  cdef Real         StateVector_CalculateMicrostateEnergy (CStateVector *self, CInteger1DArray *protons, CReal1DArray *intrinsic, CReal2DArray *interactions, Real pH, Real temperature)
-  cdef Real         StateVector_CalculateMicrostateEnergy_FromSymmetricMatrix (CStateVector *self, CInteger1DArray *protons, CReal1DArray *intrinsic, CSymmetricMatrix *symmetricmatrix, Real pH, Real temperature)
+  cdef Real         StateVector_CalculateMicrostateEnergy (CStateVector *self, CInteger1DArray *protons, CReal1DArray *intrinsic, CSymmetricMatrix *symmetricmatrix, Real pH, Real temperature)
 
   # Calculating probabilities of protonation states analytically
-  cdef Boolean      StateVector_CalculateProbabilitiesAnalytically (CStateVector *self, CInteger1DArray *protons, CReal1DArray *intrinsic, CReal2DArray *interactions, CSymmetricMatrix *symmetricmatrix, Real pH, Real temperature, Integer nstates, CReal1DArray *probabilities)
+  cdef Boolean      StateVector_CalculateProbabilitiesAnalytically (CStateVector *self, CInteger1DArray *protons, CReal1DArray *intrinsic, CSymmetricMatrix *symmetricmatrix, Real pH, Real temperature, Integer nstates, CReal1DArray *probabilities)
 
 
 #-------------------------------------------------------------------------------
