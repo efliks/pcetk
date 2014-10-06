@@ -30,19 +30,12 @@ from PQRFileWriter         import PQRFile_FromSystem
 
 
 _DefaultTemperature     = 300.0
-
 _DefaultIonicStrength   = 0.1
-
 _DefaultMeadPath        = "/usr/bin"
-
 _DefaultGmctPath        = "/usr/bin"
-
 _DefaultScratch         = "/tmp"
-
 _DefaultThreads         = 1
-
 _DefaultCleanUp         = False
-
 _DefaultFocussingSteps  = ((121, 2.00), (101, 1.00), (101, 0.50), (101, 0.25))
 
 _DefaultGmctSetup       = """
@@ -85,31 +78,31 @@ class MEADModel (object):
   """Continuum electrostatic model."""
 
   defaultAttributes = {
-    "temperature"        :  _DefaultTemperature     ,
-    "ionicStrength"      :  _DefaultIonicStrength   ,
-    "meadPath"           :  _DefaultMeadPath        ,
-    "gmctPath"           :  _DefaultGmctPath        ,
-    "nthreads"           :  _DefaultThreads         ,
-    "deleteJobFiles"     :  _DefaultCleanUp         ,
-    "scratch"            :  _DefaultScratch         ,
-    "focussingSteps"     :  _DefaultFocussingSteps  ,
-    "librarySites"       :  None                    ,
-    "meadSites"          :  None                    ,
-    "backAtomIndices"    :  None                    ,
-    "proteinAtomIndices" :  None                    ,
-    "backPqr"            :  None                    ,
-    "proteinPqr"         :  None                    ,
-    "sitesFpt"           :  None                    ,
-    "splitToDirectories" :  True                    ,
-    "isInitialized"      :  False                   ,
-    "isFilesWritten"     :  False                   ,
-    "isCalculated"       :  False                   ,
-    "isProbability"      :  False                   ,
-    "_protons"           :  None                    ,
-    "_intrinsic"         :  None                    ,
-    "_interactions"      :  None                    ,
-    "_probabilities"     :  None                    ,
-    "_symmetricmatrix"   :  None                    ,
+    "temperature"         :   _DefaultTemperature      ,
+    "ionicStrength"       :   _DefaultIonicStrength    ,
+    "meadPath"            :   _DefaultMeadPath         ,
+    "gmctPath"            :   _DefaultGmctPath         ,
+    "nthreads"            :   _DefaultThreads          ,
+    "deleteJobFiles"      :   _DefaultCleanUp          ,
+    "scratch"             :   _DefaultScratch          ,
+    "focussingSteps"      :   _DefaultFocussingSteps   ,
+    "librarySites"        :   None                     ,
+    "meadSites"           :   None                     ,
+    "backAtomIndices"     :   None                     ,
+    "proteinAtomIndices"  :   None                     ,
+    "backPqr"             :   None                     ,
+    "proteinPqr"          :   None                     ,
+    "sitesFpt"            :   None                     ,
+    "splitToDirectories"  :   True                     ,
+    "isInitialized"       :   False                    ,
+    "isFilesWritten"      :   False                    ,
+    "isCalculated"        :   False                    ,
+    "isProbability"       :   False                    ,
+    "_protons"            :   None                     ,
+    "_intrinsic"          :   None                     ,
+    "_interactions"       :   None                     ,
+    "_probabilities"      :   None                     ,
+    "_symmetricmatrix"    :   None                     ,
         }
 
   defaultAttributeNames = {
@@ -570,17 +563,15 @@ class MEADModel (object):
   #===============================================================================
   def _GetInstanceByGlobalIndex (self, instIndexGlobal):
     """Search for instance based on the given global index"""
+    if instIndexGlobal < 0 or instIndexGlobal > (self.ninstances - 1):
+      raise ContinuumElectrostaticsError ("Instance index out of range.")
     instanceToReturn = None
 
-    if self.isInitialized:
-      if instIndexGlobal < 0 or instIndexGlobal > (self.ninstances - 1):
-        raise ContinuumElectrostaticsError ("Instance index out of range.")
-  
-      for site in self.meadSites:
-        for instance in site.instances:
-          if instance.instIndexGlobal == instIndexGlobal:
-            break
-      instanceToReturn = instance
+    for site in self.meadSites:
+      for instance in site.instances:
+        if instance.instIndexGlobal == instIndexGlobal:
+          instanceToReturn = instance
+          break
     return instanceToReturn
 
 
@@ -613,23 +604,23 @@ class MEADModel (object):
         log.Text ("\nInteractions are symmetric within the given threshold.\n")
       else:
         if not printSummary:
-          log.Text ("\nWarning: maximum deviation of interactions is %.3f\n" % maxDeviation)
+          log.Text ("\nWARNING: Maximum deviation of interactions is %0.4f kcal/mol.\n" % maxDeviation)
         else:
           heads = [ ("Instance of a site A" , 4),
                     ("Instance of a site B" , 4),
                     ("Deviation"            , 0), ]
           columns = (7, 7, 7, 7, 7, 7, 7, 7, 12)
           gaps = ("%7s", "%7s", "%7d", "%7s")
-          
-          tab = log.GetTable (columns = columns)
+
+          tab = log.GetTable (columns=columns)
           tab.Start ()
           tab.Title ("Deviations of interactions")
           for head, span in heads:
             if span > 0:
-              tab.Heading (head, columnSpan = span)
+              tab.Heading (head, columnSpan=span)
             else:
               tab.Heading (head)
-          
+
           for row, column, deviation in report:
             ainstance = self._GetInstanceByGlobalIndex (row)
             asite     = ainstance.parent
@@ -641,7 +632,7 @@ class MEADModel (object):
             for gap, content in zip (gaps, (bsite.segName, bsite.resName, bsite.resSerial, binstance.label)):
               tab.Entry (gap % content)
           
-            tab.Entry ("%.3f" % deviation)
+            tab.Entry ("%0.4f" % deviation)
           tab.Stop ()
 
     return (isSymmetric, maxDeviation)
