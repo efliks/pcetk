@@ -105,13 +105,26 @@ class MEADInstance (object):
   def interactions (self):
     model = self.parent.parent
     if model._interactions:
-      sites = []
-      for site in model.meadSites:
-        instances = []
-        for instance in site.instances:
-          instances.append (model._interactions[self.instIndexGlobal, instance.instIndexGlobal])
-        sites.append (instances)
-      return sites
+      ninstances = model.ninstances
+      energies = [0.] * ninstances
+      for instIndexGlobal in xrange (ninstances):
+        i = self.instIndexGlobal
+        j = instIndexGlobal
+        if i > j: i, j = j, i
+        energies[instIndexGlobal] = (model._symmetricmatrix[i, j])
+      return energies
+    else:
+      return None
+
+  @property
+  def interAsymmetric (self):
+    model = self.parent.parent
+    if model._interactions:
+      ninstances = model.ninstances
+      energies = [0.] * ninstances
+      for instIndexGlobal in xrange (ninstances):
+        energies[instIndexGlobal] = (model._interactions[self.instIndexGlobal, instIndexGlobal])
+      return energies
     else:
       return None
 
@@ -247,39 +260,39 @@ class MEADInstance (object):
 
 
   #===============================================================================
-  def PrintInteractions (self, sort = False, log = logFile):
-    """Print interactions of an instance of a site with other instances of other sites."""
-    if LogFileActive (log):
-      site         = self.parent
-      model        = site.parent
-      interactions = self.interactions
-
-      if model.isCalculated:
-        instances = []
-
-        for site in model.meadSites:
-          for instance in site.instances:
-            wij = interactions[site.siteIndex][instance.instIndex]
-            instances.append ([wij, site.segName, site.resName, site.resSerial, instance.label])
-        if sort: 
-          instances.sort ()
-
-        tab = log.GetTable (columns = [6, 6, 6, 6, 16])
-        tab.Start ()
-        tab.Heading ("Instance of a site", columnSpan = 4)
-        tab.Heading ("Wij")
-
-        for wij, segName, resName, resSerial, label in instances:
-          entries = (
-               ( "%s"     % segName   ),
-               ( "%s"     % resName   ),
-               ( "%d"     % resSerial ),
-               ( "%s"     % label     ),
-               ( "%16.4f" % wij       ),
-                    )
-          for entry in entries:
-            tab.Entry (entry)
-        tab.Stop ()
+#  def PrintInteractions (self, sort = False, log = logFile):
+#    """Print interactions of an instance of a site with other instances of other sites."""
+#    if LogFileActive (log):
+#      site         = self.parent
+#      model        = site.parent
+#      interactions = self.interactions
+#
+#      if model.isCalculated:
+#        instances = []
+#
+#        for site in model.meadSites:
+#          for instance in site.instances:
+#            wij = interactions[site.siteIndex][instance.instIndex]
+#            instances.append ([wij, site.segName, site.resName, site.resSerial, instance.label])
+#        if sort: 
+#          instances.sort ()
+#
+#        tab = log.GetTable (columns = [6, 6, 6, 6, 16])
+#        tab.Start ()
+#        tab.Heading ("Instance of a site", columnSpan = 4)
+#        tab.Heading ("Wij")
+#
+#        for wij, segName, resName, resSerial, label in instances:
+#          entries = (
+#               ( "%s"     % segName   ),
+#               ( "%s"     % resName   ),
+#               ( "%d"     % resSerial ),
+#               ( "%s"     % label     ),
+#               ( "%16.4f" % wij       ),
+#                    )
+#          for entry in entries:
+#            tab.Entry (entry)
+#        tab.Stop ()
 
 
   #===============================================================================

@@ -225,8 +225,8 @@ class MEADModel (object):
           for bsite in self.meadSites:
             for binstance in bsite.instances:
 
-              wij = self._interactions [ainstance.instIndexGlobal, binstance.instIndexGlobal]
-              wji = self._interactions [binstance.instIndexGlobal, ainstance.instIndexGlobal]
+              wij = ainstance.interAsymmetric [binstance.instIndexGlobal]
+              wji = binstance.interAsymmetric [ainstance.instIndexGlobal]
               symmetric = (wij + wji) * .5
               error     = symmetric - wij
               lines.append (entry % (asite.siteIndex + 1, ainstance.instIndex + 1, asite.label, ainstance.label, bsite.siteIndex + 1, binstance.instIndex + 1, bsite.label, binstance.label, symmetric, wij, error))
@@ -454,7 +454,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def CalculateElectrostaticEnergies (self, calculateETA=True, asymmetricThreshold=0.03, log=logFile):
+  def CalculateElectrostaticEnergies (self, calculateETA=True, asymmetricThreshold=0.03, asymmetricSummary=False, log=logFile):
     """
     Calculate for each instance of each site:
     - self (Born) energy in the model compound
@@ -486,7 +486,7 @@ class MEADModel (object):
                   ("Gintr"              , 0), ]
         columns = [6, 6, 6, 6, 16, 16, 16, 16, 16, 16]
         if calculateETA:
-          headings.append (("ETA", 0))
+          heads.append (("ETA", 0))
           columns.append (16)
         tab = log.GetTable (columns = columns)
         tab.Start ()
@@ -553,11 +553,8 @@ class MEADModel (object):
         log.Text ("\nCalculating electrostatic energies complete.\n")
 
 
-      isSymmetric, maxDeviation = self._CheckIfSymmetric (threshold=asymmetricThreshold, log=log)
-
-      #if LogFileActive (log):
-      #  if not isSymmetric:
-      #    log.Text ("\nWarning: maximum deviation of interactions is %.3f\n" % maxDeviation)
+      # Check for symmetricity of the matrix of interactions
+      isSymmetric, maxDeviation = self._CheckIfSymmetric (threshold=asymmetricThreshold, printSummary=asymmetricSummary, log=log)
 
       # Symmetrize interaction energies inside the matrix of interactions
       for i in xrange (self.ninstances):
@@ -590,38 +587,40 @@ class MEADModel (object):
   #===============================================================================
   # Real2DArray_IsSymmetric from pDynamo is not available
 
-  def _CheckIfSymmetric (self, threshold=0.03, log=logFile):
+  def _CheckIfSymmetric (self, threshold=0.03, printSummary=False, log=logFile):
     """After calculating electrostatic energies, check the symmetricity of the matrix of interactions."""
-    isSymmetric  = False
     maxDeviation = 0.
+    isSymmetric  = True
+    ninstances   = self.ninstances
+    report       = []
 
-    if self.isCalculated:
-      isSymmetric  = True
-      ninstances   = self.ninstances
-      report       = []
+    for row in xrange (ninstances):
+      for column in xrange (ninstances):
+        symmetry  = .5 * (self._interactions[row, column] + self._interactions[column, row])
+        deviation = symmetry - self._interactions[row, column]
 
-      for row in xrange (ninstances):
-        for column in xrange (ninstances):
-          symmetry  = .5 * (self._interactions[row, column] + self._interactions[column, row])
-          deviation = symmetry - self._interactions[row, column]
+        absoluteDeviation = abs (deviation)
+        if absoluteDeviation > threshold:
+          isSymmetric = False
+          report.append ([row, column, deviation])
 
-          absoluteDeviation = abs (deviation)
-          if absoluteDeviation > threshold:
-            isSymmetric = False
-            report.append ([row, column, deviation])
+        if absoluteDeviation > maxDeviation:
+          maxDeviation = absoluteDeviation
 
-          if absoluteDeviation > maxDeviation:
-            maxDeviation = absoluteDeviation
  
- 
-      if not isSymmetric:
-        if LogFileActive (log):
+    if LogFileActive (log):
+      if isSymmetric:
+        log.Text ("\nInteractions are symmetric within the given threshold.\n")
+      else:
+        if not printSummary:
+          log.Text ("\nWarning: maximum deviation of interactions is %.3f\n" % maxDeviation)
+        else:
           heads = [ ("Instance of a site A" , 4),
                     ("Instance of a site B" , 4),
                     ("Deviation"            , 0), ]
           columns = (7, 7, 7, 7, 7, 7, 7, 7, 12)
           gaps = ("%7s", "%7s", "%7d", "%7s")
-
+          
           tab = log.GetTable (columns = columns)
           tab.Start ()
           tab.Title ("Deviations of interactions")
@@ -630,24 +629,20 @@ class MEADModel (object):
               tab.Heading (head, columnSpan = span)
             else:
               tab.Heading (head)
-
+          
           for row, column, deviation in report:
             ainstance = self._GetInstanceByGlobalIndex (row)
             asite     = ainstance.parent
             for gap, content in zip (gaps, (asite.segName, asite.resName, asite.resSerial, ainstance.label)):
               tab.Entry (gap % content)
-
+          
             binstance = self._GetInstanceByGlobalIndex (column)
             bsite     = binstance.parent
             for gap, content in zip (gaps, (bsite.segName, bsite.resName, bsite.resSerial, binstance.label)):
               tab.Entry (gap % content)
-
+          
             tab.Entry ("%.3f" % deviation)
           tab.Stop ()
-
-      if isSymmetric:
-        if LogFileActive (log):
-          log.Text ("\nInteractions are symmetric within the given threshold.\n")
 
     return (isSymmetric, maxDeviation)
 
