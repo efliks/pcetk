@@ -143,10 +143,11 @@ than previously because of the \makebox{parallelization}.
 Before the installation of the \modulename module, it is necessary
 to have:
 \begin{itemize}
-  \setlength{\itemsep}{2pt}
+\itemsep0pt \parskip0pt \parsep0pt
   \item pDynamo 1.8.0
-  \item Python 2.7
-  \item Cython 0.15.1 (optionally, for recompiling Cython sources)
+  \item Python 2.7 (including header files; python2.7-dev package in Debian)
+  \item PyYAML 3.10 (python-yaml package in Debian)
+  \item Cython 0.15.1 (\underline{optionally}; for recompiling Cython sources)
   \item GCC (any version should be fine)
   \item Extended MEAD 2.3.0
   \item GMCT 1.2.3
@@ -174,8 +175,11 @@ svn checkout http://pdynamo-extensions.googlecode.com/svn/trunk/ContinuumElectro
 \end{lstlisting} }
 
 \bigskip
-Some parts of the module implementing the state vector and the calculation of the microstate energy
-are written in C and therefore have to be compiled before use. 
+Some parts of the module's code are written in C or Cython and therefore have to be compiled 
+before use. 
+%
+These parts include the state vector, the calculation of the microstate energy and 
+the analytic evaluation of protonation state probabilities.
 
 \bigskip
 Go to the directory \texttt{extensions/cython/}.
@@ -683,13 +687,12 @@ parameters of the existing sites will be overwritten.
 \linespread{0.8}
 
 \begin{itemize}
-  \setlength{\itemsep}{1.0pt}
+\itemsep0pt \parskip0pt \parsep0pt
   \item Extend the model by including rotameric instances
   \item Include quantum chemical sites as in QMPB
   \item Include reduction/oxidation reactions in addition to protonation/deprotonation reactions
   \item Enclose the MEAD and GMCT codes inside pDynamo
   \item Optionally convert kcal/mol (MEAD units) to kJ/mol (pDynamo units)
-  \item Improve the efficiency of writing job files
   \item Make use of the \texttt{pqr2SolvAccVol} program to speed up calculations 
 \end{itemize}
 
