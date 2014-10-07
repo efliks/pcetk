@@ -49,14 +49,14 @@ class MEADSite (object):
   def CalculateCenterOfGeometry (self, system, centralAtom=None):
     """Calculate center of geometry of a site."""
     if centralAtom:
-      atoms = residue.children
-      centralIndex = -1
-      for atom in atoms:
+      found = False
+      for index in self.siteAtomIndices:
+        atom = system.atoms[index]
         if atom.label == centralAtom:
-          centralIndex = atom.index
+          found = True
           break
-      if centralIndex > 0:
-          center = system.coordinates3[centralIndex]
+      if found:
+        center = system.coordinates3[index]
       else:
         raise ContinuumElectrostaticsError ("Cannot find central atom %s in site %s %s %d" % (centralAtom, self.segName, self.resName, self.resSerial))
 
