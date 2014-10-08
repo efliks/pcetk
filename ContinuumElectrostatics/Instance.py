@@ -117,18 +117,6 @@ class MEADInstance (object):
       return None
 
   @property
-  def interAsymmetric (self):
-    model = self.parent.parent
-    if model._interactions:
-      ninstances = model.ninstances
-      energies = [0.] * ninstances
-      for instIndexGlobal in xrange (ninstances):
-        energies[instIndexGlobal] = (model._interactions[self.instIndexGlobal, instIndexGlobal])
-      return energies
-    else:
-      return None
-
-  @property
   def probability (self):
     model = self.parent.parent
     if model._probabilities:

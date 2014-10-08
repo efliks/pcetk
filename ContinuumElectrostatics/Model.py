@@ -218,8 +218,8 @@ class MEADModel (object):
           for bsite in self.meadSites:
             for binstance in bsite.instances:
 
-              wij = ainstance.interAsymmetric [binstance.instIndexGlobal]
-              wji = binstance.interAsymmetric [ainstance.instIndexGlobal]
+              wij = self._interactions [ainstance.instIndexGlobal, binstance.instIndexGlobal]
+              wji = self._interactions [binstance.instIndexGlobal, ainstance.instIndexGlobal]
               symmetric = (wij + wji) * .5
               error     = symmetric - wij
               lines.append (entry % (asite.siteIndex + 1, ainstance.instIndex + 1, asite.label, ainstance.label, bsite.siteIndex + 1, binstance.instIndex + 1, bsite.label, binstance.label, symmetric, wij, error))
