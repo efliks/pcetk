@@ -7,13 +7,35 @@
 #-------------------------------------------------------------------------------
 from pCore      import logFile, LogFileActive, CLibraryError
 
-DEF ANALYTIC_STATES = 67108864
+import random
 
+DEF ANALYTIC_STATES = 67108864
 __lastchanged__ = "$Id$"
 
 
 cdef class StateVector:
   """A class defining the state vector."""
+
+  def Randomize (self):
+    """Generate a random state."""
+    cdef Integer index, rand
+    for index from 0 <= index < self.cObject.length:
+      rand = random.randint (self.cObject.minvector[index], self.cObject.maxvector[index])
+      self.cObject.vector[index] = rand
+ 
+ 
+  def RandomChange (self):
+    """Choose a random site and set it to a random instance."""
+    cdef Integer index, rand
+    index = random.randint (0, self.cObject.length - 1)
+    rand  = random.randint (self.cObject.minvector[index], self.cObject.maxvector[index])
+
+    if rand == self.cObject.vector[index]:
+      rand += 1
+      if rand > self.cObject.maxvector[index]:
+        rand = self.cObject.minvector[index]
+    self.cObject.vector[index] = rand
+
 
   def __len__ (self):
     """Return the size of the vector."""
@@ -64,10 +86,7 @@ cdef class StateVector:
   def __init__ (self, meadModel):
     """Constructor."""
     cdef Integer numberOfSites
-    cdef Integer indexSite
-    cdef Integer indexDown
-    cdef Integer indexUp
-    cdef Integer index
+    cdef Integer indexSite, indexDown, indexUp, index
 
     numberOfSites = len (meadModel.meadSites)
     self.cObject = StateVector_Allocate (numberOfSites)
@@ -139,23 +158,20 @@ cdef class StateVector:
 # *** Try to further improve this method with data types from C ***
   def Print (self, meadModel=None, title=None, log=logFile):
     """Print the state vector."""
-    cdef Integer siteIndex
-    cdef Integer selectedSiteIndex
-    cdef Integer instanceIndex
-    cdef Integer ninstances
-    cdef Integer j
+    cdef Integer siteIndex, selectedSiteIndex, instanceIndex
+    cdef Integer ninstances, j
 
     if LogFileActive (log):
       if meadModel:
-        table = log.GetTable (columns = [7, 7, 7, 8, 8, 2])
-        table.Start ()
+        tab = log.GetTable (columns = [7, 7, 7, 8, 8, 2])
+        tab.Start ()
         if title is None:
-          table.Title ("State vector")
+          tab.Title ("State vector")
         else:
-          table.Title (title)
+          tab.Title (title)
 
-        table.Heading ("Site", columnSpan = 3)
-        table.Heading ("Instance", columnSpan = 3)
+        tab.Heading ("Site", columnSpan = 3)
+        tab.Heading ("Instance", columnSpan = 3)
 
         for siteIndex from 0 <= siteIndex < self.cObject.length:
           substate = "  "
@@ -175,13 +191,13 @@ cdef class StateVector:
               break
           instance = site.instances[instanceIndex]
 
-          table.Entry (site.segName)
-          table.Entry (site.resName)
-          table.Entry ("%d" % site.resSerial)
-          table.Entry (instance.label)
-          table.Entry ("%d" % instanceIndex)
-          table.Entry (substate)
-        table.Stop ()
+          tab.Entry (site.segName)
+          tab.Entry (site.resName)
+          tab.Entry ("%d" % site.resSerial)
+          tab.Entry (instance.label)
+          tab.Entry ("%d" % instanceIndex)
+          tab.Entry (substate)
+        tab.Stop ()
 
 
 # *** Try to further improve this method with data types from C ***
@@ -189,10 +205,8 @@ cdef class StateVector:
     """Define a substate.
 
     |selectedSites| is a sequence of two-element sequences (segmentName, residueSerial)"""
-    cdef Boolean status
-    cdef Boolean foundSite
-    cdef Integer siteIndex
-    cdef Integer substateSiteIndex
+    cdef Boolean status, foundSite
+    cdef Integer siteIndex, substateSiteIndex
     cdef Integer nselected  = len (selectedSites)
     cdef Integer nsites     = len (meadModel.meadSites)
 
@@ -248,8 +262,7 @@ cdef class StateVector:
 
   def GetNumberOfStates (self, meadModel):
     """Calculate total number of possible protonation states."""
-    cdef Integer nstates    = 1
-    cdef Integer ninstances
+    cdef Integer nstates = 1, ninstances
 
     for meadSite in meadModel.meadSites:
       ninstances = len (meadSite.instances)
