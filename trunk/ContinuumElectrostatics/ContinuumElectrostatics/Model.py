@@ -1084,7 +1084,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def SedScript_FromProbabilities (self, filename = "his_repl.sed", overwrite = False, log = logFile):
+  def SedScript_FromProbabilities (self, filename="his_repl.sed", overwrite=False, putPath=False, log=logFile):
     """Generate a sed-script for substituting histidines in the source PDB file based on the calculated probabilities."""
     if not self.isProbability:
       raise ContinuumElectrostaticsError ("First calculate probabilities.")
@@ -1093,8 +1093,11 @@ class MEADModel (object):
       if os.path.exists (filename):
         raise ContinuumElectrostaticsError ("File %s already exists." % filename)
 
-    # First take care of histidines
     lines = []
+    if putPath:
+      lines.append ("# %s\n" % os.path.abspath (filename))
+
+    # First take care of histidines
     for site in self.meadSites:
       if site.resName in ("HIS", "HSP"):
         mostProbValue, mostProbIndex, mostProbLabel = site.GetMostProbableInstance ()
