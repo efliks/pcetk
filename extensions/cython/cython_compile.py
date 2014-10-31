@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import Cython.Compiler.Main as main
-
 import os, glob, sys
 
 
@@ -21,5 +20,4 @@ sources = glob.glob (os.path.join (current_directory, "*.pyx"))
 for source in sources:
     options = main.CompilationOptions (main.default_options)
     options.include_path.extend (pxd_directories)
-
     main.compile (source, options)
