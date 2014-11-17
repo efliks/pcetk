@@ -218,8 +218,8 @@ class MEADModel (object):
           for bsite in self.meadSites:
             for binstance in bsite.instances:
 
-              wij = self._interactions [ainstance.instIndexGlobal, binstance.instIndexGlobal]
-              wji = self._interactions [binstance.instIndexGlobal, ainstance.instIndexGlobal]
+              wij = self._interactions [ainstance._instIndexGlobal, binstance._instIndexGlobal]
+              wji = self._interactions [binstance._instIndexGlobal, ainstance._instIndexGlobal]
               symmetric = (wij + wji) * .5
               error     = symmetric - wij
               lines.append (entry % (asite.siteIndex + 1, ainstance.instIndex + 1, asite.label, ainstance.label, bsite.siteIndex + 1, binstance.instIndex + 1, bsite.label, binstance.label, symmetric, wij, error))
@@ -569,7 +569,7 @@ class MEADModel (object):
 
     for site in self.meadSites:
       for instance in site.instances:
-        if instance.instIndexGlobal == instIndexGlobal:
+        if instance._instIndexGlobal == instIndexGlobal:
           instanceToReturn = instance
           break
     return instanceToReturn
@@ -967,8 +967,8 @@ class MEADModel (object):
       # Initialize the array of protons
       for site in self.meadSites:
         for instance in site.instances:
-          self._protons[instance.instIndexGlobal] = protons[instance.instIndexGlobal]
-          # Or: instance.protons = protons[instance.instIndexGlobal]
+          self._protons[instance._instIndexGlobal] = protons[instance._instIndexGlobal]
+          # Or: instance.protons = protons[instance._instIndexGlobal]
 
       self.isInitialized = True
 

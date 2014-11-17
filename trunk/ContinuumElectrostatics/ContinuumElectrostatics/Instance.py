@@ -51,19 +51,19 @@ class MEADInstance (object):
   For the time being, the instances only differ in charges. There are no rotameric instances."""
 
   defaultAttributes = {
-                  "parent"          : None ,
-                  "instIndex"       : None ,
-                  "instIndexGlobal" : None ,
-                  "label"           : None ,
-                  "charges"         : None ,
-                  "modelPqr"        : None ,
-                  "modelLog"        : None ,
-                  "modelGrid"       : None ,
-                  "sitePqr"         : None ,
-                  "siteLog"         : None ,
-                  "siteGrid"        : None ,
-                  "Gmodel"          : None ,
-                  "Gborn_model"     : None ,
+                  "parent"           : None ,
+                  "instIndex"        : None ,
+                  "_instIndexGlobal" : None ,
+                  "label"            : None ,
+                  "charges"          : None ,
+                  "modelPqr"         : None ,
+                  "modelLog"         : None ,
+                  "modelGrid"        : None ,
+                  "sitePqr"          : None ,
+                  "siteLog"          : None ,
+                  "siteGrid"         : None ,
+                  "Gmodel"           : None ,
+                  "Gborn_model"      : None ,
                   "Gback_model"     : None ,
                   "Gborn_protein"   : None ,
                   "Gback_protein"   : None ,
@@ -73,7 +73,7 @@ class MEADInstance (object):
   def Gintr (self):
     model = self.parent.parent
     if model._intrinsic:
-      return model._intrinsic[self.instIndexGlobal]
+      return model._intrinsic[self._instIndexGlobal]
     else:
       return None
 
@@ -81,7 +81,7 @@ class MEADInstance (object):
   def Gintr (self, value):
     model = self.parent.parent
     if model._intrinsic:
-      model._intrinsic[self.instIndexGlobal] = value
+      model._intrinsic[self._instIndexGlobal] = value
     else:
       pass
 
@@ -89,7 +89,7 @@ class MEADInstance (object):
   def protons (self):
     model = self.parent.parent
     if model._protons:
-      return model._protons[self.instIndexGlobal]
+      return model._protons[self._instIndexGlobal]
     else:
       return None
 
@@ -97,7 +97,7 @@ class MEADInstance (object):
   def protons (self, value):
     model = self.parent.parent
     if model._protons:
-      model._protons[self.instIndexGlobal] = value
+      model._protons[self._instIndexGlobal] = value
     else:
       pass
 
@@ -107,11 +107,11 @@ class MEADInstance (object):
     if model._interactions:
       ninstances = model.ninstances
       energies = [0.] * ninstances
-      for instIndexGlobal in xrange (ninstances):
-        i = self.instIndexGlobal
-        j = instIndexGlobal
+      for _instIndexGlobal in xrange (ninstances):
+        i = self._instIndexGlobal
+        j = _instIndexGlobal
         if i > j: i, j = j, i
-        energies[instIndexGlobal] = (model._symmetricmatrix[i, j])
+        energies[_instIndexGlobal] = (model._symmetricmatrix[i, j])
       return energies
     else:
       return None
@@ -120,7 +120,7 @@ class MEADInstance (object):
   def probability (self):
     model = self.parent.parent
     if model._probabilities:
-      return model._probabilities[self.instIndexGlobal]
+      return model._probabilities[self._instIndexGlobal]
     else:
       return None
 
@@ -128,7 +128,7 @@ class MEADInstance (object):
   def probability (self, value):
     model = self.parent.parent
     if model._probabilities:
-      model._probabilities[self.instIndexGlobal] = value
+      model._probabilities[self._instIndexGlobal] = value
     else:
       pass
 
@@ -234,7 +234,7 @@ class MEADInstance (object):
       for site in interactions:
         for instance in site:
           energy = instance
-          model._interactions[self.instIndexGlobal, indexGlobal] = energy
+          model._interactions[self._instIndexGlobal, indexGlobal] = energy
           indexGlobal = indexGlobal + 1
 
 
@@ -259,7 +259,7 @@ class MEADInstance (object):
         instances = []
         for site in model.meadSites:
           for instance in site.instances:
-            wij = interactions[instance.instIndexGlobal]
+            wij = interactions[instance._instIndexGlobal]
             instances.append ([wij, site.segName, site.resName, site.resSerial, instance.label])
         if sort: 
           instances.sort ()

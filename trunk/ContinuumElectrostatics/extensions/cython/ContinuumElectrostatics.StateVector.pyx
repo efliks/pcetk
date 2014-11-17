@@ -99,7 +99,7 @@ cdef class StateVector:
       site      = meadModel.meadSites[indexSite]
 
       for instance in site.instances:
-        index = instance.instIndexGlobal
+        index = instance._instIndexGlobal
         if index < indexDown:
           indexDown = index
         if index > indexUp:
@@ -187,7 +187,7 @@ cdef class StateVector:
 
           for instanceIndex from 0 <= instanceIndex < ninstances:
             instance = site.instances[instanceIndex]
-            if instance.instIndexGlobal == self.cObject.vector[siteIndex]:
+            if instance._instIndexGlobal == self.cObject.vector[siteIndex]:
               break
           instance = site.instances[instanceIndex]
 

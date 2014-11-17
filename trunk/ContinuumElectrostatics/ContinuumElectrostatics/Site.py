@@ -121,18 +121,18 @@ class MEADSite (object):
     for instIndex, instance in enumerate (templatesOfInstances):
       # Set the protons later because they come from the central array
       newInstance = MEADInstance (
-          parent          = self                                                           ,
-          instIndex       = instIndex                                                      ,
-          instIndexGlobal = instIndexGlobal                                                ,
-          label           = instance [ "label"   ]                                         ,
-          charges         = instance [ "charges" ]                                         ,
-          Gmodel          = instance [ "Gmodel"  ] * meadModel.temperature / 300.          ,
-          modelPqr        = self._CreateFilename ("model", instance [ "label"   ], "pqr")  ,
-          modelLog        = self._CreateFilename ("model", instance [ "label"   ], "out")  ,
-          modelGrid       = self._CreateFilename ("model", instance [ "label"   ], "mgm")  ,
-          sitePqr         = self._CreateFilename ("site",  instance [ "label"   ], "pqr")  ,
-          siteLog         = self._CreateFilename ("site",  instance [ "label"   ], "out")  ,
-          siteGrid        = self._CreateFilename ("site",  instance [ "label"   ], "ogm")  ,
+          parent           = self                                                           ,
+          instIndex        = instIndex                                                      ,
+          _instIndexGlobal = instIndexGlobal                                                ,
+          label            = instance [ "label"   ]                                         ,
+          charges          = instance [ "charges" ]                                         ,
+          Gmodel           = instance [ "Gmodel"  ] * meadModel.temperature / 300.          ,
+          modelPqr         = self._CreateFilename ("model", instance [ "label"   ], "pqr")  ,
+          modelLog         = self._CreateFilename ("model", instance [ "label"   ], "out")  ,
+          modelGrid        = self._CreateFilename ("model", instance [ "label"   ], "mgm")  ,
+          sitePqr          = self._CreateFilename ("site",  instance [ "label"   ], "pqr")  ,
+          siteLog          = self._CreateFilename ("site",  instance [ "label"   ], "out")  ,
+          siteGrid         = self._CreateFilename ("site",  instance [ "label"   ], "ogm")  ,
                                  )
       instances.append (newInstance)
       instIndexGlobal = instIndexGlobal + 1
