@@ -131,13 +131,15 @@ class MEADSubstate (object):
         tab.Stop ()
 
 
-  def Summary_ToLatex (self, filename="table.tex", relativeEnergy=True, includeSegment=False):
+  def Summary_ToLatex (self, filename="table.tex", relativeEnergy=True, includeSegment=False, translateToLatex=None):
     """Summarize calculated substate energies in a Latex table."""
     transl = {
           "ASP" : {"p" : "0", "d" : "(--)"},
           "GLU" : {"p" : "0", "d" : "(--)"},
           "HIS" : {"HSP" : "$\\epsilon$, $\\delta$(+)", "HSE" : "$\\epsilon$", "HSD" : "$\\delta$", "fd" : "(--)"},
              }
+    if translateToLatex:
+      transl.update (translateToLatex)
 
     if self.isCalculated:
       indicesOfSites = self.indicesOfSites
@@ -176,9 +178,9 @@ class MEADSubstate (object):
           nprotons = nprotons + instance.protons
         line = "%s  %1d \\\\" % (line, nprotons)
         lines.append (line)
-
       lines.append ("\\hline\\noalign{\\smallskip}")
       lines.append ("\\end{tabular}")
+
       WriteInputFile (filename, lines, addLineBreaks=True)
 
 
