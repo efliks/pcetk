@@ -9,9 +9,10 @@
 
 __lastchanged__ = "$Id$"
 
-from pCore          import logFile, LogFileActive
-from Error          import ContinuumElectrostaticsError
-from StateVector    import StateVector
+from pCore           import logFile, LogFileActive
+from Error           import ContinuumElectrostaticsError
+from StateVector     import StateVector
+from InputFileWriter import WriteInputFile
 
 
 class MEADSubstate (object):
@@ -47,7 +48,8 @@ class MEADSubstate (object):
     self.pH             = pH
 
     if LogFileActive (log):
-      log.Text ("\nSubstate is initialized with %d sites.\n" % len (indicesOfSites))
+      nsites = len (indicesOfSites)
+      log.Text ("\nSubstate is initialized with %d site%s.\n" % (nsites, "s" if nsites > 1 else ""))
  
 
   def CalculateSubstateEnergies (self, log=logFile): 
@@ -127,6 +129,57 @@ class MEADSubstate (object):
           for label in labels:
             tab.Entry (label.center (14))
         tab.Stop ()
+
+
+  def Summary_ToLatex (self, filename="table.tex", relativeEnergy=True, includeSegment=False):
+    """Summarize calculated substate energies in a Latex table."""
+    transl = {
+          "ASP" : {"p" : "0", "d" : "(--)"},
+          "GLU" : {"p" : "0", "d" : "(--)"},
+          "HIS" : {"HSP" : "$\\epsilon$, $\\delta$(+)", "HSE" : "$\\epsilon$", "HSD" : "$\\delta$", "fd" : "(--)"},
+             }
+
+    if self.isCalculated:
+      indicesOfSites = self.indicesOfSites
+      zeroEnergy     = self.zeroEnergy
+      substates      = self.substates
+      model          = self.model
+      nsites         = len (indicesOfSites)
+
+      lines = ["\\begin{tabular}{@{\\extracolsep{2mm}}cc%sc}" % ("l" * nsites), ]
+      lines.append ("\\hline\\noalign{\\smallskip}")
+
+      header = "State & $\\Delta E$ (kcal/mol) & "
+      for siteIndex in indicesOfSites:
+        site = model.meadSites[siteIndex]
+        if includeSegment:
+          header = "%s %s %s%d &" % (header, site.segName, site.resName.capitalize (), site.resSerial)
+        else:
+          header = "%s %s%d &"    % (header,               site.resName.capitalize (), site.resSerial)
+      header = "%s No. of protons \\\\" % header
+      lines.append (header)
+
+      for substateCount, (energy, indicesOfInstances) in enumerate (substates, 1):
+        if relativeEnergy:
+          energy = energy - zeroEnergy
+        line = "%3d & %5.1f & " % (substateCount, energy)
+        nprotons = 0
+
+        for siteIndex, instanceIndex in zip (indicesOfSites, indicesOfInstances):
+          site     = model.meadSites     [siteIndex]
+          instance = site.instances  [instanceIndex]
+          if transl.has_key (site.resName):
+            dic  = transl[site.resName]
+            line = "%s  %-26s &" % (line, dic[instance.label])
+          else:
+            line = "%s  %-26s &" % (line, instance.label)
+          nprotons = nprotons + instance.protons
+        line = "%s  %1d \\\\" % (line, nprotons)
+        lines.append (line)
+
+      lines.append ("\\hline\\noalign{\\smallskip}")
+      lines.append ("\\end{tabular}")
+      WriteInputFile (filename, lines, addLineBreaks=True)
 
 
 #===============================================================================
