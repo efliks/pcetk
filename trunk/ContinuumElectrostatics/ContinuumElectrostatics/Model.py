@@ -136,7 +136,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def __init__ (self, log = logFile, *arguments, **keywordArguments):
+  def __init__ (self, log=logFile, *arguments, **keywordArguments):
     """Constructor."""
     for (key, value) in self.__class__.defaultAttributes.iteritems (): setattr (self, key, value)
     for (key, value) in                 keywordArguments.iteritems (): setattr (self, key, value)
@@ -148,7 +148,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def LoadLibraryOfSites (self, log = logFile):
+  def LoadLibraryOfSites (self, log=logFile):
     """Load a set of YAML or EST files with parameters for titratable sites.
 
     If there are YAML or EST files in the current directory, they are loaded as well.
@@ -184,7 +184,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def WriteW (self, filename = "W.dat", precision = 3, log = logFile):
+  def WriteW (self, filename="W.dat", precision=3, log=logFile):
     """Write an interaction matrix compatible with GMCT."""
     if precision < 3 or precision > 8:
       raise ContinuumElectrostaticsError ("Wrong value for precision (%d)." % precision)
@@ -227,7 +227,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def WriteGintr (self, filename = "gintr.dat", precision = 3, log = logFile):
+  def WriteGintr (self, filename="gintr.dat", precision=3, log=logFile):
     """Iterate over instances and write a gintr.dat file compatible with GMCT.
 
     This file contains Gintr of each instance of each site."""
@@ -257,7 +257,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def CalculateCurves (self, isAnalytic = False, curveSampling = 0.5, curveStart = 0.0, curveStop = 14.0, directory = "curves", forceSerial = False, log = logFile):
+  def CalculateCurves (self, isAnalytic=False, curveSampling=0.5, curveStart=0.0, curveStop=14.0, directory="curves", forceSerial=False, log=logFile):
     """Calculate titration curves."""
     if self.isCalculated:
       nsteps = int ((curveStop - curveStart) / curveSampling + 1)
@@ -347,7 +347,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def CalculateProbabilitiesGMCT (self, pH = 7.0, dryRun = False, log = logFile):
+  def CalculateProbabilitiesGMCT (self, pH=7.0, dryRun=False, log=logFile):
     """Use GMCT to estimate protonation probabilities.
 
     With |dryRun = True|, GMCT is not called and only the directories and files are created. This is necessary in the parallel mode because the function mkdir does not work with multiple threads."""
@@ -423,7 +423,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def CalculateProbabilitiesAnalytically (self, pH = 7.0, log = logFile):
+  def CalculateProbabilitiesAnalytically (self, pH=7.0, log=logFile):
     """For each site, calculate the probability of occurance of each instance, using the Boltzmann weighted sum."""
     if self.isCalculated:
       vector = StateVector (self)
@@ -974,7 +974,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def Summary (self, log = logFile):
+  def Summary (self, log=logFile):
     """Summary."""
     if LogFileActive (log):
       summary = log.GetSummary ()
@@ -993,7 +993,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def SummarySites (self, log = logFile):
+  def SummarySites (self, log=logFile):
     """List titratable residues."""
     if LogFileActive (log):
       if self.isInitialized:
@@ -1021,7 +1021,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def SummaryProbabilities (self, reportOnlyUnusual = False, maxProbThreshold = 0.75, log = logFile):
+  def SummaryProbabilities (self, reportOnlyUnusual=False, maxProbThreshold=0.75, log=logFile):
     """List probabilities of occurance of instances."""
     unusualProtonations = {
                         "HIS" : ("HSE", "HSD", "fd"),
@@ -1168,7 +1168,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def WriteJobFiles (self, system, log = logFile):
+  def WriteJobFiles (self, system, log=logFile):
     """Write files: PQR, FPT, OGM and MGM."""
     if self.isInitialized:
 

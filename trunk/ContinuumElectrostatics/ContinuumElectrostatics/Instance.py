@@ -26,7 +26,7 @@ class InstanceThread (threading.Thread):
 
   It also calculates Gintr."""
 
-  def __init__ (self, instance, log = logFile):
+  def __init__ (self, instance, log=logFile):
     """Constructor."""
     threading.Thread.__init__ (self)
     self.instance = instance
@@ -141,7 +141,7 @@ class MEADInstance (object):
 
 
   #===============================================================================
-  def CalculateSiteInModelCompound (self, log = logFile):
+  def CalculateSiteInModelCompound (self, log=logFile):
     """Calculate Gborn and Gback of a site in the model compound."""
     site  = self.parent
     model = site.parent
@@ -171,7 +171,7 @@ class MEADInstance (object):
 
 
   #===============================================================================
-  def CalculateSiteInProtein (self, log = logFile):
+  def CalculateSiteInProtein (self, log=logFile):
     """Calculate Gborn and Gback of a site in protein environment.
 
     Also, calculate Wij between the site and the other sites.
@@ -239,7 +239,7 @@ class MEADInstance (object):
 
 
   #===============================================================================
-  def CalculateGintr (self, log = logFile):
+  def CalculateGintr (self, log=logFile):
     """Calculate Gintr of an instance of a site in the protein."""
     # For checking, do not include the background energy of the model compound because it can sometimes be zero (for example in ligands)
     checks = [self.Gborn_protein, self.Gback_protein, self.Gborn_model]
@@ -248,7 +248,7 @@ class MEADInstance (object):
 
 
   #===============================================================================
-  def PrintInteractions (self, sort = False, log = logFile):
+  def PrintInteractions (self, sort=False, log=logFile):
     """Print interactions of an instance of a site with other instances of other sites."""
     if LogFileActive (log):
       site         = self.parent
@@ -282,7 +282,7 @@ class MEADInstance (object):
 
 
   #===============================================================================
-  def TableEntry (self, tab = None, secondsToCompletion = None):
+  def TableEntry (self, tab=None, secondsToCompletion=None):
     """Report calculated energies in a table.
 
     Optionally, include Estimated Time for Accomplishment (ETA).

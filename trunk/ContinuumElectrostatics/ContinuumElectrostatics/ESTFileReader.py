@@ -23,7 +23,7 @@ class ESTFileReader (TextFileReader):
     TextFileReader.__init__ (self, name)
 
 
-  def Parse (self, log = logFile):
+  def Parse (self, log=logFile):
     """Parse the data on the file."""
     if not self.QPARSED:
       if LogFileActive (log): self.log = log

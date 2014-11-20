@@ -10,7 +10,7 @@
 __lastchanged__ = "$Id$"
 
 
-def FormatEntry (items, header = False):
+def FormatEntry (items, header=False):
   """Generating headers or format strings for entries in files W.dat and gintr.dat"""
   if header:
     string = "#"
