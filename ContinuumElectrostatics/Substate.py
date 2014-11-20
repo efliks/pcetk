@@ -17,7 +17,7 @@ from StateVector    import StateVector
 class MEADSubstate (object):
   """Substate of a protonation state."""
 
-  def __init__ (self, meadModel, selectedSites, pH = 7.0, log = logFile):
+  def __init__ (self, meadModel, selectedSites, pH=7.0, log=logFile):
     """Construct a substate defined by |selectedSites|.
 
     |selectedSites| is a sequence of three-element sequences (segmentName, residueName, residueSerial)"""
@@ -50,7 +50,7 @@ class MEADSubstate (object):
       log.Text ("\nSubstate is initialized with %d sites.\n" % len (indicesOfSites))
  
 
-  def CalculateSubstateEnergies (self, log = logFile): 
+  def CalculateSubstateEnergies (self, log=logFile): 
     """Calculate microstate energies for a substate."""
     if not self.isCalculated:
       indicesOfSites = self.indicesOfSites
@@ -80,7 +80,7 @@ class MEADSubstate (object):
         log.Text ("\nCalculating substate energies at pH=%.1f complete.\n" % self.pH)
 
 
-  def Summary (self, relativeEnergy = True, roundCharge = True, log = logFile):
+  def Summary (self, relativeEnergy=True, roundCharge=True, log=logFile):
     """Summarize calculated substate energies in a table."""
     if self.isCalculated:
       indicesOfSites = self.indicesOfSites
