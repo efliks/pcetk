@@ -31,10 +31,13 @@ class InputFileWriter (TextFileWriter):
 #===============================================================================
 # Helper functions
 #===============================================================================
-def WriteInputFile (filename, listOfLines):
+def WriteInputFile (filename, listOfLines, addLineBreaks=False):
   """Writing input files from previously generated lists of strings."""
   out = InputFileWriter (filename)
-  out.Write (listOfLines)
+  if addLineBreaks:
+    out.Write (map (lambda line: "%s\n" % line, listOfLines))
+  else:
+    out.Write (listOfLines)
 
 
 #===============================================================================
