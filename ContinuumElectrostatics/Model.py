@@ -19,7 +19,7 @@ from Constants             import *
 from Error                 import ContinuumElectrostaticsError
 from Site                  import MEADSite
 from Instance              import InstanceThread 
-from Toolbox               import FormatEntry, ConvertAttribute
+from Utils                 import FormatEntry, ConvertAttribute
 from StateVector           import StateVector
 
 # File handling
@@ -115,15 +115,17 @@ class MEADModel (object):
 
   @property
   def ninstances (self):
-    # The easiest way of getting the total number of instances
-    if self._protons is not None:
-      return len (self._protons)
+    if self.meadSites:
+      return sum (map (lambda site: site.ninstances, self.meadSites))
+    # The easiest way of getting the total number of instances?
+    # if self._protons is not None:
+    #  return len (self._protons)
     else:
       return 0
 
   @property
   def nsites (self):
-    if self.meadSites is not None:
+    if self.meadSites:
       return len (self.meadSites)
     else:
       return 0
