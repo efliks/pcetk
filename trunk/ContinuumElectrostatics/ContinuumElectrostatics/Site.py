@@ -37,6 +37,13 @@ class MEADSite (object):
   def label (self):
     return "%s_%s%s" % (self.segName, self.resName, self.resSerial)
 
+  @property
+  def ninstances (self):
+    if self.instances:
+        return len (self.instances)
+    else:
+        return 0
+
 
   #===============================================================================
   def __init__ (self, *arguments, **keywordArguments):
