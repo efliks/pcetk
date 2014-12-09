@@ -33,7 +33,7 @@ typedef struct {
 } StateVector;
 
 
-extern StateVector *StateVector_Allocate          (const Integer length);
+extern StateVector *StateVector_Allocate          (const Integer length, Status *status);
 extern StateVector *StateVector_Clone             (const StateVector *self);
 extern Boolean      StateVector_CopyTo            (const StateVector *self, StateVector *other);
 extern void         StateVector_Deallocate        (      StateVector *self);

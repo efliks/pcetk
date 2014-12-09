@@ -9,9 +9,11 @@
 
 __lastchanged__ = "$Id$"
 
-from pCore       import Vector3
-from Error       import ContinuumElectrostaticsError
-from Instance    import MEADInstance
+from pCore            import Vector3, Selection, Clone
+from Error            import ContinuumElectrostaticsError
+from Instance         import MEADInstance
+from PQRFileWriter    import PQRFile_FromSystem
+from InputFileWriter  import WriteInputFile
 
 import os
 
@@ -20,18 +22,15 @@ import os
 class MEADSite (object):
   """Titratable site.
   Each site has at least two instances (protonated and deprotonated)."""
-
-  defaultAttributes = {
-                  "parent"           : None , # <--This should point to the MEAD model
-                  "siteIndex"        : None ,
-                  "segName"          : None ,
-                  "resName"          : None ,
-                  "resSerial"        : None , # <--Keep it as integer
-                  "instances"        : None ,
-                  "center"           : None ,
-                  "siteAtomIndices"  : None ,
-                  "modelAtomIndices" : None ,
-                      }
+  defaultAttributes = { "parent"           : None , # <--This should point to the MEAD model
+                        "siteIndex"        : None ,
+                        "segName"          : None ,
+                        "resName"          : None ,
+                        "resSerial"        : None , # <--Keep it as integer
+                        "instances"        : None ,
+                        "center"           : None ,
+                        "siteAtomIndices"  : None ,
+                        "modelAtomIndices" : None }
 
   @property
   def label (self):
@@ -107,6 +106,47 @@ class MEADSite (object):
     instances.sort ()
     indices = [index for probability, index in instances]
     return indices 
+
+
+  #===============================================================================
+  def _WriteMEADFiles (self, system, systemCharges, systemRadii):
+    """For each instance of each site, write:
+         - PQR file for the site        - PQR file for the model compound
+         - OGM file for the site        - MGM file for the model compound"""
+    grids = []
+    model = self.parent
+    for stepIndex, (nodes, resolution) in enumerate (model.focussingSteps):
+      if stepIndex < 1:
+        grids.append ("ON_GEOM_CENT %d %f\n" % (nodes, resolution))
+      else:
+        x, y, z = self.center
+        grids.append ("(%f %f %f) %d %f\n"% (x, y, z, nodes, resolution))
+
+    selectSite  = Selection (self.siteAtomIndices)
+    selectModel = Selection (self.modelAtomIndices)
+
+
+    # In the PQR file of the model compound, charges of the site atoms must be set to zero (requirement of the my_2diel_solver program)
+    chargesZeroSite = Clone (systemCharges)
+    for atomIndex in self.siteAtomIndices:
+      chargesZeroSite[atomIndex] = 0.
+
+    for instance in self.instances:
+      PQRFile_FromSystem (instance.modelPqr, system, selection=selectModel, charges=chargesZeroSite, radii=systemRadii)
+
+      # Update system charges with instance charges 
+      chargesInstance = Clone (systemCharges)
+      for chargeIndex, atomIndex in enumerate (self.siteAtomIndices):
+        chargesInstance[atomIndex] = instance.charges[chargeIndex]
+
+      PQRFile_FromSystem (instance.sitePqr, system, selection=selectSite, charges=chargesInstance, radii=systemRadii)
+      del chargesInstance
+
+      # Write OGM and MGM files (they have the same content)
+      for fileGrid in (instance.modelGrid, instance.siteGrid):
+        WriteInputFile (fileGrid, grids)
+
+    del chargesZeroSite
 
 
   #===============================================================================

@@ -49,25 +49,22 @@ class MEADInstance (object):
   """Instance of a titratable site.
 
   For the time being, the instances only differ in charges. There are no rotameric instances."""
-
-  defaultAttributes = {
-                  "parent"           : None ,
-                  "instIndex"        : None ,
-                  "_instIndexGlobal" : None ,
-                  "label"            : None ,
-                  "charges"          : None ,
-                  "modelPqr"         : None ,
-                  "modelLog"         : None ,
-                  "modelGrid"        : None ,
-                  "sitePqr"          : None ,
-                  "siteLog"          : None ,
-                  "siteGrid"         : None ,
-                  "Gmodel"           : None ,
-                  "Gborn_model"      : None ,
-                  "Gback_model"     : None ,
-                  "Gborn_protein"   : None ,
-                  "Gback_protein"   : None ,
-                      }
+  defaultAttributes = { "parent"           : None ,
+                        "instIndex"        : None ,
+                        "_instIndexGlobal" : None ,
+                        "label"            : None ,
+                        "charges"          : None ,
+                        "modelPqr"         : None ,
+                        "modelLog"         : None ,
+                        "modelGrid"        : None ,
+                        "sitePqr"          : None ,
+                        "siteLog"          : None ,
+                        "siteGrid"         : None ,
+                        "Gmodel"           : None ,
+                        "Gborn_model"      : None ,
+                        "Gback_model"      : None ,
+                        "Gborn_protein"    : None ,
+                        "Gback_protein"    : None }
 
   @property
   def Gintr (self):

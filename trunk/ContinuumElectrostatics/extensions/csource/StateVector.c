@@ -11,7 +11,7 @@
 /*=============================================================================
   Allocation, deallocation, copying, etc.
 =============================================================================*/
-StateVector *StateVector_Allocate (const Integer length) {
+StateVector *StateVector_Allocate (const Integer length, Status *status) {
   StateVector *self = NULL;
 
   MEMORY_ALLOCATE (self, StateVector);
@@ -45,6 +45,10 @@ StateVector *StateVector_Allocate (const Integer length) {
       }
     }
   }
+
+  if (self == NULL) {
+    Status_Set (status, Status_MemoryAllocationFailure);
+  }
   return self;
 }
 
@@ -65,8 +69,10 @@ void StateVector_Deallocate (StateVector *self) {
 
 StateVector *StateVector_Clone (const StateVector *self) {
   StateVector *clone = NULL;
+  Status status;
+
   if (self != NULL) {
-    clone = StateVector_Allocate (self->length);
+    clone = StateVector_Allocate (self->length, &status);
     StateVector_CopyTo (self, clone);
   }
 
@@ -75,10 +81,12 @@ StateVector *StateVector_Clone (const StateVector *self) {
 
 Boolean StateVector_CopyTo (const StateVector *self, StateVector *other) {
   Boolean result;
+  Status  status;
+
   /* Check for different lengths */
   if (self->length != other->length) {
     StateVector_Deallocate (other);
-    other = StateVector_Allocate (self->length);
+    other = StateVector_Allocate (self->length, &status);
 
     if (other == NULL) {
       return False;
