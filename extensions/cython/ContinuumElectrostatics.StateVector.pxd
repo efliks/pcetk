@@ -10,6 +10,7 @@ from pCore.Integer1DArray   cimport CInteger1DArray, Integer1DArray
 from pCore.Real1DArray      cimport CReal1DArray, Real1DArray
 from pCore.Real2DArray      cimport CReal2DArray, Real2DArray
 from pCore.SymmetricMatrix  cimport CSymmetricMatrix, SymmetricMatrix
+from pCore.Status           cimport Status, Status_Continue
 
 __lastchanged__ = "$Id$"
 
@@ -25,7 +26,7 @@ cdef extern from "StateVector.h":
     Integer slength
 
 
-  cdef CStateVector *StateVector_Allocate          (Integer size)
+  cdef CStateVector *StateVector_Allocate          (Integer size, Status *status)
   cdef CStateVector *StateVector_Clone             (CStateVector *self)
   cdef Boolean       StateVector_CopyTo            (CStateVector *self, CStateVector *other)
   cdef void          StateVector_Deallocate        (CStateVector *self)

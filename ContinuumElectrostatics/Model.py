@@ -1173,7 +1173,6 @@ class MEADModel (object):
   def WriteJobFiles (self, system, log=logFile):
     """Write files: PQR, FPT, OGM and MGM."""
     if self.isInitialized:
-
       # Get atomic charges and radii for the system
       systemCharges = system.AtomicCharges ()
       systemRadii   = []
@@ -1186,13 +1185,11 @@ class MEADModel (object):
           radius = radii[atomType]
         else:
           generalAtomType = "%s*" % atomType[0]
-
           if radii.has_key (generalAtomType):
             radius = radii[generalAtomType]
           else:
             raise ContinuumElectrostaticsError ("Cannot find atomic radius for atom type %s" % atomType)
         systemRadii.append (radius)
-
 
       # Prepare scratch space
       if not os.path.exists (self.scratch):
@@ -1201,80 +1198,36 @@ class MEADModel (object):
         except:
           raise ContinuumElectrostaticsError ("Cannot create scratch directory %s" % self.scratch)
 
-
       # Create subdirectories, if necessary
       if self.splitToDirectories:
-
         for meadSite in self.meadSites:
           sitePqr   = meadSite.instances[0].sitePqr
           directory = os.path.dirname (sitePqr)
-
           if not os.path.exists (directory):
             try:
               os.makedirs (directory)
             except:
               raise ContinuumElectrostaticsError ("Cannot create directory %s" % directory)
 
-
-      # Write two PQR files for each instance of every site, first for the model compund and second for the site itself
+      # Write PQR, OGM and MGM files of all instances of all sites
       for meadSite in self.meadSites:
-        model = Selection (meadSite.modelAtomIndices)
-        site  = Selection (meadSite.siteAtomIndices)
-
-        for instance in meadSite.instances:
-
-          # In the PQR file of the model compound, charges of the site atoms must be set to zero (requirement of the my_2diel_solver program)
-          chargesUpdated = Clone (systemCharges)
-          for atomIndex in meadSite.siteAtomIndices:
-            chargesUpdated[atomIndex] = 0.0
-
-          PQRFile_FromSystem (instance.modelPqr, system, selection = model, charges = chargesUpdated, radii = systemRadii)
-
-
-          chargesUpdated = Clone (systemCharges)
-          for chargeIndex, atomIndex in enumerate (meadSite.siteAtomIndices):
-            pickCharge                = instance.charges[chargeIndex]
-            chargesUpdated[atomIndex] = pickCharge
-
-          PQRFile_FromSystem (instance.sitePqr, system, selection = site,  charges = chargesUpdated, radii = systemRadii)
-
+        meadSite._WriteMEADFiles (system, systemCharges, systemRadii)
 
       # Write background PQR file
-      PQRFile_FromSystem (self.backPqr, system, selection = Selection (self.backAtomIndices), charges = systemCharges, radii = systemRadii)
+      PQRFile_FromSystem (self.backPqr, system, selection=Selection (self.backAtomIndices), charges=systemCharges, radii=systemRadii)
 
       # Write full-protein PQR file (to be used as eps2set_region)
-      PQRFile_FromSystem (self.proteinPqr, system, selection = Selection (self.proteinAtomIndices), charges = systemCharges, radii = systemRadii)
+      PQRFile_FromSystem (self.proteinPqr, system, selection=Selection (self.proteinAtomIndices), charges=systemCharges, radii=systemRadii)
 
       # Write FPT-file
       lines = []
-
       for siteIndex, meadSite in enumerate (self.meadSites):
         for instanceIndex, instance in enumerate (meadSite.instances):
           for atomIndex, charge in zip (meadSite.siteAtomIndices, instance.charges):
             x, y, z = system.coordinates3[atomIndex]
             line    = "%d %d %f %f %f %f\n" % (siteIndex, instanceIndex, x, y, z, charge)
             lines.append (line)
-
       WriteInputFile (self.sitesFpt, lines)
-
-
-      # Write MGM and OGM files
-      filesWritten = []
-
-      for meadSite in self.meadSites:
-        lines = []
-
-        for stepIndex, (nodes, resolution) in enumerate (self.focussingSteps):
-          if stepIndex < 1:
-            lines.append ("ON_GEOM_CENT %d %f\n" % (nodes, resolution))
-          else:
-            x, y, z = meadSite.center
-            lines.append ("(%f %f %f) %d %f\n"% (x, y, z, nodes, resolution))
-
-        for instance in meadSite.instances:
-          for fileGrid in (instance.modelGrid, instance.siteGrid):
-            WriteInputFile (fileGrid, lines)
-            filesWritten.append (fileGrid)
 
       self.isFilesWritten = True
 

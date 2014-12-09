@@ -85,11 +85,14 @@ cdef class StateVector:
 
   def __init__ (self, meadModel):
     """Constructor."""
+    cdef Status  status
     cdef Integer numberOfSites
     cdef Integer indexSite, indexDown, indexUp, index
 
     numberOfSites = len (meadModel.meadSites)
-    self.cObject = StateVector_Allocate (numberOfSites)
+    status = Status_Continue
+    self.cObject = StateVector_Allocate (numberOfSites, &status)
+
     if (self.cObject == NULL):
       raise CLibraryError ("Cannot allocate state vector.")
 
