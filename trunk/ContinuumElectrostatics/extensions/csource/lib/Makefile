@@ -1,7 +1,7 @@
 # PDYNAMO_PCORE comes from the upper-level make
 
 # The options -fdata-sections and -ffunction-sections are for not linking the unused code
-CFLAGS            = -fPIC -c -W -Wall -pedantic -I$(PDYNAMO_PCORE)/extensions/cinclude
+CFLAGS            = -O2 -fPIC -c -W -Wall -pedantic -I$(PDYNAMO_PCORE)/extensions/cinclude
 CC                = gcc
 
 OBJS =  Real2DArray.o MersenneTwister.o Transformation3Container.o IndexedSelection.o StatusHandler.o Integer1DArray.o \

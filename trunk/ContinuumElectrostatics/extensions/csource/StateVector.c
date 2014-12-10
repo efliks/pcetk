@@ -67,28 +67,26 @@ void StateVector_Deallocate (StateVector *self) {
   }
 }
 
-StateVector *StateVector_Clone (const StateVector *self) {
+StateVector *StateVector_Clone (const StateVector *self, Status *status) {
   StateVector *clone = NULL;
-  Status status;
 
   if (self != NULL) {
-    clone = StateVector_Allocate (self->length, &status);
-    StateVector_CopyTo (self, clone);
+    clone = StateVector_Allocate (self->length, status);
+    if (*status == Status_Continue) {
+      StateVector_CopyTo (self, clone, status);
+    }
   }
 
   return clone;
 }
 
-Boolean StateVector_CopyTo (const StateVector *self, StateVector *other) {
-  Boolean result;
-  Status  status;
-
+Boolean StateVector_CopyTo (const StateVector *self, StateVector *other, Status *status) {
   /* Check for different lengths */
   if (self->length != other->length) {
     StateVector_Deallocate (other);
-    other = StateVector_Allocate (self->length, &status);
+    other = StateVector_Allocate (self->length, status);
 
-    if (other == NULL) {
+    if (*status != Status_Continue) {
       return False;
     }
   }
@@ -100,8 +98,8 @@ Boolean StateVector_CopyTo (const StateVector *self, StateVector *other) {
 
   /* Copy substate? */
   if (self->substate != NULL) {
-    result = StateVector_AllocateSubstate (other, self->slength);
-    if (result == False) {
+    StateVector_AllocateSubstate (other, self->slength, status);
+    if (*status != Status_Continue) {
       return False;
     }
     memcpy (other->substate, self->substate, other->slength * sizeof (Integer));
@@ -134,8 +132,9 @@ void StateVector_ResetToMaximum (const StateVector *self) {
  Get the local index of an instance of a site, usually 0 and 1 for 
  most sites or 0, 1, 2, 3 for histidines
 -----------------------------------------------------------------------------*/
-Integer StateVector_GetItem (const StateVector *self, const Integer index) {
+Integer StateVector_GetItem (const StateVector *self, const Integer index, Status *status) {
   if (index < 0 || index > (self->length - 1)) {
+    Status_Set (status, Status_IndexOutOfRange);
     return -1;
   }
   else {
@@ -143,15 +142,17 @@ Integer StateVector_GetItem (const StateVector *self, const Integer index) {
   }
 }
 
-Boolean StateVector_SetItem (const StateVector *self, const Integer index, const Integer value) {
+Boolean StateVector_SetItem (const StateVector *self, const Integer index, const Integer value, Status *status) {
   Integer valueActual;
 
   if (index < 0 || index > (self->length - 1)) {
+    Status_Set (status, Status_IndexOutOfRange);
     return False;
   }
   else {
     valueActual = value + self->minvector[index];
     if (valueActual < self->minvector[index] || valueActual > self->maxvector[index]) {
+      Status_Set (status, Status_ValueError);
       return False;
     }
     else {
@@ -165,8 +166,9 @@ Boolean StateVector_SetItem (const StateVector *self, const Integer index, const
  Get the actual content of the state vector, i.e. global index of 
  an instance in the central arrays (_protons, _intrinsic, _interactions)
 -----------------------------------------------------------------------------*/
-Integer StateVector_GetActualItem (const StateVector *self, const Integer index) {
+Integer StateVector_GetActualItem (const StateVector *self, const Integer index, Status *status) {
   if (index < 0 || index > (self->length - 1)) {
+    Status_Set (status, Status_IndexOutOfRange);
     return -1;
   }
   else {
@@ -174,11 +176,13 @@ Integer StateVector_GetActualItem (const StateVector *self, const Integer index)
   }
 }
 
-Boolean StateVector_SetActualItem (const StateVector *self, const Integer index, const Integer value) {
+Boolean StateVector_SetActualItem (const StateVector *self, const Integer index, const Integer value, Status *status) {
   if (index < 0 || index > (self->length - 1)) {
+    Status_Set (status, Status_IndexOutOfRange);
     return False;
   }
   else if (value < self->minvector[index] || value > self->maxvector[index]) {
+    Status_Set (status, Status_ValueError);
     return False;
   }
   else {
@@ -213,15 +217,17 @@ Boolean StateVector_Increment (const StateVector *self) {
 /*=============================================================================
   Functions related to substate
 =============================================================================*/
-Boolean StateVector_AllocateSubstate (StateVector *self, const Integer nsites) {
+Boolean StateVector_AllocateSubstate (StateVector *self, const Integer nsites, Status *status) {
   if (self->substate != NULL) {
     /* Substate already allocated */
+    Status_Set (status, Status_MemoryAllocationFailure);
     return False;
   }
   else {
     MEMORY_ALLOCATEARRAY (self->substate, nsites, Integer);
     if (self->substate == NULL) {
       /* Substate allocation failed */
+      Status_Set (status, Status_MemoryAllocationFailure);
       return False;
     }
     self->slength = nsites;
@@ -234,11 +240,13 @@ Boolean StateVector_AllocateSubstate (StateVector *self, const Integer nsites) {
 
  |index| is an index in the substate's array of selectedSiteIndices
 -----------------------------------------------------------------------------*/
-Boolean StateVector_SetSubstateItem (const StateVector *self, const Integer selectedSiteIndex, const Integer index) {
+Boolean StateVector_SetSubstateItem (const StateVector *self, const Integer selectedSiteIndex, const Integer index, Status *status) {
   if (index < 0 || index > (self->slength - 1)) {
+    Status_Set (status, Status_IndexOutOfRange);
     return False;
   }
   else if (selectedSiteIndex < 0 || (selectedSiteIndex > self->length - 1)) {
+    Status_Set (status, Status_ValueError);
     return False;
   }
   else {
@@ -247,8 +255,9 @@ Boolean StateVector_SetSubstateItem (const StateVector *self, const Integer sele
   }
 }
 
-Integer StateVector_GetSubstateItem (const StateVector *self, const Integer index) {
+Integer StateVector_GetSubstateItem (const StateVector *self, const Integer index, Status *status) {
   if (index < 0 || index > (self->slength - 1)) {
+    Status_Set (status, Status_IndexOutOfRange);
     return -1;
   }
   else {
@@ -297,15 +306,19 @@ Boolean StateVector_IncrementSubstate (const StateVector *self) {
   Calculating microstate energy
 =============================================================================*/
 Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const SymmetricMatrix *symmetricmatrix, const Real pH, const Real temperature) {
-  Real Gintr = 0., W = 0.;
+  Real Gintr = 0., W = 0., *data;
   Integer nprotons = 0, siteIndex, siteIndexInner, *instanceIndex, *instanceIndexInner;
 
   for (siteIndex = 0, instanceIndex = self->vector; siteIndex < self->length; siteIndex++, instanceIndex++) {
     nprotons += Integer1DArray_Item (protons, *instanceIndex);
     Gintr += Real1DArray_Item (intrinsic, *instanceIndex);
 
+    /* # define SymmetricMatrix_Item( self, i, j ) ( (self)->data[( (i) * ( i + 1 ) ) / 2 + j] ) */
+    data = &symmetricmatrix->data[(*instanceIndex * (*instanceIndex + 1)) >> 1];
+
     for (siteIndexInner = 0, instanceIndexInner = self->vector; siteIndexInner <= siteIndex; siteIndexInner++, instanceIndexInner++) {
-      W += SymmetricMatrix_Item (symmetricmatrix, *instanceIndex, *instanceIndexInner);
+      /*W += SymmetricMatrix_Item (symmetricmatrix, *instanceIndex, *instanceIndexInner);*/
+      W += *(data + (*instanceIndexInner));
     }
   }
   return (Gintr - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * temperature * CONSTANT_LN10 * pH) + W);
@@ -315,16 +328,18 @@ Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integ
 /*=============================================================================
   Calculating probabilities analytically
 =============================================================================*/
-Boolean StateVector_CalculateProbabilitiesAnalytically (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const SymmetricMatrix *symmetricmatrix, const Real pH, const Real temperature, const Integer nstates, Real1DArray *probabilities) {
+Boolean StateVector_CalculateProbabilitiesAnalytically (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const SymmetricMatrix *symmetricmatrix, const Real pH, const Real temperature, const Integer nstates, Real1DArray *probabilities, Status *status) {
   Real1DArray *bfactors;
   Real        *bfactor;
   Real         energy, energyZero, bsum;
   Integer     *activeInstanceGlobalIndex;
   Integer      stateIndex, siteIndex;
-  Status       status;
+  Status       innerStatus;
 
-  bfactors = Real1DArray_Allocate (nstates, &status);
-  if (bfactors == NULL) {
+  innerStatus = Status_Continue;
+  bfactors = Real1DArray_Allocate (nstates, &innerStatus);
+  if (innerStatus != Status_Continue) {
+    Status_Set (status, Status_MemoryAllocationFailure);
     return False;
   }
 

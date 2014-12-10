@@ -38,7 +38,7 @@ _DefaultThreads         = 1
 _DefaultCleanUp         = False
 _DefaultFocussingSteps  = ((121, 2.00), (101, 1.00), (101, 0.50), (101, 0.25))
 
-_DefaultGmctSetup       = """
+_DefaultGmctSetup = """
 blab        1
 nconfflip   10
 tlimit      3
@@ -438,7 +438,7 @@ class MEADModel (object):
       self.isProbability = True
 
       # Create a two two-dimensional list (useful for calculating titration curves)
-      # FIXME: Possible malfunctioning in parallel mode?
+      # Warning: Possible malfunctioning in parallel mode?
       sites = []
       for site in self.meadSites:
         instances = []

@@ -2,7 +2,7 @@ PDYNAMO_PCORE = /home/mikolaj/local/opt/pDynamo-1.8.0/pCore-1.8.0
 PY_INCLUDE    = /usr/include/python2.7
 
 # The options -fdata-sections and -ffunction-sections are for not linking the unused code
-CFLAGS        = -fPIC -c -I$(PDYNAMO_PCORE)/extensions/cinclude -I$(PY_INCLUDE) -I../cinclude 
+CFLAGS        = -O2 -fPIC -c -I$(PDYNAMO_PCORE)/extensions/cinclude -I$(PY_INCLUDE) -I../cinclude 
 CC            = gcc
 
 
