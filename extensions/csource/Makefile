@@ -1,7 +1,7 @@
 # PDYNAMO_PCORE comes from the Makefile in the cython directory
 
 # The options -fdata-sections and -ffunction-sections are for not linking the unused code
-CFLAGS        = -fPIC -c -W -Wall -pedantic -I$(PDYNAMO_PCORE)/extensions/cinclude -I../cinclude
+CFLAGS        = -O2 -fPIC -c -W -Wall -pedantic -I$(PDYNAMO_PCORE)/extensions/cinclude -I../cinclude
 CC            = gcc
 
 default: StateVector.o lib/libpcore.a

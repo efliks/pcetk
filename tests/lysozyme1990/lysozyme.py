@@ -14,13 +14,13 @@ logFile.Header ("Calculate protonation states in lysozyme")
 #===========================================
 par_tab = ["toppar/par_all27_prot_na.inp", ]
 
-mol  = CHARMMPSFFile_ToSystem ("lysozyme1990_xplor.psf", isXPLOR = True, parameters = CHARMMParameterFiles_ToParameters (par_tab))
+mol  = CHARMMPSFFile_ToSystem ("lysozyme1990_xplor.psf", isXPLOR=True, parameters=CHARMMParameterFiles_ToParameters (par_tab))
 
 mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("lysozyme1990.crd")
 
 
 #===========================================
-ce_model = MEADModel (meadPath = "/home/mikolaj/local/bin/", gmctPath = "/home/mikolaj/local/bin/", scratch = "mead", nthreads = 6)
+ce_model = MEADModel (meadPath="/home/mikolaj/local/bin/", gmctPath="/home/mikolaj/local/bin/", scratch="mead", nthreads=6)
 
 # Exclude cysteines involved in disulfide bonds
 # Also exclude all arginines (otherwise the system has too many sites for analytic treatment)
@@ -36,11 +36,11 @@ exclusions = (
 ("PRTA", "ARG",   0),
 )
 
-ce_model.Initialize (mol, excludeResidues = exclusions)
+ce_model.Initialize (mol, excludeResidues=exclusions)
 ce_model.Summary ()
 ce_model.SummarySites ()
 ce_model.WriteJobFiles (mol)
-ce_model.CalculateElectrostaticEnergies (calculateETA = False)
+ce_model.CalculateElectrostaticEnergies (calculateETA=False)
 
 
 #===========================================
@@ -67,8 +67,12 @@ substate.CalculateSubstateEnergies ()
 substate.Summary ()
 
 
-#  logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")
-#  ce_model.CalculateCurves (directory = "curves_gmct")
+#===========================================
+# logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")
+# ce_model.CalculateCurves (directory="curves_gmct")
+#  
+# logFile.Text ("\n*** Calculating titration curves analytically ***\n")
+# ce_model.CalculateCurves (directory="curves_analytic", isAnalytic=True, forceSerial=True)
 
 
 #===========================================

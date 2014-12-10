@@ -34,28 +34,28 @@ typedef struct {
 
 
 extern StateVector *StateVector_Allocate          (const Integer length, Status *status);
-extern StateVector *StateVector_Clone             (const StateVector *self);
-extern Boolean      StateVector_CopyTo            (const StateVector *self, StateVector *other);
+extern StateVector *StateVector_Clone             (const StateVector *self, Status *status);
+extern Boolean      StateVector_CopyTo            (const StateVector *self, StateVector *other, Status *status);
 extern void         StateVector_Deallocate        (      StateVector *self);
 extern void         StateVector_Reset             (const StateVector *self);
 extern void         StateVector_ResetToMaximum    (const StateVector *self);
-extern Integer      StateVector_GetItem           (const StateVector *self, const Integer index);
-extern Boolean      StateVector_SetItem           (const StateVector *self, const Integer index, const Integer value);
-extern Integer      StateVector_GetActualItem     (const StateVector *self, const Integer index);
-extern Boolean      StateVector_SetActualItem     (const StateVector *self, const Integer index, const Integer value);
+extern Integer      StateVector_GetItem           (const StateVector *self, const Integer index, Status *status);
+extern Boolean      StateVector_SetItem           (const StateVector *self, const Integer index, const Integer value, Status *status);
+extern Integer      StateVector_GetActualItem     (const StateVector *self, const Integer index, Status *status);
+extern Boolean      StateVector_SetActualItem     (const StateVector *self, const Integer index, const Integer value, Status *status);
 extern Boolean      StateVector_Increment         (const StateVector *self);
 
 /* Substate-related functions */
 extern void         StateVector_ResetSubstate     (const StateVector *self);
-extern Boolean      StateVector_AllocateSubstate  (      StateVector *self, const Integer nsites);
+extern Boolean      StateVector_AllocateSubstate  (      StateVector *self, const Integer nsites, Status *status);
 extern Boolean      StateVector_IncrementSubstate (const StateVector *self);
-extern Boolean      StateVector_SetSubstateItem   (const StateVector *self, const Integer selectedSiteIndex, const Integer index);
-extern Integer      StateVector_GetSubstateItem   (const StateVector *self, const Integer index);
+extern Boolean      StateVector_SetSubstateItem   (const StateVector *self, const Integer selectedSiteIndex, const Integer index, Status *status);
+extern Integer      StateVector_GetSubstateItem   (const StateVector *self, const Integer index, Status *status);
 
 /* Calculating microstate energy */
 extern Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const SymmetricMatrix *symmetricmatrix, const Real pH, const Real temperature);
 
 /* Calculating probabilities of protonation states analytically */
-extern Boolean StateVector_CalculateProbabilitiesAnalytically (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const SymmetricMatrix *symmetricmatrix, const Real pH, const Real temperature, const Integer nstates, Real1DArray *probabilities);
+extern Boolean StateVector_CalculateProbabilitiesAnalytically (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const SymmetricMatrix *symmetricmatrix, const Real pH, const Real temperature, const Integer nstates, Real1DArray *probabilities, Status *status);
 
 #endif
