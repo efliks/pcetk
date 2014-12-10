@@ -334,14 +334,12 @@ Boolean StateVector_CalculateProbabilitiesAnalytically (const StateVector *self,
   Real         energy, energyZero, bsum;
   Integer     *activeInstanceGlobalIndex;
   Integer      stateIndex, siteIndex;
-  Status       innerStatus;
 
-  innerStatus = Status_Continue;
-  bfactors = Real1DArray_Allocate (nstates, &innerStatus);
-  if (innerStatus != Status_Continue) {
-    Status_Set (status, Status_MemoryAllocationFailure);
+  bfactors = Real1DArray_Allocate (nstates, status);
+  if (*status != Status_Continue) {
     return False;
   }
+  StateVector_Reset (self);
 
   for (stateIndex = 0, bfactor = bfactors->data; stateIndex < nstates; stateIndex++, bfactor++) {
     energy = StateVector_CalculateMicrostateEnergy (self, protons, intrinsic, symmetricmatrix, pH, temperature);
