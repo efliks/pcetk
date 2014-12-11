@@ -157,7 +157,7 @@ class MEADModel (object):
 
     If these additional files have names coinciding with the names from the library, the library parameters will be overwritten.
 
-    Notice! EST files have a priority over YAML files."""
+    Notice! EST files have priority over YAML files."""
     directory    = os.getcwd ()
     filesLibrary = glob.glob (os.path.join (YAMLPATHIN, "sites", "*.yaml"))
     filesExtra   = glob.glob (os.path.join (directory, "*.yaml"))
@@ -504,9 +504,9 @@ class MEADModel (object):
               times.append (time.time () - time0)
               averageTimePerInstance = sum (times) / len (times)
               ninstances = ninstances - 1
-              instance.TableEntry (tab, secondsToCompletion = averageTimePerInstance * ninstances)
+              instance._TableEntry (tab, secondsToCompletion = averageTimePerInstance * ninstances)
             else:
-              instance.TableEntry (tab)
+              instance._TableEntry (tab)
       else:
         batches = []
         threads = []
@@ -541,7 +541,7 @@ class MEADModel (object):
           # Print the results at the end of each batch, otherwise they come in random order
           for thread in batch:
             instance = thread.instance
-            instance.TableEntry (tab, secondsToCompletion = secondsToCompletion)
+            instance._TableEntry (tab, secondsToCompletion = secondsToCompletion)
 
       if tab:
         tab.Stop ()

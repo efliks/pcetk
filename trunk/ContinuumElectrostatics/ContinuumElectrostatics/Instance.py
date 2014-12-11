@@ -279,7 +279,7 @@ class MEADInstance (object):
 
 
   #===============================================================================
-  def TableEntry (self, tab=None, secondsToCompletion=None):
+  def _TableEntry (self, tab=None, secondsToCompletion=None):
     """Report calculated energies in a table.
 
     Optionally, include Estimated Time for Accomplishment (ETA).
