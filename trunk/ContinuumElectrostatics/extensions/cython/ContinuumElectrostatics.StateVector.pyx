@@ -7,35 +7,12 @@
 #-------------------------------------------------------------------------------
 from pCore      import logFile, LogFileActive, CLibraryError
 
-import random
-
 DEF ANALYTIC_STATES = 67108864
 __lastchanged__ = "$Id$"
 
 
 cdef class StateVector:
   """A class defining the state vector."""
-
-  def Randomize (self):
-    """Generate a random state."""
-    cdef Integer index, rand
-    for index from 0 <= index < self.cObject.length:
-      rand = random.randint (self.cObject.minvector[index], self.cObject.maxvector[index])
-      self.cObject.vector[index] = rand
- 
- 
-  def RandomChange (self):
-    """Choose a random site and set it to a random instance."""
-    cdef Integer index, rand
-    index = random.randint (0, self.cObject.length - 1)
-    rand  = random.randint (self.cObject.minvector[index], self.cObject.maxvector[index])
-
-    if rand == self.cObject.vector[index]:
-      rand += 1
-      if rand > self.cObject.maxvector[index]:
-        rand = self.cObject.minvector[index]
-    self.cObject.vector[index] = rand
-
 
   def __len__ (self):
     """Return the size of the vector."""
@@ -50,20 +27,6 @@ cdef class StateVector:
   def __dealloc__ (self):
     """Deallocate."""
     StateVector_Deallocate (self.cObject)
-
-
-#  def __copy__ (self):
-#    """Copying."""
-#    return self.__deepcopy__ ()
-#
-#
-#  def __deepcopy__ (self):
-#    """Copying."""
-#    cdef StateVector clone
-#    clone.cObject = StateVector_Clone (self.cObject)
-#    if clone.cObject == NULL:
-#      raise CLibraryError ("Cannot copy vector.")
-#    return clone
 
 
   def __getitem__ (self, Integer index):
@@ -297,8 +260,47 @@ cdef class StateVector:
     cdef Real1DArray      intrinsic        =  meadModel._intrinsic
     cdef Real1DArray      probabilities    =  meadModel._probabilities
     cdef SymmetricMatrix  symmetricmatrix  =  meadModel._symmetricmatrix
+    if not meadModel.isCalculated:
+      raise CLibraryError ("First calculate electrostatic energies.")
 
     StateVector_CalculateProbabilitiesAnalytically (self.cObject, protons.cObject, intrinsic.cObject, symmetricmatrix.cObject, pH, temperature, nstates, probabilities.cObject, &status)
     if status != Status_Continue:
       raise CLibraryError ("Cannot allocate Boltzmann factors.")
     return nstates
+
+
+#  def __copy__ (self):
+#    """Copying."""
+#    return self.__deepcopy__ ()
+#
+#  def __deepcopy__ (self):
+#    """Copying."""
+#    cdef StateVector clone
+#    clone.cObject = StateVector_Clone (self.cObject)
+#    if clone.cObject == NULL:
+#      raise CLibraryError ("Cannot copy vector.")
+#    return clone
+# 
+#  def Randomize (self):
+#    """Generate a random state."""
+#    cdef Integer index, rand
+#    for index from 0 <= index < self.cObject.length:
+#      rand = random.randint (self.cObject.minvector[index], self.cObject.maxvector[index])
+#      self.cObject.vector[index] = rand
+# 
+#  def SingleMove (self):
+#    """Choose a random site and set it to a random instance."""
+#    cdef Integer index, rand
+#    index = random.randint (0, self.cObject.length - 1)
+#    rand  = random.randint (self.cObject.minvector[index], self.cObject.maxvector[index])
+#
+#    if rand == self.cObject.vector[index]:
+#      rand = rand + 1
+#      if rand > self.cObject.maxvector[index]:
+#        rand = self.cObject.minvector[index]
+#    self.cObject.vector[index] = rand
+#    return index
+#
+#  def DoubleMove (self):
+#    """A double move."""
+#    return -1
