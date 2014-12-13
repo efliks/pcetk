@@ -12,8 +12,7 @@ logFile.Header ("Calculate protonation states in chain A of defensin")
 #===========================================
 par_tab = ["charmm/toppar/par_all27_prot_na.inp", ]
 
-mol  = CHARMMPSFFile_ToSystem ("charmm/defensin_xplor.psf", isXPLOR = True, parameters = CHARMMParameterFiles_ToParameters (par_tab))
-
+mol  = CHARMMPSFFile_ToSystem ("charmm/defensin_xplor.psf", isXPLOR=True, parameters=CHARMMParameterFiles_ToParameters (par_tab))
 mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/defensin.crd")
 
 
@@ -48,7 +47,7 @@ sites = (
 ("PRTA", "ARG", 15),
 )
 
-substate = MEADSubstate (ce_model, sites, pH = 7.0)
+substate = MEADSubstate (ce_model, sites, pH=7.0)
 substate.CalculateSubstateEnergies ()
 substate.Summary ()
 

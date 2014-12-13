@@ -239,27 +239,18 @@ cdef class StateVector:
     return Gmicro
 
 
-  def GetNumberOfStates (self, meadModel):
-    """Calculate total number of possible protonation states."""
-    cdef Integer nstates = 1, ninstances
-
-    for meadSite in meadModel.meadSites:
-      ninstances = len (meadSite.instances)
-      nstates = nstates * ninstances
-      if nstates > ANALYTIC_STATES:
-        raise CLibraryError ("Maximum number of states (%d) exceeded." % ANALYTIC_STATES)
-    return nstates
-
-
   def CalculateProbabilitiesAnalytically (self, meadModel, Real pH=7.0):
     """Calculate probabilities of protonation states analytically."""
     cdef Status           status           =  Status_Continue
-    cdef Integer          nstates          =  self.GetNumberOfStates (meadModel)
+    cdef Integer          nstates          =  meadModel._nstates
     cdef Real             temperature      =  meadModel.temperature
     cdef Integer1DArray   protons          =  meadModel._protons
     cdef Real1DArray      intrinsic        =  meadModel._intrinsic
     cdef Real1DArray      probabilities    =  meadModel._probabilities
     cdef SymmetricMatrix  symmetricmatrix  =  meadModel._symmetricmatrix
+    if nstates > ANALYTIC_STATES:
+      raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)
+
     if not meadModel.isCalculated:
       raise CLibraryError ("First calculate electrostatic energies.")
 
@@ -269,9 +260,22 @@ cdef class StateVector:
     return nstates
 
 
+#  def GetNumberOfStates (self, meadModel):
+#    """Calculate total number of possible protonation states."""
+#    cdef Integer nstates = 1, ninstances
+#
+#    for meadSite in meadModel.meadSites:
+#      ninstances = len (meadSite.instances)
+#      nstates = nstates * ninstances
+#      if nstates > ANALYTIC_STATES:
+#        raise CLibraryError ("Maximum number of states (%d) exceeded." % ANALYTIC_STATES)
+#    return nstates
+#
+#
 #  def __copy__ (self):
 #    """Copying."""
 #    return self.__deepcopy__ ()
+#
 #
 #  def __deepcopy__ (self):
 #    """Copying."""
@@ -280,14 +284,16 @@ cdef class StateVector:
 #    if clone.cObject == NULL:
 #      raise CLibraryError ("Cannot copy vector.")
 #    return clone
-# 
+#
+#
 #  def Randomize (self):
 #    """Generate a random state."""
 #    cdef Integer index, rand
 #    for index from 0 <= index < self.cObject.length:
 #      rand = random.randint (self.cObject.minvector[index], self.cObject.maxvector[index])
 #      self.cObject.vector[index] = rand
-# 
+#
+#
 #  def SingleMove (self):
 #    """Choose a random site and set it to a random instance."""
 #    cdef Integer index, rand
@@ -300,6 +306,7 @@ cdef class StateVector:
 #        rand = self.cObject.minvector[index]
 #    self.cObject.vector[index] = rand
 #    return index
+#
 #
 #  def DoubleMove (self):
 #    """A double move."""

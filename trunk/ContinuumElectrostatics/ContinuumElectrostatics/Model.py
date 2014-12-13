@@ -18,7 +18,7 @@ from pCore                 import logFile, LogFileActive, Selection, YAMLUnpickl
 from Constants             import *
 from Error                 import ContinuumElectrostaticsError
 from Site                  import MEADSite
-from Instance              import InstanceThread 
+from Instance              import InstanceThread
 from Utils                 import FormatEntry, ConvertAttribute
 from StateVector           import StateVector
 
@@ -98,6 +98,7 @@ class MEADModel (object):
     "isFilesWritten"      :   False                    ,
     "isCalculated"        :   False                    ,
     "isProbability"       :   False                    ,
+    "_nstates"            :   None                     ,
     "_protons"            :   None                     ,
     "_intrinsic"          :   None                     ,
     "_interactions"       :   None                     ,
@@ -286,7 +287,7 @@ class MEADModel (object):
           else:
             result = self.CalculateProbabilitiesGMCT (pH = pH, log = None)
           steps.append (result)
-     
+
           if tab:
             tab.Entry ("%10d"   % step)
             tab.Entry ("%10.2f" % pH)
@@ -301,19 +302,19 @@ class MEADModel (object):
             batch = []
         if batch:
           batches.append (batch)
-    
+
         # If GMCT is to be used, perform a dry run in serial mode to create directories and files
         if not isAnalytic:
           for step in range (0, nsteps):
             self.CalculateProbabilitiesGMCT (pH = curveStart + step * curveSampling, dryRun = True, log = None)
 
-        step = 0 
+        step = 0
         for batch in batches:
           for thread in batch:
             thread.start ()
           for thread in batch:
             thread.join ()
-    
+
           for thread in batch:
             steps.append (thread.sites)
             if tab:
@@ -327,14 +328,14 @@ class MEADModel (object):
 
       # Set the flag back to False because the probabilities of instances become senseless after the calculation of curves
       self.isProbability = False
-  
+
       # Write results to files
       if not os.path.exists (directory):
         try:
           os.mkdir (directory)
         except:
           raise ContinuumElectrostaticsError ("Cannot create directory %s" % directory)
-  
+
       # For each instance of each site, write a curve file
       for siteIndex, site in enumerate (self.meadSites):
         for instanceIndex, instance in enumerate (site.instances):
@@ -343,7 +344,7 @@ class MEADModel (object):
             lines.append ("%f %f\n" % (curveStart + step * curveSampling, steps[step][siteIndex][instanceIndex]))
           filename = os.path.join (directory, "%s_%s.dat" % (site.label, instance.label))
           WriteInputFile (filename, lines)
-  
+
       if LogFileActive (log):
         log.Text ("\nWriting curve files complete.\n")
 
@@ -384,7 +385,7 @@ class MEADModel (object):
       if not dryRun:
         output = os.path.join (dirCalc, "%s.gmct-out" % project)
         error  = os.path.join (dirCalc, "%s.gmct-err" % project)
-  
+
         if os.path.exists (os.path.join (dirCalc, output)):
           pass
         else:
@@ -397,11 +398,11 @@ class MEADModel (object):
             err.close ()
           except:
             raise ContinuumElectrostaticsError ("Failed running command: %s" % " ".join (command))
-    
+
         # Read probabilities from the output file
         reader = GMCTOutputFileReader (output)
         reader.Parse (temperature = self.temperature)
-  
+
         # Construct a two-dimensional list of M-sites, each site N-instances, initiated with zeros
         sites = []
         for site in self.meadSites:
@@ -409,7 +410,7 @@ class MEADModel (object):
           for instance in site.instances:
             instances.append (0.)
           sites.append (instances)
-    
+
         for siteIndex, site in enumerate (self.meadSites):
           for instanceIndex, instance in enumerate (site.instances):
             key                             = "conf_%s_%s%d_%s" % (site.segName, site.resName, site.resSerial, instance.label)
@@ -533,11 +534,11 @@ class MEADModel (object):
             nthreads = len (batch)
             for thread in batch:
               times.append (thread.time)
-  
+
             averageTimePerInstance = sum (times) / len (times) / nthreads
             ninstances = ninstances - nthreads
             secondsToCompletion = averageTimePerInstance * ninstances
-  
+
           # Print the results at the end of each batch, otherwise they come in random order
           for thread in batch:
             instance = thread.instance
@@ -600,7 +601,7 @@ class MEADModel (object):
         if absoluteDeviation > maxDeviation:
           maxDeviation = absoluteDeviation
 
- 
+
     if LogFileActive (log):
       if isSymmetric:
         log.Text ("\nInteractions are symmetric within the given threshold.\n")
@@ -628,12 +629,12 @@ class MEADModel (object):
             asite     = ainstance.parent
             for gap, content in zip (gaps, (asite.segName, asite.resName, asite.resSerial, ainstance.label)):
               tab.Entry (gap % content)
-          
+
             binstance = self._GetInstanceByGlobalIndex (column)
             bsite     = binstance.parent
             for gap, content in zip (gaps, (bsite.segName, bsite.resName, bsite.resSerial, binstance.label)):
               tab.Entry (gap % content)
-          
+
             tab.Entry ("%0.4f" % deviation)
           tab.Stop ()
 
@@ -679,8 +680,8 @@ class MEADModel (object):
         if segmentName not in excludeSegments:
           residues  = segment.children
           nresidues = len (residues)
- 
- 
+
+
           #============ Go over residues ============
           for residueIndex, residue in enumerate (residues):
             residueName, residueSerial = ParseLabel (residue.label, fields = 2)
@@ -695,41 +696,41 @@ class MEADModel (object):
                   if exclSegmentName == segmentName and exclResidueName == residueName and exclResidueSerial == residueSerial:
                     includeResidue = False
                     break
-  
+
                 elif (    exclSegmentName) and (    exclResidueName) and (not exclResidueSerial):
                   if exclSegmentName == segmentName and exclResidueName == residueName:
                     includeResidue = False
                     break
-  
+
                 elif (    exclSegmentName) and (not exclResidueName) and (    exclResidueSerial):
                   if exclSegmentName == segmentName and exclResidueSerial == residueSerial:
                     includeResidue = False
                     break
-  
+
                 elif (    exclSegmentName) and (not exclResidueName) and (not exclResidueSerial):
                   if exclSegmentName == segmentName:
                     includeResidue = False
                     break
-  
+
                 elif (not exclSegmentName) and (    exclResidueName) and (    exclResidueSerial):
                   if exclResidueName == residueName and exclResidueSerial == residueSerial:
                     includeResidue = False
                     break
-  
+
                 elif (not exclSegmentName) and (    exclResidueName) and (not exclResidueSerial):
                   if exclResidueName == residueName:
                     includeResidue = False
                     break
-  
+
                 elif (not exclSegmentName) and (not exclResidueName) and (    exclResidueSerial):
                   if exclResidueSerial == residueSerial:
                     includeResidue = False
                     break
-  
+
                 elif (not exclSegmentName) and (not exclResidueName) and (not exclResidueSerial):
                   includeResidue = False
                   break
-  
+
               if not includeResidue:
                 if LogFileActive (log):
                   log.Text ("\nExcluding residue: %s %s %d\n" % (segmentName, residueName, residueSerial))
@@ -766,30 +767,30 @@ class MEADModel (object):
               #============== End experimental code ==============
 
 
-              # Titratable residue? 
+              # Titratable residue?
               if residueName in self.librarySites:
                 prevIndices = []
                 nextIndices = []
-  
+
                 # Include atoms from the previous residue to the model compound?
                 if residueIndex > 1:
                   prevResidue = residues[residueIndex - 1]
                   prevResidueName, prevResidueSerial = ParseLabel (prevResidue.label, fields = 2)
                   prevResidueSerial = int (prevResidueSerial)
-  
+
                   if prevResidueName in PROTEIN_RESIDUES:
                     prevNames = PREV_RESIDUE
-  
+
                     for atom in prevResidue.children:
                       if atom.label in prevNames:
                         prevIndices.append (atom.index)
-  
+
                 # Include atoms from the next residue to the model compound?
                 if residueIndex < (nresidues - 1):
                   nextResidue = residues[residueIndex + 1]
                   nextResidueName, nextResidueSerial = ParseLabel (nextResidue.label, fields = 2)
                   nextResidueSerial = int (nextResidueSerial)
-  
+
                   if nextResidueName in PROTEIN_RESIDUES:
                     if   nextResidueName == "PRO":
                       nextNames = NEXT_RESIDUE_PRO
@@ -797,13 +798,13 @@ class MEADModel (object):
                       nextNames = NEXT_RESIDUE_GLY
                     else:
                       nextNames = NEXT_RESIDUE
-  
+
                     for atom in nextResidue.children:
                       if atom.label in nextNames:
                         nextIndices.append (atom.index)
 
- 
-                # Collect atom indices 
+
+                # Collect atom indices
                 libSite          = self.librarySites[residueName]
                 libSiteAtoms     = libSite["atoms"]
                 atoms            = residue.children
@@ -905,10 +906,10 @@ class MEADModel (object):
                                    )
                 newSite.CalculateCenterOfGeometry (system, libSite["center"])
                 protonsOfInstances, updatedIndexGlobal = newSite._CreateInstances (libSite["instances"], instIndexGlobal)
-                
+
                 protons.extend (protonsOfInstances)
                 instIndexGlobal = updatedIndexGlobal
-                
+
                 self.meadSites.append (newSite)
                 siteIndex = siteIndex + 1
               #============== End experimental code ==============
@@ -972,6 +973,15 @@ class MEADModel (object):
           self._protons[instance._instIndexGlobal] = protons[instance._instIndexGlobal]
           # Or: instance.protons = protons[instance._instIndexGlobal]
 
+      # Finally, calculate the number of possible protonation states, limited by ANALYTIC_STATES
+      nstates = 1
+      for site in self.meadSites:
+        nstates = nstates * site.ninstances
+        if nstates > ANALYTIC_STATES:
+            break
+      self._nstates = nstates
+
+      # Finish up
       self.isInitialized = True
 
 
@@ -1050,7 +1060,7 @@ class MEADModel (object):
         for site in self.meadSites:
           maxProb = 0.
           for instance in site.instances:
-            if instance.probability > maxProb: 
+            if instance.probability > maxProb:
               maxLabel = instance.label
               maxIndex = instance.instIndex
               maxProb  = instance.probability
@@ -1070,7 +1080,7 @@ class MEADModel (object):
             tab.Entry ("%6s" % site.segName)
             tab.Entry ("%6s" % site.resName)
             tab.Entry ("%6d" % site.resSerial)
-  
+
             for instance in site.instances:
               if instance.instIndex == maxIndex:
                 label = "*%s" % instance.label
@@ -1078,7 +1088,7 @@ class MEADModel (object):
                 label = instance.label
               tab.Entry ("%8s"   % label)
               tab.Entry ("%8.4f" % instance.probability)
-  
+
             for filler in range (0, maxinstances - len (site.instances)):
               tab.Entry ("")
               tab.Entry ("")

@@ -13,7 +13,6 @@ logFile.Header ("Calculate protonation states in rubredoxin")
 par_tab = ["charmm/toppar/par_all27_prot_na_fixed.inp", "charmm/toppar/par_iron_sulfur.inp"]
 
 mol  = CHARMMPSFFile_ToSystem ("charmm/rubredoxin_xplor.psf", isXPLOR=True, parameters=CHARMMParameterFiles_ToParameters (par_tab))
-
 mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/rubredoxin.crd")
 
 

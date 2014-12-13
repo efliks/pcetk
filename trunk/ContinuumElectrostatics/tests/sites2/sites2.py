@@ -12,13 +12,12 @@ logFile.Header ("Calculate protonation states of two titratable sites in a hypot
 #===========================================
 par_tab = ["charmm/toppar/par_all27_prot_na.inp", ]
 
-mol  = CHARMMPSFFile_ToSystem ("charmm/testpeptide_xplor.psf", isXPLOR = True, parameters = CHARMMParameterFiles_ToParameters (par_tab))
-
+mol = CHARMMPSFFile_ToSystem ("charmm/testpeptide_xplor.psf", isXPLOR=True, parameters=CHARMMParameterFiles_ToParameters (par_tab))
 mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/testpeptide.crd")
 
 
 #===========================================
-ce_model = MEADModel (meadPath = "/home/mikolaj/local/bin/", gmctPath = "/home/mikolaj/local/bin/", scratch = "mead", nthreads = 4)
+ce_model = MEADModel (meadPath="/home/mikolaj/local/bin/", gmctPath="/home/mikolaj/local/bin/", scratch="mead", nthreads=4)
 
 ce_model.Initialize (mol)
 ce_model.Summary ()
@@ -37,8 +36,8 @@ statevector = StateVector (ce_model)
 increment   = True
 
 while increment:
-  Gmicro = statevector.CalculateMicrostateEnergy (ce_model, pH = 7.0)
-  statevector.Print (ce_model, title = "Gmicro = %f" % Gmicro)
+  Gmicro = statevector.CalculateMicrostateEnergy (ce_model, pH=7.0)
+  statevector.Print (ce_model, title="Gmicro = %f" % Gmicro)
   increment = statevector.Increment ()
 
 
@@ -55,11 +54,11 @@ ce_model.SummaryProbabilities ()
 
 #===========================================
 logFile.Text ("\n*** Calculating titration curves analytically ***\n")
-ce_model.CalculateCurves (isAnalytic = True, forceSerial = True, directory = "curves_analytic")
+ce_model.CalculateCurves (isAnalytic=True, forceSerial=True, directory="curves_analytic")
 
 
 logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")
-ce_model.CalculateCurves (directory = "curves_gmct")
+ce_model.CalculateCurves (directory="curves_gmct")
 
 
 #===========================================

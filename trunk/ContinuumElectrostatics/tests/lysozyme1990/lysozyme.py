@@ -15,7 +15,6 @@ logFile.Header ("Calculate protonation states in lysozyme")
 par_tab = ["toppar/par_all27_prot_na.inp", ]
 
 mol  = CHARMMPSFFile_ToSystem ("lysozyme1990_xplor.psf", isXPLOR=True, parameters=CHARMMParameterFiles_ToParameters (par_tab))
-
 mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("lysozyme1990.crd")
 
 
