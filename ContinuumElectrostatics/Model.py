@@ -2,7 +2,7 @@
 # . File      : Model.py
 # . Program   : pDynamo-1.8.0                           (http://www.pdynamo.org)
 # . Copyright : CEA, CNRS, Martin  J. Field  (2007-2012),
-#                          Mikolaj J. Feliks (2014)
+#                          Mikolaj J. Feliks (2014-2015)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
 """MEADModel is a class representing the continuum electrostatic model.
@@ -14,13 +14,13 @@ __lastchanged__ = "$Id$"
 
 import os, glob, threading, subprocess, time
 
-from pCore                 import logFile, LogFileActive, Selection, YAMLUnpickle, Clone, Integer1DArray, Real1DArray, Real2DArray, SymmetricMatrix
+from pCore                 import logFile, LogFileActive, Selection, YAMLUnpickle
 from Constants             import *
 from Error                 import ContinuumElectrostaticsError
 from Site                  import MEADSite
 from Instance              import InstanceThread
 from Utils                 import FormatEntry, ConvertAttribute
-from StateVector           import StateVector
+from EnergyModel           import EnergyModel
 
 # File handling
 from ESTFileReader         import ESTFileReader
@@ -31,11 +31,10 @@ from PQRFileWriter         import PQRFile_FromSystem
 
 _DefaultTemperature     = 300.0
 _DefaultIonicStrength   = 0.1
-_DefaultMeadPath        = "/usr/bin"
-_DefaultGmctPath        = "/usr/bin"
-_DefaultScratch         = "/tmp"
+_DefaultPathScratch     = "/tmp"
+_DefaultPathMEAD        = "/usr/bin"
+_DefaultPathGMCT        = "/usr/bin"
 _DefaultThreads         = 1
-_DefaultCleanUp         = False
 _DefaultFocussingSteps  = ((121, 2.00), (101, 1.00), (101, 0.50), (101, 0.25))
 
 _DefaultGmctSetup = """
@@ -67,10 +66,9 @@ class CurveThread (threading.Thread):
     else:
       self.calculate = meadModel.CalculateProbabilitiesGMCT
 
-
   def run (self):
     """The method that runs the calculations."""
-    self.sites = self.calculate (self.pH, log = None)
+    self.sites = self.calculate (self.pH, log=None)
 
 
 #-------------------------------------------------------------------------------
@@ -78,39 +76,35 @@ class MEADModel (object):
   """Continuum electrostatic model."""
 
   defaultAttributes = {
-    "temperature"         :   _DefaultTemperature      ,
-    "ionicStrength"       :   _DefaultIonicStrength    ,
-    "meadPath"            :   _DefaultMeadPath         ,
-    "gmctPath"            :   _DefaultGmctPath         ,
-    "nthreads"            :   _DefaultThreads          ,
-    "deleteJobFiles"      :   _DefaultCleanUp          ,
-    "scratch"             :   _DefaultScratch          ,
-    "focussingSteps"      :   _DefaultFocussingSteps   ,
-    "librarySites"        :   None                     ,
-    "meadSites"           :   None                     ,
-    "backAtomIndices"     :   None                     ,
-    "proteinAtomIndices"  :   None                     ,
-    "backPqr"             :   None                     ,
-    "proteinPqr"          :   None                     ,
-    "sitesFpt"            :   None                     ,
-    "splitToDirectories"  :   True                     ,
-    "isInitialized"       :   False                    ,
-    "isFilesWritten"      :   False                    ,
-    "isCalculated"        :   False                    ,
-    "isProbability"       :   False                    ,
-    "_nstates"            :   None                     ,
-    "_protons"            :   None                     ,
-    "_intrinsic"          :   None                     ,
-    "_interactions"       :   None                     ,
-    "_probabilities"      :   None                     ,
-    "_symmetricmatrix"    :   None                     ,
+    "nthreads"             :   _DefaultThreads          ,
+    "temperature"          :   _DefaultTemperature      ,
+    "ionicStrength"        :   _DefaultIonicStrength    ,
+    "splitToDirectories"   :   True                     ,
+    "deleteJobFiles"       :   False                    ,
+    "isInitialized"        :   False                    ,
+    "isFilesWritten"       :   False                    ,
+    "isCalculated"         :   False                    ,
+    "isProbability"        :   False                    ,
+    "proteinAtomIndices"   :   None                     ,
+    "backAtomIndices"      :   None                     ,
+    "pathMEAD"             :   _DefaultPathMEAD         ,
+    "pathGMCT"             :   _DefaultPathGMCT         ,
+    "pathScratch"          :   _DefaultPathScratch      ,
+    "pathFptSites"         :   None                     ,
+    "pathPqrProtein"       :   None                     ,
+    "pathPqrBack"          :   None                     ,
+    "focussingSteps"       :   _DefaultFocussingSteps   ,
+    "librarySites"         :   None                     ,
+    "meadSites"            :   None                     ,
+    "energyModel"          :   None                     ,
+    "owner"                :   None                     ,
         }
 
   defaultAttributeNames = {
     "Temperature"       : "temperature"        ,    "Initialized"       : "isInitialized"      ,
     "Ionic Strength"    : "ionicStrength"      ,    "Files Written"     : "isFilesWritten"     ,
     "Threads"           : "nthreads"           ,    "Calculated"        : "isCalculated"       ,
-    "Split Directories" : "splitToDirectories" ,    "Calculated prob."  : "isProbability"      ,
+    "Split Directories" : "splitToDirectories" ,    "Calculated Prob."  : "isProbability"      ,
     "Delete Job Files"  : "deleteJobFiles"     ,
         }
 
@@ -118,9 +112,6 @@ class MEADModel (object):
   def ninstances (self):
     if self.meadSites:
       return sum (map (lambda site: site.ninstances, self.meadSites))
-    # The easiest way of getting the total number of instances?
-    # if self._protons is not None:
-    #  return len (self._protons)
     else:
       return 0
 
@@ -139,15 +130,16 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def __init__ (self, log=logFile, *arguments, **keywordArguments):
+  def __init__ (self, system, log=logFile, *arguments, **keywordArguments):
     """Constructor."""
     for (key, value) in self.__class__.defaultAttributes.iteritems (): setattr (self, key, value)
     for (key, value) in                 keywordArguments.iteritems (): setattr (self, key, value)
 
-    self.meadPath = os.path.abspath (self.meadPath)
-    self.gmctPath = os.path.abspath (self.gmctPath)
-    self.scratch  = os.path.abspath (self.scratch)
-    self.LoadLibraryOfSites (log = log)
+    self.owner       = system
+    self.pathMEAD    = os.path.abspath (self.pathMEAD)
+    self.pathGMCT    = os.path.abspath (self.pathGMCT)
+    self.pathScratch = os.path.abspath (self.pathScratch)
+    self.LoadLibraryOfSites (log=log)
 
 
   #===============================================================================
@@ -221,8 +213,8 @@ class MEADModel (object):
           for bsite in self.meadSites:
             for binstance in bsite.instances:
 
-              wij = self._interactions [ainstance._instIndexGlobal, binstance._instIndexGlobal]
-              wji = self._interactions [binstance._instIndexGlobal, ainstance._instIndexGlobal]
+              wij = self.energyModel.GetInteraction (ainstance._instIndexGlobal, binstance._instIndexGlobal)
+              wji = self.energyModel.GetInteraction (binstance._instIndexGlobal, ainstance._instIndexGlobal)
               symmetric = (wij + wji) * .5
               error     = symmetric - wij
               lines.append (entry % (asite.siteIndex + 1, ainstance.instIndex + 1, asite.label, ainstance.label, bsite.siteIndex + 1, binstance.instIndex + 1, bsite.label, binstance.label, symmetric, wij, error))
@@ -326,7 +318,7 @@ class MEADModel (object):
         tab.Stop ()
         log.Text ("\nCalculating titration curves complete.\n")
 
-      # Set the flag back to False because the probabilities of instances become senseless after the calculation of curves
+      # Set the flag back to False because the probabilities of instances become meaningless after the calculation of curves
       self.isProbability = False
 
       # Write results to files
@@ -360,10 +352,10 @@ class MEADModel (object):
       sites     = None
 
       # Prepare input files and directories for GMCT
-      dirConf = os.path.join (self.scratch, "gmct", "conf")
+      dirConf = os.path.join (self.pathScratch, "gmct", "conf")
       if not os.path.exists (dirConf): os.makedirs (dirConf)
 
-      dirCalc = os.path.join (self.scratch, "gmct", "%s" % pH)
+      dirCalc = os.path.join (self.pathScratch, "gmct", "%s" % pH)
       if not os.path.exists (dirCalc): os.makedirs (dirCalc)
 
       fileGint = os.path.join (dirConf, "%s.gint" % project)
@@ -389,7 +381,7 @@ class MEADModel (object):
         if os.path.exists (os.path.join (dirCalc, output)):
           pass
         else:
-          command = [os.path.join (self.gmctPath, "gmct"), project]
+          command = [os.path.join (self.pathGMCT, "gmct"), project]
           try:
             out = open (output, "w")
             err = open (error,  "w")
@@ -426,31 +418,35 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def CalculateProbabilitiesAnalytically (self, pH=7.0, log=logFile):
-    """For each site, calculate the probability of occurance of each instance, using the Boltzmann weighted sum."""
-    if self.isCalculated:
-      vector = StateVector (self)
-      nstates = vector.CalculateProbabilitiesAnalytically (self, pH = pH)
-
-      if LogFileActive (log):
-        log.Text ("\nCalculated %d protonation states.\n" % nstates)
-
-      # The instances now contain calculated probabilities
-      self.isProbability = True
-
-      # Create a two two-dimensional list (useful for calculating titration curves)
-      # Warning: Possible malfunctioning in parallel mode?
-      sites = []
-      for site in self.meadSites:
-        instances = []
-        for instance in site.instances:
-          instances.append (instance.probability)
-        sites.append (instances)
-      return sites
+  def CalculateMicrostateEnergy (self, stateVector, pH=7.0):
+    """Calculate energy of a microstate defined by the state vector."""
+    return self.energyModel.CalculateMicrostateEnergy (stateVector, pH=pH)
 
 
   #===============================================================================
-  def CalculateElectrostaticEnergies (self, calculateETA=True, asymmetricThreshold=0.03, asymmetricSummary=False, log=logFile):
+  def CalculateProbabilitiesAnalytically (self, pH=7.0, log=logFile):
+    """For each site, calculate the probability of occurance of each instance, using the Boltzmann weighted sum."""
+    nstates = self.energyModel.CalculateProbabilitiesAnalytically (pH=pH)
+
+    if LogFileActive (log):
+      log.Text ("\nCalculated %d protonation states.\n" % nstates)
+
+    # The instances now contain calculated probabilities
+    self.isProbability = True
+
+    # Create a two two-dimensional list (useful for calculating titration curves)
+    # Warning: Possible malfunctioning in parallel mode?
+    sites = []
+    for site in self.meadSites:
+      instances = []
+      for instance in site.instances:
+        instances.append (instance.probability)
+      sites.append (instances)
+    return sites
+
+
+  #===============================================================================
+  def CalculateElectrostaticEnergies (self, calculateETA=True, asymmetricThreshold=0.05, asymmetricSummary=False, log=logFile):
     """
     Calculate for each instance of each site:
     - self (Born) energy in the model compound
@@ -550,12 +546,10 @@ class MEADModel (object):
 
 
       # Check for symmetricity of the matrix of interactions
-      isSymmetric, maxDeviation = self._CheckIfSymmetric (threshold=asymmetricThreshold, printSummary=asymmetricSummary, log=log)
+      self._CheckIfSymmetric (threshold=asymmetricThreshold, printSummary=asymmetricSummary, log=log)
 
       # Symmetrize interaction energies inside the matrix of interactions
-      for i in xrange (self.ninstances):
-        for j in xrange (i + 1):
-          self._symmetricmatrix[i, j] = .5 * (self._interactions[i, j] + self._interactions[j, i])
+      self.energyModel.SymmetrizeInteractions ()
 
       if LogFileActive (log):
         log.Text ("\nSymmetrizing interactions complete.\n")
@@ -564,47 +558,15 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def _GetInstanceByGlobalIndex (self, instIndexGlobal):
-    """Search for instance based on the given global index"""
-    if instIndexGlobal < 0 or instIndexGlobal > (self.ninstances - 1):
-      raise ContinuumElectrostaticsError ("Instance index out of range.")
-    instanceToReturn = None
+  def _CheckIfSymmetric (self, threshold=0.05, printSummary=False, log=logFile):
+    """This method is a wrapper for the EnergyModel's CheckIfSymmetric method.
 
-    for site in self.meadSites:
-      for instance in site.instances:
-        if instance._instIndexGlobal == instIndexGlobal:
-          instanceToReturn = instance
-          break
-    return instanceToReturn
-
-
-  #===============================================================================
-  # Real2DArray_IsSymmetric from pDynamo is not available
-
-  def _CheckIfSymmetric (self, threshold=0.03, printSummary=False, log=logFile):
-    """After calculating electrostatic energies, check the symmetricity of the matrix of interactions."""
-    maxDeviation = 0.
-    isSymmetric  = True
-    ninstances   = self.ninstances
-    report       = []
-
-    for row in xrange (ninstances):
-      for column in xrange (ninstances):
-        symmetry  = .5 * (self._interactions[row, column] + self._interactions[column, row])
-        deviation = symmetry - self._interactions[row, column]
-
-        absoluteDeviation = abs (deviation)
-        if absoluteDeviation > threshold:
-          isSymmetric = False
-          report.append ([row, column, deviation])
-
-        if absoluteDeviation > maxDeviation:
-          maxDeviation = absoluteDeviation
-
+    The wrapper is able to print summaries."""
+    isSymmetric, maxDeviation = self.energyModel.CheckIfSymmetric (threshold=threshold)
 
     if LogFileActive (log):
       if isSymmetric:
-        log.Text ("\nInteractions are symmetric within the given threshold.\n")
+        log.Text ("\nInteractions are symmetric within the given threshold (%0.4f kcal/mol).\n" % threshold)
       else:
         if not printSummary:
           log.Text ("\nWARNING: Maximum deviation of interactions is %0.4f kcal/mol.\n" % maxDeviation)
@@ -624,36 +586,40 @@ class MEADModel (object):
             else:
               tab.Heading (head)
 
-          for row, column, deviation in report:
-            ainstance = self._GetInstanceByGlobalIndex (row)
-            asite     = ainstance.parent
+          # This fragment should be rewritten to work faster
+          report = []
+          for rowSite in self.meadSites:
+            for rowInstance in rowSite.instances:
+              for columnSite in self.meadSites:
+                for columnInstance in columnSite.instances:
+                  deviation = self.energyModel.GetDeviation (rowInstance._instIndexGlobal, columnInstance._instIndexGlobal)
+                  if deviation > threshold:
+                    report.append ([rowInstance, columnInstance, deviation])
+
+          for ainstance, binstance, deviation in report:
+            asite = ainstance.parent
             for gap, content in zip (gaps, (asite.segName, asite.resName, asite.resSerial, ainstance.label)):
               tab.Entry (gap % content)
-
-            binstance = self._GetInstanceByGlobalIndex (column)
-            bsite     = binstance.parent
+            bsite = binstance.parent
             for gap, content in zip (gaps, (bsite.segName, bsite.resName, bsite.resSerial, binstance.label)):
               tab.Entry (gap % content)
 
             tab.Entry ("%0.4f" % deviation)
           tab.Stop ()
-
-    return (isSymmetric, maxDeviation)
+    return isSymmetric
 
 
   #===============================================================================
-  def Initialize (self, system, excludeSegments=None, excludeResidues=None, includeTermini=False, log=logFile):
+  def Initialize (self, excludeSegments=None, excludeResidues=None, includeTermini=False, log=logFile):
     """Decompose the system into model compounds, sites and a background charge set.
-
     |excludeSegments| is a sequence of segment names to exclude from the model, usually segments of water molecules.
-
     |excludeResidues| is a sequence of three-element sequences (segmentName, residueName, residueSerial).
-
     It is possible to leave some of the elements blank, for example ("PRTA", "CYS", "") means exclude all cysteines in segment PRTA.
-
     Only C-terminus is supported and the support is experimental."""
 
     # Check for the CHARMM energy model
+    system = self.owner
+
     if system.energyModel.mmModel.label is not "CHARMM":
       raise ContinuumElectrostaticsError ("The energy model of the system is different from CHARMM.")
 
@@ -948,38 +914,18 @@ class MEADModel (object):
       self.proteinAtomIndices = proteinAtomIndices
       self.backAtomIndices    = backAtomIndices
 
-      self.proteinPqr         = os.path.join (self.scratch, "protein.pqr")
-      self.backPqr            = os.path.join (self.scratch, "back.pqr")
-
-      # Define FPT-file
-      self.sitesFpt = os.path.join (self.scratch, "site.fpt")
-
-
-      # Determine total number of instances
-      ninstances = 0
-      for site in self.meadSites:
-        ninstances = ninstances + len (site.instances)
+      self.pathPqrProtein     = os.path.join (self.pathScratch, "protein.pqr")
+      self.pathPqrBack        = os.path.join (self.pathScratch, "back.pqr")
+      self.pathFptSites       = os.path.join (self.pathScratch, "site.fpt")
 
       # Allocate arrays of protons, intrinsic energies, interaction energies and probabilities
-      self._protons          =  Integer1DArray   (ninstances)
-      self._intrinsic        =  Real1DArray      (ninstances)
-      self._interactions     =  Real2DArray      (ninstances, ninstances)
-      self._probabilities    =  Real1DArray      (ninstances)
-      self._symmetricmatrix  =  SymmetricMatrix  (ninstances)
+      self.energyModel = EnergyModel (self)
 
       # Initialize the array of protons
       for site in self.meadSites:
         for instance in site.instances:
-          self._protons[instance._instIndexGlobal] = protons[instance._instIndexGlobal]
-          # Or: instance.protons = protons[instance._instIndexGlobal]
-
-      # Finally, calculate the number of possible protonation states, limited by ANALYTIC_STATES
-      nstates = 1
-      for site in self.meadSites:
-        nstates = nstates * site.ninstances
-        if nstates > ANALYTIC_STATES:
-            break
-      self._nstates = nstates
+          instance.protons = protons[instance._instIndexGlobal]
+          # Or: self.energyModel.SetProtons (instance._instIndexGlobal, protons[instance._instIndexGlobal])
 
       # Finish up
       self.isInitialized = True
@@ -1158,9 +1104,9 @@ class MEADModel (object):
   def DeleteJobFiles (self):
     """Delete job files."""
     files = []
-    files.append (self.backPqr)
-    files.append (self.proteinPqr)
-    files.append (self.sitesFpt)
+    files.append (self.pathPqrProtein)
+    files.append (self.pathPqrBack)
+    files.append (self.pathFptSites)
 
     for site in self.meadSites:
       for instance in site.instances:
@@ -1180,13 +1126,14 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def WriteJobFiles (self, system, log=logFile):
+  def WriteJobFiles (self, log=logFile):
     """Write files: PQR, FPT, OGM and MGM."""
     if self.isInitialized:
       # Get atomic charges and radii for the system
+      system = self.owner
+
       systemCharges = system.AtomicCharges ()
       systemRadii   = []
-
       systemTypes   = system.energyModel.mmAtoms.AtomTypes ()
       radii         = YAMLUnpickle ("%s/%s" % (YAMLPATHIN, "radii.yaml"))
 
@@ -1202,11 +1149,11 @@ class MEADModel (object):
         systemRadii.append (radius)
 
       # Prepare scratch space
-      if not os.path.exists (self.scratch):
+      if not os.path.exists (self.pathScratch):
         try:
-          os.mkdir (self.scratch)
+          os.mkdir (self.pathScratch)
         except:
-          raise ContinuumElectrostaticsError ("Cannot create scratch directory %s" % self.scratch)
+          raise ContinuumElectrostaticsError ("Cannot create scratch directory %s" % self.pathScratch)
 
       # Create subdirectories, if necessary
       if self.splitToDirectories:
@@ -1224,10 +1171,10 @@ class MEADModel (object):
         meadSite._WriteMEADFiles (system, systemCharges, systemRadii)
 
       # Write background PQR file
-      PQRFile_FromSystem (self.backPqr, system, selection=Selection (self.backAtomIndices), charges=systemCharges, radii=systemRadii)
+      PQRFile_FromSystem (self.pathPqrBack, system, selection=Selection (self.backAtomIndices), charges=systemCharges, radii=systemRadii)
 
       # Write full-protein PQR file (to be used as eps2set_region)
-      PQRFile_FromSystem (self.proteinPqr, system, selection=Selection (self.proteinAtomIndices), charges=systemCharges, radii=systemRadii)
+      PQRFile_FromSystem (self.pathPqrProtein, system, selection=Selection (self.proteinAtomIndices), charges=systemCharges, radii=systemRadii)
 
       # Write FPT-file
       lines = []
@@ -1237,7 +1184,7 @@ class MEADModel (object):
             x, y, z = system.coordinates3[atomIndex]
             line    = "%d %d %f %f %f %f\n" % (siteIndex, instanceIndex, x, y, z, charge)
             lines.append (line)
-      WriteInputFile (self.sitesFpt, lines)
+      WriteInputFile (self.pathFptSites, lines)
 
       self.isFilesWritten = True
 

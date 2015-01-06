@@ -1,5 +1,4 @@
 # Example script for the ContinuumElectrostatics module
-
 from pBabel   import CHARMMParameterFiles_ToParameters, CHARMMPSFFile_ToSystem, CHARMMCRDFile_ToCoordinates3
 from pCore    import logFile
 
@@ -17,48 +16,48 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/testpeptide.crd")
 
 
 #===========================================
-ce_model = MEADModel (meadPath="/home/mikolaj/local/bin/", gmctPath="/home/mikolaj/local/bin/", scratch="mead", nthreads=4)
+cem = MEADModel (system=mol, pathMEAD="/home/mikolaj/local/bin/", pathGMCT="/home/mikolaj/local/bin/", pathScratch="mead", nthreads=1)
 
-ce_model.Initialize (mol)
-ce_model.Summary ()
-ce_model.SummarySites ()
-ce_model.WriteJobFiles (mol)
-ce_model.CalculateElectrostaticEnergies (calculateETA=False)
+cem.Initialize ()
+cem.Summary ()
+cem.SummarySites ()
+cem.WriteJobFiles ()
+cem.CalculateElectrostaticEnergies (calculateETA=False)
 
-ce_model.WriteGintr ()
-ce_model.WriteW ()
+cem.WriteGintr ()
+cem.WriteW ()
 
 
 #===========================================
 logFile.Text ("\n*** Calculating microstate energies of all states at pH = 7 ***\n")
 
-statevector = StateVector (ce_model)
+statevector = StateVector (cem)
 increment   = True
 
 while increment:
-  Gmicro = statevector.CalculateMicrostateEnergy (ce_model, pH=7.0)
-  statevector.Print (ce_model, title="Gmicro = %f" % Gmicro)
+  Gmicro = cem.CalculateMicrostateEnergy (statevector, pH=7.0)
+  statevector.Print (title="Gmicro = %f" % Gmicro)
   increment = statevector.Increment ()
 
 
 #===========================================
 logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 analytically ***\n")
-ce_model.CalculateProbabilitiesAnalytically ()
-ce_model.SummaryProbabilities ()
+cem.CalculateProbabilitiesAnalytically ()
+cem.SummaryProbabilities ()
 
 
 logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 using GMCT ***\n")
-ce_model.CalculateProbabilitiesGMCT ()
-ce_model.SummaryProbabilities ()
+cem.CalculateProbabilitiesGMCT ()
+cem.SummaryProbabilities ()
 
 
 #===========================================
 logFile.Text ("\n*** Calculating titration curves analytically ***\n")
-ce_model.CalculateCurves (isAnalytic=True, forceSerial=True, directory="curves_analytic")
+cem.CalculateCurves (isAnalytic=True, forceSerial=True, directory="curves_analytic")
 
 
 logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")
-ce_model.CalculateCurves (directory="curves_gmct")
+cem.CalculateCurves (directory="curves_gmct")
 
 
 #===========================================

@@ -2,7 +2,7 @@
 # . File      : Site.py
 # . Program   : pDynamo-1.8.0                           (http://www.pdynamo.org)
 # . Copyright : CEA, CNRS, Martin  J. Field  (2007-2012),
-#                          Mikolaj J. Feliks (2014)
+#                          Mikolaj J. Feliks (2014-2015)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
 """MEADSite is a class representing a titratable site."""
@@ -22,15 +22,17 @@ import os
 class MEADSite (object):
   """Titratable site.
   Each site has at least two instances (protonated and deprotonated)."""
-  defaultAttributes = { "parent"           : None , # <--This should point to the MEAD model
-                        "siteIndex"        : None ,
-                        "segName"          : None ,
-                        "resName"          : None ,
-                        "resSerial"        : None , # <--Keep it as integer
-                        "instances"        : None ,
-                        "center"           : None ,
-                        "siteAtomIndices"  : None ,
-                        "modelAtomIndices" : None }
+  defaultAttributes = {
+                  "parent"           : None , # <--This should point to the MEAD model
+                  "siteIndex"        : None ,
+                  "segName"          : None ,
+                  "resName"          : None ,
+                  "resSerial"        : None , # <--Keep it as integer
+                  "instances"        : None ,
+                  "center"           : None ,
+                  "siteAtomIndices"  : None ,
+                  "modelAtomIndices" : None ,
+                      }
 
   @property
   def label (self):
@@ -105,7 +107,7 @@ class MEADSite (object):
       instances.append ([instance.probability, instance.instIndex])
     instances.sort ()
     indices = [index for probability, index in instances]
-    return indices 
+    return indices
 
 
   #===============================================================================
@@ -134,7 +136,7 @@ class MEADSite (object):
     for instance in self.instances:
       PQRFile_FromSystem (instance.modelPqr, system, selection=selectModel, charges=chargesZeroSite, radii=systemRadii)
 
-      # Update system charges with instance charges 
+      # Update system charges with instance charges
       chargesInstance = Clone (systemCharges)
       for chargeIndex, atomIndex in enumerate (self.siteAtomIndices):
         chargesInstance[atomIndex] = instance.charges[chargeIndex]
@@ -153,9 +155,9 @@ class MEADSite (object):
   def _CreateFilename (self, prefix, label, postfix):
     model = self.parent
     if model.splitToDirectories:
-        return os.path.join (model.scratch, self.segName, "%s%d" % (self.resName, self.resSerial), "%s_%s.%s" % (prefix, label, postfix))
+        return os.path.join (model.pathScratch, self.segName, "%s%d" % (self.resName, self.resSerial), "%s_%s.%s" % (prefix, label, postfix))
     else:
-        return os.path.join (model.scratch, "%s_%s_%s_%d_%s.%s" % (prefix, self.segName, self.resName, self.resSerial, label, postfix))
+        return os.path.join (model.pathScratch, "%s_%s_%s_%d_%s.%s" % (prefix, self.segName, self.resName, self.resSerial, label, postfix))
 
 
   #===============================================================================
