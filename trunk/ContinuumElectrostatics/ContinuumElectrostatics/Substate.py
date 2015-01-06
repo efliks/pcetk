@@ -2,7 +2,7 @@
 # . File      : Substate.py
 # . Program   : pDynamo-1.8.0                           (http://www.pdynamo.org)
 # . Copyright : CEA, CNRS, Martin  J. Field  (2007-2012),
-#                          Mikolaj J. Feliks (2014)
+#                          Mikolaj J. Feliks (2014-2015)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
 """Substate is a class for calculating energies of substates of protonation states."""
@@ -38,13 +38,13 @@ class MEADSubstate (object):
       pairs.append ([selectedSegment, selectedResidueSerial])
 
     vector = StateVector_FromProbabilities (meadModel)
-    vector.DefineSubstate (meadModel, pairs)
+    vector.DefineSubstate (pairs)
 
     self.indicesOfSites = indicesOfSites
     self.isCalculated   = False
     self.substates      = None
     self.vector         = vector
-    self.model          = meadModel
+    self.owner          = meadModel
     self.pH             = pH
 
     if LogFileActive (log):
@@ -59,10 +59,11 @@ class MEADSubstate (object):
       increment      = True
       substates      = []
       vector         = self.vector
+      owner          = self.owner
       vector.ResetSubstate ()
     
       while increment:
-        Gmicro = vector.CalculateMicrostateEnergy (self.model, pH = self.pH)
+        Gmicro = owner.CalculateMicrostateEnergy (vector, pH=self.pH)
         indicesOfInstances = []
         for siteIndex in indicesOfSites:
           indicesOfInstances.append (vector[siteIndex])
@@ -88,7 +89,7 @@ class MEADSubstate (object):
       indicesOfSites = self.indicesOfSites
       zeroEnergy     = self.zeroEnergy
       substates      = self.substates
-      model          = self.model
+      owner          = self.owner
       nsites         = len (indicesOfSites)
 
       if LogFileActive (log):
@@ -100,7 +101,7 @@ class MEADSubstate (object):
         tab.Heading ("Protons")
     
         for siteIndex in indicesOfSites:
-          site = model.meadSites[siteIndex]
+          site = owner.meadSites[siteIndex]
           tab.Heading ("%s %s %d" % (site.segName, site.resName, site.resSerial))
     
         for stateIndex, (energy, indicesOfInstances) in enumerate (substates):
@@ -113,7 +114,7 @@ class MEADSubstate (object):
           charge   = 0.
           labels   = []
           for siteIndex, instanceIndex in zip (indicesOfSites, indicesOfInstances):
-            site     = model.meadSites     [siteIndex]
+            site     = owner.meadSites     [siteIndex]
             instance = site.instances  [instanceIndex]
             nprotons = nprotons + instance.protons
             charge   = charge + sum (instance.charges) 
@@ -145,7 +146,7 @@ class MEADSubstate (object):
       indicesOfSites = self.indicesOfSites
       zeroEnergy     = self.zeroEnergy
       substates      = self.substates
-      model          = self.model
+      owner          = self.owner
       nsites         = len (indicesOfSites)
 
       lines = ["\\begin{tabular}{@{\\extracolsep{2mm}}cc%sc}" % ("l" * nsites), ]
@@ -153,7 +154,7 @@ class MEADSubstate (object):
 
       header = "State & $\\Delta E$ (kcal/mol) & "
       for siteIndex in indicesOfSites:
-        site = model.meadSites[siteIndex]
+        site = owner.meadSites[siteIndex]
         if includeSegment:
           header = "%s %s %s%d &" % (header, site.segName, site.resName.capitalize (), site.resSerial)
         else:
@@ -168,7 +169,7 @@ class MEADSubstate (object):
         nprotons = 0
 
         for siteIndex, instanceIndex in zip (indicesOfSites, indicesOfInstances):
-          site     = model.meadSites     [siteIndex]
+          site     = owner.meadSites     [siteIndex]
           instance = site.instances  [instanceIndex]
           if transl.has_key (site.resName):
             dic  = transl[site.resName]

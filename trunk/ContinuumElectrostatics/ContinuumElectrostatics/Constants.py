@@ -2,7 +2,7 @@
 # . File      : Constants.py
 # . Program   : pDynamo-1.8.0                           (http://www.pdynamo.org)
 # . Copyright : CEA, CNRS, Martin  J. Field  (2007-2012),
-#                          Mikolaj J. Feliks (2014)
+#                          Mikolaj J. Feliks (2014-2015)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
 """Constants."""
@@ -25,11 +25,8 @@ YAMLPATHIN       = os.path.join (os.getenv ("PDYNAMO_CONTINUUMELECTROSTATICS"), 
 ANALYTIC_STATES  = 67108864
 
 PREV_RESIDUE     = ("C", "O")
-
 NEXT_RESIDUE     = ("N", "H",  "CA", "HA")
-
 NEXT_RESIDUE_PRO = ("N", "CA", "HA", "CD",  "HD1", "HD2")
-
 NEXT_RESIDUE_GLY = ("N", "H",  "CA", "HA1", "HA2", "HN")
 
 PROTEIN_RESIDUES = (

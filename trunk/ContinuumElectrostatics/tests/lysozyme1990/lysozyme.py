@@ -1,11 +1,10 @@
 # Example script for the ContinuumElectrostatics module
-#
 # http://www.poissonboltzmann.org/apbs/examples/pka-calculations/lysozyme-pka-example
 
 from pBabel   import CHARMMParameterFiles_ToParameters, CHARMMPSFFile_ToSystem, CHARMMCRDFile_ToCoordinates3
 from pCore    import logFile
 
-from ContinuumElectrostatics import MEADModel, MEADSubstate
+from ContinuumElectrostatics import MEADModel, MEADSubstate, StateVector
 
 
 logFile.Header ("Calculate protonation states in lysozyme")
@@ -19,7 +18,7 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("lysozyme1990.crd")
 
 
 #===========================================
-ce_model = MEADModel (meadPath="/home/mikolaj/local/bin/", gmctPath="/home/mikolaj/local/bin/", scratch="mead", nthreads=6)
+cem = MEADModel (system=mol, pathMEAD="/home/mikolaj/local/bin/", pathGMCT="/home/mikolaj/local/bin/", pathScratch="mead", nthreads=1)
 
 # Exclude cysteines involved in disulfide bonds
 # Also exclude all arginines (otherwise the system has too many sites for analytic treatment)
@@ -35,22 +34,25 @@ exclusions = (
 ("PRTA", "ARG",   0),
 )
 
-ce_model.Initialize (mol, excludeResidues=exclusions)
-ce_model.Summary ()
-ce_model.SummarySites ()
-ce_model.WriteJobFiles (mol)
-ce_model.CalculateElectrostaticEnergies (calculateETA=False)
+cem.Initialize (excludeResidues=exclusions)
+cem.Summary ()
+cem.SummarySites ()
+cem.WriteJobFiles ()
+cem.CalculateElectrostaticEnergies (calculateETA=False, asymmetricSummary=True, asymmetricThreshold=0.01)
+
+cem.WriteW ()
+cem.WriteGintr ()
 
 
 #===========================================
 logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 using GMCT ***\n")
-ce_model.CalculateProbabilitiesGMCT ()
-ce_model.SummaryProbabilities ()
+cem.CalculateProbabilitiesGMCT ()
+cem.SummaryProbabilities ()
 
 
 logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 analytically ***\n")
-ce_model.CalculateProbabilitiesAnalytically ()
-ce_model.SummaryProbabilities ()
+cem.CalculateProbabilitiesAnalytically ()
+cem.SummaryProbabilities ()
 
 
 #===========================================
@@ -61,17 +63,26 @@ sites = (
 #  ("PRTA", "HIS" , 15),
 )
 
-substate = MEADSubstate (ce_model, sites)
+substate = MEADSubstate (cem, sites)
 substate.CalculateSubstateEnergies ()
 substate.Summary ()
 
 
 #===========================================
+# vector = StateVector (cem)
+# go = True
+# 
+# while go:
+#     cem.CalculateMicrostateEnergy (vector)
+#     go = vector.Increment ()
+
+
+#===========================================
 # logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")
-# ce_model.CalculateCurves (directory="curves_gmct")
+# cem.CalculateCurves (directory="curves_gmct")
 #  
 # logFile.Text ("\n*** Calculating titration curves analytically ***\n")
-# ce_model.CalculateCurves (directory="curves_analytic", isAnalytic=True, forceSerial=True)
+# cem.CalculateCurves (directory="curves_analytic", isAnalytic=True, forceSerial=True)
 
 
 #===========================================

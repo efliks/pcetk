@@ -2,7 +2,7 @@
 ! . File      : StateVector.c
 ! . Program   : pDynamo-1.8.0                           (http://www.pdynamo.org)
 ! . Copyright : CEA, CNRS, Martin  J. Field  (2007-2012),
-!                          Mikolaj J. Feliks (2014)
+!                          Mikolaj J. Feliks (2014-2015)
 ! . License   : CeCILL French Free Software License     (http://www.cecill.info)
 !-----------------------------------------------------------------------------*/
 #include "StateVector.h"
@@ -108,7 +108,6 @@ Boolean StateVector_CopyTo (const StateVector *self, StateVector *other, Status 
   return True;
 }
 
-
 /*=============================================================================
   Functions relatated to items
 =============================================================================*/
@@ -213,7 +212,6 @@ Boolean StateVector_Increment (const StateVector *self) {
   return False;
 }
 
-
 /*=============================================================================
   Functions related to substate
 =============================================================================*/
@@ -301,80 +299,33 @@ Boolean StateVector_IncrementSubstate (const StateVector *self) {
   }
 }
 
-
 /*=============================================================================
-  Calculating microstate energy
+  Monte Carlo functions
 =============================================================================*/
-Real StateVector_CalculateMicrostateEnergy (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const SymmetricMatrix *symmetricmatrix, const Real pH, const Real temperature) {
-  Real Gintr = 0., W = 0., *data;
-  Integer nprotons = 0, siteIndex, siteIndexInner, *instanceIndex, *instanceIndexInner;
+void StateVector_Move (const StateVector *self) {
+  Integer component, value;
 
-  for (siteIndex = 0, instanceIndex = self->vector; siteIndex < self->length; siteIndex++, instanceIndex++) {
-    nprotons += Integer1DArray_Item (protons, *instanceIndex);
-    Gintr += Real1DArray_Item (intrinsic, *instanceIndex);
+  component = rand () % self->length;
+  value = rand () % (self->maxvector[component] - self->minvector[component]) + self->minvector[component];
 
-    /* # define SymmetricMatrix_Item( self, i, j ) ( (self)->data[( (i) * ( i + 1 ) ) / 2 + j] ) */
-    data = &symmetricmatrix->data[(*instanceIndex * (*instanceIndex + 1)) >> 1];
-
-    for (siteIndexInner = 0, instanceIndexInner = self->vector; siteIndexInner <= siteIndex; siteIndexInner++, instanceIndexInner++) {
-      /*W += SymmetricMatrix_Item (symmetricmatrix, *instanceIndex, *instanceIndexInner);*/
-      W += *(data + (*instanceIndexInner));
+  if (value == self->vector[component]) {
+    if (++value > self->maxvector[component]) {
+      value = self->minvector[component];
     }
   }
-  return (Gintr - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * temperature * CONSTANT_LN10 * pH) + W);
+  self->vector[component] = value;
 }
 
-
-/*=============================================================================
-  Calculating probabilities analytically
-=============================================================================*/
-Boolean StateVector_CalculateProbabilitiesAnalytically (const StateVector *self, const Integer1DArray *protons, const Real1DArray *intrinsic, const SymmetricMatrix *symmetricmatrix, const Real pH, const Real temperature, const Integer nstates, Real1DArray *probabilities, Status *status) {
-  Real1DArray *bfactors;
-  Real        *bfactor;
-  Real         energy, energyZero, bsum;
-  Integer     *activeInstanceGlobalIndex;
-  Integer      stateIndex, siteIndex;
-
-  bfactors = Real1DArray_Allocate (nstates, status);
-  if (*status != Status_Continue) {
-    return False;
-  }
-  StateVector_Reset (self);
-
-  for (stateIndex = 0, bfactor = bfactors->data; stateIndex < nstates; stateIndex++, bfactor++) {
-    energy = StateVector_CalculateMicrostateEnergy (self, protons, intrinsic, symmetricmatrix, pH, temperature);
-
-    if (stateIndex < 1) {
-      energyZero = energy;
-    }
-    else {
-      if (energy < energyZero) {
-        energyZero = energy;
-      }
-    }
-
-    *bfactor = energy;
-    StateVector_Increment (self);
+/* Generate a random vector */
+void StateVector_Randomize (const StateVector *self) {
+  Integer i;
+  static Boolean first = True;
+  if (first) {
+    srandom ((unsigned int) time (NULL));
+    first = False;
   }
 
-  Real1DArray_AddScalar (bfactors, -energyZero);
-  Real1DArray_Scale (bfactors, -1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * temperature));
-  Real1DArray_Exp (bfactors);
-
-  Real1DArray_Set (probabilities, 0.);
-  StateVector_Reset (self);
-
-  for (stateIndex = 0, bfactor = bfactors->data; stateIndex < nstates; stateIndex++, bfactor++) {
-    for (siteIndex = 0, activeInstanceGlobalIndex = self->vector; siteIndex < self->length; siteIndex++, activeInstanceGlobalIndex++) {
-      probabilities->data[*activeInstanceGlobalIndex] += *bfactor;
-    }
-    StateVector_Increment (self);
+  for (i = 0; i < self->length; i++) {
+    self->vector[i] = rand () % (self->maxvector[i] - self->minvector[i]) + self->minvector[i];
   }
-
-  bsum = Real1DArray_Sum (bfactors);
-  Real1DArray_Scale (probabilities, 1. / bsum);
-
-  Real1DArray_Deallocate (&bfactors);
-
-  return True;
 }

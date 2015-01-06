@@ -17,35 +17,35 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/rubredoxin.crd")
 
 
 #===========================================
-ce_model = MEADModel (meadPath="/home/mikolaj/local/bin/", gmctPath="/home/mikolaj/local/bin/", scratch="mead", nthreads=4)
+cem = MEADModel (system=mol, pathMEAD="/home/mikolaj/local/bin/", pathGMCT="/home/mikolaj/local/bin/", pathScratch="mead", nthreads=1)
 
 # Do not take cysteines
 exclusions = (
   ("", "CYS", ""),
 )
 
-ce_model.Initialize (mol, excludeResidues=exclusions)
-ce_model.Summary ()
-ce_model.SummarySites ()
-ce_model.WriteJobFiles (mol)
-ce_model.CalculateElectrostaticEnergies (calculateETA=False)
+cem.Initialize (excludeResidues=exclusions)
+cem.Summary ()
+cem.SummarySites ()
+cem.WriteJobFiles ()
+cem.CalculateElectrostaticEnergies (calculateETA=False)
 
 
 logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 using GMCT ***\n")
-ce_model.CalculateProbabilitiesGMCT ()
-ce_model.SummaryProbabilities ()
+cem.CalculateProbabilitiesGMCT ()
+cem.SummaryProbabilities ()
 
 logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 analytically ***\n")
-ce_model.CalculateProbabilitiesAnalytically ()
-ce_model.SummaryProbabilities ()
+cem.CalculateProbabilitiesAnalytically ()
+cem.SummaryProbabilities ()
 
 
 logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")
-ce_model.CalculateCurves (directory="curves_gmct")
+cem.CalculateCurves (directory="curves_gmct")
 
 # Analytic curves may be slow on some computers
 logFile.Text ("\n*** Calculating titration curves analytically ***\n")
-ce_model.CalculateCurves (directory="curves_analytic", isAnalytic=True, forceSerial=True)
+cem.CalculateCurves (directory="curves_analytic", isAnalytic=True, forceSerial=True)
 
 
 #===========================================

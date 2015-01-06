@@ -2,7 +2,7 @@
 # . File      : ContinuumElectrostatics.StateVector.pyx
 # . Program   : pDynamo-1.8.0                           (http://www.pdynamo.org)
 # . Copyright : CEA, CNRS, Martin  J. Field  (2007-2012),
-#                          Mikolaj J. Feliks (2014)
+#                          Mikolaj J. Feliks (2014-2015)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
 from pCore      import logFile, LogFileActive, CLibraryError
@@ -18,15 +18,21 @@ cdef class StateVector:
     """Return the size of the vector."""
     return self.cObject.length
 
-
   def __getmodule__ (self):
     """Return the module name."""
     return "ContinuumElectrostatics.StateVector"
 
-
   def __dealloc__ (self):
     """Deallocate."""
     StateVector_Deallocate (self.cObject)
+
+  def __copy__ (self):
+    """Copying."""
+    pass
+
+  def __deepcopy__ (self):
+    """Copying."""
+    pass
 
 
   def __getitem__ (self, Integer index):
@@ -46,7 +52,7 @@ cdef class StateVector:
     if status != Status_Continue:
       if status == Status_IndexOutOfRange:
         raise CLibraryError ("Index (%d) out of range." % index)
-      else: # status == Status_ValueError
+      else: # Status_ValueError
         raise CLibraryError ("Invalid value (%d)." % value)
 
 
@@ -67,7 +73,7 @@ cdef class StateVector:
     if status != Status_Continue:
       if status == Status_IndexOutOfRange:
         raise CLibraryError ("Index (%d) out of range." % index)
-      else: # status == Status_ValueError
+      else: # Status_ValueError
         raise CLibraryError ("Invalid value (%d)." % value)
 
 
@@ -101,6 +107,9 @@ cdef class StateVector:
     # Always reset the state vector after initialization
     StateVector_Reset (self.cObject)
 
+    self.isOwner = False
+    self.owner = meadModel
+
 
   def CopyTo (StateVector self, StateVector other):
     """In-place copy of one state vector to another."""
@@ -132,14 +141,14 @@ cdef class StateVector:
 
 
 # Try to further improve this method with data types from C
-  def Print (self, meadModel=None, title=None, log=logFile):
+  def Print (self, verbose=True, title=None, log=logFile):
     """Print the state vector."""
     cdef Integer siteIndex, selectedSiteIndex, instanceIndex
     cdef Integer ninstances, j
     cdef Status  status = Status_Continue
 
     if LogFileActive (log):
-      if meadModel:
+      if verbose:
         tab = log.GetTable (columns = [7, 7, 7, 8, 8, 2])
         tab.Start ()
         if title is None:
@@ -159,6 +168,7 @@ cdef class StateVector:
               if selectedSiteIndex == siteIndex:
                 substate = " @"
 
+          meadModel = self.owner
           site = meadModel.meadSites[siteIndex]
           ninstances = len (site.instances)
 
@@ -178,15 +188,18 @@ cdef class StateVector:
 
 
 # Try to further improve this method with data types from C
-  def DefineSubstate (self, meadModel, selectedSites):
+  def DefineSubstate (self, selectedSites):
     """Define a substate.
 
     |selectedSites| is a sequence of two-element sequences (segmentName, residueSerial)"""
-    cdef Status  status     = Status_Continue
-    cdef Integer nselected  = len (selectedSites)
-    cdef Integer nsites     = len (meadModel.meadSites)
-    cdef Integer siteIndex, substateSiteIndex
+    cdef Integer siteIndex, substateSiteIndex, nselected, nsites
     cdef Boolean foundSite
+    cdef Status  status
+
+    meadModel  = self.owner
+    nsites     = len (meadModel.meadSites)
+    nselected  = len (selectedSites)
+    status     = Status_Continue
 
     StateVector_AllocateSubstate (self.cObject, nselected, &status)
     if status != Status_Continue:
@@ -222,92 +235,3 @@ cdef class StateVector:
   def ResetSubstate (self):
     """Set all components of the substate to their minimum values (formerly zeros)."""
     StateVector_ResetSubstate (self.cObject)
-
-
-  def CalculateMicrostateEnergy (self, meadModel, Real pH=7.0):
-    """Calculate energy of a protonation state (=microstate)."""
-    cdef Real             Gmicro           =  0.
-    cdef Real             temperature      =  meadModel.temperature
-    cdef Integer1DArray   protons          =  meadModel._protons
-    cdef Real1DArray      intrinsic        =  meadModel._intrinsic
-    cdef SymmetricMatrix  symmetricmatrix  =  meadModel._symmetricmatrix
-
-    if meadModel.isCalculated:
-      Gmicro = StateVector_CalculateMicrostateEnergy (self.cObject, protons.cObject, intrinsic.cObject, symmetricmatrix.cObject, pH, temperature)
-    else:
-      raise CLibraryError ("First calculate electrostatic energies.")
-    return Gmicro
-
-
-  def CalculateProbabilitiesAnalytically (self, meadModel, Real pH=7.0):
-    """Calculate probabilities of protonation states analytically."""
-    cdef Status           status           =  Status_Continue
-    cdef Integer          nstates          =  meadModel._nstates
-    cdef Real             temperature      =  meadModel.temperature
-    cdef Integer1DArray   protons          =  meadModel._protons
-    cdef Real1DArray      intrinsic        =  meadModel._intrinsic
-    cdef Real1DArray      probabilities    =  meadModel._probabilities
-    cdef SymmetricMatrix  symmetricmatrix  =  meadModel._symmetricmatrix
-    if nstates > ANALYTIC_STATES:
-      raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)
-
-    if not meadModel.isCalculated:
-      raise CLibraryError ("First calculate electrostatic energies.")
-
-    StateVector_CalculateProbabilitiesAnalytically (self.cObject, protons.cObject, intrinsic.cObject, symmetricmatrix.cObject, pH, temperature, nstates, probabilities.cObject, &status)
-    if status != Status_Continue:
-      raise CLibraryError ("Cannot allocate Boltzmann factors.")
-    return nstates
-
-
-#  def GetNumberOfStates (self, meadModel):
-#    """Calculate total number of possible protonation states."""
-#    cdef Integer nstates = 1, ninstances
-#
-#    for meadSite in meadModel.meadSites:
-#      ninstances = len (meadSite.instances)
-#      nstates = nstates * ninstances
-#      if nstates > ANALYTIC_STATES:
-#        raise CLibraryError ("Maximum number of states (%d) exceeded." % ANALYTIC_STATES)
-#    return nstates
-#
-#
-#  def __copy__ (self):
-#    """Copying."""
-#    return self.__deepcopy__ ()
-#
-#
-#  def __deepcopy__ (self):
-#    """Copying."""
-#    cdef StateVector clone
-#    clone.cObject = StateVector_Clone (self.cObject)
-#    if clone.cObject == NULL:
-#      raise CLibraryError ("Cannot copy vector.")
-#    return clone
-#
-#
-#  def Randomize (self):
-#    """Generate a random state."""
-#    cdef Integer index, rand
-#    for index from 0 <= index < self.cObject.length:
-#      rand = random.randint (self.cObject.minvector[index], self.cObject.maxvector[index])
-#      self.cObject.vector[index] = rand
-#
-#
-#  def SingleMove (self):
-#    """Choose a random site and set it to a random instance."""
-#    cdef Integer index, rand
-#    index = random.randint (0, self.cObject.length - 1)
-#    rand  = random.randint (self.cObject.minvector[index], self.cObject.maxvector[index])
-#
-#    if rand == self.cObject.vector[index]:
-#      rand = rand + 1
-#      if rand > self.cObject.maxvector[index]:
-#        rand = self.cObject.minvector[index]
-#    self.cObject.vector[index] = rand
-#    return index
-#
-#
-#  def DoubleMove (self):
-#    """A double move."""
-#    return -1

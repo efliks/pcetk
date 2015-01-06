@@ -262,7 +262,7 @@ beginning of the script \texttt{sites2.py}:
 
 {\footnotesize \begin{lstlisting}
 par_tab = ["charmm/toppar/par_all27_prot_na.inp", ]
-mol  = CHARMMPSFFile_ToSystem ("charmm/testpeptide_xplor.psf", isXPLOR = True, parameters = CHARMMParameterFiles_ToParameters (par_tab))
+mol  = CHARMMPSFFile_ToSystem ("charmm/testpeptide_xplor.psf", isXPLOR=True, parameters=CHARMMParameterFiles_ToParameters (par_tab))
 mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/testpeptide.crd")
 \end{lstlisting} }
 
@@ -272,19 +272,23 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/testpeptide.crd")
 In the second step, a continuum electrostatic model is created:
 
 {\footnotesize \begin{lstlisting}
-ce_model = MEADModel (meadPath = "/home/mikolaj/local/bin/", gmctPath = "/home/mikolaj/local/bin/", scratch = "scratch", nthreads = 2)
+cem = MEADModel (system=mol, pathMEAD="/home/mikolaj/local/bin/", pathGMCT="/home/mikolaj/local/bin/", pathScratch="scratch", nthreads=2)
 \end{lstlisting} }
 
 \bigskip
-The parameter "meadPath" tells the directory where the MEAD programs,
+%
+The first parameter, "system",
+indicates the CHARMM-based protein model.
+%
+The parameter "pathMEAD" specifies the directory where the MEAD programs,
 \texttt{my\_2diel\_solver} and \texttt{my\_3diel\_solver}, are located.
 %
-The parameter "gmctPath" is the location of the \texttt{gmct} program.
+The parameter "pathGMCT" is the location of the \texttt{gmct} program.
 %
 If none of these directories are given, \texttt{/usr/bin} is assumed
 by default.
 %
-The parameter "scratch" tells the directory where the MEAD job files
+The parameter "pathScratch" tells the directory where the MEAD job files
 and output files will be written to.
 %
 If not present, this directory will be created.
@@ -310,7 +314,7 @@ where each pH-step of a curve is calculated separately.
 In the next step, the continuum electrostatic model is initialized:
 
 {\footnotesize \begin{lstlisting}
-ce_model.Initialize (mol)
+cem.Initialize ()
 \end{lstlisting} }
 
 \bigskip
@@ -321,17 +325,14 @@ It also means generating model compounds.
 %
 At this point, however, the input files for MEAD are not written and only
 the necessary data structures inside the \texttt{MEADModel} object are created.
-%
-The \texttt{Initialize} method takes at least one argument,
-which indicates the CHARMM-based protein model.
 
 \bigskip
 The next two lines generate a summary of the continuum electrostatic model and
 write a table of titratable sites:
 
 {\footnotesize \begin{lstlisting}
-ce_model.Summary ()
-ce_model.SummarySites ()
+cem.Summary ()
+cem.SummarySites ()
 \end{lstlisting} }
 
 \bigskip
@@ -339,7 +340,7 @@ After the model has been initialized, the input files necessary for calculations
 can be written to the scratch directory:
 
 {\footnotesize \begin{lstlisting}
-ce_model.WriteJobFiles (mol)
+cem.WriteJobFiles ()
 \end{lstlisting} }
 
 By default, each site is assigned a separate directory, for example
@@ -365,7 +366,7 @@ different instances of sites in the protein.
 At this point, the electrostatic energy terms can be calculated:
 
 {\footnotesize \begin{lstlisting}
-ce_model.CalculateElectrostaticEnergies ()
+cem.CalculateElectrostaticEnergies ()
 \end{lstlisting} }
 
 For each instance of each site, two electrostatic energy terms are calculated, namely
@@ -436,11 +437,11 @@ The next few lines of code generate all possible permutations of the state vecto
 their respective microstate energies:
 
 {\footnotesize \begin{lstlisting}
-statevector = StateVector (ce_model)
+statevector = StateVector (cem)
 increment   = True
 while increment:
-  Gmicro = vector.CalculateMicrostateEnergy (ce_model, pH = 7.0)
-  statevector.Print (ce_model, title = "Gmicro = %f" % Gmicro)
+  Gmicro = vector.CalculateMicrostateEnergy (cem, pH=7.0)
+  statevector.Print (cem, title="Gmicro = %f" % Gmicro)
   increment = statevector.Increment ()
 \end{lstlisting} }
 
@@ -462,8 +463,8 @@ This can be done by writing two files, \texttt{gintr.dat} and \texttt{W.dat}, co
 the calculated intrinsic energies and interaction energies, respectively.
 
 {\footnotesize \begin{lstlisting}
-ce_model.WriteGintr ()
-ce_model.WriteW ()
+cem.WriteGintr ()
+cem.WriteW ()
 \end{lstlisting} }
 
 
@@ -479,8 +480,8 @@ By default, the calculations are done at pH = 7.
 The default behavior can be changed by passing the "pH" argument. 
 
 {\footnotesize \begin{lstlisting}
-ce_model.CalculateProbabilitiesAnalytically ()
-ce_model.SummaryProbabilities ()
+cem.CalculateProbabilitiesAnalytically ()
+cem.SummaryProbabilities ()
 \end{lstlisting} }
 
 
@@ -491,8 +492,8 @@ During the calculations in GMCT, a \texttt{scratch/gmct/} directory will be crea
 for storing input and output files.
 
 {\footnotesize \begin{lstlisting}
-ce_model.CalculateProbabilitiesGMCT ()
-ce_model.SummaryProbabilities ()
+cem.CalculateProbabilitiesGMCT ()
+cem.SummaryProbabilities ()
 \end{lstlisting} }
 
 \bigskip
@@ -510,7 +511,7 @@ Titration curves are obtained by calculating protonation probabilities for a giv
 usually from 0 to 14.
 
 {\footnotesize \begin{lstlisting}
-ce_model.CalculateCurves (isAnalytic = True, forceSerial = True, directory = "curves_analytic")
+cem.CalculateCurves (isAnalytic=True, forceSerial=True, directory="curves_analytic")
 \end{lstlisting} }
 
 \bigskip
@@ -535,7 +536,7 @@ The curves can be plotted in a plotting program, for example Gnuplot.
 The same task can be accomplished by using GMCT in parallel mode:
 
 {\footnotesize \begin{lstlisting}
-ce_model.CalculateCurves (directory = "curves_gmct")
+cem.CalculateCurves (directory="curves_gmct")
 \end{lstlisting} }
 
 
@@ -545,7 +546,7 @@ From the calculated protonation probabilities, one can generate a state vector d
 the lowest energy protonation state:
 
 {\footnotesize \begin{lstlisting}
-vector_lowest = StateVector_FromProbabilities (ce_model)
+vector_lowest = StateVector_FromProbabilities (cem)
 \end{lstlisting} }
 
 \bigskip
@@ -553,7 +554,7 @@ The microstate energy ($G_{\mathrm{micro}}$) in the lowest energy protonation st
 be calculated in the following way:
 
 {\footnotesize \begin{lstlisting}
-Gmicro = vector_lowest.CalculateMicrostateEnergy (ce_model)
+Gmicro = vector_lowest.CalculateMicrostateEnergy (cem)
 \end{lstlisting} }
 
 \bigskip
@@ -564,7 +565,7 @@ On the other hand, substate energies can be calculated easier with the \texttt{M
 
 {\footnotesize \begin{lstlisting}
 sites = (("PRTA", "ASP",  2), ("PRTA", "GLU", 14), ("PRTA", "ARG", 15))
-substate = MEADSubstate (ce_model, sites, pH = 7.0)
+substate = MEADSubstate (cem, sites, pH=7.0)
 substate.CalculateSubstateEnergies ()
 substate.Summary ()
 \end{lstlisting} }
@@ -693,7 +694,7 @@ parameters of the existing sites will be overwritten.
   \item Include reduction/oxidation reactions in addition to protonation/deprotonation reactions
   \item Enclose the MEAD and GMCT codes inside pDynamo
   \item Optionally convert kcal/mol (MEAD units) to kJ/mol (pDynamo units)
-  \item Make use of the \texttt{pqr2SolvAccVol} program to speed up calculations 
+  \item Make use of the \texttt{pqr2SolvAccVol} program to speed up calculations a bit
 \end{itemize}
 
 \linespread{1.6}
@@ -731,6 +732,7 @@ Alternatively, you can post comments or report problems on the project's website
 \subsection*{Websites}
 
 \begin{itemize}
+\itemsep0em
   \item pDynamo (Martin J. Field)\\ \url{http://pdynamo.org}
 
   \item MEAD (Donald Bashford)\\ \url{http://stjuderesearch.org/site/lab/bashford/}
