@@ -25,18 +25,15 @@ cem.WriteJobFiles ()
 cem.CalculateElectrostaticEnergies ()
 
 
-#===========================================
-logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 analytically ***\n")
+logFile.Text ("\n*** Calculating protonation probabilities at pH=7 analytically ***\n")
 cem.CalculateProbabilitiesAnalytically ()
 cem.SummaryProbabilities ()
 
-
-logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 using GMCT ***\n")
+logFile.Text ("\n*** Calculating protonation probabilities at pH=7 using GMCT ***\n")
 cem.CalculateProbabilitiesGMCT ()
 cem.SummaryProbabilities ()
 
 
-#===========================================
 sites = (
 ("PRTA", "ASP" , 2),
 ("PRTA", "GLU", 14),
@@ -46,19 +43,6 @@ sites = (
 substate = MEADSubstate (cem, sites, pH=7.0)
 substate.CalculateSubstateEnergies ()
 substate.Summary ()
-
-
-#===========================================
-#  logFile.Text ("\n*** Calculating titration curves analytically ***\n")
-#  cem.CalculateCurves (isAnalytic = True, forceSerial = True, directory = "curves_analytic")
-#  
-#  
-#  logFile.Text ("\n*** Calculating titration curves using GMCT in serial mode ***\n")
-#  cem.CalculateCurves (forceSerial = True, directory = "curves_gmct")
-#  
-#  
-#  logFile.Text ("\n*** Calculating titration curves using GMCT in parallel mode ***\n")
-#  cem.CalculateCurves (directory = "curves_gmct_parallel")
 
 
 #===========================================

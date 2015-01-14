@@ -8,6 +8,13 @@
 #ifndef _ENERGYMODEL
 #define _ENERGYMODEL
 
+/* Needed for memset and random*/
+#include <stdio.h>
+/* Needed for memset */
+#include <string.h>
+/* Needed for exp */
+#include <math.h>
+
 #include "Boolean.h"
 #include "Integer.h"
 #include "Real.h"
@@ -17,12 +24,13 @@
 #include "Real2DArray.h"
 #include "Integer1DArray.h"
 #include "SymmetricMatrix.h"
-
 #include "StateVector.h"
 
 
 #define CONSTANT_MOLAR_GAS_KCAL_MOL  0.001987165392
 #define CONSTANT_LN10                2.302585092994
+/* Taken from GMCT */
+#define TOO_SMALL                   -500.0
 
 typedef struct {
   Integer1DArray    *protons          ;
@@ -41,12 +49,13 @@ extern EnergyModel *EnergyModel_Allocate (const Integer ninstances, Status *stat
 extern void         EnergyModel_Deallocate (EnergyModel *self);
 
 /* Handling of the interaction matrix */
-extern Boolean      EnergyModel_SymmetrizeInteractions (const EnergyModel *self, Status *status);
+extern void         EnergyModel_SymmetrizeInteractions (const EnergyModel *self, Status *status);
 extern Boolean      EnergyModel_CheckInteractionsSymmetric (const EnergyModel *self, const Real threshold, Real *maxDeviate);
 
 /* Calculation functions */
-extern Real         EnergyModel_CalculateMicrostateEnergy (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature);
-extern Boolean      EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature, Status *status);
+extern Real         EnergyModel_CalculateMicrostateEnergy          (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature);
+extern void         EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature, Status *status);
+extern void         EnergyModel_CalculateProbabilitiesMonteCarlo   (const EnergyModel *self,       StateVector *vector, const Real pH, const Real temperature, const Boolean equil, Integer nscans, Status *status);
 
 /* Functions for accessing items */
 extern Real         EnergyModel_GetGintr                (const EnergyModel *self, const Integer instIndexGlobal);

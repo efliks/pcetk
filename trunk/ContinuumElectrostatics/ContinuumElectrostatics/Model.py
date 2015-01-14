@@ -56,15 +56,17 @@ mu          %f  %f  0.0  0  0
 class CurveThread (threading.Thread):
   """Calculate each pH-step in a separate thread."""
 
-  def __init__ (self, meadModel, isAnalytic, pH):
+  def __init__ (self, meadModel, method, pH):
+    methodsToChoose = {
+      "GMCT"       : meadModel.CalculateProbabilitiesGMCT          ,
+      "MonteCarlo" : meadModel.CalculateProbabilitiesMonteCarlo    ,
+      "analytic"   : meadModel.CalculateProbabilitiesAnalytically  ,
+                      }
     threading.Thread.__init__ (self)
-    self.model = meadModel
-    self.sites = None
-    self.pH    = pH
-    if isAnalytic:
-      self.calculate = meadModel.CalculateProbabilitiesAnalytically
-    else:
-      self.calculate = meadModel.CalculateProbabilitiesGMCT
+    self.calculate = methodsToChoose[method]
+    self.model     = meadModel
+    self.sites     = None
+    self.pH        = pH
 
   def run (self):
     """The method that runs the calculations."""
@@ -252,7 +254,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def CalculateCurves (self, isAnalytic=False, curveSampling=0.5, curveStart=0.0, curveStop=14.0, directory="curves", forceSerial=False, log=logFile):
+  def CalculateCurves (self, method="GMCT", curveSampling=0.5, curveStart=0.0, curveStop=14.0, directory="curves", forceSerial=False, log=logFile):
     """Calculate titration curves."""
     if self.isCalculated:
       nsteps = int ((curveStop - curveStart) / curveSampling + 1)
@@ -265,7 +267,7 @@ class MEADModel (object):
         else:
           log.Text ("\nStarting parallel run on %d CPUs.\n" % self.nthreads)
 
-        tab = log.GetTable (columns = [10, 10])
+        tab = log.GetTable (columns=[10, 10])
         tab.Start ()
         tab.Heading ("Step")
         tab.Heading ("pH")
@@ -274,10 +276,13 @@ class MEADModel (object):
       if self.nthreads < 2 or forceSerial:
         for step in range (0, nsteps):
           pH = curveStart + step * curveSampling
-          if isAnalytic:
-            result = self.CalculateProbabilitiesAnalytically (pH = pH, log = None)
-          else:
-            result = self.CalculateProbabilitiesGMCT (pH = pH, log = None)
+          methods = {
+            "GMCT"       : self.CalculateProbabilitiesGMCT          ,
+            "MonteCarlo" : self.CalculateProbabilitiesMonteCarlo    ,
+            "analytic"   : self.CalculateProbabilitiesAnalytically  ,
+                    }
+          calculate = methods[method]
+          result = calculate (pH=pH, log=None)
           steps.append (result)
 
           if tab:
@@ -288,17 +293,17 @@ class MEADModel (object):
         batches = []
         batch   = []
         for step in range (0, nsteps):
-          batch.append (CurveThread (self, isAnalytic, curveStart + step * curveSampling))
+          batch.append (CurveThread (self, method, curveStart + step * curveSampling))
           if len (batch) > limit:
             batches.append (batch)
             batch = []
         if batch:
           batches.append (batch)
 
-        # If GMCT is to be used, perform a dry run in serial mode to create directories and files
-        if not isAnalytic:
+        # If GMCT is to be used, first perform a dry run in serial mode to create directories and files
+        if method == "GMCT":
           for step in range (0, nsteps):
-            self.CalculateProbabilitiesGMCT (pH = curveStart + step * curveSampling, dryRun = True, log = None)
+            self.CalculateProbabilitiesGMCT (pH=(curveStart + step * curveSampling), dryRun=True, log=None)
 
         step = 0
         for batch in batches:
@@ -418,24 +423,32 @@ class MEADModel (object):
 
 
   #===============================================================================
+  # Wrapper methods for the calculation of energies and protonation states
   def CalculateMicrostateEnergy (self, stateVector, pH=7.0):
     """Calculate energy of a microstate defined by the state vector."""
     return self.energyModel.CalculateMicrostateEnergy (stateVector, pH=pH)
 
 
-  #===============================================================================
+  def CalculateProbabilitiesMonteCarlo (self, pH=7.0, numberOfEquilibrationScans=500, numberOfProductionScans=20000, log=logFile):
+    """Calculate the probability of occurence of each instance of each site, using the in-house implementation of Metropolis Monte Carlo (experimental)."""
+    self.energyModel.CalculateProbabilitiesMonteCarlo (pH=pH, nequi=numberOfEquilibrationScans, nprod=numberOfProductionScans)
+    return self._FinalizeProbabilities ()
+
+
   def CalculateProbabilitiesAnalytically (self, pH=7.0, log=logFile):
-    """For each site, calculate the probability of occurance of each instance, using the Boltzmann weighted sum."""
+    """Calculate the probability of occurence of each instance of each site, using statistical mechanics."""
     nstates = self.energyModel.CalculateProbabilitiesAnalytically (pH=pH)
 
     if LogFileActive (log):
       log.Text ("\nCalculated %d protonation states.\n" % nstates)
+    return self._FinalizeProbabilities ()
 
+
+  def _FinalizeProbabilities (self):
     # The instances now contain calculated probabilities
     self.isProbability = True
 
-    # Create a two two-dimensional list (useful for calculating titration curves)
-    # Warning: Possible malfunctioning in parallel mode?
+    # It is necessary in parallel mode to return a list of probabilities
     sites = []
     for site in self.meadSites:
       instances = []

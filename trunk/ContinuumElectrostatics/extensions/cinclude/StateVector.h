@@ -29,11 +29,11 @@ typedef struct {
   Integer  *minvector  ;
   Integer  *maxvector  ;
   Integer  *substate   ;
-  Integer   length     ;
-  Integer   slength    ;
+  Integer   nsites     ;
+  Integer   nssites    ;
 } StateVector;
 
-extern StateVector *StateVector_Allocate          (const Integer length, Status *status);
+extern StateVector *StateVector_Allocate          (const Integer nsites, Status *status);
 extern StateVector *StateVector_Clone             (const StateVector *self, Status *status);
 extern Boolean      StateVector_CopyTo            (const StateVector *self, StateVector *other, Status *status);
 extern void         StateVector_Deallocate        (      StateVector *self);
@@ -53,7 +53,7 @@ extern Boolean      StateVector_SetSubstateItem   (const StateVector *self, cons
 extern Integer      StateVector_GetSubstateItem   (const StateVector *self, const Integer index, Status *status);
 
 /* Monte Carlo functions */
-extern void         StateVector_Move              (const StateVector *self);
+extern void         StateVector_Move              (const StateVector *self, Integer *site, Integer *before, Integer *after);
 extern void         StateVector_Randomize         (const StateVector *self);
 
 #endif

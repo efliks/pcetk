@@ -14,6 +14,7 @@ install: EnergyModel.so StateVector.so
 	mv StateVector.so ../../ContinuumElectrostatics/
 
 clean:
+	if [ -e ContinuumElectrostatics.EnergyModel.o ]; then rm ContinuumElectrostatics.EnergyModel.o ; fi
 	if [ -e ContinuumElectrostatics.StateVector.o ]; then rm ContinuumElectrostatics.StateVector.o ; fi
 	if [ -e EnergyModel.so                        ]; then rm EnergyModel.so                        ; fi
 	if [ -e StateVector.so                        ]; then rm StateVector.so                        ; fi
@@ -38,8 +39,9 @@ clean_all: clean
 ../csource/EnergyModel.o:
 	+$(MAKE) -C ../csource
 
+# -lm is needed because of exp
 EnergyModel.so: ../csource/EnergyModel.o ../csource/StateVector.o ../csource/lib/libpcore.a ContinuumElectrostatics.EnergyModel.o
-	$(CC) -shared ContinuumElectrostatics.EnergyModel.o ../csource/EnergyModel.o ../csource/StateVector.o ../csource/lib/libpcore.a -o EnergyModel.so
+	$(CC) -shared ContinuumElectrostatics.EnergyModel.o ../csource/EnergyModel.o ../csource/StateVector.o ../csource/lib/libpcore.a -o EnergyModel.so -lm
 
 ContinuumElectrostatics.EnergyModel.o: ContinuumElectrostatics.EnergyModel.c
 	$(CC) $(CFLAGS) ContinuumElectrostatics.EnergyModel.c -o ContinuumElectrostatics.EnergyModel.o

@@ -511,11 +511,11 @@ Titration curves are obtained by calculating protonation probabilities for a giv
 usually from 0 to 14.
 
 {\footnotesize \begin{lstlisting}
-cem.CalculateCurves (isAnalytic=True, forceSerial=True, directory="curves_analytic")
+cem.CalculateCurves (method="analytic", forceSerial=True, directory="curves_analytic")
 \end{lstlisting} }
 
 \bigskip
-The argument \texttt{isAnalytic=True} tells that the protonation probabilities should be
+The argument \texttt{method="analytic"} tells that the protonation probabilities should be
 calculated analytically.
 %
 Each pH-step will be calculated in a separate thread.

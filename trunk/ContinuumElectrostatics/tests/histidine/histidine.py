@@ -26,17 +26,17 @@ cem.WriteJobFiles ()
 cem.CalculateElectrostaticEnergies ()
 
 
-logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 analytically ***\n")
+logFile.Text ("\n*** Calculating protonation probabilities at pH=7 analytically ***\n")
 cem.CalculateProbabilitiesAnalytically ()
 cem.SummaryProbabilities ()
 
-logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 using GMCT ***\n")
+logFile.Text ("\n*** Calculating protonation probabilities at pH=7 using GMCT ***\n")
 cem.CalculateProbabilitiesGMCT ()
 cem.SummaryProbabilities ()
 
 
 logFile.Text ("\n*** Calculating titration curves analytically ***\n")
-cem.CalculateCurves (isAnalytic=True, forceSerial=True, directory="curves_analytic")
+cem.CalculateCurves (method="analytic", forceSerial=True, directory="curves_analytic")
 
 logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")
 cem.CalculateCurves (directory="curves_gmct")
