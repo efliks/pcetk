@@ -29,7 +29,7 @@ cem.WriteW ()
 
 
 #===========================================
-logFile.Text ("\n*** Calculating microstate energies of all states at pH = 7 ***\n")
+logFile.Text ("\n*** Calculating microstate energies of all states at pH=7 ***\n")
 
 statevector = StateVector (cem)
 increment   = True
@@ -41,20 +41,18 @@ while increment:
 
 
 #===========================================
-logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 analytically ***\n")
+logFile.Text ("\n*** Calculating protonation probabilities at pH=7 analytically ***\n")
 cem.CalculateProbabilitiesAnalytically ()
 cem.SummaryProbabilities ()
 
-
-logFile.Text ("\n*** Calculating protonation probabilities at pH = 7 using GMCT ***\n")
+logFile.Text ("\n*** Calculating protonation probabilities at pH=7 using GMCT ***\n")
 cem.CalculateProbabilitiesGMCT ()
 cem.SummaryProbabilities ()
 
 
 #===========================================
 logFile.Text ("\n*** Calculating titration curves analytically ***\n")
-cem.CalculateCurves (isAnalytic=True, forceSerial=True, directory="curves_analytic")
-
+cem.CalculateCurves (method="analytic", forceSerial=True, directory="curves_analytic")
 
 logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")
 cem.CalculateCurves (directory="curves_gmct")

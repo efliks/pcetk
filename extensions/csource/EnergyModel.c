@@ -151,12 +151,8 @@ Boolean EnergyModel_CheckInteractionsSymmetric (const EnergyModel *self, const R
   */
 }
 
-Boolean EnergyModel_SymmetrizeInteractions (const EnergyModel *self, Status *status) {
-  Boolean success;
+void EnergyModel_SymmetrizeInteractions (const EnergyModel *self, Status *status) {
   SymmetricMatrix_CopyFromReal2DArray (self->symmetricmatrix, self->interactions, status);
-
-  success = (*status != Status_Continue)? False : True;
-  return success;
 }
 
 
@@ -172,7 +168,7 @@ Real EnergyModel_CalculateMicrostateEnergy (const EnergyModel *self, const State
   Gintr    = 0. ;
   nprotons = 0  ;
 
-  for (siteIndex = 0, instanceIndex = vector->vector; siteIndex < vector->length; siteIndex++, instanceIndex++) {
+  for (siteIndex = 0, instanceIndex = vector->vector; siteIndex < vector->nsites; siteIndex++, instanceIndex++) {
     nprotons += Integer1DArray_Item (self->protons, *instanceIndex);
     Gintr += Real1DArray_Item (self->intrinsic, *instanceIndex);
 
@@ -191,7 +187,7 @@ Real EnergyModel_CalculateMicrostateEnergy (const EnergyModel *self, const State
 /*=============================================================================
   Calculating probabilities analytically
 =============================================================================*/
-Boolean EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature, Status *status) {
+void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature, Status *status) {
   Real1DArray *bfactors;
   Real        *bfactor;
   Real         energy, energyZero, bsum;
@@ -200,7 +196,7 @@ Boolean EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self,
 
   bfactors = Real1DArray_Allocate (self->nstates, status);
   if (*status != Status_Continue) {
-    return False;
+    return;
   }
   StateVector_Reset (vector);
 
@@ -226,7 +222,7 @@ Boolean EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self,
   StateVector_Reset (vector);
 
   for (stateIndex = 0, bfactor = bfactors->data; stateIndex < self->nstates; stateIndex++, bfactor++) {
-    for (siteIndex = 0, activeInstanceGlobalIndex = vector->vector; siteIndex < vector->length; siteIndex++, activeInstanceGlobalIndex++) {
+    for (siteIndex = 0, activeInstanceGlobalIndex = vector->vector; siteIndex < vector->nsites; siteIndex++, activeInstanceGlobalIndex++) {
       self->probabilities->data[*activeInstanceGlobalIndex] += *bfactor;
     }
     StateVector_Increment (vector);
@@ -235,6 +231,87 @@ Boolean EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self,
   Real1DArray_Scale (self->probabilities, 1. / bsum);
 
   Real1DArray_Deallocate (&bfactors);
+}
 
-  return True;
+
+/*=============================================================================
+  Calculating probabilities using Metropolis Monte Carlo
+=============================================================================*/
+/* The point of a scan is to generate a state vector representing a low-energy, statistically relevant protonation state */
+static Real EnergyModel_MCScan (const EnergyModel *self, StateVector *vector, const Real pH, const Real temperature, Integer nmoves) {
+  Real      G, Gnew, GdeltaRT, ran, beta;
+  Integer   site, instanceBefore, instanceAfter;
+  Boolean   accept;
+
+  G = EnergyModel_CalculateMicrostateEnergy (self, vector, pH, temperature);
+  beta = 1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * temperature);
+
+  for (; nmoves >= 0; nmoves--) {
+    /* Perform the move */
+    StateVector_Move (vector, &site, &instanceBefore, &instanceAfter);
+    Gnew = EnergyModel_CalculateMicrostateEnergy (self, vector, pH, temperature);
+    GdeltaRT = (Gnew - G) * beta;
+
+    /* Prepare */
+    ran = rand () / (Real) RAND_MAX;
+
+    /* Apply the Metropolis criterion */
+    if (GdeltaRT < 0.)
+      accept = True;
+    else {
+      if (-GdeltaRT < TOO_SMALL)
+        accept = False;
+      else if (ran < exp (-GdeltaRT))
+        accept = True;
+      else
+        accept = False; 
+    }
+
+    /* Accept or reject the move? */
+    if (accept == True)
+      G = Gnew;
+    else
+      vector->vector[site] = instanceBefore;
+  }
+  return G;
+}
+
+void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, StateVector *vector, const Real pH, const Real temperature, const Boolean equil, Integer nscans, Status *status) {
+  Real      Gfinal, scale;
+  Real     *counter;
+  Integer  *activeInstance;
+  Integer   site, nmoves;
+
+  /* The number of moves is proportional to the number of sites */
+  nmoves = vector->nsites;
+  scale  = 1. / nscans;
+
+  /* Equilibration phase? */
+  if (equil) {
+    StateVector_Randomize (vector);
+
+    /* Run the scans */
+    for (; nscans >= 0; nscans--) {
+      Gfinal = EnergyModel_MCScan (self, vector, pH, temperature, nmoves);
+    }
+  }
+
+  /* Production phase? */
+  else {
+    /* Reset the probabilities */
+    Real1DArray_Set (self->probabilities, 0.);
+
+    /* Run the scans */
+    for (; nscans >= 0; nscans--) {
+      Gfinal = EnergyModel_MCScan (self, vector, pH, temperature, nmoves);
+
+      /* Update the counts */
+      for (site = 0, activeInstance = vector->vector; site < vector->nsites; site++, activeInstance++) {
+        counter = Real1DArray_ItemPointer (self->probabilities, *activeInstance);
+        (*counter)++;
+      }
+    }
+    /* Average the probabilities */
+    Real1DArray_Scale (self->probabilities, scale);
+  }
 }

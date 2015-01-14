@@ -16,7 +16,7 @@ cdef class StateVector:
 
   def __len__ (self):
     """Return the size of the vector."""
-    return self.cObject.length
+    return self.cObject.nsites
 
   def __getmodule__ (self):
     """Return the module name."""
@@ -159,11 +159,11 @@ cdef class StateVector:
         tab.Heading ("Site", columnSpan = 3)
         tab.Heading ("Instance", columnSpan = 3)
 
-        for siteIndex from 0 <= siteIndex < self.cObject.length:
+        for siteIndex from 0 <= siteIndex < self.cObject.nsites:
           substate = "  "
 
           if self.cObject.substate != NULL:
-            for j from 0 <= j < self.cObject.slength:
+            for j from 0 <= j < self.cObject.nssites:
               selectedSiteIndex = StateVector_GetSubstateItem (self.cObject, j, &status)
               if selectedSiteIndex == siteIndex:
                 substate = " @"

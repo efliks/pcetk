@@ -27,12 +27,13 @@ cdef extern from "EnergyModel.h":
     Integer             nstates
     Integer             ninstances
 
-  cdef CEnergyModel *EnergyModel_Allocate   (Integer ninstances, Status *status)
-  cdef void          EnergyModel_Deallocate (CEnergyModel *self)
-  cdef Boolean       EnergyModel_CheckInteractionsSymmetric (CEnergyModel *self, Real threshold, Real *maxDeviate)
-  cdef Boolean       EnergyModel_SymmetrizeInteractions (CEnergyModel *self, Status *status)
-  cdef Real          EnergyModel_CalculateMicrostateEnergy (CEnergyModel *self, CStateVector *vector, Real pH, Real temperature)
-  cdef Boolean       EnergyModel_CalculateProbabilitiesAnalytically (CEnergyModel *self, CStateVector *vector, Real pH, Real temperature, Status *status)
+  cdef CEnergyModel *EnergyModel_Allocate                           (Integer ninstances, Status *status)
+  cdef void          EnergyModel_Deallocate                         (CEnergyModel *self)
+  cdef Boolean       EnergyModel_CheckInteractionsSymmetric         (CEnergyModel *self, Real threshold, Real *maxDeviate)
+  cdef void          EnergyModel_SymmetrizeInteractions             (CEnergyModel *self, Status *status)
+  cdef Real          EnergyModel_CalculateMicrostateEnergy          (CEnergyModel *self, CStateVector *vector, Real pH, Real temperature)
+  cdef void          EnergyModel_CalculateProbabilitiesAnalytically (CEnergyModel *self, CStateVector *vector, Real pH, Real temperature, Status *status)
+  cdef void          EnergyModel_CalculateProbabilitiesMonteCarlo   (CEnergyModel *self, CStateVector *vector, Real pH, Real temperature, Boolean equil, Integer nscans, Status *status)
 
   # Functions for accessing items
   cdef Real          EnergyModel_GetGintr                (CEnergyModel *self, Integer instIndexGlobal)

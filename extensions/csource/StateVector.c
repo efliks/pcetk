@@ -11,7 +11,7 @@
 /*=============================================================================
   Allocation, deallocation, copying, etc.
 =============================================================================*/
-StateVector *StateVector_Allocate (const Integer length, Status *status) {
+StateVector *StateVector_Allocate (const Integer nsites, Status *status) {
   StateVector *self = NULL;
 
   MEMORY_ALLOCATE (self, StateVector);
@@ -20,22 +20,22 @@ StateVector *StateVector_Allocate (const Integer length, Status *status) {
     self->minvector = NULL;
     self->maxvector = NULL;
     self->substate  = NULL;
-    self->length    = length;
-    self->slength   = 0;
+    self->nsites    = nsites;
+    self->nssites   = 0;
 
-    if (length > 0) {
-      MEMORY_ALLOCATEARRAY (self->vector, length, Integer);
+    if (nsites > 0) {
+      MEMORY_ALLOCATEARRAY (self->vector, nsites, Integer);
       if (self->vector == NULL) {
         MEMORY_DEALLOCATE (self);
       }
       else {
-        MEMORY_ALLOCATEARRAY (self->minvector, length, Integer);
+        MEMORY_ALLOCATEARRAY (self->minvector, nsites, Integer);
         if (self->minvector == NULL) {
           MEMORY_DEALLOCATE (self->vector);
           MEMORY_DEALLOCATE (self);
         }
         else {
-          MEMORY_ALLOCATEARRAY (self->maxvector, length, Integer);
+          MEMORY_ALLOCATEARRAY (self->maxvector, nsites, Integer);
           if (self->maxvector == NULL) {
             MEMORY_DEALLOCATE (self->minvector);
             MEMORY_DEALLOCATE (self->vector);
@@ -71,7 +71,7 @@ StateVector *StateVector_Clone (const StateVector *self, Status *status) {
   StateVector *clone = NULL;
 
   if (self != NULL) {
-    clone = StateVector_Allocate (self->length, status);
+    clone = StateVector_Allocate (self->nsites, status);
     if (*status == Status_Continue) {
       StateVector_CopyTo (self, clone, status);
     }
@@ -81,10 +81,10 @@ StateVector *StateVector_Clone (const StateVector *self, Status *status) {
 }
 
 Boolean StateVector_CopyTo (const StateVector *self, StateVector *other, Status *status) {
-  /* Check for different lengths */
-  if (self->length != other->length) {
+  /* Check for different nsitess */
+  if (self->nsites != other->nsites) {
     StateVector_Deallocate (other);
-    other = StateVector_Allocate (self->length, status);
+    other = StateVector_Allocate (self->nsites, status);
 
     if (*status != Status_Continue) {
       return False;
@@ -92,17 +92,17 @@ Boolean StateVector_CopyTo (const StateVector *self, StateVector *other, Status 
   }
 
   /* Copy */
-  memcpy (other->vector    , self->vector    , other->length * sizeof (Integer));
-  memcpy (other->minvector , self->minvector , other->length * sizeof (Integer));
-  memcpy (other->maxvector , self->maxvector , other->length * sizeof (Integer));
+  memcpy (other->vector    , self->vector    , other->nsites * sizeof (Integer));
+  memcpy (other->minvector , self->minvector , other->nsites * sizeof (Integer));
+  memcpy (other->maxvector , self->maxvector , other->nsites * sizeof (Integer));
 
   /* Copy substate? */
   if (self->substate != NULL) {
-    StateVector_AllocateSubstate (other, self->slength, status);
+    StateVector_AllocateSubstate (other, self->nssites, status);
     if (*status != Status_Continue) {
       return False;
     }
-    memcpy (other->substate, self->substate, other->slength * sizeof (Integer));
+    memcpy (other->substate, self->substate, other->nssites * sizeof (Integer));
   }
 
   return True;
@@ -114,7 +114,7 @@ Boolean StateVector_CopyTo (const StateVector *self, StateVector *other, Status 
 void StateVector_Reset (const StateVector *self) {
   Integer   i;
   Integer   *v = self->vector, *m = self->minvector;
-  for (i = 0; i < self->length; i++, v++, m++) {
+  for (i = 0; i < self->nsites; i++, v++, m++) {
     *v = *m;
   }
 }
@@ -122,7 +122,7 @@ void StateVector_Reset (const StateVector *self) {
 void StateVector_ResetToMaximum (const StateVector *self) {
   Integer   i;
   Integer   *v = self->vector, *m = self->maxvector;
-  for (i = 0; i < self->length; i++, v++, m++) {
+  for (i = 0; i < self->nsites; i++, v++, m++) {
     *v = *m;
   }
 }
@@ -132,7 +132,7 @@ void StateVector_ResetToMaximum (const StateVector *self) {
  most sites or 0, 1, 2, 3 for histidines
 -----------------------------------------------------------------------------*/
 Integer StateVector_GetItem (const StateVector *self, const Integer index, Status *status) {
-  if (index < 0 || index > (self->length - 1)) {
+  if (index < 0 || index > (self->nsites - 1)) {
     Status_Set (status, Status_IndexOutOfRange);
     return -1;
   }
@@ -144,7 +144,7 @@ Integer StateVector_GetItem (const StateVector *self, const Integer index, Statu
 Boolean StateVector_SetItem (const StateVector *self, const Integer index, const Integer value, Status *status) {
   Integer valueActual;
 
-  if (index < 0 || index > (self->length - 1)) {
+  if (index < 0 || index > (self->nsites - 1)) {
     Status_Set (status, Status_IndexOutOfRange);
     return False;
   }
@@ -166,7 +166,7 @@ Boolean StateVector_SetItem (const StateVector *self, const Integer index, const
  an instance in the central arrays (_protons, _intrinsic, _interactions)
 -----------------------------------------------------------------------------*/
 Integer StateVector_GetActualItem (const StateVector *self, const Integer index, Status *status) {
-  if (index < 0 || index > (self->length - 1)) {
+  if (index < 0 || index > (self->nsites - 1)) {
     Status_Set (status, Status_IndexOutOfRange);
     return -1;
   }
@@ -176,7 +176,7 @@ Integer StateVector_GetActualItem (const StateVector *self, const Integer index,
 }
 
 Boolean StateVector_SetActualItem (const StateVector *self, const Integer index, const Integer value, Status *status) {
-  if (index < 0 || index > (self->length - 1)) {
+  if (index < 0 || index > (self->nsites - 1)) {
     Status_Set (status, Status_IndexOutOfRange);
     return False;
   }
@@ -200,7 +200,7 @@ Boolean StateVector_Increment (const StateVector *self) {
   Integer i;
   Integer *v = self->vector, *minv = self->minvector, *maxv = self->maxvector;
 
-  for (i = 0; i < self->length; i++, v++, minv++, maxv++) {
+  for (i = 0; i < self->nsites; i++, v++, minv++, maxv++) {
     if ((*v) < (*maxv)) {
       (*v)++;
       return True;
@@ -228,7 +228,7 @@ Boolean StateVector_AllocateSubstate (StateVector *self, const Integer nsites, S
       Status_Set (status, Status_MemoryAllocationFailure);
       return False;
     }
-    self->slength = nsites;
+    self->nssites = nsites;
     return True;
   }
 }
@@ -239,11 +239,11 @@ Boolean StateVector_AllocateSubstate (StateVector *self, const Integer nsites, S
  |index| is an index in the substate's array of selectedSiteIndices
 -----------------------------------------------------------------------------*/
 Boolean StateVector_SetSubstateItem (const StateVector *self, const Integer selectedSiteIndex, const Integer index, Status *status) {
-  if (index < 0 || index > (self->slength - 1)) {
+  if (index < 0 || index > (self->nssites - 1)) {
     Status_Set (status, Status_IndexOutOfRange);
     return False;
   }
-  else if (selectedSiteIndex < 0 || (selectedSiteIndex > self->length - 1)) {
+  else if (selectedSiteIndex < 0 || (selectedSiteIndex > self->nsites - 1)) {
     Status_Set (status, Status_ValueError);
     return False;
   }
@@ -254,7 +254,7 @@ Boolean StateVector_SetSubstateItem (const StateVector *self, const Integer sele
 }
 
 Integer StateVector_GetSubstateItem (const StateVector *self, const Integer index, Status *status) {
-  if (index < 0 || index > (self->slength - 1)) {
+  if (index < 0 || index > (self->nssites - 1)) {
     Status_Set (status, Status_IndexOutOfRange);
     return -1;
   }
@@ -268,7 +268,7 @@ void StateVector_ResetSubstate (const StateVector *self) {
   Integer *siteIndex = self->substate;
 
   if (self->substate != NULL) {
-    for (i = 0; i < self->slength; i++, siteIndex++) {
+    for (i = 0; i < self->nssites; i++, siteIndex++) {
       self->vector[*siteIndex] = self->minvector[*siteIndex];
     }
   }
@@ -279,7 +279,7 @@ Boolean StateVector_IncrementSubstate (const StateVector *self) {
   Integer *siteIndex = self->substate;
 
   if (self->substate != NULL) {
-    for (i = 0; i < self->slength; i++, siteIndex++) {
+    for (i = 0; i < self->nssites; i++, siteIndex++) {
       site    = self->vector    [*siteIndex];
       maxsite = self->maxvector [*siteIndex];
   
@@ -300,20 +300,27 @@ Boolean StateVector_IncrementSubstate (const StateVector *self) {
 }
 
 /*=============================================================================
-  Monte Carlo functions
+  Monte Carlo-related functions
 =============================================================================*/
-void StateVector_Move (const StateVector *self) {
+void StateVector_Move (const StateVector *self, Integer *site, Integer *before, Integer *after) {
   Integer component, value;
+  /* Choose component and save its current value */
+  component = rand () % self->nsites;
+  *site     = component;
+  *before   = self->vector[component];
+  /* Choose a new value */
+  value     = rand () % (self->maxvector[component] - self->minvector[component]) + self->minvector[component];
 
-  component = rand () % self->length;
-  value = rand () % (self->maxvector[component] - self->minvector[component]) + self->minvector[component];
-
+  /* Why is this part necessary? */
   if (value == self->vector[component]) {
-    if (++value > self->maxvector[component]) {
+    value++;
+    if (value > self->maxvector[component])
       value = self->minvector[component];
-    }
   }
+
+  /* Set the new value */
   self->vector[component] = value;
+  *after = value;
 }
 
 /* Generate a random vector */
@@ -325,7 +332,7 @@ void StateVector_Randomize (const StateVector *self) {
     first = False;
   }
 
-  for (i = 0; i < self->length; i++) {
+  for (i = 0; i < self->nsites; i++) {
     self->vector[i] = rand () % (self->maxvector[i] - self->minvector[i]) + self->minvector[i];
   }
 }

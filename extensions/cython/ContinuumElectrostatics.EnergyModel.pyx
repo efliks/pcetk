@@ -135,3 +135,22 @@ cdef class EnergyModel:
     if status != Status_Continue:
       raise CLibraryError ("Cannot allocate Boltzmann factors.")
     return self.cObject.nstates
+  
+
+  def CalculateProbabilitiesMonteCarlo (self, Real pH=7.0, Integer nequi=500, nprod=20000):
+    """Calculate probabilities of protonation states by using Metropolis Monte Carlo."""
+    cdef Status status
+    cdef Real   temperature
+    status      = Status_Continue
+    meadModel   = self.owner
+    temperature = meadModel.temperature
+
+    if not meadModel.isCalculated:
+      raise CLibraryError ("First calculate electrostatic energies.")
+
+    # Create a state vector for the model
+    vector = StateVector (meadModel)
+    # Equilibration
+    EnergyModel_CalculateProbabilitiesMonteCarlo (self.cObject, vector.cObject, pH, temperature, CTrue,  nequi, &status)
+    # Production
+    EnergyModel_CalculateProbabilitiesMonteCarlo (self.cObject, vector.cObject, pH, temperature, CFalse, nprod, &status)

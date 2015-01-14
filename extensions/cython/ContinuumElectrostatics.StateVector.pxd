@@ -14,12 +14,12 @@ __lastchanged__ = "$Id$"
 # Include StateVector.h in the generated C code
 cdef extern from "StateVector.h":
   ctypedef struct CStateVector "StateVector":
-    Integer   length
-    Integer   slength
     Integer  *vector
     Integer  *minvector
     Integer  *maxvector
     Integer  *substate
+    Integer   nsites
+    Integer   nssites
 
   cdef CStateVector *StateVector_Allocate          (Integer size, Status *status)
   cdef CStateVector *StateVector_Clone             (CStateVector *self, Status *status)
