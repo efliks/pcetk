@@ -5,7 +5,7 @@
 #                          Mikolaj J. Feliks (2014-2015)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
-from pCore        import CLibraryError
+from pCore        import logFile, LogFileActive, CLibraryError
 from StateVector  import StateVector
 
 DEF ANALYTIC_STATES = 67108864
@@ -137,7 +137,7 @@ cdef class EnergyModel:
     return self.cObject.nstates
   
 
-  def CalculateProbabilitiesMonteCarlo (self, Real pH=7.0, Integer nequi=500, nprod=20000):
+  def CalculateProbabilitiesMonteCarlo (self, Real pH=7.0, Integer nequi=500, Integer nprod=20000, log=logFile):
     """Calculate probabilities of protonation states by using Metropolis Monte Carlo."""
     cdef Status status
     cdef Real   temperature
@@ -150,7 +150,11 @@ cdef class EnergyModel:
 
     # Create a state vector for the model
     vector = StateVector (meadModel)
-    # Equilibration
+
     EnergyModel_CalculateProbabilitiesMonteCarlo (self.cObject, vector.cObject, pH, temperature, CTrue,  nequi, &status)
-    # Production
+    if LogFileActive (log):
+      log.Text ("\nCompleted %d equilibration scans.\n" % nequi)
+
     EnergyModel_CalculateProbabilitiesMonteCarlo (self.cObject, vector.cObject, pH, temperature, CFalse, nprod, &status)
+    if LogFileActive (log):
+      log.Text ("\nCompleted %d production scans.\n" % nprod)
