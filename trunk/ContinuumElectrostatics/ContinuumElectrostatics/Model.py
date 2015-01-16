@@ -431,7 +431,7 @@ class MEADModel (object):
 
   def CalculateProbabilitiesMonteCarlo (self, pH=7.0, numberOfEquilibrationScans=500, numberOfProductionScans=20000, log=logFile):
     """Calculate the probability of occurence of each instance of each site, using the in-house implementation of Metropolis Monte Carlo (experimental)."""
-    self.energyModel.CalculateProbabilitiesMonteCarlo (pH=pH, nequi=numberOfEquilibrationScans, nprod=numberOfProductionScans)
+    self.energyModel.CalculateProbabilitiesMonteCarlo (pH=pH, nequi=numberOfEquilibrationScans, nprod=numberOfProductionScans, log=log)
     return self._FinalizeProbabilities ()
 
 
