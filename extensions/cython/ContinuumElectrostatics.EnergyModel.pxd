@@ -7,11 +7,13 @@
 #-------------------------------------------------------------------------------
 from pCore.cDefinitions                  cimport Boolean, CFalse, CTrue, Integer, Real
 from pCore.Status                        cimport Status, Status_Continue, Status_IndexOutOfRange, Status_ValueError
+from ContinuumElectrostatics.StateVector cimport CStateVector, StateVector, StateVector_Randomize
+
+# Arrays (need them?)
 from pCore.Integer1DArray                cimport CInteger1DArray, Integer1DArray
-from pCore.Real1DArray                   cimport CReal1DArray, Real1DArray
+from pCore.Real1DArray                   cimport CReal1DArray, Real1DArray, Real1DArray_Set, Real1DArray_Scale
 from pCore.Real2DArray                   cimport CReal2DArray, Real2DArray
 from pCore.SymmetricMatrix               cimport CSymmetricMatrix, SymmetricMatrix
-from ContinuumElectrostatics.StateVector cimport CStateVector, StateVector
 
 __lastchanged__ = "$Id: $"
 
@@ -33,7 +35,12 @@ cdef extern from "EnergyModel.h":
   cdef void          EnergyModel_SymmetrizeInteractions             (CEnergyModel *self, Status *status)
   cdef Real          EnergyModel_CalculateMicrostateEnergy          (CEnergyModel *self, CStateVector *vector, Real pH, Real temperature)
   cdef void          EnergyModel_CalculateProbabilitiesAnalytically (CEnergyModel *self, CStateVector *vector, Real pH, Real temperature, Status *status)
+
+  # Monte Carlo-related functions
   cdef void          EnergyModel_CalculateProbabilitiesMonteCarlo   (CEnergyModel *self, CStateVector *vector, Real pH, Real temperature, Boolean equil, Integer nscans, Status *status)
+  cdef void          EnergyModel_UpdateProbabilities                (CEnergyModel *self, CStateVector *vector)
+  cdef Real          EnergyModel_MCScan                             (CEnergyModel *self, CStateVector *vector, Real pH, Real temperature, Integer nmoves)
+
 
   # Functions for accessing items
   cdef Real          EnergyModel_GetGintr                (CEnergyModel *self, Integer instIndexGlobal)

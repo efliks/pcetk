@@ -49,11 +49,9 @@ logFile.Text ("\n*** Calculating protonation probabilities at pH=7 using GMCT **
 cem.CalculateProbabilitiesGMCT ()
 cem.SummaryProbabilities ()
 
-
 logFile.Text ("\n*** Calculating protonation probabilities at pH=7 analytically ***\n")
 cem.CalculateProbabilitiesAnalytically ()
 cem.SummaryProbabilities ()
-
 
 logFile.Text ("\n*** Calculating protonation probabilities at pH=7 with in-house Monte Carlo (experimental) ***\n")
 cem.CalculateProbabilitiesMonteCarlo ()
@@ -83,14 +81,14 @@ substate.Summary ()
 
 
 #===========================================
-logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")
-cem.CalculateCurves (directory="curves_gmct")
- 
-logFile.Text ("\n*** Calculating titration curves analytically ***\n")
-cem.CalculateCurves (directory="curves_analytic", method="analytic", forceSerial=True)
-
-logFile.Text ("\n*** Calculating titration curves using in-house Monte Carlo (experimental) ***\n")
-cem.CalculateCurves (directory="curves_montecarlo", method="MonteCarlo", forceSerial=True)
+# logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")
+# cem.CalculateCurves (directory="curves_gmct")
+#  
+# logFile.Text ("\n*** Calculating titration curves analytically ***\n")
+# cem.CalculateCurves (directory="curves_analytic", method="analytic", forceSerial=True)
+# 
+# logFile.Text ("\n*** Calculating titration curves using in-house Monte Carlo (experimental) ***\n")
+# cem.CalculateCurves (directory="curves_montecarlo", method="MonteCarlo", forceSerial=True)
 
 
 #===========================================

@@ -237,8 +237,8 @@ void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, co
 /*=============================================================================
   Calculating probabilities using Metropolis Monte Carlo
 =============================================================================*/
-/* The point of a scan is to generate a state vector representing a low-energy, statistically relevant protonation state */
-static Real EnergyModel_MCScan (const EnergyModel *self, StateVector *vector, const Real pH, const Real temperature, Integer nmoves) {
+/* The purpose of a scan is to generate a state vector representing a low-energy, statistically relevant protonation state */
+Real EnergyModel_MCScan (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature, Integer nmoves) {
   Real      G, Gnew, GdeltaRT, ran, beta;
   Integer   site, instanceBefore, instanceAfter;
   Boolean   accept;
@@ -276,7 +276,7 @@ static Real EnergyModel_MCScan (const EnergyModel *self, StateVector *vector, co
   return G;
 }
 
-void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, StateVector *vector, const Real pH, const Real temperature, const Boolean equil, Integer nscans, Status *status) {
+void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature, const Boolean equil, Integer nscans, Status *status) {
   Real      Gfinal, scale;
   Real     *counter;
   Integer  *activeInstance;
@@ -313,5 +313,16 @@ void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, Stat
     }
     /* Average the probabilities */
     Real1DArray_Scale (self->probabilities, scale);
+  }
+}
+
+/* Function to be called from Cython */
+void EnergyModel_UpdateProbabilities (const EnergyModel *self, const StateVector *vector) {
+  Integer site, *activeInstance;
+  Real *counter;
+
+  for (site = 0, activeInstance = vector->vector; site < vector->nsites; site++, activeInstance++) {
+    counter = Real1DArray_ItemPointer (self->probabilities, *activeInstance);
+    (*counter)++;
   }
 }
