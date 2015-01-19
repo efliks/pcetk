@@ -8,10 +8,8 @@
 #ifndef _ENERGYMODEL
 #define _ENERGYMODEL
 
-/* Needed for memset and random*/
+/* Needed for memset and random */
 #include <stdio.h>
-/* Needed for memset */
-#include <string.h>
 /* Needed for exp */
 #include <math.h>
 
@@ -55,7 +53,11 @@ extern Boolean      EnergyModel_CheckInteractionsSymmetric (const EnergyModel *s
 /* Calculation functions */
 extern Real         EnergyModel_CalculateMicrostateEnergy          (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature);
 extern void         EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature, Status *status);
-extern void         EnergyModel_CalculateProbabilitiesMonteCarlo   (const EnergyModel *self,       StateVector *vector, const Real pH, const Real temperature, const Boolean equil, Integer nscans, Status *status);
+
+/* Monte Carlo functions */
+extern void         EnergyModel_CalculateProbabilitiesMonteCarlo   (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature, const Boolean equil, Integer nscans, Status *status);
+extern Real         EnergyModel_MCScan                             (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature, Integer nmoves);
+extern void         EnergyModel_UpdateProbabilities                (const EnergyModel *self, const StateVector *vector);
 
 /* Functions for accessing items */
 extern Real         EnergyModel_GetGintr                (const EnergyModel *self, const Integer instIndexGlobal);

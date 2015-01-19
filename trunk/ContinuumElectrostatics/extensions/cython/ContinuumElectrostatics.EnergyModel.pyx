@@ -69,7 +69,6 @@ cdef class EnergyModel:
 
     totalInstances = meadModel.ninstances
     self.cObject = EnergyModel_Allocate (totalInstances, &status)
-
     if status != Status_Continue:
       raise CLibraryError ("Cannot allocate energy model.")
 
@@ -78,11 +77,10 @@ cdef class EnergyModel:
       nstates = nstates * ninstances
       if nstates > ANALYTIC_STATES:
           break
-    self.cObject.nstates = nstates
+    self.cObject.nstates    = nstates
     self.cObject.ninstances = totalInstances
-
     self.isOwner = False
-    self.owner = meadModel
+    self.owner   = meadModel
 
 
   def CheckIfSymmetric (self, Real threshold=0.05):
@@ -139,8 +137,9 @@ cdef class EnergyModel:
 
   def CalculateProbabilitiesMonteCarlo (self, Real pH=7.0, Integer nequi=500, Integer nprod=20000, log=logFile):
     """Calculate probabilities of protonation states by using Metropolis Monte Carlo."""
-    cdef Status status
-    cdef Real   temperature
+    cdef Real    temperature, scale, Gfinal
+    cdef Integer nmoves, scan
+    cdef Status  status
     status      = Status_Continue
     meadModel   = self.owner
     temperature = meadModel.temperature
@@ -148,13 +147,20 @@ cdef class EnergyModel:
     if not meadModel.isCalculated:
       raise CLibraryError ("First calculate electrostatic energies.")
 
-    # Create a state vector for the model
+    # Initialization
     vector = StateVector (meadModel)
+    nmoves = vector.cObject.nsites
+    scale  = 1. / nprod
 
-    EnergyModel_CalculateProbabilitiesMonteCarlo (self.cObject, vector.cObject, pH, temperature, CTrue,  nequi, &status)
-    if LogFileActive (log):
-      log.Text ("\nCompleted %d equilibration scans.\n" % nequi)
+    # Equilibration
+    StateVector_Randomize (vector.cObject)
+    for scan from 0 < scan < nequi:
+      Gfinal = EnergyModel_MCScan (self.cObject, vector.cObject, pH, temperature, nmoves)
 
-    EnergyModel_CalculateProbabilitiesMonteCarlo (self.cObject, vector.cObject, pH, temperature, CFalse, nprod, &status)
-    if LogFileActive (log):
-      log.Text ("\nCompleted %d production scans.\n" % nprod)
+    # Production
+    Real1DArray_Set (self.cObject.probabilities, 0.)
+    for scan from 0 < scan < nprod:
+      Gfinal = EnergyModel_MCScan (self.cObject, vector.cObject, pH, temperature, nmoves)
+      EnergyModel_UpdateProbabilities (self.cObject, vector.cObject)
+
+    Real1DArray_Scale (self.cObject.probabilities, scale)

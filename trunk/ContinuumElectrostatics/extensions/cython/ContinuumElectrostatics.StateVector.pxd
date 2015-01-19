@@ -40,6 +40,10 @@ cdef extern from "StateVector.h":
   cdef Boolean       StateVector_SetSubstateItem   (CStateVector *self, Integer selectedSiteIndex, Integer index, Status *status)
   cdef Integer       StateVector_GetSubstateItem   (CStateVector *self, Integer index, Status *status)
 
+  # Monte Carlo functions
+  cdef void          StateVector_Move              (CStateVector *self, Integer *site, Integer *before, Integer *after)
+  cdef void          StateVector_Randomize         (CStateVector *self)
+
 
 #-------------------------------------------------------------------------------
 cdef class StateVector:
