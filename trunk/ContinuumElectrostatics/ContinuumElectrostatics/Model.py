@@ -192,14 +192,14 @@ class MEADModel (object):
         spacing = 10
 
       items = (
-         ( "idSite1"  , (      8,          0) ),
-         ( "idInst1"  , (      8,          0) ),
-         ( "labSite1" , (     14,         -1) ),
-         ( "labInst1" , (     14,         -1) ),
-         ( "idSite2"  , (      8,          0) ),
-         ( "idInst2"  , (      8,          0) ),
-         ( "labSite2" , (     14,         -1) ),
-         ( "labInst2" , (     14,         -1) ),
+         ( "idSite1"  , (   8   ,      0    ) ),
+         ( "idInst1"  , (   8   ,      0    ) ),
+         ( "labSite1" , (  14   ,     -1    ) ),
+         ( "labInst1" , (  14   ,     -1    ) ),
+         ( "idSite2"  , (   8   ,      0    ) ),
+         ( "idInst2"  , (   8   ,      0    ) ),
+         ( "labSite2" , (  14   ,     -1    ) ),
+         ( "labInst2" , (  14   ,     -1    ) ),
          ( "Wij_symm" , (spacing,  precision) ),
          ( "Wij"      , (spacing,  precision) ),
          ( "Wij_err"  , (spacing,  precision) ),
@@ -208,18 +208,16 @@ class MEADModel (object):
       entry  = FormatEntry (items)
       lines  = [header]
 
-
       for asite in self.meadSites:
         for ainstance in asite.instances:
 
           for bsite in self.meadSites:
             for binstance in bsite.instances:
+              interSymmetric = self.energyModel.GetInteractionSymmetric (ainstance._instIndexGlobal, binstance._instIndexGlobal)
+              interaction    = self.energyModel.GetInteraction          (ainstance._instIndexGlobal, binstance._instIndexGlobal)
+              deviation      = self.energyModel.GetDeviation            (ainstance._instIndexGlobal, binstance._instIndexGlobal)
 
-              wij = self.energyModel.GetInteraction (ainstance._instIndexGlobal, binstance._instIndexGlobal)
-              wji = self.energyModel.GetInteraction (binstance._instIndexGlobal, ainstance._instIndexGlobal)
-              symmetric = (wij + wji) * .5
-              error     = symmetric - wij
-              lines.append (entry % (asite.siteIndex + 1, ainstance.instIndex + 1, asite.label, ainstance.label, bsite.siteIndex + 1, binstance.instIndex + 1, bsite.label, binstance.label, symmetric, wij, error))
+              lines.append (entry % (asite.siteIndex + 1, ainstance.instIndex + 1, asite.label, ainstance.label, bsite.siteIndex + 1, binstance.instIndex + 1, bsite.label, binstance.label, interSymmetric, interaction, deviation))
       WriteInputFile (filename, lines)
 
 
@@ -459,7 +457,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def CalculateElectrostaticEnergies (self, calculateETA=True, asymmetricThreshold=0.05, asymmetricSummary=False, log=logFile):
+  def CalculateElectrostaticEnergies (self, calculateETA=True, asymmetricTolerance=0.05, asymmetricSummary=False, log=logFile):
     """
     Calculate for each instance of each site:
     - self (Born) energy in the model compound
@@ -559,7 +557,7 @@ class MEADModel (object):
 
 
       # Check for symmetricity of the matrix of interactions
-      self._CheckIfSymmetric (threshold=asymmetricThreshold, printSummary=asymmetricSummary, log=log)
+      self._CheckIfSymmetric (tolerance=asymmetricTolerance, printSummary=asymmetricSummary, log=log)
 
       # Symmetrize interaction energies inside the matrix of interactions
       self.energyModel.SymmetrizeInteractions ()
@@ -571,15 +569,15 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def _CheckIfSymmetric (self, threshold=0.05, printSummary=False, log=logFile):
+  def _CheckIfSymmetric (self, tolerance=0.05, printSummary=False, log=logFile):
     """This method is a wrapper for the EnergyModel's CheckIfSymmetric method.
 
     The wrapper is able to print summaries."""
-    isSymmetric, maxDeviation = self.energyModel.CheckIfSymmetric (threshold=threshold)
+    isSymmetric, maxDeviation = self.energyModel.CheckIfSymmetric (tolerance=tolerance)
 
     if LogFileActive (log):
       if isSymmetric:
-        log.Text ("\nInteractions are symmetric within the given threshold (%0.4f kcal/mol).\n" % threshold)
+        log.Text ("\nInteractions are symmetric within the given tolerance (%0.4f kcal/mol).\n" % tolerance)
       else:
         if not printSummary:
           log.Text ("\nWARNING: Maximum deviation of interactions is %0.4f kcal/mol.\n" % maxDeviation)
@@ -603,11 +601,14 @@ class MEADModel (object):
           report = []
           for rowSite in self.meadSites:
             for rowInstance in rowSite.instances:
+
               for columnSite in self.meadSites:
                 for columnInstance in columnSite.instances:
+
                   deviation = self.energyModel.GetDeviation (rowInstance._instIndexGlobal, columnInstance._instIndexGlobal)
-                  if deviation > threshold:
+                  if abs (deviation) > tolerance:
                     report.append ([rowInstance, columnInstance, deviation])
+
 
           for ainstance, binstance, deviation in report:
             asite = ainstance.parent

@@ -54,7 +54,32 @@ void EnergyModel_Deallocate (EnergyModel *self) {
   if (self != NULL) MEMORY_DEALLOCATE (self);
 }
 
-/* Getters */
+void EnergyModel_CalculateDeviations (const EnergyModel *self) {
+  Integer i, j;
+  Real    wij, wji, deviation;
+
+  for (i = 0; i < self->ninstances; i++)
+    for (j = 0; j < self->ninstances; j++) {
+      wij = Real2DArray_Item (self->interactions, i, j);
+      wji = Real2DArray_Item (self->interactions, j, i);
+
+      deviation = (wij + wji) * .5 - wij;
+      Real2DArray_Item (self->deviations, i, j) = deviation;
+  }
+}
+
+Boolean EnergyModel_CheckInteractionsSymmetric (const EnergyModel *self, Real tolerance, Real *maxDeviation) {
+  return Real2DArray_IsSymmetric (self->interactions, &tolerance, maxDeviation);
+}
+
+void EnergyModel_SymmetrizeInteractions (const EnergyModel *self, Status *status) {
+  SymmetricMatrix_CopyFromReal2DArray (self->symmetricmatrix, self->interactions, status);
+}
+
+
+/*=============================================================================
+  Getters
+=============================================================================*/
 Real EnergyModel_GetGintr (const EnergyModel *self, const Integer instIndexGlobal) {
   return Real1DArray_Item (self->intrinsic, instIndexGlobal);
 }
@@ -87,7 +112,10 @@ Real EnergyModel_GetDeviation (const EnergyModel *self, const Integer instIndexG
   return Real2DArray_Item (self->deviations, instIndexGlobalA, instIndexGlobalB);
 }
 
-/* Setters */
+
+/*=============================================================================
+  Setters
+=============================================================================*/
 void EnergyModel_SetGintr (const EnergyModel *self, const Integer instIndexGlobal, const Real value) {
   Real1DArray_Item (self->intrinsic, instIndexGlobal) = value;
 }
@@ -102,57 +130,6 @@ void EnergyModel_SetProbability (const EnergyModel *self, const Integer instInde
 
 void EnergyModel_SetInteraction (const EnergyModel *self, const Integer instIndexGlobalA, const Integer instIndexGlobalB, const Real value) {
   Real2DArray_Item (self->interactions, instIndexGlobalA, instIndexGlobalB) = value;
-}
-
-
-Boolean EnergyModel_CheckInteractionsSymmetric (const EnergyModel *self, const Real threshold, Real *maxDeviate) {
-  Integer row, column;
-  Real symmetry, itemRow, itemColumn;
-  Real deviation, absoluteDeviation, maxDeviation = 0.;
-  Boolean isSymmetric = True;
-  /* 
-  for (row = 0; row < self->ninstances; row++) {
-    for (column = 0; column < self->ninstances; column++) {
-    }
-  }
-  */
-
-  for (row = 0; row < Real2DArray_Rows (self->interactions); row++) {
-    for (column = 0; column < Real2DArray_Columns (self->interactions); column++) {
-      itemRow    = Real2DArray_Item (self->interactions, row,    column);
-      itemColumn = Real2DArray_Item (self->interactions, column, row);
-
-      symmetry  = .5 * (itemRow + itemColumn);
-      deviation = symmetry - itemRow;
-      if (deviation < 0.) {
-        absoluteDeviation = -1. * deviation;
-      }
-      else {
-        absoluteDeviation = deviation;
-      }
-      Real2DArray_Item (self->deviations, row, column) = absoluteDeviation;
-
-      if (absoluteDeviation > threshold) {
-        isSymmetric = False;
-      }
-
-      if (absoluteDeviation > maxDeviation) {
-        maxDeviation = absoluteDeviation;
-      }
-    }
-  }
-
-  *maxDeviate = maxDeviation;
-  return isSymmetric;
-
-  /*
-    # define SYMMETRIC_TOLERANCE 1.0e-10
-    Boolean Real2DArray_IsSymmetric ( const Real2DArray *self, const Real *tolerance, Real *deviation )
-  */
-}
-
-void EnergyModel_SymmetrizeInteractions (const EnergyModel *self, Status *status) {
-  SymmetricMatrix_CopyFromReal2DArray (self->symmetricmatrix, self->interactions, status);
 }
 
 
@@ -255,7 +232,7 @@ Real EnergyModel_MCScan (const EnergyModel *self, const StateVector *vector, con
     /* Prepare */
     ran = rand () / (Real) RAND_MAX;
 
-    /* Apply the Metropolis criterion */
+    /* Apply the Metropolis criterion; based on GMCT */
     if (GdeltaRT < 0.)
       accept = True;
     else {
@@ -273,6 +250,7 @@ Real EnergyModel_MCScan (const EnergyModel *self, const StateVector *vector, con
     else
       vector->vector[site] = instanceBefore;
   }
+  /* Return the last accepted energy (only for info) */
   return G;
 }
 
@@ -283,8 +261,8 @@ void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, cons
   Integer   site, nmoves;
 
   /* The number of moves is proportional to the number of sites */
-  nmoves = vector->nsites;
-  scale  = 1. / nscans;
+  nmoves  = vector->nsites;
+  scale   = 1. / nscans;
 
   /* Equilibration phase? */
   if (equil) {

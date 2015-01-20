@@ -149,15 +149,15 @@ cdef class StateVector:
 
     if LogFileActive (log):
       if verbose:
-        tab = log.GetTable (columns = [7, 7, 7, 8, 8, 2])
+        tab = log.GetTable (columns=[7, 7, 7, 8, 8, 2])
         tab.Start ()
         if title is None:
           tab.Title ("State vector")
         else:
           tab.Title (title)
 
-        tab.Heading ("Site", columnSpan = 3)
-        tab.Heading ("Instance", columnSpan = 3)
+        tab.Heading ("Site", columnSpan=3)
+        tab.Heading ("Instance", columnSpan=3)
 
         for siteIndex from 0 <= siteIndex < self.cObject.nsites:
           substate = "  "
