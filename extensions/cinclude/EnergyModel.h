@@ -47,8 +47,9 @@ extern EnergyModel *EnergyModel_Allocate (const Integer ninstances, Status *stat
 extern void         EnergyModel_Deallocate (EnergyModel *self);
 
 /* Handling of the interaction matrix */
-extern void         EnergyModel_SymmetrizeInteractions (const EnergyModel *self, Status *status);
-extern Boolean      EnergyModel_CheckInteractionsSymmetric (const EnergyModel *self, const Real threshold, Real *maxDeviate);
+extern void         EnergyModel_CalculateDeviations        (const EnergyModel *self);
+extern void         EnergyModel_SymmetrizeInteractions     (const EnergyModel *self, Status *status);
+extern Boolean      EnergyModel_CheckInteractionsSymmetric (const EnergyModel *self, Real tolerance, Real *maxDeviation);
 
 /* Calculation functions */
 extern Real         EnergyModel_CalculateMicrostateEnergy          (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature);

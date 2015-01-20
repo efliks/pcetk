@@ -83,11 +83,12 @@ cdef class EnergyModel:
     self.owner   = meadModel
 
 
-  def CheckIfSymmetric (self, Real threshold=0.05):
+  def CheckIfSymmetric (self, Real tolerance=0.05):
     """Check if the matrix of interactions is symmetric within the given threshold."""
     cdef Real    maxDeviation
     cdef Boolean isSymmetric
-    isSymmetric = EnergyModel_CheckInteractionsSymmetric (self.cObject, threshold, &maxDeviation)
+    EnergyModel_CalculateDeviations (self.cObject)
+    isSymmetric = EnergyModel_CheckInteractionsSymmetric (self.cObject, tolerance, &maxDeviation)
     return (isSymmetric, maxDeviation)
 
 
@@ -140,12 +141,17 @@ cdef class EnergyModel:
     cdef Real    temperature, scale, Gfinal
     cdef Integer nmoves, scan
     cdef Status  status
+    cdef Boolean isLogActive
     status      = Status_Continue
     meadModel   = self.owner
     temperature = meadModel.temperature
+    isLogActive = CFalse
 
     if not meadModel.isCalculated:
       raise CLibraryError ("First calculate electrostatic energies.")
+
+    if LogFileActive (log):
+      isLogActive = CTrue
 
     # Initialization
     vector = StateVector (meadModel)
@@ -157,6 +163,10 @@ cdef class EnergyModel:
     for scan from 0 < scan < nequi:
       Gfinal = EnergyModel_MCScan (self.cObject, vector.cObject, pH, temperature, nmoves)
 
+    if isLogActive:
+      log.Text ("\nCompleted %d equilibration scans.\n" % nequi)
+
+
     # Production
     Real1DArray_Set (self.cObject.probabilities, 0.)
     for scan from 0 < scan < nprod:
@@ -164,3 +174,6 @@ cdef class EnergyModel:
       EnergyModel_UpdateProbabilities (self.cObject, vector.cObject)
 
     Real1DArray_Scale (self.cObject.probabilities, scale)
+
+    if isLogActive:
+      log.Text ("\nCompleted %d production scans.\n" % nprod)

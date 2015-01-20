@@ -38,7 +38,7 @@ cem.Initialize (excludeResidues=exclusions)
 cem.Summary ()
 cem.SummarySites ()
 cem.WriteJobFiles ()
-cem.CalculateElectrostaticEnergies (calculateETA=False, asymmetricSummary=True, asymmetricThreshold=0.01)
+cem.CalculateElectrostaticEnergies (calculateETA=False, asymmetricSummary=True, asymmetricTolerance=0.01)
 
 cem.WriteW ()
 cem.WriteGintr ()
