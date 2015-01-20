@@ -1,6 +1,8 @@
 \documentclass[a4paper,11pt]{article}
 
-\usepackage{xspace, hyperref, listings}
+\usepackage{xspace, listings, setspace, geometry}
+\usepackage[super,sort&compress]{natbib}
+\usepackage[plainpages=false,hyperfootnotes=false,linktocpage,bookmarks]{hyperref}
 
 % The next three lines deal with the underscore character
 \usepackage{lmodern}
@@ -12,7 +14,7 @@
 % \svnid{$Id$}
 
 \pagestyle{plain}
-\linespread{1.6}
+\linespread{1.4}
 \textwidth        16 cm
 \textheight       22 cm
 \oddsidemargin     0 mm
@@ -143,7 +145,7 @@ than previously because of the \makebox{parallelization}.
 Before the installation of the \modulename module, it is necessary
 to have:
 \begin{itemize}
-\itemsep0pt \parskip0pt \parsep0pt
+\itemsep0pt 
   \item pDynamo 1.8.0
   \item Python 2.7 (including header files; python2.7-dev package in Debian)
   \item PyYAML 3.10 (python-yaml package in Debian)
@@ -207,7 +209,6 @@ This directory should be also added to the \texttt{PYTHONPATH} variable.
 %
 This can be done in the following way (in Bash):
 
-\newpage
 {\footnotesize \begin{lstlisting}
 export PDYNAMO_CONTINUUMELECTROSTATICS=/home/mikolaj/devel/ContinuumElectrostatics
 export PYTHONPATH=$PYTHONPATH:$PDYNAMO_CONTINUUMELECTROSTATICS
@@ -688,7 +689,7 @@ parameters of the existing sites will be overwritten.
 \linespread{0.8}
 
 \begin{itemize}
-\itemsep0pt \parskip0pt \parsep0pt
+\itemsep0pt 
   \item Extend the model by including rotameric instances
   \item Include quantum chemical sites as in QMPB
   \item Include reduction/oxidation reactions in addition to protonation/deprotonation reactions
@@ -721,11 +722,20 @@ Alternatively, you can post comments or report problems on the project's website
 \renewcommand{\refname}{}
 \vspace*{-1cm}
 
-\linespread{0.8}
-\bibliographystyle{ieeetr}
-\bibliography{refs}
+% \linespread{0.8}
+% \bibliographystyle{ieeetr}
+% \bibliography{refs}
+% 
+% \linespread{1.6}
 
-\linespread{1.6}
+\bibliographystyle{ieeetr}
+\begingroup
+    {\small
+    \setlength{\bibsep}{8pt}
+    \setstretch{1}
+    \bibliography{refs}
+    }
+\endgroup
 
 
 %-------------------------------------------------
