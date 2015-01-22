@@ -441,8 +441,8 @@ their respective microstate energies:
 statevector = StateVector (cem)
 increment   = True
 while increment:
-  Gmicro = vector.CalculateMicrostateEnergy (cem, pH=7.0)
-  statevector.Print (cem, title="Gmicro = %f" % Gmicro)
+  Gmicro = cem.CalculateMicrostateEnergy (statevector, pH=7.0)
+  statevector.Print (verbose=True, title="Gmicro = %f" % Gmicro)
   increment = statevector.Increment ()
 \end{lstlisting} }
 
@@ -454,7 +454,7 @@ Dissociation of the $\epsilon$-hydrogen from the histidine requires only 0.7\,kc
 
 
 %-------------------------------------------------
-\subsection{Calculating protonation probabilities}
+\subsection{Calculating probabilities of protonation states}
 % For a given site, the probability of occurrence of a particular instance is calculated 
 % from the Boltzmann weighted sum, which takes the form:
 One option for calculating protonation probabilities is to use GMCT externally after 
@@ -512,7 +512,10 @@ Titration curves are obtained by calculating protonation probabilities for a giv
 usually from 0 to 14.
 
 {\footnotesize \begin{lstlisting}
-cem.CalculateCurves (method="analytic", forceSerial=True, directory="curves_analytic")
+from ContinuumElectrostatics import TitrationCurves
+tc = TitrationCurves (cem, method="analytic")
+tc.CalculateCurves (forceSerial=True)
+tc.WriteCurves (directory="curves_analytic")
 \end{lstlisting} }
 
 \bigskip
@@ -537,7 +540,10 @@ The curves can be plotted in a plotting program, for example Gnuplot.
 The same task can be accomplished by using GMCT in parallel mode:
 
 {\footnotesize \begin{lstlisting}
-cem.CalculateCurves (directory="curves_gmct")
+from ContinuumElectrostatics import TitrationCurves
+tc = TitrationCurves (cem, method="GMCT")
+tc.CalculateCurves ()
+tc.WriteCurves (directory="curves_gmct")
 \end{lstlisting} }
 
 
@@ -555,7 +561,7 @@ The microstate energy ($G_{\mathrm{micro}}$) in the lowest energy protonation st
 be calculated in the following way:
 
 {\footnotesize \begin{lstlisting}
-Gmicro = vector_lowest.CalculateMicrostateEnergy (cem)
+Gmicro = cem.CalculateMicrostateEnergy (vector_lowest)
 \end{lstlisting} }
 
 \bigskip
