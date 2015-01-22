@@ -261,8 +261,8 @@ void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, cons
   Integer   site, nmoves;
 
   /* The number of moves is proportional to the number of sites */
-  nmoves  = vector->nsites;
-  scale   = 1. / nscans;
+  nmoves = vector->nsites;
+  scale  = 1. / nscans;
 
   /* Equilibration phase? */
   if (equil) {

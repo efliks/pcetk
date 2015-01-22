@@ -2,7 +2,7 @@
 from pBabel   import CHARMMParameterFiles_ToParameters, CHARMMPSFFile_ToSystem, CHARMMCRDFile_ToCoordinates3
 from pCore    import logFile
 
-from ContinuumElectrostatics import MEADModel, StateVector
+from ContinuumElectrostatics import MEADModel, StateVector, TitrationCurves
 
 
 logFile.Header ("Calculate protonation states of two titratable sites in a hypothetical peptide.")
@@ -52,10 +52,15 @@ cem.SummaryProbabilities ()
 
 #===========================================
 logFile.Text ("\n*** Calculating titration curves analytically ***\n")
-cem.CalculateCurves (method="analytic", forceSerial=True, directory="curves_analytic")
+tc = TitrationCurves (cem, method="analytic")
+tc.CalculateCurves (forceSerial=True)
+tc.WriteCurves (directory="curves_analytic")
+
 
 logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")
-cem.CalculateCurves (directory="curves_gmct")
+tc2 = TitrationCurves (cem, method="GMCT")
+tc2.CalculateCurves (forceSerial=True)
+tc2.WriteCurves (directory="curves_gmct")
 
 
 #===========================================

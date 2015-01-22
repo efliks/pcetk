@@ -3,7 +3,7 @@
 from pBabel   import CHARMMParameterFiles_ToParameters, CHARMMPSFFile_ToSystem, CHARMMCRDFile_ToCoordinates3
 from pCore    import logFile
 
-from ContinuumElectrostatics import MEADModel
+from ContinuumElectrostatics import MEADModel, TitrationCurves
 
 
 logFile.Header ("Calculate protonation states in rubredoxin")
@@ -45,14 +45,15 @@ cem.SummaryProbabilities ()
 
 
 #===========================================
-logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")
-cem.CalculateCurves (directory="curves_gmct")
-
-logFile.Text ("\n*** Calculating titration curves analytically ***\n")
-cem.CalculateCurves (directory="curves_analytic", method="analytic", forceSerial=True)
-
-logFile.Text ("\n*** Calculating titration curves using in-house Monte Carlo (experimental) ***\n")
-cem.CalculateCurves (directory="curves_montecarlo", method="MonteCarlo", forceSerial=True)
+for method, direc, message, serial in (
+    ("analytic"   ,  "curves_analytic" ,  "analytically"                              , False ),
+    ("GMCT"       ,  "curves_gmct"     ,  "using GMCT"                                , True  ),
+    ("MonteCarlo" ,  "curves_mc"       ,  "using in-house Monte Carlo (experimental)" , False ),
+):
+  logFile.Text ("\n*** Calculating titration curves %s ***\n" % message)
+  tc = TitrationCurves (cem, method=method)
+  tc.CalculateCurves (forceSerial=serial)
+  tc.WriteCurves (directory=direc)
 
 
 #===========================================

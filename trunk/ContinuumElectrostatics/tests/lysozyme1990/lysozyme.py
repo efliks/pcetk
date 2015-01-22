@@ -4,7 +4,7 @@
 from pBabel   import CHARMMParameterFiles_ToParameters, CHARMMPSFFile_ToSystem, CHARMMCRDFile_ToCoordinates3
 from pCore    import logFile
 
-from ContinuumElectrostatics import MEADModel, MEADSubstate, StateVector
+from ContinuumElectrostatics import MEADModel, MEADSubstate, StateVector, TitrationCurves
 
 
 logFile.Header ("Calculate protonation states in lysozyme")
@@ -81,14 +81,15 @@ substate.Summary ()
 
 
 #===========================================
-# logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")
-# cem.CalculateCurves (directory="curves_gmct")
-#  
-# logFile.Text ("\n*** Calculating titration curves analytically ***\n")
-# cem.CalculateCurves (directory="curves_analytic", method="analytic", forceSerial=True)
-# 
-# logFile.Text ("\n*** Calculating titration curves using in-house Monte Carlo (experimental) ***\n")
-# cem.CalculateCurves (directory="curves_montecarlo", method="MonteCarlo", forceSerial=True)
+for method, direc, message in (
+    ("analytic"   ,  "curves_analytic" ,  "analytically"                              ),
+    ("GMCT"       ,  "curves_gmct"     ,  "using GMCT"                                ),
+    ("MonteCarlo" ,  "curves_mc"       ,  "using in-house Monte Carlo (experimental)" ),
+):
+  logFile.Text ("\n*** Calculating titration curves %s ***\n" % message)
+  tc = TitrationCurves (cem, method=method)
+  tc.CalculateCurves ()
+  tc.WriteCurves (directory=direc)
 
 
 #===========================================

@@ -5,14 +5,12 @@
 #                          Mikolaj J. Feliks (2014-2015)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
-"""MEADModel is a class representing the continuum electrostatic model.
-
-CurveThread is a class for running parallel calculations of titration curves."""
+"""MEADModel is a class representing the continuum electrostatic model."""
 
 __lastchanged__ = "$Id$"
 
 
-import os, glob, threading, subprocess, time
+import os, glob, subprocess, time
 
 from pCore                 import logFile, LogFileActive, Selection, YAMLUnpickle
 from Constants             import *
@@ -29,51 +27,20 @@ from InputFileWriter       import WriteInputFile
 from PQRFileWriter         import PQRFile_FromSystem
 
 
-_DefaultTemperature     = 300.0
-_DefaultIonicStrength   = 0.1
-_DefaultPathScratch     = "/tmp"
-_DefaultPathMEAD        = "/usr/bin"
-_DefaultPathGMCT        = "/usr/bin"
-_DefaultThreads         = 1
-_DefaultFocussingSteps  = ((121, 2.00), (101, 1.00), (101, 0.50), (101, 0.25))
-
-_DefaultGmctSetup = """
-blab        1
-nconfflip   10
-tlimit      3
-itraj       0
-nmcfull     20000
-temp        %f
-icorr       0
-limit       2
-nmcequi     500
-nmu         1
-mu          %f  %f  0.0  0  0
-"""
+_DefaultTemperature        = 300.0
+_DefaultIonicStrength      = 0.1
+_DefaultPathScratch        = "/tmp"
+_DefaultPathMEAD           = "/usr/bin"
+_DefaultPathGMCT           = "/usr/bin"
+_DefaultThreads            = 1
+_DefaultDoubleFlip         = 2
+_DefaultTripleFlip         = 3
+_DefaultEquilibrationScans = 500
+_DefaultProductionScans    = 20000
+_DefaultFocussingSteps     = ((121, 2.00), (101, 1.00), (101, 0.50), (101, 0.25))
 
 
-#-------------------------------------------------------------------------------
-class CurveThread (threading.Thread):
-  """Calculate each pH-step in a separate thread."""
 
-  def __init__ (self, meadModel, method, pH):
-    methodsToChoose = {
-      "GMCT"       : meadModel.CalculateProbabilitiesGMCT          ,
-      "MonteCarlo" : meadModel.CalculateProbabilitiesMonteCarlo    ,
-      "analytic"   : meadModel.CalculateProbabilitiesAnalytically  ,
-                      }
-    threading.Thread.__init__ (self)
-    self.calculate = methodsToChoose[method]
-    self.model     = meadModel
-    self.sites     = None
-    self.pH        = pH
-
-  def run (self):
-    """The method that runs the calculations."""
-    self.sites = self.calculate (self.pH, log=None)
-
-
-#-------------------------------------------------------------------------------
 class MEADModel (object):
   """Continuum electrostatic model."""
 
@@ -234,12 +201,12 @@ class MEADModel (object):
       if spacing < 10:
         spacing = 10
       items = (
-         ( "siteID"    , (     12,          0) ),
-         ( "instID"    , (     12,          0) ),
-         ( "siteLabel" , (     16,         -1) ),
-         ( "instLabel" , (     16,         -1) ),
+         ( "siteID"    , (  12   ,      0    ) ),
+         ( "instID"    , (  12   ,      0    ) ),
+         ( "siteLabel" , (  16   ,     -1    ) ),
+         ( "instLabel" , (  16   ,     -1    ) ),
          ( "Gintr"     , (spacing,  precision) ),
-         ( "protons"   , (     12,          0) ),
+         ( "protons"   , (  12   ,      0    ) ),
               )
       header = FormatEntry (items, header = True)
       entry  = FormatEntry (items)
@@ -252,103 +219,25 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def CalculateCurves (self, method="GMCT", curveSampling=0.5, curveStart=0.0, curveStop=14.0, directory="curves", forceSerial=False, log=logFile):
-    """Calculate titration curves."""
-    if self.isCalculated:
-      nsteps = int ((curveStop - curveStart) / curveSampling + 1)
-      steps  = []
-      tab    = None
+  def CalculateProbabilitiesGMCT (self, pH=7.0, dryRun=False, doubleFlip=_DefaultDoubleFlip, tripleFlip=_DefaultTripleFlip, equilibrationScans=_DefaultEquilibrationScans, productionScans=_DefaultProductionScans, log=logFile):
+    """Use GMCT to estimate probabilities of protonation states.
 
-      if LogFileActive (log):
-        if self.nthreads < 2 or forceSerial:
-          log.Text ("\nStarting serial run.\n")
-        else:
-          log.Text ("\nStarting parallel run on %d CPUs.\n" % self.nthreads)
+    With |dryRun=True|, GMCT is not called and only the directories and files are created. This is necessary in the parallel mode because the function mkdir does not work with multiple threads."""
 
-        tab = log.GetTable (columns=[10, 10])
-        tab.Start ()
-        tab.Heading ("Step")
-        tab.Heading ("pH")
+    gmctSetupTemplate = """
+     blab        1
+     nconfflip   10
+     limit       %d
+     tlimit      %d
+     itraj       0
+     nmcequi     %d
+     nmcfull     %d
+     temp        %f
+     icorr       0
+     nmu         1
+     mu          %f  %f  0.0  0  0
+    """
 
-
-      if self.nthreads < 2 or forceSerial:
-        for step in range (0, nsteps):
-          pH = curveStart + step * curveSampling
-          methods = {
-            "GMCT"       : self.CalculateProbabilitiesGMCT          ,
-            "MonteCarlo" : self.CalculateProbabilitiesMonteCarlo    ,
-            "analytic"   : self.CalculateProbabilitiesAnalytically  ,
-                    }
-          calculate = methods[method]
-          result = calculate (pH=pH, log=None)
-          steps.append (result)
-
-          if tab:
-            tab.Entry ("%10d"   % step)
-            tab.Entry ("%10.2f" % pH)
-      else:
-        limit   = self.nthreads - 1
-        batches = []
-        batch   = []
-        for step in range (0, nsteps):
-          batch.append (CurveThread (self, method, curveStart + step * curveSampling))
-          if len (batch) > limit:
-            batches.append (batch)
-            batch = []
-        if batch:
-          batches.append (batch)
-
-        # If GMCT is to be used, first perform a dry run in serial mode to create directories and files
-        if method == "GMCT":
-          for step in range (0, nsteps):
-            self.CalculateProbabilitiesGMCT (pH=(curveStart + step * curveSampling), dryRun=True, log=None)
-
-        step = 0
-        for batch in batches:
-          for thread in batch:
-            thread.start ()
-          for thread in batch:
-            thread.join ()
-
-          for thread in batch:
-            steps.append (thread.sites)
-            if tab:
-              tab.Entry ("%10d"   % step)
-              tab.Entry ("%10.2f" % (curveStart + step * curveSampling))
-            step = step + 1
-
-      if LogFileActive (log):
-        tab.Stop ()
-        log.Text ("\nCalculating titration curves complete.\n")
-
-      # Set the flag back to False because the probabilities of instances become meaningless after the calculation of curves
-      self.isProbability = False
-
-      # Write results to files
-      if not os.path.exists (directory):
-        try:
-          os.mkdir (directory)
-        except:
-          raise ContinuumElectrostaticsError ("Cannot create directory %s" % directory)
-
-      # For each instance of each site, write a curve file
-      for siteIndex, site in enumerate (self.meadSites):
-        for instanceIndex, instance in enumerate (site.instances):
-          lines = []
-          for step in range (0, nsteps):
-            lines.append ("%f %f\n" % (curveStart + step * curveSampling, steps[step][siteIndex][instanceIndex]))
-          filename = os.path.join (directory, "%s_%s.dat" % (site.label, instance.label))
-          WriteInputFile (filename, lines)
-
-      if LogFileActive (log):
-        log.Text ("\nWriting curve files complete.\n")
-
-
-  #===============================================================================
-  def CalculateProbabilitiesGMCT (self, pH=7.0, dryRun=False, log=logFile):
-    """Use GMCT to estimate protonation probabilities.
-
-    With |dryRun = True|, GMCT is not called and only the directories and files are created. This is necessary in the parallel mode because the function mkdir does not work with multiple threads."""
     if self.isCalculated:
       potential = -CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10 * pH
       project   = "job"
@@ -371,7 +260,7 @@ class MEADModel (object):
       if not os.path.exists (fileConf): WriteInputFile (fileConf, ["conf  0.0  0.0  0.0\n"])
 
       fileSetup = os.path.join (dirCalc, "%s.setup" % project)
-      if not os.path.exists (fileSetup): WriteInputFile (fileSetup, _DefaultGmctSetup % (self.temperature, potential, potential))
+      if not os.path.exists (fileSetup): WriteInputFile (fileSetup, gmctSetupTemplate % (doubleFlip, tripleFlip, equilibrationScans, productionScans, self.temperature, potential, potential))
 
       linkname = os.path.join (dirCalc, "conf")
       if not os.path.exists (linkname): os.symlink ("../conf", linkname)
@@ -427,9 +316,9 @@ class MEADModel (object):
     return self.energyModel.CalculateMicrostateEnergy (stateVector, pH=pH)
 
 
-  def CalculateProbabilitiesMonteCarlo (self, pH=7.0, numberOfEquilibrationScans=500, numberOfProductionScans=20000, log=logFile):
+  def CalculateProbabilitiesMonteCarlo (self, pH=7.0, nequi=_DefaultEquilibrationScans, nprod=_DefaultProductionScans, log=logFile):
     """Calculate the probability of occurence of each instance of each site, using the in-house implementation of Metropolis Monte Carlo (experimental)."""
-    self.energyModel.CalculateProbabilitiesMonteCarlo (pH=pH, nequi=numberOfEquilibrationScans, nprod=numberOfProductionScans, log=log)
+    self.energyModel.CalculateProbabilitiesMonteCarlo (pH=pH, nequi=nequi, nprod=nprod, log=log)
     return self._FinalizeProbabilities ()
 
 
