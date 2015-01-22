@@ -28,15 +28,25 @@ from PQRFileWriter         import PQRFile_FromSystem
 
 
 _DefaultTemperature        = 300.0
+
 _DefaultIonicStrength      = 0.1
+
 _DefaultPathScratch        = "/tmp"
+
 _DefaultPathMEAD           = "/usr/bin"
+
 _DefaultPathGMCT           = "/usr/bin"
+
 _DefaultThreads            = 1
+
 _DefaultDoubleFlip         = 2
+
 _DefaultTripleFlip         = 3
+
 _DefaultEquilibrationScans = 500
+
 _DefaultProductionScans    = 20000
+
 _DefaultFocussingSteps     = ((121, 2.00), (101, 1.00), (101, 0.50), (101, 0.25))
 
 
