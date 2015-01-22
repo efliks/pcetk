@@ -69,7 +69,7 @@ def writepage (counter, data):
 
 
 #===========================================================
-proteinlabels = ("curves_analytic", "curves_gmct", "curves_montecarlo", ) 
+proteinlabels = ("curves_analytic", "curves_gmct", "curves_mc", ) 
 nproteins = len (proteinlabels)
 
 files = []

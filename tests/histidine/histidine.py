@@ -3,7 +3,7 @@
 from pBabel   import CHARMMParameterFiles_ToParameters, CHARMMPSFFile_ToSystem, CHARMMCRDFile_ToCoordinates3
 from pCore    import logFile
 
-from ContinuumElectrostatics import MEADModel
+from ContinuumElectrostatics import MEADModel, StateVector
 
 
 logFile.Header ("Calculate protonation states of the histidine in a hypothetical peptide.")
@@ -35,11 +35,13 @@ cem.CalculateProbabilitiesGMCT ()
 cem.SummaryProbabilities ()
 
 
-logFile.Text ("\n*** Calculating titration curves analytically ***\n")
-cem.CalculateCurves (method="analytic", forceSerial=True, directory="curves_analytic")
+vector = StateVector (cem)
+go = True
 
-logFile.Text ("\n*** Calculating titration curves using GMCT ***\n")
-cem.CalculateCurves (directory="curves_gmct")
+while go:
+    Gmicro = cem.CalculateMicrostateEnergy (vector)
+    vector.Print (title="Gmicro = %f" % Gmicro)
+    go = vector.Increment ()
 
 
 #===========================================

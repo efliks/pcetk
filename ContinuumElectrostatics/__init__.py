@@ -14,4 +14,5 @@ __lastchanged__ = "$Id$"
 from Model             import MEADModel
 from StateVector       import StateVector
 from Substate          import StateVector_FromProbabilities, MEADSubstate
-from Constants         import CONSTANT_MOLAR_GAS_KCAL_MOL, CONSTANT_LN10              
+from Constants         import CONSTANT_MOLAR_GAS_KCAL_MOL, CONSTANT_LN10
+from TitrationCurves   import TitrationCurves
