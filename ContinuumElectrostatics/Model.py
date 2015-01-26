@@ -28,27 +28,30 @@ from PQRFileWriter         import PQRFile_FromSystem
 
 
 _DefaultTemperature        = 300.0
-
 _DefaultIonicStrength      = 0.1
-
 _DefaultPathScratch        = "/tmp"
-
 _DefaultPathMEAD           = "/usr/bin"
-
 _DefaultPathGMCT           = "/usr/bin"
-
 _DefaultThreads            = 1
-
-_DefaultDoubleFlip         = 2
-
-_DefaultTripleFlip         = 3
-
+_DefaultDoubleFlip         = 2.0
+_DefaultTripleFlip         = 3.0
 _DefaultEquilibrationScans = 500
-
 _DefaultProductionScans    = 20000
-
 _DefaultFocussingSteps     = ((121, 2.00), (101, 1.00), (101, 0.50), (101, 0.25))
 
+_DefaultSetupGMCT = """
+blab        1
+nconfflip   10
+tlimit      %f
+itraj       0
+nmcfull     %d
+temp        %f
+icorr       0
+limit       %f
+nmcequi     %d
+nmu         1
+mu          %f  %f  0.0  0  0
+"""
 
 
 class MEADModel (object):
@@ -233,21 +236,6 @@ class MEADModel (object):
     """Use GMCT to estimate probabilities of protonation states.
 
     With |dryRun=True|, GMCT is not called and only the directories and files are created. This is necessary in the parallel mode because the function mkdir does not work with multiple threads."""
-
-    gmctSetupTemplate = """
-     blab        1
-     nconfflip   10
-     limit       %d
-     tlimit      %d
-     itraj       0
-     nmcequi     %d
-     nmcfull     %d
-     temp        %f
-     icorr       0
-     nmu         1
-     mu          %f  %f  0.0  0  0
-    """
-
     if self.isCalculated:
       potential = -CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10 * pH
       project   = "job"
@@ -261,16 +249,16 @@ class MEADModel (object):
       if not os.path.exists (dirCalc): os.makedirs (dirCalc)
 
       fileGint = os.path.join (dirConf, "%s.gint" % project)
-      if not os.path.exists (fileGint): self.WriteGintr (fileGint, precision = 8)
+      if not os.path.exists (fileGint): self.WriteGintr (fileGint, precision=8)
 
       fileInter = os.path.join (dirConf, "%s.inter" % project)
-      if not os.path.exists (fileInter): self.WriteW (fileInter, precision = 8)
+      if not os.path.exists (fileInter): self.WriteW (fileInter, precision=8)
 
       fileConf = os.path.join (dirCalc, "%s.conf" % project)
       if not os.path.exists (fileConf): WriteInputFile (fileConf, ["conf  0.0  0.0  0.0\n"])
 
       fileSetup = os.path.join (dirCalc, "%s.setup" % project)
-      if not os.path.exists (fileSetup): WriteInputFile (fileSetup, gmctSetupTemplate % (doubleFlip, tripleFlip, equilibrationScans, productionScans, self.temperature, potential, potential))
+      if not os.path.exists (fileSetup): WriteInputFile (fileSetup, _DefaultSetupGMCT % (tripleFlip, productionScans, self.temperature, doubleFlip, equilibrationScans, potential, potential))
 
       linkname = os.path.join (dirCalc, "conf")
       if not os.path.exists (linkname): os.symlink ("../conf", linkname)
@@ -287,7 +275,7 @@ class MEADModel (object):
           try:
             out = open (output, "w")
             err = open (error,  "w")
-            subprocess.check_call (command, stderr = err, stdout = out, cwd = dirCalc)
+            subprocess.check_call (command, stderr=err, stdout=out, cwd=dirCalc)
             out.close ()
             err.close ()
           except:

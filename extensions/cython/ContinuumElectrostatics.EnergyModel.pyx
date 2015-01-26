@@ -87,7 +87,6 @@ cdef class EnergyModel:
     """Check if the matrix of interactions is symmetric within the given threshold."""
     cdef Real    maxDeviation
     cdef Boolean isSymmetric
-    EnergyModel_CalculateDeviations (self.cObject)
     isSymmetric = EnergyModel_CheckInteractionsSymmetric (self.cObject, tolerance, &maxDeviation)
     return (isSymmetric, maxDeviation)
 

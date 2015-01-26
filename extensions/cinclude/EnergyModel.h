@@ -33,7 +33,6 @@
 typedef struct {
   Integer1DArray    *protons          ;
   Real1DArray       *intrinsic        ;
-  Real2DArray       *deviations       ;
   Real2DArray       *interactions     ;
   SymmetricMatrix   *symmetricmatrix  ;
   Real1DArray       *probabilities    ;
@@ -47,7 +46,6 @@ extern EnergyModel *EnergyModel_Allocate (const Integer ninstances, Status *stat
 extern void         EnergyModel_Deallocate (EnergyModel *self);
 
 /* Handling of the interaction matrix */
-extern void         EnergyModel_CalculateDeviations        (const EnergyModel *self);
 extern void         EnergyModel_SymmetrizeInteractions     (const EnergyModel *self, Status *status);
 extern Boolean      EnergyModel_CheckInteractionsSymmetric (const EnergyModel *self, Real tolerance, Real *maxDeviation);
 
@@ -59,6 +57,7 @@ extern void         EnergyModel_CalculateProbabilitiesAnalytically (const Energy
 extern void         EnergyModel_CalculateProbabilitiesMonteCarlo   (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature, const Boolean equil, Integer nscans, Status *status);
 extern Real         EnergyModel_MCScan                             (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature, Integer nmoves);
 extern void         EnergyModel_UpdateProbabilities                (const EnergyModel *self, const StateVector *vector);
+extern Boolean      EnergyModel_Metropolis                         (const Real GdeltaRT);
 
 /* Functions for accessing items */
 extern Real         EnergyModel_GetGintr                (const EnergyModel *self, const Integer instIndexGlobal);

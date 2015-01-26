@@ -18,7 +18,6 @@ EnergyModel *EnergyModel_Allocate (const Integer ninstances, Status *status) {
   else {
     self->protons          =  NULL  ;
     self->intrinsic        =  NULL  ;
-    self->deviations       =  NULL  ;
     self->interactions     =  NULL  ;
     self->probabilities    =  NULL  ;
     self->symmetricmatrix  =  NULL  ;
@@ -28,7 +27,6 @@ EnergyModel *EnergyModel_Allocate (const Integer ninstances, Status *status) {
     if (ninstances > 0) {
       self->protons         = Integer1DArray_Allocate  (ninstances, status)             ;
       self->intrinsic       = Real1DArray_Allocate     (ninstances, status)             ;
-      self->deviations      = Real2DArray_Allocate     (ninstances, ninstances, status) ;
       self->interactions    = Real2DArray_Allocate     (ninstances, ninstances, status) ;
       self->probabilities   = Real1DArray_Allocate     (ninstances, status)             ;
       self->symmetricmatrix = SymmetricMatrix_Allocate (ninstances)                     ;
@@ -48,24 +46,9 @@ void EnergyModel_Deallocate (EnergyModel *self) {
   if ( self->symmetricmatrix != NULL)  SymmetricMatrix_Deallocate ( &self->symmetricmatrix ) ;
   if ( self->probabilities   != NULL)  Real1DArray_Deallocate     ( &self->probabilities   ) ;
   if ( self->interactions    != NULL)  Real2DArray_Deallocate     ( &self->interactions    ) ;
-  if ( self->deviations      != NULL)  Real2DArray_Deallocate     ( &self->deviations      ) ;
   if ( self->intrinsic       != NULL)  Real1DArray_Deallocate     ( &self->intrinsic       ) ;
   if ( self->protons         != NULL)  Integer1DArray_Deallocate  ( &self->protons         ) ;
   if (self != NULL) MEMORY_DEALLOCATE (self);
-}
-
-void EnergyModel_CalculateDeviations (const EnergyModel *self) {
-  Integer i, j;
-  Real    wij, wji, deviation;
-
-  for (i = 0; i < self->ninstances; i++)
-    for (j = 0; j < self->ninstances; j++) {
-      wij = Real2DArray_Item (self->interactions, i, j);
-      wji = Real2DArray_Item (self->interactions, j, i);
-
-      deviation = (wij + wji) * .5 - wij;
-      Real2DArray_Item (self->deviations, i, j) = deviation;
-  }
 }
 
 Boolean EnergyModel_CheckInteractionsSymmetric (const EnergyModel *self, Real tolerance, Real *maxDeviation) {
@@ -108,8 +91,16 @@ Real EnergyModel_GetInteractionSymmetric (const EnergyModel *self, const Integer
   return value;
 }
 
-Real EnergyModel_GetDeviation (const EnergyModel *self, const Integer instIndexGlobalA, const Integer instIndexGlobalB) {
-  return Real2DArray_Item (self->deviations, instIndexGlobalA, instIndexGlobalB);
+Real EnergyModel_GetDeviation (const EnergyModel *self, const Integer i, const Integer j) {
+  Real wij, wji, deviation;
+
+  wij = Real2DArray_Item (self->interactions, i, j);
+  wji = Real2DArray_Item (self->interactions, j, i);
+  deviation = (wij + wji) * .5 - wij;
+  return deviation;
+  /*
+  return Real2DArray_Item (self->deviations, i, j);
+  */
 }
 
 
@@ -214,9 +205,30 @@ void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, co
 /*=============================================================================
   Calculating probabilities using Metropolis Monte Carlo
 =============================================================================*/
+Boolean EnergyModel_Metropolis (const Real GdeltaRT) {
+  Boolean metropolis;
+  Real ran;
+
+  /* Prepare */
+  ran = rand () / (Real) RAND_MAX;
+
+  /* Apply the Metropolis criterion; based on GMCT */
+  if (GdeltaRT < 0.)
+    metropolis = True;
+  else {
+    if (-GdeltaRT < TOO_SMALL)
+      metropolis = False;
+    else if (ran < exp (-GdeltaRT))
+      metropolis = True;
+    else
+      metropolis = False;
+  }
+  return metropolis;
+}
+
 /* The purpose of a scan is to generate a state vector representing a low-energy, statistically relevant protonation state */
 Real EnergyModel_MCScan (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature, Integer nmoves) {
-  Real      G, Gnew, GdeltaRT, ran, beta;
+  Real      G, Gnew, GdeltaRT, beta;
   Integer   site, instanceBefore, instanceAfter;
   Boolean   accept;
 
@@ -226,23 +238,9 @@ Real EnergyModel_MCScan (const EnergyModel *self, const StateVector *vector, con
   for (; nmoves >= 0; nmoves--) {
     /* Perform the move */
     StateVector_Move (vector, &site, &instanceBefore, &instanceAfter);
-    Gnew = EnergyModel_CalculateMicrostateEnergy (self, vector, pH, temperature);
+    Gnew     = EnergyModel_CalculateMicrostateEnergy (self, vector, pH, temperature);
     GdeltaRT = (Gnew - G) * beta;
-
-    /* Prepare */
-    ran = rand () / (Real) RAND_MAX;
-
-    /* Apply the Metropolis criterion; based on GMCT */
-    if (GdeltaRT < 0.)
-      accept = True;
-    else {
-      if (-GdeltaRT < TOO_SMALL)
-        accept = False;
-      else if (ran < exp (-GdeltaRT))
-        accept = True;
-      else
-        accept = False; 
-    }
+    accept   = EnergyModel_Metropolis (GdeltaRT);
 
     /* Accept or reject the move? */
     if (accept == True)
