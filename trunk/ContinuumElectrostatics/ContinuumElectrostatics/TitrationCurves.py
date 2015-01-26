@@ -6,6 +6,7 @@
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
 """TitrationCurves is a class for calculating titration curves.
+
 CurveThread is a class for running parallel calculations of titration curves."""
 
 __lastchanged__ = "$Id$"

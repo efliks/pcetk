@@ -30,7 +30,6 @@ cdef extern from "EnergyModel.h":
     Integer             ninstances
 
 
-  cdef void          EnergyModel_CalculateDeviations                (CEnergyModel *self)
   cdef Boolean       EnergyModel_CheckInteractionsSymmetric         (CEnergyModel *self, Real tolerance, Real *maxDeviation)
   cdef void          EnergyModel_SymmetrizeInteractions             (CEnergyModel *self, Status *status)
   cdef Real          EnergyModel_CalculateMicrostateEnergy          (CEnergyModel *self, CStateVector *vector, Real pH, Real temperature)
