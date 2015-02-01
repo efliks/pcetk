@@ -165,13 +165,11 @@ cdef class EnergyModel:
     if isLogActive:
       log.Text ("\nCompleted %d equilibration scans.\n" % nequi)
 
-
     # Production
     Real1DArray_Set (self.cObject.probabilities, 0.)
     for scan from 0 < scan < nprod:
       Gfinal = EnergyModel_MCScan (self.cObject, vector.cObject, pH, temperature, nmoves)
       EnergyModel_UpdateProbabilities (self.cObject, vector.cObject)
-
     Real1DArray_Scale (self.cObject.probabilities, scale)
 
     if isLogActive:
