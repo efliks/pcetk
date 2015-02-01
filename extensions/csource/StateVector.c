@@ -12,55 +12,74 @@
   Allocation and deallocation
 =============================================================================*/
 StateVector *StateVector_Allocate (const Integer nsites, Status *status) {
-  StateVector *self = NULL;
+  StateVector *self;
 
   MEMORY_ALLOCATE (self, StateVector);
-  if (self != NULL) {
-    self->sites         = NULL    ;
-    self->substateSites = NULL    ;
-    self->nsites        = nsites  ;
-    self->nssites       = 0       ;
+  if (self == NULL) {
+    goto fail;
+  }
+  self->sites         = NULL  ;
+  self->substateSites = NULL  ;
+  self->pairs         = NULL  ;
+  self->nsites        = 0     ;
+  self->nssites       = 0     ;
+  self->npairs        = 0     ;
 
-    if (nsites > 0) {
-      MEMORY_ALLOCATEARRAY (self->sites, nsites, TitrSite);
-      if (self->sites == NULL) {
-        MEMORY_DEALLOCATE (self);
-      }
+  if (nsites > 0) {
+    MEMORY_ALLOCATEARRAY (self->sites, nsites, TitrSite);
+
+    if (self->sites == NULL) {
+      MEMORY_DEALLOCATE (self);
+      goto fail;
     }
   }
-
-  if (self == NULL) {
-    Status_Set (status, Status_MemoryAllocationFailure);
-  }
+  self->nsites = nsites;
   return self;
+
+fail:
+  Status_Set (status, Status_MemoryAllocationFailure);
+  return NULL;
 }
 
-void StateVector_AllocateSubstate (StateVector *self, const Integer nSubstateSites, Status *status) {
+void StateVector_AllocateSubstate (StateVector *self, const Integer nssites, Status *status) {
   if (self->substateSites != NULL) {
     /* Substate already allocated */
     Status_Set (status, Status_MemoryAllocationFailure);
   }
   else {
     /* Allocate an array of pointers */
-    MEMORY_ALLOCATEARRAY_POINTERS (self->substateSites, nSubstateSites, TitrSite);
-    
-    if (self->substateSites == NULL) {
+    MEMORY_ALLOCATEARRAY_POINTERS (self->substateSites, nssites, TitrSite);
+
+    if (self->substateSites != NULL) 
+      self->nssites = nssites;
+    else
       Status_Set (status, Status_MemoryAllocationFailure);
-    }
-    else {
-      self->nssites = nSubstateSites;
-    }
+  }
+}
+
+void StateVector_AllocatePairs (StateVector *self, const Integer npairs, Status *status) {
+  if (self->substateSites != NULL) {
+    /* Pairs already allocated */
+    Status_Set (status, Status_MemoryAllocationFailure);
+  }
+  else {
+    /* Allocate an array of pointers */
+    MEMORY_ALLOCATEARRAY_POINTERS (self->pairs, npairs, TitrSite);
+
+    if (self->pairs != NULL) 
+      self->npairs = npairs;
+    else
+      Status_Set (status, Status_MemoryAllocationFailure);
   }
 }
 
 void StateVector_Deallocate (StateVector *self) {
   if (self != NULL) {
-    MEMORY_DEALLOCATE (self->sites);
+    /* First deallocate optional tables */
+    if (self->pairs         != NULL) MEMORY_DEALLOCATE (self->pairs);
+    if (self->substateSites != NULL) MEMORY_DEALLOCATE (self->substateSites);
 
-    /* Deallocate substate, if exists */
-    if (self->substateSites != NULL) {
-      MEMORY_DEALLOCATE (self->substateSites);
-    }
+    MEMORY_DEALLOCATE (self->sites);
     MEMORY_DEALLOCATE (self);
   }
 }

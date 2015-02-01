@@ -20,15 +20,18 @@ cdef extern from "StateVector.h":
     Integer  indexSite
 
   ctypedef struct CStateVector "StateVector":
-    CTitrSite  *sites
-    CTitrSite **substateSites
-    Integer     nsites
-    Integer     nssites
+    CTitrSite   *sites
+    CTitrSite  **substateSites
+    Integer      nsites
+    Integer      nssites
+    CTitrSite  **pairs
+    Integer      npairs
 
 
   # Allocation and deallocation
   cdef CStateVector *StateVector_Allocate          (Integer nsites, Status *status)
-  cdef void          StateVector_AllocateSubstate  (CStateVector *self, Integer nSubstateSites, Status *status)
+  cdef void          StateVector_AllocateSubstate  (CStateVector *self, Integer nssites, Status *status)
+  cdef void          StateVector_AllocatePairs     (CStateVector *self, Integer npairs, Status *status)
   cdef void          StateVector_Deallocate        (CStateVector *self)
 
   # Copying and cloning

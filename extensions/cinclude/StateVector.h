@@ -32,14 +32,18 @@ typedef struct {
 } TitrSite;
 
 typedef struct {
-  TitrSite *sites, **substateSites;
-  Integer   nsites, nssites;
+  TitrSite  *sites, **substateSites;
+  Integer    nsites, nssites;
+  /* Handled by the EnergyModel module */
+  TitrSite **pairs;
+  Integer    npairs;
 } StateVector;
 
 
 /* Allocation and deallocation */
 extern StateVector *StateVector_Allocate          (const Integer nsites, Status *status);
-extern void         StateVector_AllocateSubstate  (      StateVector *self, const Integer nSubstateSites, Status *status);
+extern void         StateVector_AllocateSubstate  (      StateVector *self, const Integer nssites, Status *status);
+extern void         StateVector_AllocatePairs     (      StateVector *self, const Integer npairs, Status *status);
 extern void         StateVector_Deallocate        (      StateVector *self);
 
 /* Copying and cloning */

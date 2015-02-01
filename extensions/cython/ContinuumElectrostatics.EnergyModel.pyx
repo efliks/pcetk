@@ -159,7 +159,7 @@ cdef class EnergyModel:
 
     # Equilibration
     StateVector_Randomize (vector.cObject)
-    for scan from 0 < scan < nequi:
+    for scan from 0 <= scan < nequi:
       Gfinal = EnergyModel_MCScan (self.cObject, vector.cObject, pH, temperature, nmoves)
 
     if isLogActive:
@@ -167,10 +167,49 @@ cdef class EnergyModel:
 
     # Production
     Real1DArray_Set (self.cObject.probabilities, 0.)
-    for scan from 0 < scan < nprod:
+    for scan from 0 <= scan < nprod:
       Gfinal = EnergyModel_MCScan (self.cObject, vector.cObject, pH, temperature, nmoves)
       EnergyModel_UpdateProbabilities (self.cObject, vector.cObject)
     Real1DArray_Scale (self.cObject.probabilities, scale)
 
     if isLogActive:
       log.Text ("\nCompleted %d production scans.\n" % nprod)
+
+
+  def FindPairs (self, Real limit=2.0, log=logFile):
+    """Identify pairs of sites for double moves """
+    cdef Real W, Wmax
+    cdef Integer npairs
+    cdef Integer indexSiteA, indexSiteB, nsites
+    cdef Integer indexInstA, indexInstB, indexGlobalInstA, indexGlobalInstB, ninsta, ninstb
+    meadModel = self.owner
+    nsites    = meadModel.nsites
+    sites     = meadModel.meadSites
+    npairs    = 0
+
+    for indexSiteA from 0 <= indexSiteA < nsites: 
+      sitea  = sites[indexSiteA]
+      ninsta = sitea.ninstances
+ 
+      for indexSiteB from 0 <= indexSiteB < nsites:
+        siteb  = sites[indexSiteB]
+        ninstb = siteb.ninstances
+        Wmax   = 0.
+      
+        for indexInstA from 0 <= indexInstA < ninsta: 
+          insta = sitea.instances[indexInstA]
+          indexGlobalInstA = insta._instIndexGlobal
+      
+          for indexInstB from 0 <= indexInstB < ninstb: 
+            instb = siteb.instances[indexInstB]
+            indexGlobalInstB = instb._instIndexGlobal
+      
+            W = EnergyModel_GetInteractionSymmetric (self.cObject, indexGlobalInstA, indexGlobalInstB)
+            if W < 0.   : W = -1. * W
+            if W > Wmax : Wmax = W
+      
+        if Wmax >= limit:
+          npairs += 1
+
+    if LogFileActive (log):
+      log.Text ("\nFound %d pair(s) of strongly interacting sites.\n" % npairs)
