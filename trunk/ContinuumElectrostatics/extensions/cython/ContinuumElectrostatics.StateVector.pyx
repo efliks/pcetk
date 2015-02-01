@@ -133,7 +133,8 @@ cdef class StateVector:
 
   def Print (self, verbose=True, title=None, log=logFile):
     """Print the state vector."""
-    cdef Integer indexSite, indexSiteSubstate, indexSubstate, indexActive
+    cdef Integer indexSite, indexSiteSubstate, indexActive
+    cdef Boolean isSubstate
     cdef Status  status = Status_Continue
 
     if LogFileActive (log):
@@ -145,16 +146,12 @@ cdef class StateVector:
       tab.Heading ("Instance" , columnSpan=3)
 
       for indexSite from 0 <= indexSite < self.cObject.nsites:
-        substate = " "
-        for indexSubstate from 0 <= indexSubstate < self.cObject.nssites:
-          indexSiteSubstate = StateVector_GetSubstateItem (self.cObject, indexSubstate, &status)
-          if indexSite == indexSiteSubstate:
-            substate = "@"
-
         indexActive = StateVector_GetItem (self.cObject, indexSite, &status)
+        isSubstate  = StateVector_IsSubstate (self.cObject, indexSite, &status)
         meadModel   = self.owner
         site        = meadModel.meadSites[indexSite]
         instance    = site.instances[indexActive]
+        substate    = "@" if isSubstate == CTrue else " "
 
         tab.Entry ("%s" % site.segName)
         tab.Entry ("%s" % site.resName)

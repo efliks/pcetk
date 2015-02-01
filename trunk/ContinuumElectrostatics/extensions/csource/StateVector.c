@@ -142,7 +142,7 @@ void StateVector_Randomize (const StateVector *self) {
     first = False;
   }
   for (; i > 0; i--, site++) {
-    site->indexActive = rand () % (site->indexLast - site->indexFirst) + site->indexFirst;
+    site->indexActive = rand () % (site->indexLast - site->indexFirst + 1) + site->indexFirst;
   }
 }
 
@@ -157,11 +157,23 @@ void StateVector_SetSite (const StateVector *self, const Integer indexSite, cons
   }
   else {
     site = &self->sites[indexSite];
+    site->isSubstate   =  False       ;
     site->indexSite    =  indexSite   ;
     site->indexLast    =  indexLast   ;
     site->indexFirst   =  indexFirst  ;
     site->indexActive  =  indexFirst  ;
   }
+}
+
+Boolean StateVector_IsSubstate (const StateVector *self, const Integer siteIndex, Status *status) {
+  TitrSite *site;
+
+  if (siteIndex < 0 || siteIndex > (self->nsites - 1)) {
+    Status_Set (status, Status_IndexOutOfRange);
+    return False;
+  }
+  site = &self->sites[siteIndex];
+  return site->isSubstate;
 }
 
 Integer StateVector_GetItem (const StateVector *self, const Integer siteIndex, Status *status) {
@@ -253,7 +265,9 @@ void StateVector_SetSubstateItem (const StateVector *self, const Integer selecte
       Status_Set (status, Status_ValueError);
     }
     else {
-      self->substateSites[index] = &self->sites[selectedSiteIndex];
+      site = &self->sites[selectedSiteIndex];
+      site->isSubstate = True;
+      self->substateSites[index] = site;
     }
   }
 }

@@ -23,10 +23,12 @@
 #define MEMORY_ALLOCATEARRAY_POINTERS( object, length, type ) { object = (type**) calloc ((CSize) length, sizeof (type*)) ; }
 
 typedef struct {
-  /* Global indices of instances of the site */
-  Integer indexActive, indexFirst, indexLast;
+  /* Site belongs to a substate */
+  Boolean isSubstate;
   /* Index of the site itself */
   Integer indexSite;
+  /* Global indices of instances of the site */
+  Integer indexActive, indexFirst, indexLast;
 } TitrSite;
 
 typedef struct {
@@ -52,6 +54,7 @@ extern void         StateVector_Randomize         (const StateVector *self);
 
 /* Functions for accessing items */
 extern void         StateVector_SetSite           (const StateVector *self, const Integer indexSite, const Integer indexFirst, const Integer indexLast, Status *status);
+extern Boolean      StateVector_IsSubstate        (const StateVector *self, const Integer siteIndex, Status *status);
 extern Integer      StateVector_GetItem           (const StateVector *self, const Integer siteIndex, Status *status);
 extern void         StateVector_SetItem           (const StateVector *self, const Integer siteIndex, const Integer instanceLocalIndex, Status *status);
 extern Integer      StateVector_GetActualItem     (const StateVector *self, const Integer siteIndex, Status *status);
