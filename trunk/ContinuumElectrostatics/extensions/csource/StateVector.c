@@ -9,39 +9,22 @@
 
 
 /*=============================================================================
-  Allocation, deallocation, copying, etc.
+  Allocation and deallocation
 =============================================================================*/
 StateVector *StateVector_Allocate (const Integer nsites, Status *status) {
   StateVector *self = NULL;
 
   MEMORY_ALLOCATE (self, StateVector);
   if (self != NULL) {
-    self->vector    = NULL;
-    self->minvector = NULL;
-    self->maxvector = NULL;
-    self->substate  = NULL;
-    self->nsites    = nsites;
-    self->nssites   = 0;
+    self->sites         = NULL    ;
+    self->substateSites = NULL    ;
+    self->nsites        = nsites  ;
+    self->nssites       = 0       ;
 
     if (nsites > 0) {
-      MEMORY_ALLOCATEARRAY (self->vector, nsites, Integer);
-      if (self->vector == NULL) {
+      MEMORY_ALLOCATEARRAY (self->sites, nsites, TitrSite);
+      if (self->sites == NULL) {
         MEMORY_DEALLOCATE (self);
-      }
-      else {
-        MEMORY_ALLOCATEARRAY (self->minvector, nsites, Integer);
-        if (self->minvector == NULL) {
-          MEMORY_DEALLOCATE (self->vector);
-          MEMORY_DEALLOCATE (self);
-        }
-        else {
-          MEMORY_ALLOCATEARRAY (self->maxvector, nsites, Integer);
-          if (self->maxvector == NULL) {
-            MEMORY_DEALLOCATE (self->minvector);
-            MEMORY_DEALLOCATE (self->vector);
-            MEMORY_DEALLOCATE (self);
-          }
-        }
       }
     }
   }
@@ -52,22 +35,40 @@ StateVector *StateVector_Allocate (const Integer nsites, Status *status) {
   return self;
 }
 
+void StateVector_AllocateSubstate (StateVector *self, const Integer nSubstateSites, Status *status) {
+  if (self->substateSites != NULL) {
+    /* Substate already allocated */
+    Status_Set (status, Status_MemoryAllocationFailure);
+  }
+  else {
+    /* Allocate an array of pointers */
+    MEMORY_ALLOCATEARRAY_POINTERS (self->substateSites, nSubstateSites, TitrSite);
+    
+    if (self->substateSites == NULL) {
+      Status_Set (status, Status_MemoryAllocationFailure);
+    }
+    else {
+      self->nssites = nSubstateSites;
+    }
+  }
+}
+
 void StateVector_Deallocate (StateVector *self) {
   if (self != NULL) {
-    MEMORY_DEALLOCATE (self->maxvector);
-    MEMORY_DEALLOCATE (self->minvector);
-    MEMORY_DEALLOCATE (self->vector);
+    MEMORY_DEALLOCATE (self->sites);
 
     /* Deallocate substate, if exists */
-    if (self->substate != NULL) {
-      MEMORY_DEALLOCATE (self->substate);
+    if (self->substateSites != NULL) {
+      MEMORY_DEALLOCATE (self->substateSites);
     }
-
     MEMORY_DEALLOCATE (self);
   }
 }
 
-StateVector *StateVector_Clone (const StateVector *self, Status *status) {
+/*=============================================================================
+  Copying and cloning
+=============================================================================*/
+/*StateVector *StateVector_Clone (const StateVector *self, Status *status) {
   StateVector *clone = NULL;
 
   if (self != NULL) {
@@ -80,259 +81,235 @@ StateVector *StateVector_Clone (const StateVector *self, Status *status) {
   return clone;
 }
 
-Boolean StateVector_CopyTo (const StateVector *self, StateVector *other, Status *status) {
-  /* Check for different nsitess */
+void StateVector_CopyTo (const StateVector *self, StateVector *other, Status *status) {
   if (self->nsites != other->nsites) {
     StateVector_Deallocate (other);
     other = StateVector_Allocate (self->nsites, status);
 
     if (*status != Status_Continue) {
-      return False;
+      return;
     }
   }
+  memcpy (other->sites, self->sites, other->nsites * sizeof (TitrSite*));
 
-  /* Copy */
-  memcpy (other->vector    , self->vector    , other->nsites * sizeof (Integer));
-  memcpy (other->minvector , self->minvector , other->nsites * sizeof (Integer));
-  memcpy (other->maxvector , self->maxvector , other->nsites * sizeof (Integer));
-
-  /* Copy substate? */
-  if (self->substate != NULL) {
+  if (self->substateSites != NULL) {
     StateVector_AllocateSubstate (other, self->nssites, status);
     if (*status != Status_Continue) {
-      return False;
+      return;
     }
-    memcpy (other->substate, self->substate, other->nssites * sizeof (Integer));
+    memcpy (other->substateSites, self->substateSites, other->nssites * sizeof (TitrSite*));
   }
-
-  return True;
-}
+}*/
 
 /*=============================================================================
-  Functions relatated to items
+  Functions for setting all items at once
 =============================================================================*/
 void StateVector_Reset (const StateVector *self) {
-  Integer   i;
-  Integer   *v = self->vector, *m = self->minvector;
-  for (i = 0; i < self->nsites; i++, v++, m++) {
-    *v = *m;
+  TitrSite *site = self->sites;
+  Integer   i = self->nsites;
+
+  for (; i > 0; i--, site++) {
+    site->indexActive = site->indexFirst;
+  }
+}
+
+void StateVector_ResetSubstate (const StateVector *self) {
+  TitrSite *site, **pointToSite = self->substateSites;
+  Integer   i = self->nssites;
+
+  for (; i > 0; i--, pointToSite++) {
+    site = *pointToSite;
+    site->indexActive = site->indexFirst;
   }
 }
 
 void StateVector_ResetToMaximum (const StateVector *self) {
-  Integer   i;
-  Integer   *v = self->vector, *m = self->maxvector;
-  for (i = 0; i < self->nsites; i++, v++, m++) {
-    *v = *m;
+  TitrSite *site = self->sites;
+  Integer   i = self->nsites;
+
+  for (; i > 0; i--, site++) {
+    site->indexActive = site->indexLast;
   }
 }
 
-/*-----------------------------------------------------------------------------
- Get the local index of an instance of a site, usually 0 and 1 for 
- most sites or 0, 1, 2, 3 for histidines
------------------------------------------------------------------------------*/
-Integer StateVector_GetItem (const StateVector *self, const Integer index, Status *status) {
-  if (index < 0 || index > (self->nsites - 1)) {
+void StateVector_Randomize (const StateVector *self) {
+  TitrSite *site = self->sites;
+  Integer   i = self->nsites;
+
+  static Boolean first = True;
+  if (first) {
+    srandom ((Cardinal) time (NULL));
+    first = False;
+  }
+  for (; i > 0; i--, site++) {
+    site->indexActive = rand () % (site->indexLast - site->indexFirst) + site->indexFirst;
+  }
+}
+
+/*=============================================================================
+  Functions for accessing items
+=============================================================================*/
+void StateVector_SetSite (const StateVector *self, const Integer indexSite, const Integer indexFirst, const Integer indexLast, Status *status) {
+  TitrSite *site;
+
+  if (indexSite < 0 || indexSite > (self->nsites - 1)) {
+    Status_Set (status, Status_IndexOutOfRange);
+  }
+  else {
+    site = &self->sites[indexSite];
+    site->indexSite    =  indexSite   ;
+    site->indexLast    =  indexLast   ;
+    site->indexFirst   =  indexFirst  ;
+    site->indexActive  =  indexFirst  ;
+  }
+}
+
+Integer StateVector_GetItem (const StateVector *self, const Integer siteIndex, Status *status) {
+  TitrSite *site;
+  Integer instanceLocalIndex;
+
+  if (siteIndex < 0 || siteIndex > (self->nsites - 1)) {
     Status_Set (status, Status_IndexOutOfRange);
     return -1;
   }
-  else {
-    return (self->vector[index] - self->minvector[index]);
-  }
+  site = &self->sites[siteIndex];
+  /* Translate global index to local index */
+  instanceLocalIndex = site->indexActive - site->indexFirst;
+
+  return instanceLocalIndex;
 }
 
-Boolean StateVector_SetItem (const StateVector *self, const Integer index, const Integer value, Status *status) {
-  Integer valueActual;
+void StateVector_SetItem (const StateVector *self, const Integer siteIndex, const Integer instanceLocalIndex, Status *status) {
+  TitrSite *site;
+  Integer instanceGlobalIndex;
 
-  if (index < 0 || index > (self->nsites - 1)) {
+  if (siteIndex < 0 || siteIndex > (self->nsites - 1)) {
     Status_Set (status, Status_IndexOutOfRange);
-    return False;
   }
   else {
-    valueActual = value + self->minvector[index];
-    if (valueActual < self->minvector[index] || valueActual > self->maxvector[index]) {
+    site = &self->sites[siteIndex];
+    /* Translate local index to global index */
+    instanceGlobalIndex = instanceLocalIndex + site->indexFirst;
+
+    if (instanceGlobalIndex < site->indexFirst || instanceGlobalIndex > site->indexLast) {
       Status_Set (status, Status_ValueError);
-      return False;
     }
     else {
-      self->vector[index] = valueActual;
-      return True;
+      site->indexActive = instanceGlobalIndex;
     }
   }
 }
 
-/*-----------------------------------------------------------------------------
- Get the actual content of the state vector, i.e. global index of 
- an instance in the central arrays (_protons, _intrinsic, _interactions)
------------------------------------------------------------------------------*/
-Integer StateVector_GetActualItem (const StateVector *self, const Integer index, Status *status) {
-  if (index < 0 || index > (self->nsites - 1)) {
+Integer StateVector_GetActualItem (const StateVector *self, const Integer siteIndex, Status *status) {
+  TitrSite *site;
+  Integer instanceGlobalIndex;
+
+  if (siteIndex < 0 || siteIndex > (self->nsites - 1)) {
     Status_Set (status, Status_IndexOutOfRange);
     return -1;
   }
-  else {
-    return self->vector[index];
-  }
+  site = &self->sites[siteIndex];
+  instanceGlobalIndex = site->indexActive;
+
+  return instanceGlobalIndex;
 }
 
-Boolean StateVector_SetActualItem (const StateVector *self, const Integer index, const Integer value, Status *status) {
-  if (index < 0 || index > (self->nsites - 1)) {
+void StateVector_SetActualItem (const StateVector *self, const Integer siteIndex, const Integer instanceGlobalIndex, Status *status) {
+  TitrSite *site;
+
+  if (siteIndex < 0 || siteIndex > (self->nsites - 1)) {
     Status_Set (status, Status_IndexOutOfRange);
-    return False;
-  }
-  else if (value < self->minvector[index] || value > self->maxvector[index]) {
-    Status_Set (status, Status_ValueError);
-    return False;
   }
   else {
-    self->vector[index] = value;
-    return True;
+    site = &self->sites[siteIndex];
+    if (instanceGlobalIndex < site->indexFirst || instanceGlobalIndex > site->indexLast) {
+      Status_Set (status, Status_ValueError);
+    }
+    else {
+      site->indexActive = instanceGlobalIndex;
+    }
   }
 }
 
-/*-----------------------------------------------------------------------------
+Integer StateVector_GetSubstateItem (const StateVector *self, const Integer index, Status *status) {
+  TitrSite *site;
+
+  if (index < 0 || index > (self->nssites - 1)) {
+    Status_Set (status, Status_IndexOutOfRange);
+    return -1;
+  }
+  site = self->substateSites[index];
+  return site->indexSite;
+}
+
+void StateVector_SetSubstateItem (const StateVector *self, const Integer selectedSiteIndex, const Integer index, Status *status) {
+  TitrSite *site;
+
+  if (index < 0 || index > (self->nssites - 1)) {
+    Status_Set (status, Status_IndexOutOfRange);
+  }
+  else {
+    if (selectedSiteIndex < 0 || (selectedSiteIndex > self->nsites - 1)) {
+      Status_Set (status, Status_ValueError);
+    }
+    else {
+      self->substateSites[index] = &self->sites[selectedSiteIndex];
+    }
+  }
+}
+
+/*=============================================================================
  Incrementation algorithm by Timm Essigke 
-
- One could write a code that prevents zeroing the state vector after 
- the last iteration
------------------------------------------------------------------------------*/
+=============================================================================*/
 Boolean StateVector_Increment (const StateVector *self) {
-  Integer i;
-  Integer *v = self->vector, *minv = self->minvector, *maxv = self->maxvector;
+  TitrSite *site = self->sites;
+  Integer   i    = self->nsites;
 
-  for (i = 0; i < self->nsites; i++, v++, minv++, maxv++) {
-    if ((*v) < (*maxv)) {
-      (*v)++;
+  for (; i > 0; i--, site++) {
+    if (site->indexActive < site->indexLast) {
+      site->indexActive++;
       return True;
     }
     else {
-      *v = *minv;
+      site->indexActive = site->indexFirst;
+    }
+  }
+  /* Return false after reaching the last vector.
+    The vector goes back to its initial state.  */
+  return False;
+}
+
+Boolean StateVector_IncrementSubstate (const StateVector *self) {
+  TitrSite *site, **pointToSite = self->substateSites;
+  Integer   i = self->nssites;
+
+  for (; i > 0; i--, pointToSite++) {
+    site = *pointToSite;
+    if (site->indexActive < site->indexLast) {
+      site->indexActive++;
+      return True;
+    }
+    else {
+      site->indexActive = site->indexFirst;
     }
   }
   return False;
 }
 
 /*=============================================================================
-  Functions related to substate
-=============================================================================*/
-Boolean StateVector_AllocateSubstate (StateVector *self, const Integer nsites, Status *status) {
-  if (self->substate != NULL) {
-    /* Substate already allocated */
-    Status_Set (status, Status_MemoryAllocationFailure);
-    return False;
-  }
-  else {
-    MEMORY_ALLOCATEARRAY (self->substate, nsites, Integer);
-    if (self->substate == NULL) {
-      /* Substate allocation failed */
-      Status_Set (status, Status_MemoryAllocationFailure);
-      return False;
-    }
-    self->nssites = nsites;
-    return True;
-  }
-}
-
-/*-----------------------------------------------------------------------------
- |selectedSiteIndex| is an index of the site to increment within the substate
-
- |index| is an index in the substate's array of selectedSiteIndices
------------------------------------------------------------------------------*/
-Boolean StateVector_SetSubstateItem (const StateVector *self, const Integer selectedSiteIndex, const Integer index, Status *status) {
-  if (index < 0 || index > (self->nssites - 1)) {
-    Status_Set (status, Status_IndexOutOfRange);
-    return False;
-  }
-  else if (selectedSiteIndex < 0 || (selectedSiteIndex > self->nsites - 1)) {
-    Status_Set (status, Status_ValueError);
-    return False;
-  }
-  else {
-    self->substate[index] = selectedSiteIndex;
-    return True;
-  }
-}
-
-Integer StateVector_GetSubstateItem (const StateVector *self, const Integer index, Status *status) {
-  if (index < 0 || index > (self->nssites - 1)) {
-    Status_Set (status, Status_IndexOutOfRange);
-    return -1;
-  }
-  else {
-    return self->substate[index];
-  }
-}
-
-void StateVector_ResetSubstate (const StateVector *self) {
-  Integer i;
-  Integer *siteIndex = self->substate;
-
-  if (self->substate != NULL) {
-    for (i = 0; i < self->nssites; i++, siteIndex++) {
-      self->vector[*siteIndex] = self->minvector[*siteIndex];
-    }
-  }
-}
-
-Boolean StateVector_IncrementSubstate (const StateVector *self) {
-  Integer i, site, maxsite;
-  Integer *siteIndex = self->substate;
-
-  if (self->substate != NULL) {
-    for (i = 0; i < self->nssites; i++, siteIndex++) {
-      site    = self->vector    [*siteIndex];
-      maxsite = self->maxvector [*siteIndex];
-  
-      if (site < maxsite) {
-        site++;
-        self->vector[*siteIndex] = site;
-        return True;
-      }
-      else {
-        self->vector[*siteIndex] = self->minvector[*siteIndex];
-      }
-    }
-    return False;
-  }
-  else {
-    return False;
-  }
-}
-
-/*=============================================================================
   Monte Carlo-related functions
 =============================================================================*/
-void StateVector_Move (const StateVector *self, Integer *site, Integer *before, Integer *after) {
-  Integer component, value;
-  /* Choose component and save its current value */
-  component = rand () % self->nsites;
-  *site     = component;
-  *before   = self->vector[component];
-  /* Choose a new value */
-  value     = rand () % (self->maxvector[component] - self->minvector[component]) + self->minvector[component];
+void StateVector_Move (const StateVector *self, Integer *siteIndex, Integer *oldIndexActive) {
+  TitrSite *site;
+  Integer randomSite, randomInstance;
 
-  /* Why is this part necessary? */
-  if (value == self->vector[component]) {
-    value++;
-    if (value > self->maxvector[component])
-      value = self->minvector[component];
-  }
+  randomSite = rand () % self->nsites;
+  site = &self->sites[randomSite];
+  do {
+    randomInstance = rand () % (site->indexLast - site->indexFirst + 1) + site->indexFirst;
+  } while (randomInstance == site->indexActive);
 
-  /* Set the new value */
-  self->vector[component] = value;
-  *after = value;
-}
-
-/* Generate a random vector */
-void StateVector_Randomize (const StateVector *self) {
-  Integer i;
-  static Boolean first = True;
-  if (first) {
-    srandom ((unsigned int) time (NULL));
-    first = False;
-  }
-
-  for (i = 0; i < self->nsites; i++) {
-    self->vector[i] = rand () % (self->maxvector[i] - self->minvector[i]) + self->minvector[i];
-  }
+  *siteIndex        = randomSite;  
+  *oldIndexActive   = site->indexActive;
+  site->indexActive = randomInstance;
 }

@@ -82,10 +82,9 @@ cdef class StateVector:
     cdef Status  status
     cdef Integer numberOfSites
     cdef Integer indexSite, indexDown, indexUp, index
-
-    status = Status_Continue
-    numberOfSites = len (meadModel.meadSites)
-    self.cObject = StateVector_Allocate (numberOfSites, &status)
+    status        = Status_Continue
+    numberOfSites = meadModel.nsites
+    self.cObject  = StateVector_Allocate (numberOfSites, &status)
 
     if status != Status_Continue:
       raise CLibraryError ("Cannot allocate state vector.")
@@ -101,11 +100,7 @@ cdef class StateVector:
           indexDown = index
         if index > indexUp:
           indexUp = index
-      self.cObject.minvector[indexSite] = indexDown
-      self.cObject.maxvector[indexSite] = indexUp
-
-    # Always reset the state vector after initialization
-    StateVector_Reset (self.cObject)
+      StateVector_SetSite (self.cObject, indexSite, indexDown, indexUp, &status)
 
     self.isOwner = False
     self.owner = meadModel
@@ -113,11 +108,7 @@ cdef class StateVector:
 
   def CopyTo (StateVector self, StateVector other):
     """In-place copy of one state vector to another."""
-    cdef Status status = Status_Continue
-    StateVector_CopyTo (self.cObject, other.cObject, &status)
-    if status != Status_Continue:
-      raise CLibraryError ("Copying vector failed.")
-
+    pass
 
   def Increment (self):
     """Generate a new state incrementing the state vector.
@@ -140,51 +131,38 @@ cdef class StateVector:
     StateVector_ResetToMaximum (self.cObject)
 
 
-# Try to further improve this method with data types from C
   def Print (self, verbose=True, title=None, log=logFile):
     """Print the state vector."""
-    cdef Integer siteIndex, selectedSiteIndex, instanceIndex
-    cdef Integer ninstances, j
+    cdef Integer indexSite, indexSiteSubstate, indexSubstate, indexActive
     cdef Status  status = Status_Continue
 
     if LogFileActive (log):
-      if verbose:
-        tab = log.GetTable (columns=[7, 7, 7, 8, 8, 2])
-        tab.Start ()
-        if title is None:
-          tab.Title ("State vector")
-        else:
-          tab.Title (title)
+      tab = log.GetTable (columns=[7, 7, 7, 8, 8, 2])
+      tab.Start ()
+      if title : tab.Title (title)
+      else     : tab.Title ("State vector")
+      tab.Heading ("Site"     , columnSpan=3)
+      tab.Heading ("Instance" , columnSpan=3)
 
-        tab.Heading ("Site", columnSpan=3)
-        tab.Heading ("Instance", columnSpan=3)
+      for indexSite from 0 <= indexSite < self.cObject.nsites:
+        substate = " "
+        for indexSubstate from 0 <= indexSubstate < self.cObject.nssites:
+          indexSiteSubstate = StateVector_GetSubstateItem (self.cObject, indexSubstate, &status)
+          if indexSite == indexSiteSubstate:
+            substate = "@"
 
-        for siteIndex from 0 <= siteIndex < self.cObject.nsites:
-          substate = "  "
+        indexActive = StateVector_GetItem (self.cObject, indexSite, &status)
+        meadModel   = self.owner
+        site        = meadModel.meadSites[indexSite]
+        instance    = site.instances[indexActive]
 
-          if self.cObject.substate != NULL:
-            for j from 0 <= j < self.cObject.nssites:
-              selectedSiteIndex = StateVector_GetSubstateItem (self.cObject, j, &status)
-              if selectedSiteIndex == siteIndex:
-                substate = " @"
-
-          meadModel = self.owner
-          site = meadModel.meadSites[siteIndex]
-          ninstances = len (site.instances)
-
-          for instanceIndex from 0 <= instanceIndex < ninstances:
-            instance = site.instances[instanceIndex]
-            if instance._instIndexGlobal == self.cObject.vector[siteIndex]:
-              break
-          instance = site.instances[instanceIndex]
-
-          tab.Entry (site.segName)
-          tab.Entry (site.resName)
-          tab.Entry ("%d" % site.resSerial)
-          tab.Entry (instance.label)
-          tab.Entry ("%d" % instanceIndex)
-          tab.Entry (substate)
-        tab.Stop ()
+        tab.Entry ("%s" % site.segName)
+        tab.Entry ("%s" % site.resName)
+        tab.Entry ("%d" % site.resSerial)
+        tab.Entry ("%s" % instance.label)
+        tab.Entry ("%d" % instance.instIndex)
+        tab.Entry ("%s" % substate)
+      tab.Stop ()
 
 
 # Try to further improve this method with data types from C
@@ -195,7 +173,6 @@ cdef class StateVector:
     cdef Integer siteIndex, substateSiteIndex, nselected, nsites
     cdef Boolean foundSite
     cdef Status  status
-
     meadModel  = self.owner
     nsites     = len (meadModel.meadSites)
     nselected  = len (selectedSites)
