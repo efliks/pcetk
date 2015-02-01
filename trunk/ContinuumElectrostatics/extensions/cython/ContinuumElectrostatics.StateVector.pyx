@@ -153,12 +153,12 @@ cdef class StateVector:
         instance    = site.instances[indexActive]
         substate    = "@" if isSubstate == CTrue else " "
 
-        tab.Entry ("%s" % site.segName)
-        tab.Entry ("%s" % site.resName)
+        tab.Entry (site.segName)
+        tab.Entry (site.resName)
         tab.Entry ("%d" % site.resSerial)
-        tab.Entry ("%s" % instance.label)
+        tab.Entry (instance.label)
         tab.Entry ("%d" % instance.instIndex)
-        tab.Entry ("%s" % substate)
+        tab.Entry (substate)
       tab.Stop ()
 
 
