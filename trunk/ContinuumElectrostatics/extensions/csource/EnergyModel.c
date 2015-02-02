@@ -8,7 +8,7 @@
 #include "EnergyModel.h"
 
 
-EnergyModel *EnergyModel_Allocate (const Integer ninstances, Status *status) {
+EnergyModel *EnergyModel_Allocate (const Integer nsites, const Integer ninstances, Status *status) {
   EnergyModel *self = NULL;
 
   MEMORY_ALLOCATE (self, EnergyModel);
@@ -16,6 +16,7 @@ EnergyModel *EnergyModel_Allocate (const Integer ninstances, Status *status) {
     Status_Set (status, Status_MemoryAllocationFailure);
   }
   else {
+    self->vector           =  NULL  ;
     self->protons          =  NULL  ;
     self->intrinsic        =  NULL  ;
     self->interactions     =  NULL  ;
@@ -23,18 +24,17 @@ EnergyModel *EnergyModel_Allocate (const Integer ninstances, Status *status) {
     self->symmetricmatrix  =  NULL  ;
 
     if (ninstances > 0) {
+      self->vector          = StateVector_Allocate     (nsites,     status)             ;
       self->protons         = Integer1DArray_Allocate  (ninstances, status)             ;
       self->intrinsic       = Real1DArray_Allocate     (ninstances, status)             ;
       self->interactions    = Real2DArray_Allocate     (ninstances, ninstances, status) ;
       self->probabilities   = Real1DArray_Allocate     (ninstances, status)             ;
       self->symmetricmatrix = SymmetricMatrix_Allocate (ninstances)                     ;
-      if (self->symmetricmatrix == NULL) {
+      if (self->symmetricmatrix == NULL)
         Status_Set (status, Status_MemoryAllocationFailure);
-      }
 
-      if (*status != Status_Continue) {
+      if (*status != Status_Continue)
         EnergyModel_Deallocate (self);
-      }
     }
   }
   return self;
@@ -46,6 +46,7 @@ void EnergyModel_Deallocate (EnergyModel *self) {
   if ( self->interactions    != NULL)  Real2DArray_Deallocate     ( &self->interactions    ) ;
   if ( self->intrinsic       != NULL)  Real1DArray_Deallocate     ( &self->intrinsic       ) ;
   if ( self->protons         != NULL)  Integer1DArray_Deallocate  ( &self->protons         ) ;
+  if ( self->vector          != NULL)  StateVector_Deallocate     (  self->vector          ) ;
   if (self != NULL) MEMORY_DEALLOCATE (self);
 }
 
@@ -95,9 +96,6 @@ Real EnergyModel_GetDeviation (const EnergyModel *self, const Integer i, const I
   wji = Real2DArray_Item (self->interactions, j, i);
   deviation = (wij + wji) * .5 - wij;
   return deviation;
-  /*
-  return Real2DArray_Item (self->deviations, i, j);
-  */
 }
 
 /*=============================================================================
@@ -148,7 +146,7 @@ Real EnergyModel_CalculateMicrostateEnergy (const EnergyModel *self, const State
 /*=============================================================================
   Calculating probabilities analytically
 =============================================================================*/
-void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature, Status *status) {
+void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const Real pH, const Real temperature, Status *status) {
   Real         *bfactor, G, Gzero, bsum;
   Real1DArray  *bfactors;
   Integer       i, j;
@@ -160,18 +158,18 @@ void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, co
   }
 
   /* Calculate state energies of ALL states */
-  StateVector_Reset (vector);
+  StateVector_Reset (self->vector);
   i       = self->nstates;
   bfactor = Real1DArray_Data (bfactors);
-  Gzero   = EnergyModel_CalculateMicrostateEnergy (self, vector, pH, temperature);
+  Gzero   = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH, temperature);
 
   for (; i > 0; i--, bfactor++) {
-    G = EnergyModel_CalculateMicrostateEnergy (self, vector, pH, temperature);
+    G = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH, temperature);
     if (G < Gzero) {
       Gzero = G;
     }
     *bfactor = G;
-    StateVector_Increment (vector);
+    StateVector_Increment (self->vector);
   }
 
   /* Convert energies to Boltzmann factors */
@@ -181,17 +179,17 @@ void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, co
 
   /* Calculate probabilities */
   Real1DArray_Set (self->probabilities, 0.);
-  StateVector_Reset (vector);
+  StateVector_Reset (self->vector);
 
   i = self->nstates;
   bfactor = Real1DArray_Data (bfactors);
   for (; i > 0; i--, bfactor++) {
-    j  = vector->nsites ;
-    ts = vector->sites  ;
+    j  = self->vector->nsites ;
+    ts = self->vector->sites  ;
     for (; j > 0; j--, ts++) {
       Real1DArray_Item (self->probabilities, ts->indexActive) += *bfactor;
     }
-    StateVector_Increment (vector);
+    StateVector_Increment (self->vector);
   }
 
   bsum = Real1DArray_Sum (bfactors);
@@ -225,19 +223,19 @@ Boolean EnergyModel_Metropolis (const Real GdeltaRT) {
 }
 
 /* The purpose of a scan is to generate a state vector representing a low-energy, statistically relevant protonation state */
-Real EnergyModel_MCScan (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature, Integer nmoves) {
+Real EnergyModel_MCScan (const EnergyModel *self, const Real pH, const Real temperature, Integer nmoves) {
   Real      G, Gnew, GdeltaRT, beta;
   Integer   site, oldIndexActive;
   Boolean   accept;
   TitrSite *ts;
 
-  G = EnergyModel_CalculateMicrostateEnergy (self, vector, pH, temperature);
+  G = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH, temperature);
   beta = 1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * temperature);
 
   for (; nmoves > 0; nmoves--) {
     /* Perform the move */
-    StateVector_Move (vector, &site, &oldIndexActive);
-    Gnew     = EnergyModel_CalculateMicrostateEnergy (self, vector, pH, temperature);
+    StateVector_Move (self->vector, &site, &oldIndexActive);
+    Gnew     = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH, temperature);
     GdeltaRT = (Gnew - G) * beta;
     accept   = EnergyModel_Metropolis (GdeltaRT);
 
@@ -247,7 +245,7 @@ Real EnergyModel_MCScan (const EnergyModel *self, const StateVector *vector, con
     }
     else {
       /* Reject the move and revert to the previous state */
-      ts = &vector->sites[site];
+      ts = &self->vector->sites[site];
       ts->indexActive = oldIndexActive;
     }
   }
@@ -255,22 +253,21 @@ Real EnergyModel_MCScan (const EnergyModel *self, const StateVector *vector, con
   return G;
 }
 
-void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature, const Boolean equil, Integer nscans, Status *status) {
-  Real      Gfinal, scale;
-  Integer   nmoves;
+void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, const Real pH, const Real temperature, const Boolean equil, Integer nscans, Status *status) {
+  Real    Gfinal, scale;
+  Integer nmoves;
 
   /* The number of moves is proportional to the number of sites */
-  nmoves = vector->nsites;
+  nmoves = self->vector->nsites;
   scale  = 1. / nscans;
 
   /* Equilibration phase? */
   if (equil) {
-    StateVector_Randomize (vector);
+    StateVector_Randomize (self->vector);
 
     /* Run the scans */
-    for (; nscans > 0; nscans--) {
-      Gfinal = EnergyModel_MCScan (self, vector, pH, temperature, nmoves);
-    }
+    for (; nscans > 0; nscans--)
+      Gfinal = EnergyModel_MCScan (self, pH, temperature, nmoves);
   }
 
   /* Production phase? */
@@ -280,23 +277,23 @@ void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, cons
 
     /* Run the scans */
     for (; nscans > 0; nscans--) {
-      Gfinal = EnergyModel_MCScan (self, vector, pH, temperature, nmoves);
+      Gfinal = EnergyModel_MCScan (self, pH, temperature, nmoves);
 
       /* Update the counts */
-      EnergyModel_UpdateProbabilities (self, vector);
+      EnergyModel_UpdateProbabilities (self);
     }
     /* Average the probabilities */
     Real1DArray_Scale (self->probabilities, scale);
   }
 }
 
-void EnergyModel_UpdateProbabilities (const EnergyModel *self, const StateVector *vector) {
-  Real      *counter;
-  TitrSite  *ts;
-  Integer    i;
+void EnergyModel_UpdateProbabilities (const EnergyModel *self) {
+  Real     *counter;
+  TitrSite *ts;
+  Integer   i;
+  ts = self->vector->sites  ;
+  i  = self->vector->nsites ;
 
-  i  = vector->nsites;
-  ts = vector->sites;
   for (; i > 0; i--, ts++) {
     counter = Real1DArray_ItemPointer (self->probabilities, ts->indexActive);
     (*counter)++;

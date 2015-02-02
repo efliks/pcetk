@@ -90,16 +90,13 @@ cdef class StateVector:
       raise CLibraryError ("Cannot allocate state vector.")
 
     for indexSite from 0 <= indexSite < numberOfSites:
-      indexDown = 9999
-      indexUp   = 0
       site      = meadModel.meadSites[indexSite]
-
+      indexUp   = 0
+      indexDown = 9999
       for instance in site.instances:
         index = instance._instIndexGlobal
-        if index < indexDown:
-          indexDown = index
-        if index > indexUp:
-          indexUp = index
+        if index < indexDown : indexDown = index
+        if index > indexUp   : indexUp   = index
       StateVector_SetSite (self.cObject, indexSite, indexDown, indexUp, &status)
 
     self.isOwner = False

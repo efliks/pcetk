@@ -31,18 +31,19 @@
 #define TOO_SMALL                   -500.0
 
 typedef struct {
-  Integer1DArray    *protons          ;
-  Real1DArray       *intrinsic        ;
-  Real2DArray       *interactions     ;
-  SymmetricMatrix   *symmetricmatrix  ;
-  Real1DArray       *probabilities    ;
-  Integer            nstates          ;
-  Integer            ninstances       ;
+  Integer1DArray   *protons          ;
+  Real1DArray      *intrinsic        ;
+  Real2DArray      *interactions     ;
+  Real1DArray      *probabilities    ;
+  SymmetricMatrix  *symmetricmatrix  ;
+  StateVector      *vector           ;
+  Integer           nstates          ;
+  Integer           ninstances       ;
 } EnergyModel;
 
 
 /* Allocation and deallocation */
-extern EnergyModel *EnergyModel_Allocate (const Integer ninstances, Status *status);
+extern EnergyModel *EnergyModel_Allocate (const Integer nsites, const Integer ninstances, Status *status);
 extern void         EnergyModel_Deallocate (EnergyModel *self);
 
 /* Handling of the interaction matrix */
@@ -51,12 +52,12 @@ extern Boolean      EnergyModel_CheckInteractionsSymmetric (const EnergyModel *s
 
 /* Calculation functions */
 extern Real         EnergyModel_CalculateMicrostateEnergy          (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature);
-extern void         EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature, Status *status);
+extern void         EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const Real pH, const Real temperature, Status *status);
 
 /* Monte Carlo functions */
-extern void         EnergyModel_CalculateProbabilitiesMonteCarlo   (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature, const Boolean equil, Integer nscans, Status *status);
-extern Real         EnergyModel_MCScan                             (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature, Integer nmoves);
-extern void         EnergyModel_UpdateProbabilities                (const EnergyModel *self, const StateVector *vector);
+extern void         EnergyModel_CalculateProbabilitiesMonteCarlo   (const EnergyModel *self, const Real pH, const Real temperature, const Boolean equil, Integer nscans, Status *status);
+extern Real         EnergyModel_MCScan                             (const EnergyModel *self, const Real pH, const Real temperature, Integer nmoves);
+extern void         EnergyModel_UpdateProbabilities                (const EnergyModel *self);
 extern Boolean      EnergyModel_Metropolis                         (const Real GdeltaRT);
 
 /* Functions for accessing items */

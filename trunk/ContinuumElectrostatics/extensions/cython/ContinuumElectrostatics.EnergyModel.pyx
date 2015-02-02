@@ -64,19 +64,33 @@ cdef class EnergyModel:
 
   def __init__ (self, meadModel):
     """Constructor."""
-    cdef Status  status  = Status_Continue
-    cdef Integer nstates = 1, ninstances, totalInstances
+    cdef Integer nstates, ninstances, totalSites, totalInstances
+    cdef Integer indexSite, indexDown, indexUp, index
+    cdef Status  status
 
+    status         = Status_Continue
+    totalSites     = meadModel.nsites
     totalInstances = meadModel.ninstances
-    self.cObject = EnergyModel_Allocate (totalInstances, &status)
+    self.cObject   = EnergyModel_Allocate (totalSites, totalInstances, &status)
     if status != Status_Continue:
       raise CLibraryError ("Cannot allocate energy model.")
 
-    for site in meadModel.meadSites:
-      ninstances = site.ninstances
-      nstates = nstates * ninstances
-      if nstates > ANALYTIC_STATES:
-          break
+    nstates = 1
+    for indexSite from 0 <= indexSite < totalSites:
+      site       =  meadModel.meadSites[indexSite]
+      indexUp    =  0
+      indexDown  =  9999
+      ninstances =  0
+      for instance in site.instances:
+        ninstances += 1
+        index = instance._instIndexGlobal
+        if index < indexDown : indexDown = index
+        if index > indexUp   : indexUp   = index
+      StateVector_SetSite (self.cObject.vector, indexSite, indexDown, indexUp, &status)
+
+      if nstates <= ANALYTIC_STATES:
+        nstates = nstates * ninstances
+
     self.cObject.nstates    = nstates
     self.cObject.ninstances = totalInstances
     self.isOwner = False
@@ -95,10 +109,6 @@ cdef class EnergyModel:
     """Symmetrize the matrix of interactions."""
     cdef Status status = Status_Continue
     EnergyModel_SymmetrizeInteractions (self.cObject, &status)
-
-    # The following should never happen
-    if status != Status_Continue:
-      raise CLibraryError ("Cannot symmetrize interactions.")
 
 
   def CalculateMicrostateEnergy (self, StateVector vector, Real pH=7.0):
@@ -127,52 +137,31 @@ cdef class EnergyModel:
     if not meadModel.isCalculated:
       raise CLibraryError ("First calculate electrostatic energies.")
 
-    vector = StateVector (meadModel)
-    EnergyModel_CalculateProbabilitiesAnalytically (self.cObject, vector.cObject, pH, temperature, &status)
-
+    EnergyModel_CalculateProbabilitiesAnalytically (self.cObject, pH, temperature, &status)
     if status != Status_Continue:
       raise CLibraryError ("Cannot allocate Boltzmann factors.")
+
     return self.cObject.nstates
   
 
   def CalculateProbabilitiesMonteCarlo (self, Real pH=7.0, Integer nequi=500, Integer nprod=20000, log=logFile):
     """Calculate probabilities of protonation states by using Metropolis Monte Carlo."""
-    cdef Real    temperature, scale, Gfinal
-    cdef Integer nmoves, scan
     cdef Status  status
-    cdef Boolean isLogActive
     status      = Status_Continue
     meadModel   = self.owner
     temperature = meadModel.temperature
-    isLogActive = CFalse
 
     if not meadModel.isCalculated:
       raise CLibraryError ("First calculate electrostatic energies.")
 
-    if LogFileActive (log):
-      isLogActive = CTrue
-
-    # Initialization
-    vector = StateVector (meadModel)
-    nmoves = vector.cObject.nsites
-    scale  = 1. / nprod
-
     # Equilibration
-    StateVector_Randomize (vector.cObject)
-    for scan from 0 <= scan < nequi:
-      Gfinal = EnergyModel_MCScan (self.cObject, vector.cObject, pH, temperature, nmoves)
-
-    if isLogActive:
+    EnergyModel_CalculateProbabilitiesMonteCarlo (self.cObject, pH, temperature, CTrue,  nequi, &status)
+    if LogFileActive (log):
       log.Text ("\nCompleted %d equilibration scans.\n" % nequi)
 
     # Production
-    Real1DArray_Set (self.cObject.probabilities, 0.)
-    for scan from 0 <= scan < nprod:
-      Gfinal = EnergyModel_MCScan (self.cObject, vector.cObject, pH, temperature, nmoves)
-      EnergyModel_UpdateProbabilities (self.cObject, vector.cObject)
-    Real1DArray_Scale (self.cObject.probabilities, scale)
-
-    if isLogActive:
+    EnergyModel_CalculateProbabilitiesMonteCarlo (self.cObject, pH, temperature, CFalse, nprod, &status)
+    if LogFileActive (log):
       log.Text ("\nCompleted %d production scans.\n" % nprod)
 
 
