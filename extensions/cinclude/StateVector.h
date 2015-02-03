@@ -10,12 +10,10 @@
 
 #include <stdlib.h>   /* Needed for calloc */
 #include <stdio.h>    /* Needed for random */
-#include <time.h>     /* Needed for random seed */
 
 #include "Real.h"
 #include "Boolean.h"
 #include "Integer.h"
-#include "Cardinal.h"
 #include "Memory.h"
 #include "Status.h"
 
@@ -78,6 +76,7 @@ extern Boolean      StateVector_Increment         (const StateVector *self);
 extern Boolean      StateVector_IncrementSubstate (const StateVector *self);
 
 /* Monte Carlo-related functions */
-extern void         StateVector_Move              (const StateVector *self, Integer *siteIndex, Integer *oldIndexActive);
+extern void         StateVector_Move              (const StateVector *self, Integer *site, Integer *oldActive);
+extern void         StateVector_DoubleMove        (const StateVector *self, Integer *site, Integer *siteOther, Integer *oldActive, Integer *oldActiveOther);
 
 #endif

@@ -8,14 +8,14 @@
 #ifndef _ENERGYMODEL
 #define _ENERGYMODEL
 
-/* Needed for memset and random */
-#include <stdio.h>
-/* Needed for exp */
-#include <math.h>
+#include <stdio.h>    /* Needed for memset and random */
+#include <time.h>     /* Needed for random seed */
+#include <math.h>     /* Needed for exp */
 
+#include "Real.h"
 #include "Boolean.h"
 #include "Integer.h"
-#include "Real.h"
+#include "Cardinal.h"
 #include "Memory.h"
 #include "Status.h"
 #include "Real1DArray.h"
@@ -27,18 +27,19 @@
 
 #define CONSTANT_MOLAR_GAS_KCAL_MOL  0.001987165392
 #define CONSTANT_LN10                2.302585092994
+
 /* Taken from GMCT */
 #define TOO_SMALL                   -500.0
 
 typedef struct {
-  Integer1DArray   *protons          ;
-  Real1DArray      *intrinsic        ;
-  Real2DArray      *interactions     ;
-  Real1DArray      *probabilities    ;
-  SymmetricMatrix  *symmetricmatrix  ;
-  StateVector      *vector           ;
-  Integer           nstates          ;
-  Integer           ninstances       ;
+  Integer1DArray   *protons;
+  Real1DArray      *intrinsic;
+  Real2DArray      *interactions;
+  Real1DArray      *probabilities;
+  SymmetricMatrix  *symmetricmatrix;
+  StateVector      *vector;
+  Integer           nstates;
+  Integer           ninstances;
 } EnergyModel;
 
 
