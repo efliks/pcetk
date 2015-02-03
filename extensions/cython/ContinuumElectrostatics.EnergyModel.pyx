@@ -54,7 +54,7 @@ cdef class EnergyModel:
     return interac
 
   def GetInteractionSymmetric (self, Integer instIndexGlobalA, Integer instIndexGlobalB):
-    cdef Real interac = EnergyModel_GetInteractionSymmetric (self.cObject, instIndexGlobalA, instIndexGlobalB)
+    cdef Real interac = EnergyModel_GetInterSymmetric (self.cObject, instIndexGlobalA, instIndexGlobalB)
     return interac
 
   def GetDeviation (self, Integer instIndexGlobalA, Integer instIndexGlobalB):
@@ -77,10 +77,10 @@ cdef class EnergyModel:
 
     nstates = 1
     for indexSite from 0 <= indexSite < totalSites:
-      site       =  meadModel.meadSites[indexSite]
+      ninstances =  0
       indexUp    =  0
       indexDown  =  9999
-      ninstances =  0
+      site       =  meadModel.meadSites[indexSite]
       for instance in site.instances:
         ninstances += 1
         index = instance._instIndexGlobal
@@ -188,4 +188,4 @@ cdef class EnergyModel:
           StateVector_GetPair (self.cObject.vector, indexPair, &indexSiteA, &indexSiteB, &status)
           siteFirst  = sites[indexSiteA]
           siteSecond = sites[indexSiteB]
-          log.Text ("%4s %4s %4d : %4s %4s %4d\n" % (siteFirst.segName, siteFirst.resName, siteFirst.resSerial, siteSecond.segName, siteSecond.resName, siteSecond.resSerial))
+          log.Text ("%4s %4s %4d  :  %4s %4s %4d\n" % (siteFirst.segName, siteFirst.resName, siteFirst.resSerial, siteSecond.segName, siteSecond.resName, siteSecond.resSerial))

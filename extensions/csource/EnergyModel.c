@@ -12,41 +12,65 @@ EnergyModel *EnergyModel_Allocate (const Integer nsites, const Integer ninstance
   EnergyModel *self = NULL;
 
   MEMORY_ALLOCATE (self, EnergyModel);
-  if (self == NULL) {
-    Status_Set (status, Status_MemoryAllocationFailure);
+  if (self == NULL)
+    goto failSet;
+
+  self->vector           =  NULL  ;
+  self->generator        =  NULL  ;
+
+  self->protons          =  NULL  ;
+  self->intrinsic        =  NULL  ;
+  self->interactions     =  NULL  ;
+  self->probabilities    =  NULL  ;
+  self->symmetricmatrix  =  NULL  ;
+
+  /* Initialize RNG */
+  self->generator = RandomNumberGenerator_Allocate (RandomNumberGeneratorType_MersenneTwister);
+  if (self->generator == NULL)
+    goto failSetDealloc;
+  RandomNumberGenerator_SetSeed (self->generator, (Cardinal) time (NULL));
+
+  if (nsites > 0) {
+    self->vector = StateVector_Allocate (nsites, status);
+    if (*status != Status_Continue)
+      goto failDealloc;
   }
-  else {
-    self->vector           =  NULL  ;
-    self->protons          =  NULL  ;
-    self->intrinsic        =  NULL  ;
-    self->interactions     =  NULL  ;
-    self->probabilities    =  NULL  ;
-    self->symmetricmatrix  =  NULL  ;
 
-    if (ninstances > 0) {
-      self->vector          = StateVector_Allocate     (nsites,     status)             ;
-      self->protons         = Integer1DArray_Allocate  (ninstances, status)             ;
-      self->intrinsic       = Real1DArray_Allocate     (ninstances, status)             ;
-      self->interactions    = Real2DArray_Allocate     (ninstances, ninstances, status) ;
-      self->probabilities   = Real1DArray_Allocate     (ninstances, status)             ;
-      self->symmetricmatrix = SymmetricMatrix_Allocate (ninstances)                     ;
-      if (self->symmetricmatrix == NULL)
-        Status_Set (status, Status_MemoryAllocationFailure);
+  if (ninstances > 0) {
+    self->protons         = Integer1DArray_Allocate  (ninstances, status)             ;
+    self->intrinsic       = Real1DArray_Allocate     (ninstances, status)             ;
+    self->interactions    = Real2DArray_Allocate     (ninstances, ninstances, status) ;
+    self->probabilities   = Real1DArray_Allocate     (ninstances, status)             ;
+    if (*status != Status_Continue)
+      goto failDealloc;
 
-      if (*status != Status_Continue)
-        EnergyModel_Deallocate (self);
-    }
+    self->symmetricmatrix = SymmetricMatrix_Allocate (ninstances);
+    if (self->symmetricmatrix == NULL)
+      goto failSetDealloc;
   }
   return self;
+
+
+failSetDealloc:
+  Status_Set (status, Status_MemoryAllocationFailure);
+
+failDealloc:
+  EnergyModel_Deallocate (self);
+  return NULL;
+
+failSet:
+  Status_Set (status, Status_MemoryAllocationFailure);
+  return NULL;
 }
 
 void EnergyModel_Deallocate (EnergyModel *self) {
-  if ( self->symmetricmatrix != NULL)  SymmetricMatrix_Deallocate ( &self->symmetricmatrix ) ;
-  if ( self->probabilities   != NULL)  Real1DArray_Deallocate     ( &self->probabilities   ) ;
-  if ( self->interactions    != NULL)  Real2DArray_Deallocate     ( &self->interactions    ) ;
-  if ( self->intrinsic       != NULL)  Real1DArray_Deallocate     ( &self->intrinsic       ) ;
-  if ( self->protons         != NULL)  Integer1DArray_Deallocate  ( &self->protons         ) ;
-  if ( self->vector          != NULL)  StateVector_Deallocate     (  self->vector          ) ;
+  if ( self->generator       != NULL)  RandomNumberGenerator_Deallocate ( &self->generator       ) ;
+  if ( self->symmetricmatrix != NULL)  SymmetricMatrix_Deallocate       ( &self->symmetricmatrix ) ;
+  if ( self->probabilities   != NULL)  Real1DArray_Deallocate           ( &self->probabilities   ) ;
+  if ( self->interactions    != NULL)  Real2DArray_Deallocate           ( &self->interactions    ) ;
+  if ( self->intrinsic       != NULL)  Real1DArray_Deallocate           ( &self->intrinsic       ) ;
+  if ( self->protons         != NULL)  Integer1DArray_Deallocate        ( &self->protons         ) ;
+  if ( self->vector          != NULL)  StateVector_Deallocate           (  self->vector          ) ;
   if (self != NULL) MEMORY_DEALLOCATE (self);
 }
 
@@ -77,7 +101,7 @@ Real EnergyModel_GetInteraction (const EnergyModel *self, const Integer instInde
   return Real2DArray_Item (self->interactions, instIndexGlobalA, instIndexGlobalB);
 }
 
-Real EnergyModel_GetInteractionSymmetric (const EnergyModel *self, const Integer instIndexGlobalA, const Integer instIndexGlobalB) {
+Real EnergyModel_GetInterSymmetric (const EnergyModel *self, const Integer instIndexGlobalA, const Integer instIndexGlobalB) {
   Real value;
 
   if (instIndexGlobalA >= instIndexGlobalB) {
@@ -271,47 +295,6 @@ Real EnergyModel_MCScan (const EnergyModel *self, const Real pH, const Real temp
   return G;
 }
 
-void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, const Real pH, const Real temperature, const Boolean equil, Integer nscans, Status *status) {
-  Real    Gfinal, scale;
-  Integer nmoves;
-
-  /* Initiate the random number generator */
-  static Boolean rngStart = True;
-  if (rngStart) {
-    srandom ((Cardinal) time (NULL));
-    rngStart = False;
-  }
-
-  /* The number of moves is proportional to the number of sites */
-  nmoves = self->vector->nsites + self->vector->npairs;
-  scale  = 1. / nscans;
-
-  /* Equilibration phase? */
-  if (equil) {
-    StateVector_Randomize (self->vector);
-
-    /* Run the scans */
-    for (; nscans > 0; nscans--)
-      Gfinal = EnergyModel_MCScan (self, pH, temperature, nmoves);
-  }
-
-  /* Production phase? */
-  else {
-    /* Reset the probabilities */
-    Real1DArray_Set (self->probabilities, 0.);
-
-    /* Run the scans */
-    for (; nscans > 0; nscans--) {
-      Gfinal = EnergyModel_MCScan (self, pH, temperature, nmoves);
-
-      /* Update the counts */
-      EnergyModel_UpdateProbabilities (self);
-    }
-    /* Average the probabilities */
-    Real1DArray_Scale (self->probabilities, scale);
-  }
-}
-
 /*
  * Increase the counts of "active" instances.
  * These counts, after scaling, will give the probabilities of occurrence of instances.
@@ -342,7 +325,7 @@ Real EnergyModel_FindMaxInteraction (const EnergyModel *self, const TitrSite *si
 
     indexOther = other->indexFirst;
     for (; indexOther <= other->indexLast; indexOther++) {
-      W = abs (EnergyModel_GetInteractionSymmetric (self, index, indexOther));
+      W = abs (EnergyModel_GetInterSymmetric (self, index, indexOther));
       if (W > Wmax) Wmax = W;
     }
   }
@@ -383,4 +366,45 @@ Integer EnergyModel_FindPairs (const EnergyModel *self, const Real limit, const 
     }
   }
   return nfound;
+}
+
+void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, const Real pH, const Real temperature, const Boolean equil, Integer nscans, Status *status) {
+  Real    Gfinal, scale;
+  Integer nmoves;
+
+  /* Initiate the random number generator */
+  static Boolean rngStart = True;
+  if (rngStart) {
+    srandom ((Cardinal) time (NULL));
+    rngStart = False;
+  }
+
+  /* The number of moves is proportional to the number of sites */
+  nmoves = self->vector->nsites + self->vector->npairs;
+  scale  = 1. / nscans;
+
+  /* Equilibration phase? */
+  if (equil) {
+    StateVector_Randomize (self->vector);
+
+    /* Run the scans */
+    for (; nscans > 0; nscans--)
+      Gfinal = EnergyModel_MCScan (self, pH, temperature, nmoves);
+  }
+
+  /* Production phase? */
+  else {
+    /* Reset the probabilities */
+    Real1DArray_Set (self->probabilities, 0.);
+
+    /* Run the scans */
+    for (; nscans > 0; nscans--) {
+      Gfinal = EnergyModel_MCScan (self, pH, temperature, nmoves);
+
+      /* Update the counts */
+      EnergyModel_UpdateProbabilities (self);
+    }
+    /* Average the probabilities */
+    Real1DArray_Scale (self->probabilities, scale);
+  }
 }

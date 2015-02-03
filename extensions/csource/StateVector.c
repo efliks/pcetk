@@ -387,11 +387,11 @@ void StateVector_DoubleMove (const StateVector *self, Integer *site, Integer *si
     randomInstOther = rand () % (sb->indexLast - sb->indexFirst + 1) + sb->indexFirst;
   } while (randomInstOther == sb->indexActive);
 
-  *site           = sa->indexSite   ;
-  *oldActive      = sa->indexActive ;
-  sa->indexActive = randomInst      ;
-
-  *siteOther      = sb->indexSite   ;
-  *oldActiveOther = sb->indexActive ;
-  sb->indexActive = randomInstOther ;
+  *site            =  sa->indexSite    ;
+  *oldActive       =  sa->indexActive  ;
+  sa->indexActive  =  randomInst       ;
+                                       
+  *siteOther       =  sb->indexSite    ;
+  *oldActiveOther  =  sb->indexActive  ;
+  sb->indexActive  =  randomInstOther  ;
 }

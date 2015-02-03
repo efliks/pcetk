@@ -8,8 +8,10 @@
 #ifndef _STATEVECTOR
 #define _STATEVECTOR
 
-#include <stdlib.h>   /* Needed for calloc */
-#include <stdio.h>    /* Needed for random */
+/* Needed for calloc */
+#include <stdlib.h>
+/* Needed for random */
+#include <stdio.h>
 
 #include "Real.h"
 #include "Boolean.h"
@@ -25,8 +27,10 @@ typedef struct {
   Boolean isSubstate;
   /* Index of the site itself */
   Integer indexSite;
-  /* Global indices of instances of the site */
-  Integer indexActive, indexFirst, indexLast;
+  /* Global index of the currently active instance of the site */
+  Integer indexActive;
+  /* Minimum and maximum values of indexActive */
+  Integer indexFirst, indexLast;
 } TitrSite;
 
 typedef struct {

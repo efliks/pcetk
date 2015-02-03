@@ -31,34 +31,37 @@ cdef extern from "EnergyModel.h":
     Integer             ninstances
 
 
-  cdef Boolean       EnergyModel_CheckInteractionsSymmetric         (CEnergyModel *self, Real tolerance, Real *maxDeviation)
-  cdef void          EnergyModel_SymmetrizeInteractions             (CEnergyModel *self, Status *status)
-  cdef Real          EnergyModel_CalculateMicrostateEnergy          (CEnergyModel *self, CStateVector *vector, Real pH, Real temperature)
-  cdef void          EnergyModel_CalculateProbabilitiesAnalytically (CEnergyModel *self, Real pH, Real temperature, Status *status)
-
-  # Allocation and deallocation functions
+  # Allocation and deallocation
   cdef CEnergyModel *EnergyModel_Allocate (Integer nsites, Integer ninstances, Status *status)
   cdef void          EnergyModel_Deallocate (CEnergyModel *self)
 
+  # Handling of the interactions matrix
+  cdef Boolean EnergyModel_CheckInteractionsSymmetric (CEnergyModel *self, Real tolerance, Real *maxDeviation)
+  cdef void    EnergyModel_SymmetrizeInteractions     (CEnergyModel *self, Status *status)
+
+  # Calculation functions
+  cdef Real    EnergyModel_CalculateMicrostateEnergy          (CEnergyModel *self, CStateVector *vector, Real pH, Real temperature)
+  cdef void    EnergyModel_CalculateProbabilitiesAnalytically (CEnergyModel *self, Real pH, Real temperature, Status *status)
+
   # Monte Carlo-related functions
-  cdef Boolean       EnergyModel_Metropolis                       (Real GdeltaRT)
-  cdef Real          EnergyModel_MCScan                           (CEnergyModel *self, Real pH, Real temperature, Integer nmoves)
-  cdef void          EnergyModel_CalculateProbabilitiesMonteCarlo (CEnergyModel *self, Real pH, Real temperature, Boolean equil, Integer nscans, Status *status)
-  cdef void          EnergyModel_UpdateProbabilities              (CEnergyModel *self)
-  cdef Integer       EnergyModel_FindPairs                        (CEnergyModel *self, Real limit, Integer npairs, Status *status)
+  cdef Boolean EnergyModel_Metropolis           (Real GdeltaRT)
+  cdef Real    EnergyModel_MCScan               (CEnergyModel *self, Real pH, Real temperature, Integer nmoves)
+  cdef void    EnergyModel_UpdateProbabilities  (CEnergyModel *self)
+  cdef Integer EnergyModel_FindPairs            (CEnergyModel *self, Real limit, Integer npairs, Status *status)
+  cdef void    EnergyModel_CalculateProbabilitiesMonteCarlo (CEnergyModel *self, Real pH, Real temperature, Boolean equil, Integer nscans, Status *status)
 
   # Functions for accessing items
-  cdef Real          EnergyModel_GetGintr                (CEnergyModel *self, Integer instIndexGlobal)
-  cdef Integer       EnergyModel_GetProtons              (CEnergyModel *self, Integer instIndexGlobal)
-  cdef Real          EnergyModel_GetProbability          (CEnergyModel *self, Integer instIndexGlobal)
-  cdef Real          EnergyModel_GetInteraction          (CEnergyModel *self, Integer instIndexGlobalA, Integer instIndexGlobalB)
-  cdef Real          EnergyModel_GetInteractionSymmetric (CEnergyModel *self, Integer instIndexGlobalA, Integer instIndexGlobalB)
-  cdef Real          EnergyModel_GetDeviation            (CEnergyModel *self, Integer instIndexGlobalA, Integer instIndexGlobalB)
+  cdef Real    EnergyModel_GetGintr          (CEnergyModel *self, Integer instIndexGlobal)
+  cdef Integer EnergyModel_GetProtons        (CEnergyModel *self, Integer instIndexGlobal)
+  cdef Real    EnergyModel_GetProbability    (CEnergyModel *self, Integer instIndexGlobal)
+  cdef Real    EnergyModel_GetInteraction    (CEnergyModel *self, Integer instIndexGlobalA, Integer instIndexGlobalB)
+  cdef Real    EnergyModel_GetInterSymmetric (CEnergyModel *self, Integer instIndexGlobalA, Integer instIndexGlobalB)
+  cdef Real    EnergyModel_GetDeviation      (CEnergyModel *self, Integer instIndexGlobalA, Integer instIndexGlobalB)
 
-  cdef void          EnergyModel_SetGintr       (CEnergyModel *self, Integer instIndexGlobal, Real value)
-  cdef void          EnergyModel_SetProtons     (CEnergyModel *self, Integer instIndexGlobal, Integer value)
-  cdef void          EnergyModel_SetProbability (CEnergyModel *self, Integer instIndexGlobal, Real value)
-  cdef void          EnergyModel_SetInteraction (CEnergyModel *self, Integer instIndexGlobalA, Integer instIndexGlobalB, Real value)
+  cdef void    EnergyModel_SetGintr          (CEnergyModel *self, Integer instIndexGlobal, Real value)
+  cdef void    EnergyModel_SetProtons        (CEnergyModel *self, Integer instIndexGlobal, Integer value)
+  cdef void    EnergyModel_SetProbability    (CEnergyModel *self, Integer instIndexGlobal, Real value)
+  cdef void    EnergyModel_SetInteraction    (CEnergyModel *self, Integer instIndexGlobalA, Integer instIndexGlobalB, Real value)
 
 
 #-------------------------------------------------------------------------------
