@@ -154,11 +154,6 @@ void StateVector_Randomize (const StateVector *self) {
   TitrSite *site = self->sites;
   Integer   i = self->nsites;
 
-  static Boolean first = True;
-  if (first) {
-    srandom ((Cardinal) time (NULL));
-    first = False;
-  }
   for (; i > 0; i--, site++) {
     site->indexActive = rand () % (site->indexLast - site->indexFirst + 1) + site->indexFirst;
   }
@@ -360,17 +355,43 @@ Boolean StateVector_IncrementSubstate (const StateVector *self) {
 /*=============================================================================
   Monte Carlo-related functions
 =============================================================================*/
-void StateVector_Move (const StateVector *self, Integer *siteIndex, Integer *oldIndexActive) {
-  TitrSite *site;
+void StateVector_Move (const StateVector *self, Integer *site, Integer *oldActive) {
+  TitrSite *ts;
   Integer randomSite, randomInstance;
 
   randomSite = rand () % self->nsites;
-  site = &self->sites[randomSite];
+  ts = &self->sites[randomSite];
   do {
-    randomInstance = rand () % (site->indexLast - site->indexFirst + 1) + site->indexFirst;
-  } while (randomInstance == site->indexActive);
+    randomInstance = rand () % (ts->indexLast - ts->indexFirst + 1) + ts->indexFirst;
+  } while (randomInstance == ts->indexActive);
 
-  *siteIndex        = randomSite;  
-  *oldIndexActive   = site->indexActive;
-  site->indexActive = randomInstance;
+  *site           = randomSite;
+  *oldActive      = ts->indexActive;
+  ts->indexActive = randomInstance;
+}
+
+void StateVector_DoubleMove (const StateVector *self, Integer *site, Integer *siteOther, Integer *oldActive, Integer *oldActiveOther) {
+  Integer    randomPair, randomInst, randomInstOther;
+  TitrSite  *sa, *sb;
+  PairSite  *pair;
+
+  randomPair = rand () % self->npairs;
+  pair = &self->pairs[randomPair];
+  sa   = pair->a;
+  sb   = pair->b;
+
+  do {
+    randomInst = rand () % (sa->indexLast - sa->indexFirst + 1) + sa->indexFirst;
+  } while (randomInst == sa->indexActive);
+  do {
+    randomInstOther = rand () % (sb->indexLast - sb->indexFirst + 1) + sb->indexFirst;
+  } while (randomInstOther == sb->indexActive);
+
+  *site           = sa->indexSite   ;
+  *oldActive      = sa->indexActive ;
+  sa->indexActive = randomInst      ;
+
+  *siteOther      = sb->indexSite   ;
+  *oldActiveOther = sb->indexActive ;
+  sb->indexActive = randomInstOther ;
 }

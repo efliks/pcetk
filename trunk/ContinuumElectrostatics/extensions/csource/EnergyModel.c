@@ -222,34 +222,52 @@ Boolean EnergyModel_Metropolis (const Real GdeltaRT) {
   return metropolis;
 }
 
-/* The purpose of a scan is to generate a state vector representing a low-energy, statistically relevant protonation state */
+/*
+ * The purpose of a scan is to generate a state vector representing a low-energy, statistically relevant protonation state
+ */
 Real EnergyModel_MCScan (const EnergyModel *self, const Real pH, const Real temperature, Integer nmoves) {
-  Real      G, Gnew, GdeltaRT, beta;
-  Integer   site, oldIndexActive;
-  Boolean   accept;
-  TitrSite *ts;
+  Integer    site, siteOther, oldActive, oldActiveOther, select;
+  Real       G, Gnew, GdeltaRT, beta;
+  Boolean    accept, isDouble;
+  TitrSite  *ts;
 
   G = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH, temperature);
   beta = 1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * temperature);
 
   for (; nmoves > 0; nmoves--) {
-    /* Perform the move */
-    StateVector_Move (self->vector, &site, &oldIndexActive);
+    select   = rand () % (self->vector->nsites + self->vector->npairs);
+    isDouble = False;
+
+    if (select < self->vector->nsites) {
+      /* Perform a single move */
+      StateVector_Move (self->vector, &site, &oldActive);
+    }
+    else {
+      /* Perform a double move */
+      isDouble = True;
+      StateVector_DoubleMove (self->vector, &site, &siteOther, &oldActive, &oldActiveOther);
+    }
+
     Gnew     = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH, temperature);
     GdeltaRT = (Gnew - G) * beta;
     accept   = EnergyModel_Metropolis (GdeltaRT);
 
-    if (accept == True) {
+    if (accept) {
       /* Accept the move */
       G = Gnew;
     }
     else {
-      /* Reject the move and revert to the previous state */
-      ts = &self->vector->sites[site];
-      ts->indexActive = oldIndexActive;
+      /* Revert single move */
+      ts              = &self->vector->sites[site];
+      ts->indexActive = oldActive;
+
+      /* Revert double move */
+      if (isDouble) {
+        ts              = &self->vector->sites[siteOther];
+        ts->indexActive = oldActiveOther;
+      }
     }
   }
-  /* Return the last accepted energy (only for info) */
   return G;
 }
 
@@ -257,8 +275,15 @@ void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, cons
   Real    Gfinal, scale;
   Integer nmoves;
 
+  /* Initiate the random number generator */
+  static Boolean rngStart = True;
+  if (rngStart) {
+    srandom ((Cardinal) time (NULL));
+    rngStart = False;
+  }
+
   /* The number of moves is proportional to the number of sites */
-  nmoves = self->vector->nsites;
+  nmoves = self->vector->nsites + self->vector->npairs;
   scale  = 1. / nscans;
 
   /* Equilibration phase? */
@@ -287,6 +312,10 @@ void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, cons
   }
 }
 
+/*
+ * Increase the counts of "active" instances.
+ * These counts, after scaling, will give the probabilities of occurrence of instances.
+ */
 void EnergyModel_UpdateProbabilities (const EnergyModel *self) {
   Real     *counter;
   TitrSite *ts;
@@ -323,7 +352,7 @@ Real EnergyModel_FindMaxInteraction (const EnergyModel *self, const TitrSite *si
 /*
  * Finds pairs of sites whose interaction energy is greater than the given limit.
  * 
- * If npairs < 1, dry run is assumed and only nfound is returned. 
+ * If npairs < 1, dry run is assumed and only nfound is returned.
  * The value of npairs is used in the second run to allocate and fill out the pairs.
  */
 Integer EnergyModel_FindPairs (const EnergyModel *self, const Real limit, const Integer npairs, Status *status) {
