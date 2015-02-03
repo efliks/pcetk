@@ -7,7 +7,7 @@
 #-------------------------------------------------------------------------------
 from pCore.cDefinitions                  cimport Boolean, CFalse, CTrue, Integer, Real
 from pCore.Status                        cimport Status, Status_Continue, Status_IndexOutOfRange, Status_ValueError
-from ContinuumElectrostatics.StateVector cimport CStateVector, StateVector, StateVector_SetSite
+from ContinuumElectrostatics.StateVector cimport CStateVector, StateVector, StateVector_SetSite, StateVector_GetPair
 
 # There is no need to import these arrays
 from pCore.Integer1DArray                cimport CInteger1DArray, Integer1DArray
@@ -41,9 +41,11 @@ cdef extern from "EnergyModel.h":
   cdef void          EnergyModel_Deallocate (CEnergyModel *self)
 
   # Monte Carlo-related functions
+  cdef Boolean       EnergyModel_Metropolis                       (Real GdeltaRT)
+  cdef Real          EnergyModel_MCScan                           (CEnergyModel *self, Real pH, Real temperature, Integer nmoves)
   cdef void          EnergyModel_CalculateProbabilitiesMonteCarlo (CEnergyModel *self, Real pH, Real temperature, Boolean equil, Integer nscans, Status *status)
   cdef void          EnergyModel_UpdateProbabilities              (CEnergyModel *self)
-  cdef Real          EnergyModel_MCScan                           (CEnergyModel *self, Real pH, Real temperature, Integer nmoves)
+  cdef Integer       EnergyModel_FindPairs                        (CEnergyModel *self, Real limit, Integer npairs, Status *status)
 
   # Functions for accessing items
   cdef Real          EnergyModel_GetGintr                (CEnergyModel *self, Integer instIndexGlobal)

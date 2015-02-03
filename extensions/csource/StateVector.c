@@ -63,8 +63,7 @@ void StateVector_AllocatePairs (StateVector *self, const Integer npairs, Status 
     Status_Set (status, Status_MemoryAllocationFailure);
   }
   else {
-    /* Allocate an array of pointers */
-    MEMORY_ALLOCATEARRAY_POINTERS (self->pairs, npairs, TitrSite);
+    MEMORY_ALLOCATEARRAY (self->pairs, npairs, PairSite);
 
     if (self->pairs != NULL) 
       self->npairs = npairs;
@@ -171,7 +170,7 @@ void StateVector_Randomize (const StateVector *self) {
 void StateVector_SetSite (const StateVector *self, const Integer indexSite, const Integer indexFirst, const Integer indexLast, Status *status) {
   TitrSite *site;
 
-  if (indexSite < 0 || indexSite > (self->nsites - 1)) {
+  if (indexSite < 0 || indexSite >= self->nsites) {
     Status_Set (status, Status_IndexOutOfRange);
   }
   else {
@@ -184,10 +183,39 @@ void StateVector_SetSite (const StateVector *self, const Integer indexSite, cons
   }
 }
 
+void StateVector_SetPair (const StateVector *self, const Integer indexPair, const Integer indexFirstSite, const Integer indexSecondSite, Status *status) {
+  PairSite *pair;
+
+  if (indexPair < 0 || indexPair >= self->npairs) {
+    Status_Set (status, Status_IndexOutOfRange);
+  }
+  else {
+    pair    = &self->pairs[indexPair];
+    pair->a = &self->sites[indexFirstSite];
+    pair->b = &self->sites[indexSecondSite];
+  }
+}
+
+void StateVector_GetPair (const StateVector *self, const Integer indexPair, Integer *indexFirstSite, Integer *indexSecondSite, Status *status) {
+  PairSite *pair;
+  TitrSite *site;
+
+  if (indexPair < 0 || indexPair >= self->npairs) {
+    Status_Set (status, Status_IndexOutOfRange);
+  }
+  else {
+    pair = &self->pairs[indexPair];
+    site = pair->a;
+    *indexFirstSite  = site->indexSite;
+    site = pair->b;
+    *indexSecondSite = site->indexSite;
+  }
+}
+
 Boolean StateVector_IsSubstate (const StateVector *self, const Integer siteIndex, Status *status) {
   TitrSite *site;
 
-  if (siteIndex < 0 || siteIndex > (self->nsites - 1)) {
+  if (siteIndex < 0 || siteIndex >= self->nsites) {
     Status_Set (status, Status_IndexOutOfRange);
     return False;
   }
@@ -199,7 +227,7 @@ Integer StateVector_GetItem (const StateVector *self, const Integer siteIndex, S
   TitrSite *site;
   Integer instanceLocalIndex;
 
-  if (siteIndex < 0 || siteIndex > (self->nsites - 1)) {
+  if (siteIndex < 0 || siteIndex >= self->nsites) {
     Status_Set (status, Status_IndexOutOfRange);
     return -1;
   }
@@ -214,7 +242,7 @@ void StateVector_SetItem (const StateVector *self, const Integer siteIndex, cons
   TitrSite *site;
   Integer instanceGlobalIndex;
 
-  if (siteIndex < 0 || siteIndex > (self->nsites - 1)) {
+  if (siteIndex < 0 || siteIndex >= self->nsites) {
     Status_Set (status, Status_IndexOutOfRange);
   }
   else {
@@ -235,7 +263,7 @@ Integer StateVector_GetActualItem (const StateVector *self, const Integer siteIn
   TitrSite *site;
   Integer instanceGlobalIndex;
 
-  if (siteIndex < 0 || siteIndex > (self->nsites - 1)) {
+  if (siteIndex < 0 || siteIndex >= self->nsites) {
     Status_Set (status, Status_IndexOutOfRange);
     return -1;
   }
@@ -248,7 +276,7 @@ Integer StateVector_GetActualItem (const StateVector *self, const Integer siteIn
 void StateVector_SetActualItem (const StateVector *self, const Integer siteIndex, const Integer instanceGlobalIndex, Status *status) {
   TitrSite *site;
 
-  if (siteIndex < 0 || siteIndex > (self->nsites - 1)) {
+  if (siteIndex < 0 || siteIndex >= self->nsites) {
     Status_Set (status, Status_IndexOutOfRange);
   }
   else {
@@ -265,7 +293,7 @@ void StateVector_SetActualItem (const StateVector *self, const Integer siteIndex
 Integer StateVector_GetSubstateItem (const StateVector *self, const Integer index, Status *status) {
   TitrSite *site;
 
-  if (index < 0 || index > (self->nssites - 1)) {
+  if (index < 0 || index >= self->nssites) {
     Status_Set (status, Status_IndexOutOfRange);
     return -1;
   }
@@ -276,11 +304,11 @@ Integer StateVector_GetSubstateItem (const StateVector *self, const Integer inde
 void StateVector_SetSubstateItem (const StateVector *self, const Integer selectedSiteIndex, const Integer index, Status *status) {
   TitrSite *site;
 
-  if (index < 0 || index > (self->nssites - 1)) {
+  if (index < 0 || index >= self->nssites) {
     Status_Set (status, Status_IndexOutOfRange);
   }
   else {
-    if (selectedSiteIndex < 0 || (selectedSiteIndex > self->nsites - 1)) {
+    if (selectedSiteIndex < 0 || selectedSiteIndex >= self->nsites) {
       Status_Set (status, Status_ValueError);
     }
     else {

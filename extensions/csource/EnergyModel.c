@@ -199,7 +199,7 @@ void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, co
 }
 
 /*=============================================================================
-  Calculating probabilities using Metropolis Monte Carlo
+  Monte Carlo-related functions
 =============================================================================*/
 Boolean EnergyModel_Metropolis (const Real GdeltaRT) {
   Boolean metropolis;
@@ -298,4 +298,60 @@ void EnergyModel_UpdateProbabilities (const EnergyModel *self) {
     counter = Real1DArray_ItemPointer (self->probabilities, ts->indexActive);
     (*counter)++;
   }
+}
+
+/*
+ * Finds maximum absolute interaction energy between two sites.
+ */
+Real EnergyModel_FindMaxInteraction (const EnergyModel *self, const TitrSite *site, const TitrSite *other) {
+  Integer index, indexOther;
+  Real W, Wmax;
+
+  Wmax  = 0.;
+  index = site->indexFirst;
+  for (; index <= site->indexLast; index++) {
+
+    indexOther = other->indexFirst;
+    for (; indexOther <= other->indexLast; indexOther++) {
+      W = abs (EnergyModel_GetInteractionSymmetric (self, index, indexOther));
+      if (W > Wmax) Wmax = W;
+    }
+  }
+  return Wmax;
+}
+
+/*
+ * Finds pairs of sites whose interaction energy is greater than the given limit.
+ * 
+ * If npairs < 1, dry run is assumed and only nfound is returned. 
+ * The value of npairs is used in the second run to allocate and fill out the pairs.
+ */
+Integer EnergyModel_FindPairs (const EnergyModel *self, const Real limit, const Integer npairs, Status *status) {
+  TitrSite *site, *siteInner;
+  Integer i, j, nfound;
+  Real Wmax;
+
+  if (npairs > 0) {
+    StateVector_AllocatePairs (self->vector, npairs, status);
+    if (*status != Status_Continue)
+      return -1;
+  }
+
+  nfound = 0;
+  site   = self->vector->sites;
+  for (i = 0; i < self->vector->nsites; i++, site++) {
+
+    siteInner = self->vector->sites;
+    for (j = 0; j <= i; j++, siteInner++) {
+
+      Wmax = EnergyModel_FindMaxInteraction (self, site, siteInner);
+      if (Wmax >= limit) {
+        if (npairs > 0) {
+          StateVector_SetPair (self->vector, nfound, site->indexSite, siteInner->indexSite, status);
+        }
+        nfound++;
+      }
+    }
+  }
+  return nfound;
 }

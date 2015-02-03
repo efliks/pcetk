@@ -105,10 +105,12 @@ cdef class EnergyModel:
     return (isSymmetric, maxDeviation)
 
 
-  def SymmetrizeInteractions (self):
+  def SymmetrizeInteractions (self, log=logFile):
     """Symmetrize the matrix of interactions."""
     cdef Status status = Status_Continue
     EnergyModel_SymmetrizeInteractions (self.cObject, &status)
+    if LogFileActive (log):
+      log.Text ("\nSymmetrizing interactions complete.\n")
 
 
   def CalculateMicrostateEnergy (self, StateVector vector, Real pH=7.0):
@@ -167,38 +169,23 @@ cdef class EnergyModel:
 
   def FindPairs (self, Real limit=2.0, log=logFile):
     """Identify pairs of sites for double moves """
-    cdef Real W, Wmax
+    cdef Status  status = Status_Continue
+    cdef Integer indexPair, indexSiteA, indexSiteB
     cdef Integer npairs
-    cdef Integer indexSiteA, indexSiteB, nsites
-    cdef Integer indexInstA, indexInstB, indexGlobalInstA, indexGlobalInstB, ninsta, ninstb
-    meadModel = self.owner
-    nsites    = meadModel.nsites
-    sites     = meadModel.meadSites
-    npairs    = 0
+    npairs = EnergyModel_FindPairs (self.cObject, limit, -1, &status)
 
-    for indexSiteA from 0 <= indexSiteA < nsites: 
-      sitea  = sites[indexSiteA]
-      ninsta = sitea.ninstances
- 
-      for indexSiteB from 0 <= indexSiteB < nsites:
-        siteb  = sites[indexSiteB]
-        ninstb = siteb.ninstances
-        Wmax   = 0.
-      
-        for indexInstA from 0 <= indexInstA < ninsta: 
-          insta = sitea.instances[indexInstA]
-          indexGlobalInstA = insta._instIndexGlobal
-      
-          for indexInstB from 0 <= indexInstB < ninstb: 
-            instb = siteb.instances[indexInstB]
-            indexGlobalInstB = instb._instIndexGlobal
-      
-            W = EnergyModel_GetInteractionSymmetric (self.cObject, indexGlobalInstA, indexGlobalInstB)
-            if W < 0.   : W = -1. * W
-            if W > Wmax : Wmax = W
-      
-        if Wmax >= limit:
-          npairs += 1
+    if npairs > 0:
+      EnergyModel_FindPairs (self.cObject, limit, npairs, &status)
+      if status != Status_Continue:
+        raise CLibraryError ("Cannot allocate pairs.")
+  
+      if LogFileActive (log):
+        log.Text ("\nFound %d pair%s of strongly interacting sites:\n" % (npairs, "s" if npairs != 1 else ""))
+        meadModel = self.owner
+        sites     = meadModel.meadSites
 
-    if LogFileActive (log):
-      log.Text ("\nFound %d pair(s) of strongly interacting sites.\n" % npairs)
+        for indexPair from 0 <= indexPair < npairs:
+          StateVector_GetPair (self.cObject.vector, indexPair, &indexSiteA, &indexSiteB, &status)
+          siteFirst  = sites[indexSiteA]
+          siteSecond = sites[indexSiteB]
+          log.Text ("%4s %4s %4d : %4s %4s %4d\n" % (siteFirst.segName, siteFirst.resName, siteFirst.resSerial, siteSecond.segName, siteSecond.resName, siteSecond.resSerial))
