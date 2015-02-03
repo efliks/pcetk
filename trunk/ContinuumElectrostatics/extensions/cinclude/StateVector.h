@@ -32,10 +32,15 @@ typedef struct {
 } TitrSite;
 
 typedef struct {
+  /* Pointers to sites that make up a pair */
+  TitrSite *a, *b;
+} PairSite;
+
+typedef struct {
   TitrSite  *sites, **substateSites;
   Integer    nsites, nssites;
   /* Handled by the EnergyModel module */
-  TitrSite **pairs;
+  PairSite  *pairs;
   Integer    npairs;
 } StateVector;
 
@@ -58,6 +63,8 @@ extern void         StateVector_Randomize         (const StateVector *self);
 
 /* Functions for accessing items */
 extern void         StateVector_SetSite           (const StateVector *self, const Integer indexSite, const Integer indexFirst, const Integer indexLast, Status *status);
+extern void         StateVector_SetPair           (const StateVector *self, const Integer indexPair, const Integer indexFirstSite, const Integer indexSecondSite, Status *status);
+extern void         StateVector_GetPair           (const StateVector *self, const Integer indexPair, Integer *indexFirstSite, Integer *indexSecondSite, Status *status);
 extern Boolean      StateVector_IsSubstate        (const StateVector *self, const Integer siteIndex, Status *status);
 extern Integer      StateVector_GetItem           (const StateVector *self, const Integer siteIndex, Status *status);
 extern void         StateVector_SetItem           (const StateVector *self, const Integer siteIndex, const Integer instanceLocalIndex, Status *status);

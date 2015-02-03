@@ -447,10 +447,10 @@ class MEADModel (object):
       self._CheckIfSymmetric (tolerance=asymmetricTolerance, printSummary=asymmetricSummary, log=log)
 
       # Symmetrize interaction energies inside the matrix of interactions
-      self.energyModel.SymmetrizeInteractions ()
+      self.energyModel.SymmetrizeInteractions (log=log)
 
-      if LogFileActive (log):
-        log.Text ("\nSymmetrizing interactions complete.\n")
+      # Find pairs of sites for double moves
+      self.energyModel.FindPairs (limit=_DefaultDoubleFlip, log=log)
 
       self.isCalculated = True
 
