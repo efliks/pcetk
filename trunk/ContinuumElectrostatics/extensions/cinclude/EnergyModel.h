@@ -8,8 +8,6 @@
 #ifndef _ENERGYMODEL
 #define _ENERGYMODEL
 
-/* Needed for memset and random */
-#include <stdio.h>
 /* Needed for random seed */
 #include <time.h>
 /* Needed for exp */
@@ -77,7 +75,7 @@ extern Real    EnergyModel_CalculateMicrostateEnergy          (const EnergyModel
 extern void    EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const Real pH, const Real temperature, Status *status);
 
 /* Monte Carlo-related functions */
-extern Boolean EnergyModel_Metropolis           (const Real GdeltaRT);
+extern Boolean EnergyModel_Metropolis           (const Real GdeltaRT, const RandomNumberGenerator *generator);
 extern Real    EnergyModel_MCScan               (const EnergyModel *self, const Real pH, const Real temperature, Integer nmoves);
 extern void    EnergyModel_UpdateProbabilities  (const EnergyModel *self);
 extern Real    EnergyModel_FindMaxInteraction   (const EnergyModel *self, const TitrSite *site, const TitrSite *other);
