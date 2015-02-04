@@ -150,12 +150,12 @@ void StateVector_ResetToMaximum (const StateVector *self) {
   }
 }
 
-void StateVector_Randomize (const StateVector *self) {
+void StateVector_Randomize (const StateVector *self, const RandomNumberGenerator *generator) {
   TitrSite *site = self->sites;
   Integer   i = self->nsites;
 
   for (; i > 0; i--, site++) {
-    site->indexActive = rand () % (site->indexLast - site->indexFirst + 1) + site->indexFirst;
+    site->indexActive = RandomNumberGenerator_NextCardinal (generator) % (site->indexLast - site->indexFirst + 1) + site->indexFirst;
   }
 }
 
@@ -355,14 +355,14 @@ Boolean StateVector_IncrementSubstate (const StateVector *self) {
 /*=============================================================================
   Monte Carlo-related functions
 =============================================================================*/
-void StateVector_Move (const StateVector *self, Integer *site, Integer *oldActive) {
+void StateVector_Move (const StateVector *self, Integer *site, Integer *oldActive, const RandomNumberGenerator *generator) {
   TitrSite *ts;
   Integer randomSite, randomInstance;
 
-  randomSite = rand () % self->nsites;
+  randomSite = RandomNumberGenerator_NextCardinal (generator) % self->nsites;
   ts = &self->sites[randomSite];
   do {
-    randomInstance = rand () % (ts->indexLast - ts->indexFirst + 1) + ts->indexFirst;
+    randomInstance = RandomNumberGenerator_NextCardinal (generator) % (ts->indexLast - ts->indexFirst + 1) + ts->indexFirst;
   } while (randomInstance == ts->indexActive);
 
   *site           = randomSite;
@@ -370,28 +370,27 @@ void StateVector_Move (const StateVector *self, Integer *site, Integer *oldActiv
   ts->indexActive = randomInstance;
 }
 
-void StateVector_DoubleMove (const StateVector *self, Integer *site, Integer *siteOther, Integer *oldActive, Integer *oldActiveOther) {
-  Integer    randomPair, randomInst, randomInstOther;
+void StateVector_DoubleMove (const StateVector *self, Integer *site, Integer *siteOther, Integer *oldActive, Integer *oldActiveOther, const RandomNumberGenerator *generator) {
+  Integer    randomPair, randomInstance;
   TitrSite  *sa, *sb;
   PairSite  *pair;
 
-  randomPair = rand () % self->npairs;
+  randomPair = RandomNumberGenerator_NextCardinal (generator) % self->npairs;
   pair = &self->pairs[randomPair];
   sa   = pair->a;
   sb   = pair->b;
 
   do {
-    randomInst = rand () % (sa->indexLast - sa->indexFirst + 1) + sa->indexFirst;
-  } while (randomInst == sa->indexActive);
-  do {
-    randomInstOther = rand () % (sb->indexLast - sb->indexFirst + 1) + sb->indexFirst;
-  } while (randomInstOther == sb->indexActive);
-
+    randomInstance = RandomNumberGenerator_NextCardinal (generator) % (sa->indexLast - sa->indexFirst + 1) + sa->indexFirst;
+  } while (randomInstance == sa->indexActive);
   *site            =  sa->indexSite    ;
   *oldActive       =  sa->indexActive  ;
-  sa->indexActive  =  randomInst       ;
-                                       
+  sa->indexActive  =  randomInstance   ;
+
+  do {
+    randomInstance = RandomNumberGenerator_NextCardinal (generator) % (sb->indexLast - sb->indexFirst + 1) + sb->indexFirst;
+  } while (randomInstance == sb->indexActive);
   *siteOther       =  sb->indexSite    ;
   *oldActiveOther  =  sb->indexActive  ;
-  sb->indexActive  =  randomInstOther  ;
+  sb->indexActive  =  randomInstance   ;
 }

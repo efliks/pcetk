@@ -225,12 +225,12 @@ void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, co
 /*=============================================================================
   Monte Carlo-related functions
 =============================================================================*/
-Boolean EnergyModel_Metropolis (const Real GdeltaRT) {
+Boolean EnergyModel_Metropolis (const Real GdeltaRT, const RandomNumberGenerator *generator) {
   Boolean metropolis;
   Real ran;
 
   /* Prepare */
-  ran = rand () / (Real) RAND_MAX;
+  ran = RandomNumberGenerator_NextReal (generator);
 
   /* Apply the Metropolis criterion; based on GMCT */
   if (GdeltaRT < 0.)
@@ -250,42 +250,43 @@ Boolean EnergyModel_Metropolis (const Real GdeltaRT) {
  * The purpose of a scan is to generate a state vector representing a low-energy, statistically relevant protonation state
  */
 Real EnergyModel_MCScan (const EnergyModel *self, const Real pH, const Real temperature, Integer nmoves) {
-  Integer    site, siteOther, oldActive, oldActiveOther, select;
+  Integer    site, siteOther, oldActive, oldActiveOther, selection, select;
   Real       G, Gnew, GdeltaRT, beta;
   Boolean    accept, isDouble;
   TitrSite  *ts;
 
-  G = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH, temperature);
-  beta = 1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * temperature);
+  G         = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH, temperature);
+  beta      = 1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * temperature);
+  selection = self->vector->nsites + self->vector->npairs;
 
   for (; nmoves > 0; nmoves--) {
-    select   = rand () % (self->vector->nsites + self->vector->npairs);
-    isDouble = False;
+    select = RandomNumberGenerator_NextCardinal (self->generator) % selection;
 
     if (select < self->vector->nsites) {
       /* Perform a single move */
-      StateVector_Move (self->vector, &site, &oldActive);
+      isDouble = False;
+      StateVector_Move (self->vector, &site, &oldActive, self->generator);
     }
     else {
       /* Perform a double move */
       isDouble = True;
-      StateVector_DoubleMove (self->vector, &site, &siteOther, &oldActive, &oldActiveOther);
+      StateVector_DoubleMove (self->vector, &site, &siteOther, &oldActive, &oldActiveOther, self->generator);
     }
 
     Gnew     = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH, temperature);
     GdeltaRT = (Gnew - G) * beta;
-    accept   = EnergyModel_Metropolis (GdeltaRT);
+    accept   = EnergyModel_Metropolis (GdeltaRT, self->generator);
 
     if (accept) {
       /* Accept the move */
       G = Gnew;
     }
     else {
-      /* Revert single move */
+      /* Revert the single move */
       ts              = &self->vector->sites[site];
       ts->indexActive = oldActive;
 
-      /* Revert double move */
+      /* Revert the double move */
       if (isDouble) {
         ts              = &self->vector->sites[siteOther];
         ts->indexActive = oldActiveOther;
@@ -368,25 +369,22 @@ Integer EnergyModel_FindPairs (const EnergyModel *self, const Real limit, const 
   return nfound;
 }
 
+/*
+ * Runs a Monte Carlo simulation.
+ *
+ * If equil is true, only the equilibration run is performed. Otherwise the production run is done.
+ */
 void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, const Real pH, const Real temperature, const Boolean equil, Integer nscans, Status *status) {
   Real    Gfinal, scale;
   Integer nmoves;
 
-  /* Initiate the random number generator */
-  static Boolean rngStart = True;
-  if (rngStart) {
-    srandom ((Cardinal) time (NULL));
-    rngStart = False;
-  }
-
-  /* The number of moves is proportional to the number of sites */
+  /* The number of moves is proportional to the number of sites and pairs */
   nmoves = self->vector->nsites + self->vector->npairs;
   scale  = 1. / nscans;
 
   /* Equilibration phase? */
   if (equil) {
-    StateVector_Randomize (self->vector);
-
+    StateVector_Randomize (self->vector, self->generator);
     /* Run the scans */
     for (; nscans > 0; nscans--)
       Gfinal = EnergyModel_MCScan (self, pH, temperature, nmoves);
@@ -400,7 +398,6 @@ void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, cons
     /* Run the scans */
     for (; nscans > 0; nscans--) {
       Gfinal = EnergyModel_MCScan (self, pH, temperature, nmoves);
-
       /* Update the counts */
       EnergyModel_UpdateProbabilities (self);
     }

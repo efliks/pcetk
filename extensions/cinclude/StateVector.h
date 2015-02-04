@@ -10,14 +10,13 @@
 
 /* Needed for calloc */
 #include <stdlib.h>
-/* Needed for random */
-#include <stdio.h>
 
 #include "Real.h"
 #include "Boolean.h"
 #include "Integer.h"
 #include "Memory.h"
 #include "Status.h"
+#include "RandomNumberGenerator.h"
 
 
 #define MEMORY_ALLOCATEARRAY_POINTERS( object, length, type ) { object = (type**) calloc ((CSize) length, sizeof (type*)) ; }
@@ -61,7 +60,7 @@ extern void         StateVector_CopyTo            (const StateVector *self, Stat
 extern void         StateVector_Reset             (const StateVector *self);
 extern void         StateVector_ResetSubstate     (const StateVector *self);
 extern void         StateVector_ResetToMaximum    (const StateVector *self);
-extern void         StateVector_Randomize         (const StateVector *self);
+extern void         StateVector_Randomize         (const StateVector *self, const RandomNumberGenerator *generator);
 
 /* Functions for accessing items */
 extern void         StateVector_SetSite           (const StateVector *self, const Integer indexSite, const Integer indexFirst, const Integer indexLast, Status *status);
@@ -80,7 +79,7 @@ extern Boolean      StateVector_Increment         (const StateVector *self);
 extern Boolean      StateVector_IncrementSubstate (const StateVector *self);
 
 /* Monte Carlo-related functions */
-extern void         StateVector_Move              (const StateVector *self, Integer *site, Integer *oldActive);
-extern void         StateVector_DoubleMove        (const StateVector *self, Integer *site, Integer *siteOther, Integer *oldActive, Integer *oldActiveOther);
+extern void         StateVector_Move              (const StateVector *self, Integer *site, Integer *oldActive, const RandomNumberGenerator *generator);
+extern void         StateVector_DoubleMove        (const StateVector *self, Integer *site, Integer *siteOther, Integer *oldActive, Integer *oldActiveOther, const RandomNumberGenerator *generator);
 
 #endif
