@@ -40,6 +40,11 @@
 /* Taken from GMCT */
 #define TOO_SMALL -500.0
 
+/* Macros */
+#define EnergyModel_RowPointer(self, i) (&self->symmetricmatrix->data[(i * (i + 1) >> 1)])
+
+#define EnergyModel_GetW(self, i, j) (i >= j ? self->symmetricmatrix->data[(i * (i + 1) >> 1) + j] : self->symmetricmatrix->data[(j * (j + 1) >> 1) + i])
+
 typedef struct {
   /* Number of bound protons of each instance */
   Integer1DArray        *protons;

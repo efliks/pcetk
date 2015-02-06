@@ -172,6 +172,7 @@ cdef class EnergyModel:
     cdef Status  status = Status_Continue
     cdef Integer indexPair, indexSiteA, indexSiteB
     cdef Integer npairs
+    cdef Real    Wmax
     npairs = EnergyModel_FindPairs (self.cObject, limit, -1, &status)
 
     if npairs > 0:
@@ -185,7 +186,7 @@ cdef class EnergyModel:
         sites     = meadModel.meadSites
 
         for indexPair from 0 <= indexPair < npairs:
-          StateVector_GetPair (self.cObject.vector, indexPair, &indexSiteA, &indexSiteB, &status)
+          StateVector_GetPair (self.cObject.vector, indexPair, &indexSiteA, &indexSiteB, &Wmax, &status)
           siteFirst  = sites[indexSiteA]
           siteSecond = sites[indexSiteB]
-          log.Text ("%4s %4s %4d  :  %4s %4s %4d\n" % (siteFirst.segName, siteFirst.resName, siteFirst.resSerial, siteSecond.segName, siteSecond.resName, siteSecond.resSerial))
+          log.Text ("%4s %4s %4d -- %4s %4s %4d : %f\n" % (siteFirst.segName, siteFirst.resName, siteFirst.resSerial, siteSecond.segName, siteSecond.resName, siteSecond.resSerial, Wmax))

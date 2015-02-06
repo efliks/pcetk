@@ -50,8 +50,8 @@ cdef extern from "StateVector.h":
 
   # Accessing items
   cdef void          StateVector_SetSite           (CStateVector *self, Integer indexSite, Integer indexFirst, Integer indexLast, Status *status)
-  cdef void          StateVector_SetPair           (CStateVector *self, Integer indexPair, Integer indexFirstSite, Integer indexSecondSite, Status *status)
-  cdef void          StateVector_GetPair           (CStateVector *self, Integer indexPair, Integer *indexFirstSite, Integer *indexSecondSite, Status *status)
+  cdef void          StateVector_SetPair           (CStateVector *self, Integer indexPair, Integer indexFirstSite, Integer indexSecondSite, Real Wmax, Status *status)
+  cdef void          StateVector_GetPair           (CStateVector *self, Integer indexPair, Integer *indexFirstSite, Integer *indexSecondSite, Real *Wmax, Status *status)
   cdef Boolean       StateVector_IsSubstate        (CStateVector *self, Integer siteIndex, Status *status)
   cdef Integer       StateVector_GetItem           (CStateVector *self, Integer siteIndex, Status *status)
   cdef void          StateVector_SetItem           (CStateVector *self, Integer siteIndex, Integer instanceLocalIndex, Status *status)

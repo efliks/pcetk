@@ -102,15 +102,7 @@ Real EnergyModel_GetInteraction (const EnergyModel *self, const Integer instInde
 }
 
 Real EnergyModel_GetInterSymmetric (const EnergyModel *self, const Integer instIndexGlobalA, const Integer instIndexGlobalB) {
-  Real value;
-
-  if (instIndexGlobalA >= instIndexGlobalB) {
-    value = SymmetricMatrix_Item (self->symmetricmatrix, instIndexGlobalA, instIndexGlobalB);
-  }
-  else {
-    value = SymmetricMatrix_Item (self->symmetricmatrix, instIndexGlobalB, instIndexGlobalA);
-  }
-  return value;
+  return EnergyModel_GetW (self, instIndexGlobalA, instIndexGlobalB);
 }
 
 Real EnergyModel_GetDeviation (const EnergyModel *self, const Integer i, const Integer j) {
@@ -145,7 +137,7 @@ void EnergyModel_SetInteraction (const EnergyModel *self, const Integer instInde
   Calculating microstate energy
 =============================================================================*/
 Real EnergyModel_CalculateMicrostateEnergy (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature) {
-  Real      Gintr, W, *data;
+  Real      Gintr, W, *interact;
   Integer   nprotons, i, j;
   TitrSite *site, *siteInner;
 
@@ -158,10 +150,10 @@ Real EnergyModel_CalculateMicrostateEnergy (const EnergyModel *self, const State
     Gintr     += Real1DArray_Item    (self->intrinsic , site->indexActive);
     nprotons  += Integer1DArray_Item (self->protons   , site->indexActive);
 
-    data       = &self->symmetricmatrix->data[(site->indexActive * (site->indexActive + 1)) >> 1];
+    interact   = EnergyModel_RowPointer (self, site->indexActive);
     siteInner  = vector->sites;
     for (j = 0; j <= i; j++, siteInner++) {
-      W += *(data + (siteInner->indexActive));
+      W += *(interact + (siteInner->indexActive));
     }
   }
   return (Gintr - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * temperature * CONSTANT_LN10 * pH) + W);
@@ -227,10 +219,6 @@ void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, co
 =============================================================================*/
 Boolean EnergyModel_Metropolis (const Real GdeltaRT, const RandomNumberGenerator *generator) {
   Boolean metropolis;
-  Real ran;
-
-  /* Prepare */
-  ran = RandomNumberGenerator_NextReal (generator);
 
   /* Apply the Metropolis criterion; based on GMCT */
   if (GdeltaRT < 0.)
@@ -238,7 +226,7 @@ Boolean EnergyModel_Metropolis (const Real GdeltaRT, const RandomNumberGenerator
   else {
     if (-GdeltaRT < TOO_SMALL)
       metropolis = False;
-    else if (ran < exp (-GdeltaRT))
+    else if (RandomNumberGenerator_NextReal (generator) < exp (-GdeltaRT))
       metropolis = True;
     else
       metropolis = False;
@@ -326,7 +314,7 @@ Real EnergyModel_FindMaxInteraction (const EnergyModel *self, const TitrSite *si
 
     indexOther = other->indexFirst;
     for (; indexOther <= other->indexLast; indexOther++) {
-      W = abs (EnergyModel_GetInterSymmetric (self, index, indexOther));
+      W = fabs (EnergyModel_GetW (self, index, indexOther));
       if (W > Wmax) Wmax = W;
     }
   }
@@ -360,7 +348,7 @@ Integer EnergyModel_FindPairs (const EnergyModel *self, const Real limit, const 
       Wmax = EnergyModel_FindMaxInteraction (self, site, siteInner);
       if (Wmax >= limit) {
         if (npairs > 0) {
-          StateVector_SetPair (self->vector, nfound, site->indexSite, siteInner->indexSite, status);
+          StateVector_SetPair (self->vector, nfound, site->indexSite, siteInner->indexSite, Wmax, status);
         }
         nfound++;
       }
