@@ -136,7 +136,7 @@ void EnergyModel_SetInteraction (const EnergyModel *self, const Integer instInde
 /*=============================================================================
   Calculating microstate energy
 =============================================================================*/
-Real EnergyModel_CalculateMicrostateEnergy (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature) {
+Real EnergyModel_CalculateMicrostateEnergy (const EnergyModel *self, const StateVector *vector, const Real pH) {
   Real      Gintr, W, *interact;
   Integer   nprotons, i, j;
   TitrSite *site, *siteInner;
@@ -156,13 +156,13 @@ Real EnergyModel_CalculateMicrostateEnergy (const EnergyModel *self, const State
       W += *(interact + (siteInner->indexActive));
     }
   }
-  return (Gintr - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * temperature * CONSTANT_LN10 * pH) + W);
+  return (Gintr - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * self->temperature * CONSTANT_LN10 * pH) + W);
 }
 
 /*=============================================================================
   Calculating probabilities analytically
 =============================================================================*/
-void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const Real pH, const Real temperature, Status *status) {
+void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const Real pH, Status *status) {
   Real         *bfactor, G, Gzero, bsum;
   Real1DArray  *bfactors;
   Integer       i, j;
@@ -177,10 +177,10 @@ void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, co
   StateVector_Reset (self->vector);
   i       = self->nstates;
   bfactor = Real1DArray_Data (bfactors);
-  Gzero   = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH, temperature);
+  Gzero   = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH);
 
   for (; i > 0; i--, bfactor++) {
-    G = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH, temperature);
+    G = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH);
     if (G < Gzero) {
       Gzero = G;
     }
@@ -190,7 +190,7 @@ void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, co
 
   /* Convert energies to Boltzmann factors */
   Real1DArray_AddScalar (bfactors, -Gzero);
-  Real1DArray_Scale (bfactors, -1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * temperature));
+  Real1DArray_Scale (bfactors, -1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * self->temperature));
   Real1DArray_Exp (bfactors);
 
   /* Calculate probabilities */
@@ -237,14 +237,14 @@ Boolean EnergyModel_Metropolis (const Real GdeltaRT, const RandomNumberGenerator
 /*
  * The purpose of a scan is to generate a state vector representing a low-energy, statistically relevant protonation state
  */
-Real EnergyModel_MCScan (const EnergyModel *self, const Real pH, const Real temperature, Integer nmoves) {
+Real EnergyModel_MCScan (const EnergyModel *self, const Real pH, Integer nmoves) {
   Integer    site, siteOther, oldActive, oldActiveOther, selection, select;
   Real       G, Gnew, GdeltaRT, beta;
   Boolean    accept, isDouble;
   TitrSite  *ts;
 
-  G         = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH, temperature);
-  beta      = 1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * temperature);
+  G         = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH);
+  beta      = 1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * self->temperature);
   selection = self->vector->nsites + self->vector->npairs;
 
   for (; nmoves > 0; nmoves--) {
@@ -261,7 +261,7 @@ Real EnergyModel_MCScan (const EnergyModel *self, const Real pH, const Real temp
       StateVector_DoubleMove (self->vector, &site, &siteOther, &oldActive, &oldActiveOther, self->generator);
     }
 
-    Gnew     = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH, temperature);
+    Gnew     = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH);
     GdeltaRT = (Gnew - G) * beta;
     accept   = EnergyModel_Metropolis (GdeltaRT, self->generator);
 
@@ -362,7 +362,7 @@ Integer EnergyModel_FindPairs (const EnergyModel *self, const Real limit, const 
  *
  * If equil is true, only the equilibration run is performed. Otherwise the production run is done.
  */
-void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, const Real pH, const Real temperature, const Boolean equil, Integer nscans, Status *status) {
+void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, const Real pH, const Boolean equil, Integer nscans, Status *status) {
   Real    Gfinal, scale;
   Integer nmoves;
 
@@ -375,7 +375,7 @@ void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, cons
     StateVector_Randomize (self->vector, self->generator);
     /* Run the scans */
     for (; nscans > 0; nscans--)
-      Gfinal = EnergyModel_MCScan (self, pH, temperature, nmoves);
+      Gfinal = EnergyModel_MCScan (self, pH, nmoves);
   }
 
   /* Production phase? */
@@ -385,7 +385,7 @@ void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, cons
 
     /* Run the scans */
     for (; nscans > 0; nscans--) {
-      Gfinal = EnergyModel_MCScan (self, pH, temperature, nmoves);
+      Gfinal = EnergyModel_MCScan (self, pH, nmoves);
       /* Update the counts */
       EnergyModel_UpdateProbabilities (self);
     }

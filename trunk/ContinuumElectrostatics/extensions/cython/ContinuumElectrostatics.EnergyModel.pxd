@@ -21,14 +21,15 @@ __lastchanged__ = "$Id: $"
 # Include EnergyModel.h in the generated C code
 cdef extern from "EnergyModel.h":
   ctypedef struct CEnergyModel "EnergyModel":
-    CInteger1DArray    *protons
-    CReal1DArray       *intrinsic
-    CReal2DArray       *interactions
-    CReal1DArray       *probabilities
-    CSymmetricMatrix   *symmetricmatrix
-    CStateVector       *vector
-    Integer             nstates
-    Integer             ninstances
+    CInteger1DArray   *protons
+    CReal1DArray      *intrinsic
+    CReal2DArray      *interactions
+    CReal1DArray      *probabilities
+    CSymmetricMatrix  *symmetricmatrix
+    CStateVector      *vector
+    Integer            nstates
+    Integer            ninstances
+    Real               temperature
 
 
   # Allocation and deallocation
@@ -40,14 +41,14 @@ cdef extern from "EnergyModel.h":
   cdef void    EnergyModel_SymmetrizeInteractions     (CEnergyModel *self, Status *status)
 
   # Calculation functions
-  cdef Real    EnergyModel_CalculateMicrostateEnergy          (CEnergyModel *self, CStateVector *vector, Real pH, Real temperature)
-  cdef void    EnergyModel_CalculateProbabilitiesAnalytically (CEnergyModel *self, Real pH, Real temperature, Status *status)
+  cdef Real    EnergyModel_CalculateMicrostateEnergy          (CEnergyModel *self, CStateVector *vector, Real pH)
+  cdef void    EnergyModel_CalculateProbabilitiesAnalytically (CEnergyModel *self, Real pH, Status *status)
 
   # Monte Carlo-related functions
-  cdef Real    EnergyModel_MCScan               (CEnergyModel *self, Real pH, Real temperature, Integer nmoves)
+  cdef Real    EnergyModel_MCScan               (CEnergyModel *self, Real pH, Integer nmoves)
   cdef void    EnergyModel_UpdateProbabilities  (CEnergyModel *self)
   cdef Integer EnergyModel_FindPairs            (CEnergyModel *self, Real limit, Integer npairs, Status *status)
-  cdef void    EnergyModel_CalculateProbabilitiesMonteCarlo (CEnergyModel *self, Real pH, Real temperature, Boolean equil, Integer nscans, Status *status)
+  cdef void    EnergyModel_CalculateProbabilitiesMonteCarlo (CEnergyModel *self, Real pH, Boolean equil, Integer nscans, Status *status)
 
   # Functions for accessing items
   cdef Real    EnergyModel_GetGintr          (CEnergyModel *self, Integer instIndexGlobal)
@@ -61,7 +62,6 @@ cdef extern from "EnergyModel.h":
   cdef void    EnergyModel_SetProtons        (CEnergyModel *self, Integer instIndexGlobal, Integer value)
   cdef void    EnergyModel_SetProbability    (CEnergyModel *self, Integer instIndexGlobal, Real value)
   cdef void    EnergyModel_SetInteraction    (CEnergyModel *self, Integer instIndexGlobalA, Integer instIndexGlobalB, Real value)
-
 
 #-------------------------------------------------------------------------------
 cdef class EnergyModel:
