@@ -44,7 +44,6 @@ cdef extern from "EnergyModel.h":
   cdef void    EnergyModel_CalculateProbabilitiesAnalytically (CEnergyModel *self, Real pH, Real temperature, Status *status)
 
   # Monte Carlo-related functions
-  cdef Boolean EnergyModel_Metropolis           (Real GdeltaRT)
   cdef Real    EnergyModel_MCScan               (CEnergyModel *self, Real pH, Real temperature, Integer nmoves)
   cdef void    EnergyModel_UpdateProbabilities  (CEnergyModel *self)
   cdef Integer EnergyModel_FindPairs            (CEnergyModel *self, Real limit, Integer npairs, Status *status)

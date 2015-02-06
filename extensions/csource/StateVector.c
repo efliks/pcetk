@@ -178,20 +178,21 @@ void StateVector_SetSite (const StateVector *self, const Integer indexSite, cons
   }
 }
 
-void StateVector_SetPair (const StateVector *self, const Integer indexPair, const Integer indexFirstSite, const Integer indexSecondSite, Status *status) {
+void StateVector_SetPair (const StateVector *self, const Integer indexPair, const Integer indexFirstSite, const Integer indexSecondSite, const Real Wmax, Status *status) {
   PairSite *pair;
 
   if (indexPair < 0 || indexPair >= self->npairs) {
     Status_Set (status, Status_IndexOutOfRange);
   }
   else {
-    pair    = &self->pairs[indexPair];
-    pair->a = &self->sites[indexFirstSite];
-    pair->b = &self->sites[indexSecondSite];
+    pair       = &self->pairs[indexPair];
+    pair->a    = &self->sites[indexFirstSite];
+    pair->b    = &self->sites[indexSecondSite];
+    pair->Wmax = Wmax;
   }
 }
 
-void StateVector_GetPair (const StateVector *self, const Integer indexPair, Integer *indexFirstSite, Integer *indexSecondSite, Status *status) {
+void StateVector_GetPair (const StateVector *self, const Integer indexPair, Integer *indexFirstSite, Integer *indexSecondSite, Real *Wmax, Status *status) {
   PairSite *pair;
   TitrSite *site;
 
@@ -199,11 +200,12 @@ void StateVector_GetPair (const StateVector *self, const Integer indexPair, Inte
     Status_Set (status, Status_IndexOutOfRange);
   }
   else {
-    pair = &self->pairs[indexPair];
-    site = pair->a;
+    pair  = &self->pairs[indexPair];
+    site  = pair->a;
     *indexFirstSite  = site->indexSite;
-    site = pair->b;
+    site  = pair->b;
     *indexSecondSite = site->indexSite;
+    *Wmax = pair->Wmax;
   }
 }
 
