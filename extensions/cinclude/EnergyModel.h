@@ -64,6 +64,8 @@ typedef struct {
   Integer                nstates;
   /* Total number of instances */
   Integer                ninstances;
+  /* Temperature at which the MEAD part was done */
+  Real                   temperature;
 } EnergyModel;
 
 
@@ -76,16 +78,16 @@ extern void    EnergyModel_SymmetrizeInteractions     (const EnergyModel *self, 
 extern Boolean EnergyModel_CheckInteractionsSymmetric (const EnergyModel *self, Real tolerance, Real *maxDeviation);
 
 /* Calculation functions */
-extern Real    EnergyModel_CalculateMicrostateEnergy          (const EnergyModel *self, const StateVector *vector, const Real pH, const Real temperature);
-extern void    EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const Real pH, const Real temperature, Status *status);
+extern Real    EnergyModel_CalculateMicrostateEnergy          (const EnergyModel *self, const StateVector *vector, const Real pH);
+extern void    EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const Real pH, Status *status);
 
 /* Monte Carlo-related functions */
 extern Boolean EnergyModel_Metropolis           (const Real GdeltaRT, const RandomNumberGenerator *generator);
-extern Real    EnergyModel_MCScan               (const EnergyModel *self, const Real pH, const Real temperature, Integer nmoves);
+extern Real    EnergyModel_MCScan               (const EnergyModel *self, const Real pH, Integer nmoves);
 extern void    EnergyModel_UpdateProbabilities  (const EnergyModel *self);
 extern Real    EnergyModel_FindMaxInteraction   (const EnergyModel *self, const TitrSite *site, const TitrSite *other);
 extern Integer EnergyModel_FindPairs            (const EnergyModel *self, const Real limit, const Integer npairs, Status *status);
-extern void    EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, const Real pH, const Real temperature, const Boolean equil, Integer nscans, Status *status);
+extern void    EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, const Real pH, const Boolean equil, Integer nscans, Status *status);
 
 /* Functions for accessing items */
 extern Real    EnergyModel_GetGintr          (const EnergyModel *self, const Integer instIndexGlobal);

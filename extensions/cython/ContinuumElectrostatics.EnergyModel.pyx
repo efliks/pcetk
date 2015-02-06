@@ -66,11 +66,14 @@ cdef class EnergyModel:
     """Constructor."""
     cdef Integer nstates, ninstances, totalSites, totalInstances
     cdef Integer indexSite, indexDown, indexUp, index
+    cdef Real    temperature
     cdef Status  status
 
     status         = Status_Continue
     totalSites     = meadModel.nsites
     totalInstances = meadModel.ninstances
+    temperature    = meadModel.temperature
+
     self.cObject   = EnergyModel_Allocate (totalSites, totalInstances, &status)
     if status != Status_Continue:
       raise CLibraryError ("Cannot allocate energy model.")
@@ -91,8 +94,9 @@ cdef class EnergyModel:
       if nstates <= ANALYTIC_STATES:
         nstates = nstates * ninstances
 
-    self.cObject.nstates    = nstates
-    self.cObject.ninstances = totalInstances
+    self.cObject.nstates     = nstates
+    self.cObject.ninstances  = totalInstances
+    self.cObject.temperature = temperature
     self.isOwner = False
     self.owner   = meadModel
 
@@ -116,30 +120,26 @@ cdef class EnergyModel:
   def CalculateMicrostateEnergy (self, StateVector vector, Real pH=7.0):
     """Calculate energy of a protonation state (=microstate)."""
     cdef Real Gmicro
-    cdef Real temperature
-    meadModel   = self.owner
-    temperature = meadModel.temperature
+    meadModel = self.owner
 
     if not meadModel.isCalculated:
       raise CLibraryError ("First calculate electrostatic energies.")
-    Gmicro = EnergyModel_CalculateMicrostateEnergy (self.cObject, vector.cObject, pH, temperature)
+    Gmicro = EnergyModel_CalculateMicrostateEnergy (self.cObject, vector.cObject, pH)
     return Gmicro
 
 
   def CalculateProbabilitiesAnalytically (self, Real pH=7.0):
     """Calculate probabilities of protonation states analytically."""
     cdef Status status
-    cdef Real   temperature
-    status      = Status_Continue
-    meadModel   = self.owner
-    temperature = meadModel.temperature
+    status     = Status_Continue
+    meadModel  = self.owner
 
     if self.cObject.nstates > ANALYTIC_STATES:
       raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)
     if not meadModel.isCalculated:
       raise CLibraryError ("First calculate electrostatic energies.")
 
-    EnergyModel_CalculateProbabilitiesAnalytically (self.cObject, pH, temperature, &status)
+    EnergyModel_CalculateProbabilitiesAnalytically (self.cObject, pH, &status)
     if status != Status_Continue:
       raise CLibraryError ("Cannot allocate Boltzmann factors.")
 
@@ -149,20 +149,19 @@ cdef class EnergyModel:
   def CalculateProbabilitiesMonteCarlo (self, Real pH=7.0, Integer nequi=500, Integer nprod=20000, log=logFile):
     """Calculate probabilities of protonation states by using Metropolis Monte Carlo."""
     cdef Status  status
-    status      = Status_Continue
-    meadModel   = self.owner
-    temperature = meadModel.temperature
+    status     = Status_Continue
+    meadModel  = self.owner
 
     if not meadModel.isCalculated:
       raise CLibraryError ("First calculate electrostatic energies.")
 
     # Equilibration
-    EnergyModel_CalculateProbabilitiesMonteCarlo (self.cObject, pH, temperature, CTrue,  nequi, &status)
+    EnergyModel_CalculateProbabilitiesMonteCarlo (self.cObject, pH, CTrue,  nequi, &status)
     if LogFileActive (log):
       log.Text ("\nCompleted %d equilibration scans.\n" % nequi)
 
     # Production
-    EnergyModel_CalculateProbabilitiesMonteCarlo (self.cObject, pH, temperature, CFalse, nprod, &status)
+    EnergyModel_CalculateProbabilitiesMonteCarlo (self.cObject, pH, CFalse, nprod, &status)
     if LogFileActive (log):
       log.Text ("\nCompleted %d production scans.\n" % nprod)
 
