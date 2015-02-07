@@ -80,8 +80,4 @@ extern void         StateVector_SetSubstateItem   (const StateVector *self, cons
 extern Boolean      StateVector_Increment         (const StateVector *self);
 extern Boolean      StateVector_IncrementSubstate (const StateVector *self);
 
-/* Monte Carlo-related functions */
-extern void         StateVector_Move              (const StateVector *self, Integer *site, Integer *oldActive, const RandomNumberGenerator *generator);
-extern void         StateVector_DoubleMove        (const StateVector *self, Integer *site, Integer *siteOther, Integer *oldActive, Integer *oldActiveOther, const RandomNumberGenerator *generator);
-
 #endif
