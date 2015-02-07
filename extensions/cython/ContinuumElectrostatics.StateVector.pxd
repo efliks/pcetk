@@ -64,9 +64,6 @@ cdef extern from "StateVector.h":
   cdef Boolean       StateVector_Increment         (CStateVector *self)
   cdef Boolean       StateVector_IncrementSubstate (CStateVector *self)
 
-  # Monte Carlo-related functions
-  cdef void          StateVector_Move              (CStateVector *self, Integer *siteIndex, Integer *oldIndexActive)
-
 #-------------------------------------------------------------------------------
 cdef class StateVector:
   cdef CStateVector     *cObject

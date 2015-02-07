@@ -147,7 +147,7 @@ Real EnergyModel_CalculateMicrostateEnergy (const EnergyModel *self, const State
 
   site = vector->sites;
   for (i = 0; i < vector->nsites; i++, site++) {
-    Gintr     += Real1DArray_Item    (self->intrinsic , site->indexActive);
+    Gintr     +=    Real1DArray_Item (self->intrinsic , site->indexActive);
     nprotons  += Integer1DArray_Item (self->protons   , site->indexActive);
 
     interact   = EnergyModel_RowPointer (self, site->indexActive);
@@ -235,52 +235,117 @@ Boolean EnergyModel_Metropolis (const Real GdeltaRT, const RandomNumberGenerator
 }
 
 /*
+ * Choose a random site and change its "active" instance
+ */
+Boolean EnergyModel_Move (const EnergyModel *self, const Real pH, const Real G, Real *Gnew) {
+  Integer    site, instance, nprotons, i;
+  Real       Gintr, W, Gdelta, GdeltaRT, beta;
+  TitrSite  *ts, *tsOther;
+  Boolean    accept;
+
+  /* Choose a site and instance */
+  site = RandomNumberGenerator_NextCardinal (self->generator) % self->vector->nsites;
+  ts   = &self->vector->sites[site];
+  do {
+    instance = RandomNumberGenerator_NextCardinal (self->generator) % (ts->indexLast - ts->indexFirst + 1) + ts->indexFirst;
+  } while (instance == ts->indexActive);
+
+  /* Calculate differences in energy components */
+  Gintr    =    Real1DArray_Item (self->intrinsic , instance) -    Real1DArray_Item (self->intrinsic , ts->indexActive);
+  nprotons = Integer1DArray_Item (self->protons   , instance) - Integer1DArray_Item (self->protons   , ts->indexActive);
+
+  W       = 0.;
+  i       = self->vector->nsites ;
+  tsOther = self->vector->sites  ;
+  for (; i > 0; i--, tsOther++) {
+    W += (EnergyModel_GetW (self, instance, tsOther->indexActive) - EnergyModel_GetW (self, ts->indexActive, tsOther->indexActive));
+  }
+
+  Gdelta   = Gintr - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * self->temperature * CONSTANT_LN10 * pH) + W;
+  beta     = 1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * self->temperature);
+  GdeltaRT = Gdelta * beta;
+  accept   = EnergyModel_Metropolis (GdeltaRT, self->generator);
+  if (accept) {
+    ts->indexActive = instance;
+    *Gnew = G + Gdelta;
+  }
+  return accept;
+}
+
+/*
+ * Choose a random pair of sites and change their "active" instances
+ */
+Boolean EnergyModel_DoubleMove (const EnergyModel *self, const Real pH, const Real G, Real *Gnew) {
+  Integer    newPair, indexSa, indexSb, nprotons, i;
+  Real       Gintr, W, Gdelta, GdeltaRT, beta;
+  TitrSite  *sa, *sb, *tsOther;
+  PairSite  *pair;
+  Boolean    accept;
+
+  /* Choose a pair */
+  newPair = RandomNumberGenerator_NextCardinal (self->generator) % self->vector->npairs;
+  pair    = &self->vector->pairs[newPair];
+  sa      = pair->a;
+  sb      = pair->b;
+
+  /* Choose new instances */
+  do {
+    indexSa = RandomNumberGenerator_NextCardinal (self->generator) % (sa->indexLast - sa->indexFirst + 1) + sa->indexFirst;
+  } while (indexSa == sa->indexActive);
+  do {
+    indexSb = RandomNumberGenerator_NextCardinal (self->generator) % (sb->indexLast - sb->indexFirst + 1) + sb->indexFirst;
+  } while (indexSb == sb->indexActive);
+
+  /* Calculate differences in energy components */
+  Gintr =        Real1DArray_Item (self->intrinsic , indexSa) -    Real1DArray_Item (self->intrinsic , sa->indexActive)
+               + Real1DArray_Item (self->intrinsic , indexSb) -    Real1DArray_Item (self->intrinsic , sb->indexActive);
+  nprotons =  Integer1DArray_Item (self->protons   , indexSa) - Integer1DArray_Item (self->protons   , sa->indexActive)
+            + Integer1DArray_Item (self->protons   , indexSb) - Integer1DArray_Item (self->protons   , sb->indexActive);
+
+  W       = EnergyModel_GetW (self, indexSa, indexSb) - EnergyModel_GetW (self, sa->indexActive, sb->indexActive);
+  tsOther = self->vector->sites;
+  for (i = 0; i < self->vector->nsites; i++, tsOther++) {
+    if (i != sa->indexSite && i != sb->indexSite) {
+      W +=  EnergyModel_GetW (self, indexSa, tsOther->indexActive) - EnergyModel_GetW (self, sa->indexActive, tsOther->indexActive)
+          + EnergyModel_GetW (self, indexSb, tsOther->indexActive) - EnergyModel_GetW (self, sb->indexActive, tsOther->indexActive);
+    }
+  }
+
+  Gdelta   = Gintr - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * self->temperature * CONSTANT_LN10 * pH) + W;
+  beta     = 1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * self->temperature);
+  GdeltaRT = Gdelta * beta;
+  accept   = EnergyModel_Metropolis (GdeltaRT, self->generator);
+
+  if (accept) {
+    sa->indexActive = indexSa;
+    sb->indexActive = indexSb;
+    *Gnew = G + Gdelta;
+  }
+  return accept;
+}
+
+/*
  * The purpose of a scan is to generate a state vector representing a low-energy, statistically relevant protonation state
  */
 Real EnergyModel_MCScan (const EnergyModel *self, const Real pH, Integer nmoves) {
-  Integer    site, siteOther, oldActive, oldActiveOther, selection, select;
-  Real       G, Gnew, GdeltaRT, beta;
-  Boolean    accept, isDouble;
-  TitrSite  *ts;
+  Integer  selection, select;
+  Real     G, Gnew;
+  Boolean  accept;
 
-  G         = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH);
-  beta      = 1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * self->temperature);
+  G = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH);
   selection = self->vector->nsites + self->vector->npairs;
 
   for (; nmoves > 0; nmoves--) {
     select = RandomNumberGenerator_NextCardinal (self->generator) % selection;
+    if (select < self->vector->nsites)
+      accept = EnergyModel_Move (self, pH, G, &Gnew);
+    else
+      accept = EnergyModel_DoubleMove (self, pH, G, &Gnew);
 
-    if (select < self->vector->nsites) {
-      /* Perform a single move */
-      isDouble = False;
-      StateVector_Move (self->vector, &site, &oldActive, self->generator);
-    }
-    else {
-      /* Perform a double move */
-      isDouble = True;
-      StateVector_DoubleMove (self->vector, &site, &siteOther, &oldActive, &oldActiveOther, self->generator);
-    }
-
-    Gnew     = EnergyModel_CalculateMicrostateEnergy (self, self->vector, pH);
-    GdeltaRT = (Gnew - G) * beta;
-    accept   = EnergyModel_Metropolis (GdeltaRT, self->generator);
-
-    if (accept) {
-      /* Accept the move */
+    if (accept)
       G = Gnew;
-    }
-    else {
-      /* Revert the single move */
-      ts              = &self->vector->sites[site];
-      ts->indexActive = oldActive;
-
-      /* Revert the double move */
-      if (isDouble) {
-        ts              = &self->vector->sites[siteOther];
-        ts->indexActive = oldActiveOther;
-      }
-    }
   }
+  /* Return final energy only for information */
   return G;
 }
 

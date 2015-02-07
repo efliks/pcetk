@@ -66,14 +66,11 @@ cdef class EnergyModel:
     """Constructor."""
     cdef Integer nstates, ninstances, totalSites, totalInstances
     cdef Integer indexSite, indexDown, indexUp, index
-    cdef Real    temperature
     cdef Status  status
 
     status         = Status_Continue
     totalSites     = meadModel.nsites
     totalInstances = meadModel.ninstances
-    temperature    = meadModel.temperature
-
     self.cObject   = EnergyModel_Allocate (totalSites, totalInstances, &status)
     if status != Status_Continue:
       raise CLibraryError ("Cannot allocate energy model.")
@@ -96,7 +93,7 @@ cdef class EnergyModel:
 
     self.cObject.nstates     = nstates
     self.cObject.ninstances  = totalInstances
-    self.cObject.temperature = temperature
+    self.cObject.temperature = meadModel.temperature
     self.isOwner = False
     self.owner   = meadModel
 

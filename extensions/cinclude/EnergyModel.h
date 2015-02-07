@@ -83,6 +83,8 @@ extern void    EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel
 
 /* Monte Carlo-related functions */
 extern Boolean EnergyModel_Metropolis           (const Real GdeltaRT, const RandomNumberGenerator *generator);
+extern Boolean EnergyModel_Move                 (const EnergyModel *self, const Real pH, const Real G, Real *Gnew);
+extern Boolean EnergyModel_DoubleMove           (const EnergyModel *self, const Real pH, const Real G, Real *Gnew);
 extern Real    EnergyModel_MCScan               (const EnergyModel *self, const Real pH, Integer nmoves);
 extern void    EnergyModel_UpdateProbabilities  (const EnergyModel *self);
 extern Real    EnergyModel_FindMaxInteraction   (const EnergyModel *self, const TitrSite *site, const TitrSite *other);

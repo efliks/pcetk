@@ -9,27 +9,16 @@ from pCore.cDefinitions                  cimport Boolean, CFalse, CTrue, Integer
 from pCore.Status                        cimport Status, Status_Continue, Status_IndexOutOfRange, Status_ValueError
 from ContinuumElectrostatics.StateVector cimport CStateVector, StateVector, StateVector_SetSite, StateVector_GetPair
 
-# There is no need to import these arrays
-from pCore.Integer1DArray                cimport CInteger1DArray, Integer1DArray
-from pCore.Real1DArray                   cimport CReal1DArray, Real1DArray, Real1DArray_Set, Real1DArray_Scale
-from pCore.Real2DArray                   cimport CReal2DArray, Real2DArray
-from pCore.SymmetricMatrix               cimport CSymmetricMatrix, SymmetricMatrix
-
 __lastchanged__ = "$Id: $"
 
 
 # Include EnergyModel.h in the generated C code
 cdef extern from "EnergyModel.h":
   ctypedef struct CEnergyModel "EnergyModel":
-    CInteger1DArray   *protons
-    CReal1DArray      *intrinsic
-    CReal2DArray      *interactions
-    CReal1DArray      *probabilities
-    CSymmetricMatrix  *symmetricmatrix
-    CStateVector      *vector
-    Integer            nstates
-    Integer            ninstances
-    Real               temperature
+    CStateVector *vector
+    Integer       nstates
+    Integer       ninstances
+    Real          temperature
 
 
   # Allocation and deallocation
