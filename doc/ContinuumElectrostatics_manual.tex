@@ -75,7 +75,7 @@ understanding of many important processes, for example enzyme catalysis\cite{Bom
 
 The \modulename module extends the pDynamo software library by 
 Martin Field\cite{pDynamo_Field2008}  with a Poisson-Boltz\-mann continuum electrostatic 
-model that allows for calculations of protonation states of individual 
+model that allows for the calculation of protonation states of individual 
 sites\cite{Bashford1992,Ullmann1999,Bombarda2006}.
 %
 The module connects pDynamo to the external solver of the Poisson-Boltzmann 
@@ -84,17 +84,41 @@ equation, MEAD\cite{Bashford1997}.
 MEAD was developed by Donald Bashford and 
 later extended by Timm Essigke\cite{Essigke_PhD} and Thomas Ullmann\cite{Thomas_PhD}.
 %
-The electrostatic energy terms obtained by MEAD can be used to calculate
-energies of all possible protonation states of the protein of interest.
+The idea to employ MEAD for the calculation of Poisson-Boltzmann electrostatic energies
+is similar to how pDynamo interfaces with ORCA to calculate
+quantum chemical energies and properties.
 %
-However, analytic evaluation of protonation state energies is only possible
-for proteins with usually less than 20 titratable sites.
+
+After the electrostatic energy terms have been obtained from MEAD,
+there are three ways to calculate the probabilities of protonation states.
 %
-The \modulename module provides an interface to the GMCT\cite{Ullmann2012,Thomas_PhD}
-program by Matthias Ullmann and Thomas Ullmann that can be used to sample
-protonation state energies using a Monte Carlo method.
+First,
+they can be calculated by using the statistical mechanical partition function,
+which is, however, only possible for small proteins.
 %
-The GMCT interface makes it possible to study the titration of larger proteins.
+Second,
+the probabilities can be estimated by using the module's custom
+Metropolis Monte Carlo method\cite{Beroza1991}.
+%
+Third,
+they can be estimated by the external Monte Carlo sampling program, 
+GMCT\cite{Ullmann2012,Thomas_PhD}.
+%
+GMCT was written by Matthias Ullmann and extended by Thomas Ullmann.
+%
+The letter two methods allow to study the titration of larger proteins.
+
+% The electrostatic energy terms obtained by MEAD can be used to calculate
+% energies of all possible protonation states of the protein of interest.
+% %
+% However, analytic evaluation of protonation state energies is only possible
+% for proteins with usually less than 20 titratable sites.
+% %
+% The \modulename module provides an interface to the GMCT\cite{Ullmann2012,Thomas_PhD}
+% program by Matthias Ullmann and Thomas Ullmann that can be used to sample
+% protonation state energies using a Monte Carlo method.
+% %
+% The GMCT interface makes it possible to study the titration of larger proteins.
 
 
 %=================================================
@@ -111,7 +135,7 @@ For details, see the files \texttt{Licence\_CeCILL\_V2-en.txt} (or
 \section{Goals of the \modulename module}
 %=================================================
 I wrote the \modulename module primarily as a pretext to learn how
-the Poisson-Boltzmann model works in detail.
+the Poisson-Boltzmann model and the Monte Carlo sampling work in detail.
 %
 I used this model very often during my studies on enzyme catalysis but never had
 time nor pressure to learn the details of the theory that was behind.
@@ -122,20 +146,33 @@ concepts and finally extend it with something useful.
 Last but not least, I saw some room for improvement in the previously used
 tools and scripts.
 
-The \modulename module is similar in behavior to the \texttt{multiflex2qmpb.pl}
-program, which is part of the QMPB package written by Timm Essigke\cite{Essigke_PhD}.
+In principle,
+the \modulename module combines the functionalities of two previous software packages,
 %
-The approach taken here is most compatible with the original approach
-by Donald Bashford\cite{Bashford1992}.
+namely the \texttt{multiflex2qmpb.pl}
+tool, which is part of the QMPB package written by Timm Essigke\cite{Essigke_PhD},
+and the Monte Carlo sampling program, GMCT\cite{Ullmann2012,Thomas_PhD}.
 %
-The key novelty is the improved treatment of multiprotic sites, 
-such as histidine.
+These functionalities can be accessed by the user 
+in a Python-based scripting environment.
 %
-Also, the calculations with the \makebox{\modulename} module are considerably faster 
-than previously because of the \makebox{parallelization}.
+However,
+the "engine" of the module that handles actual calculations is located in 
+the underlying layer written in C.
+%
+The two layers, Python and C, are glued together with Cython.
+ 
+
+% The approach taken here is most compatible with the original approach
+% by Donald Bashford\cite{Bashford1992}.
+% %
+% The key novelty is the improved treatment of multiprotic sites, 
+% such as histidine.
+% %
+% Also, the calculations with the \makebox{\modulename} module are considerably faster 
+% than previously because of the \makebox{parallelization}.
 
 % Talk about non-binary state vector and different energy reference (fully deprotonated system)
-%
 % For the calculated thermodynamic cycle, see Fig. 3.8, p. 82 in Timm's thesis.
 
 
@@ -152,7 +189,7 @@ to have:
   \item Cython 0.15.1 (\underline{optionally}; for recompiling Cython sources)
   \item GCC (any version should be fine)
   \item Extended MEAD 2.3.0
-  \item GMCT 1.2.3
+  \item GMCT 1.2.3 (\underline{optionally})
 \end{itemize}
 %
 Extended MEAD and GMCT can be found on the website of Thomas Ullmann:
@@ -163,8 +200,16 @@ Download the two packages and follow their respective installation
 instructions.
 %
 The \modulename module requires for its functioning two programs
-from the MEAD package, namely \texttt{my\_2diel\_solver} and \texttt{my\_3diel\_solver},
-and the GMCT's main program, \texttt{gmct}.
+from the MEAD package, namely \texttt{my\_2diel\_solver} and \texttt{my\_3diel\_solver}.
+%
+From code revision 179 onwards,
+there is no need to use GMCT for Monte Carlo sampling,
+because the module comes with its own, built-in sampling routines.
+%
+Nevertheless,
+to perform sampling with GMCT,
+it is necessary to only have the 
+GMCT's main program, \texttt{gmct}.
 
 \bigskip
 In the next step, check out the latest source code of the module.
@@ -273,7 +318,7 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/testpeptide.crd")
 In the second step, a continuum electrostatic model is created:
 
 {\footnotesize \begin{lstlisting}
-cem = MEADModel (system=mol, pathMEAD="/home/mikolaj/local/bin/", pathGMCT="/home/mikolaj/local/bin/", pathScratch="scratch", nthreads=2)
+cem = MEADModel (system=mol, pathMEAD="/home/mikolaj/local/bin/", pathScratch="scratch", nthreads=2)
 \end{lstlisting} }
 
 \bigskip
@@ -283,8 +328,6 @@ indicates the CHARMM-based protein model.
 %
 The parameter "pathMEAD" specifies the directory where the MEAD programs,
 \texttt{my\_2diel\_solver} and \texttt{my\_3diel\_solver}, are located.
-%
-The parameter "pathGMCT" is the location of the \texttt{gmct} program.
 %
 If none of these directories are given, \texttt{/usr/bin} is assumed
 by default.
@@ -455,28 +498,15 @@ Dissociation of the $\epsilon$-hydrogen from the histidine requires only 0.7\,kc
 
 %-------------------------------------------------
 \subsection{Calculating probabilities of protonation states}
-% For a given site, the probability of occurrence of a particular instance is calculated 
-% from the Boltzmann weighted sum, which takes the form:
-One option for calculating protonation probabilities is to use GMCT externally after 
-the calculations by MEAD are complete.
-%
-This can be done by writing two files, \texttt{gintr.dat} and \texttt{W.dat}, containing 
-the calculated intrinsic energies and interaction energies, respectively.
-
-{\footnotesize \begin{lstlisting}
-cem.WriteGintr ()
-cem.WriteW ()
-\end{lstlisting} }
-
-
-\bigskip
-In the \modulename module, protonation probabilities can be calculated either analytically for
-small proteins or by using GMCT for larger proteins.
+In the \modulename module, 
+the probabilities of protonation states 
+can be calculated either analytically for small proteins 
+or by using Monte Carlo sampling for larger proteins.
 %
 The following two lines calculate protonation probabilities analytically and report them
 in a table.
 %
-By default, the calculations are done at pH = 7.
+By default, the calculations are done at pH=7.
 %
 The default behavior can be changed by passing the "pH" argument. 
 
@@ -487,13 +517,10 @@ cem.SummaryProbabilities ()
 
 
 \bigskip
-For comparison, the probabilities are calculated by using GMCT. 
-%
-During the calculations in GMCT, a \texttt{scratch/gmct/} directory will be created
-for storing input and output files.
+For comparison, the probabilities are calculated by using a Monte Carlo method. 
 
 {\footnotesize \begin{lstlisting}
-cem.CalculateProbabilitiesGMCT ()
+cem.CalculateProbabilitiesMonteCarlo ()
 cem.SummaryProbabilities ()
 \end{lstlisting} }
 
@@ -514,21 +541,13 @@ usually from 0 to 14.
 {\footnotesize \begin{lstlisting}
 from ContinuumElectrostatics import TitrationCurves
 tc = TitrationCurves (cem, method="analytic")
-tc.CalculateCurves (forceSerial=True)
+tc.CalculateCurves ()
 tc.WriteCurves (directory="curves_analytic")
 \end{lstlisting} }
 
 \bigskip
 The argument \texttt{method="analytic"} tells that the protonation probabilities should be
 calculated analytically.
-%
-Each pH-step will be calculated in a separate thread.
-%
-However, the analytic evaluation of titration curves seems to be very inefficient in parallel 
-mode.
-%
-The argument \texttt{forceSerial=True} will switch on serial mode regardless of the number 
-of threads declared previously.
 %
 For each instance of each site, a data file containing the titration curve will be generated.
 %
@@ -537,13 +556,13 @@ The files will be placed in the directory specified by the argument \texttt{dire
 The curves can be plotted in a plotting program, for example Gnuplot.
 
 \bigskip
-The same task can be accomplished by using GMCT in parallel mode:
+The same task can be accomplished differently:
 
 {\footnotesize \begin{lstlisting}
 from ContinuumElectrostatics import TitrationCurves
-tc = TitrationCurves (cem, method="GMCT")
+tc = TitrationCurves (cem, method="MonteCarlo")
 tc.CalculateCurves ()
-tc.WriteCurves (directory="curves_gmct")
+tc.WriteCurves (directory="curves_mc")
 \end{lstlisting} }
 
 
@@ -699,7 +718,7 @@ parameters of the existing sites will be overwritten.
   \item Extend the model by including rotameric instances
   \item Include quantum chemical sites as in QMPB
   \item Include reduction/oxidation reactions in addition to protonation/deprotonation reactions
-  \item Enclose the MEAD and GMCT codes inside pDynamo
+  \item Have a custom Poisson-Boltzmann solver, instead of MEAD 
   \item Optionally convert kcal/mol (MEAD units) to kJ/mol (pDynamo units)
   \item Make use of the \texttt{pqr2SolvAccVol} program to speed up calculations a bit
 \end{itemize}
@@ -713,8 +732,8 @@ parameters of the existing sites will be overwritten.
 The \modulename module is in a stage of active development.
 %
 Therefore, bugs are inevitable.
-
-If you found a bug, have a question or wish to comment or contribute to the code, 
+%
+If you found a bug, have a question or wish contribute to the code, 
 please write to 
 \makebox{\href{mailto:mikolaj.feliks@gmail.com}{mikolaj.feliks@gmail.com}}.
 %

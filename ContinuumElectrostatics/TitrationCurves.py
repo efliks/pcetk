@@ -19,46 +19,64 @@ from InputFileWriter import WriteInputFile
 import os, threading
 
 
-_DefaultDirectory = "curves"
-_DefaultMethod    = "GMCT"
-_DefaultSampling  =   .5
-_DefaultStart     =  0.
-_DefaultStop      = 14. 
+_DefaultDirectory          = "curves"
+_DefaultMethod             = "MonteCarlo"
+_DefaultSampling           =   .5
+_DefaultStart              =  0.
+_DefaultStop               = 14. 
+_DefaultDoubleFlip         =  2.
+_DefaultTripleFlip         =  3.
+_DefaultEquilibrationScans = 500
+_DefaultProductionScans    = 20000
 
 
 class CurveThread (threading.Thread):
   """Calculate each pH-step in a separate thread."""
 
-  def __init__ (self, curves, method, pH):
-    model = curves.meadModel
-    calculationMethods = { "GMCT"       : model.CalculateProbabilitiesGMCT          ,
-                           "MonteCarlo" : model.CalculateProbabilitiesMonteCarlo    ,
-                           "analytic"   : model.CalculateProbabilitiesAnalytically  }
+  def __init__ (self, curves, pH):
     threading.Thread.__init__ (self)
-    self.Calculate = calculationMethods[method]
-    self.model     = model
-    self.sites     = None
-    self.pH        = pH
+    self.curves = curves
+    self.sites  = None
+    self.pH     = pH
 
   def run (self):
     """The method that runs the calculations."""
-    self.sites = self.Calculate (self.pH, log=None)
+    curves = self.curves
+    model  = curves.owner
+    method = curves.method
+    if method == "GMCT":
+      self.sites = model.CalculateProbabilitiesGMCT         (pH=self.pH, log=None, nequi=curves.mcEquilibrationScans, nprod=curves.mcProductionScans)
+    elif method == "MonteCarlo":
+      self.sites = model.CalculateProbabilitiesMonteCarlo   (pH=self.pH, log=None, nequi=curves.mcEquilibrationScans, nprod=curves.mcProductionScans)
+    else:
+      self.sites = model.CalculateProbabilitiesAnalytically (pH=self.pH, log=None)
 
 
 #-------------------------------------------------------------------------------
 class TitrationCurves (object):
   """Titration curves."""
 
-  def __init__ (self, meadModel, method=_DefaultMethod, curveSampling=_DefaultSampling, curveStart=_DefaultStart, curveStop=_DefaultStop):
+  defaultAttributes = {
+    "method"               :  _DefaultMethod              ,
+    "curveSampling"        :  _DefaultSampling            ,
+    "curveStart"           :  _DefaultStart               ,
+    "curveStop"            :  _DefaultStop                ,
+    "mcEquilibrationScans" :  _DefaultEquilibrationScans  ,
+    "mcProductionScans"    :  _DefaultProductionScans     ,
+    "mcDoubleLimit"        :  _DefaultDoubleFlip          ,
+    "mcTripleLimit"        :  _DefaultTripleFlip          ,
+        }
+
+
+  def __init__ (self, meadModel, log=logFile, *arguments, **keywordArguments):
     """Constructor."""
+    for (key, value) in self.__class__.defaultAttributes.iteritems (): setattr (self, key, value)
+    for (key, value) in                 keywordArguments.iteritems (): setattr (self, key, value)
+
     if not meadModel.isCalculated:
       raise ContinuumElectrostaticsError ("First calculate electrostatic energies.")
-    self.stop          =  curveStop
-    self.start         =  curveStart
-    self.sampling      =  curveSampling
-    self.nsteps        =  int ((curveStop - curveStart) / curveSampling + 1)
     self.owner         =  meadModel
-    self.method        =  method
+    self.nsteps        =  int ((self.curveStop - self.curveStart) / self.curveSampling + 1)
     self.steps         =  None
     self.isCalculated  =  False
 
@@ -87,7 +105,7 @@ class TitrationCurves (object):
 
 
   #===============================================================================
-  def CalculateCurves (self, forceSerial=False, printTable=False, log=logFile):
+  def CalculateCurves (self, forceSerial=True, printTable=False, log=logFile):
     """Calculate titration curves."""
     if not self.isCalculated:
       probabilities  =  self._ProbabilitiesSave ()
@@ -111,14 +129,15 @@ class TitrationCurves (object):
 
       # Serial run?
       if nthreads < 2 or forceSerial:
-        calculationMethods = { "GMCT"       : meadModel.CalculateProbabilitiesGMCT          ,
-                               "MonteCarlo" : meadModel.CalculateProbabilitiesMonteCarlo    ,
-                               "analytic"   : meadModel.CalculateProbabilitiesAnalytically  }
-        Calculate = calculationMethods[self.method]
-
         for step in range (self.nsteps):
-          pH = self.start + step * self.sampling
-          result = Calculate (pH=pH, log=None)
+          pH = self.curveStart + step * self.curveSampling
+          if self.method == "GMCT":
+            result = meadModel.CalculateProbabilitiesGMCT         (pH=pH, log=None, nequi=self.mcEquilibrationScans, nprod=self.mcProductionScans)
+          elif self.method == "MonteCarlo":
+            result = meadModel.CalculateProbabilitiesMonteCarlo   (pH=pH, log=None, nequi=self.mcEquilibrationScans, nprod=self.mcProductionScans)
+          else:
+            result = meadModel.CalculateProbabilitiesAnalytically (pH=pH, log=None)
+
           steps.append (result)
           if tab:
             tab.Entry ("%10d"   % step)
@@ -130,7 +149,7 @@ class TitrationCurves (object):
         batches = []
         batch   = []
         for step in range (self.nsteps):
-          batch.append (CurveThread (self, method, self.start + step * self.sampling))
+          batch.append (CurveThread (self, self.curveStart + step * self.curveSampling))
           if len (batch) > limit:
             batches.append (batch)
             batch = []
@@ -140,7 +159,7 @@ class TitrationCurves (object):
         # If GMCT is to be used, first perform a dry run in serial mode to create directories and files
         if method == "GMCT":
           for step in range (self.nsteps):
-            meadModel.CalculateProbabilitiesGMCT (pH=(self.start + step * self.sampling), dryRun=True, log=None)
+            meadModel.CalculateProbabilitiesGMCT (pH=(self.curveStart + step * self.curveSampling), dryRun=True, log=None)
 
         step = 0
         for batch in batches:
@@ -153,7 +172,7 @@ class TitrationCurves (object):
             steps.append (thread.sites)
             if tab:
               tab.Entry ("%10d"   % step)
-              tab.Entry ("%10.2f" % (self.start + step * self.sampling))
+              tab.Entry ("%10.2f" % (self.curveStart + step * self.curveSampling))
             step = step + 1
 
       if LogFileActive (log):
@@ -187,7 +206,7 @@ class TitrationCurves (object):
           # Collect instance data
           lines = []
           for step in range (self.nsteps):
-            lines.append ("%f %f\n" % (self.start + step * self.sampling, phdata[step][site.siteIndex][instance.instIndex]))
+            lines.append ("%f %f\n" % (self.curveStart + step * self.curveSampling, phdata[step][site.siteIndex][instance.instIndex]))
           # Write instance data
           filename = os.path.join (directory, "%s_%s.dat" % (site.label, instance.label))
           WriteInputFile (filename, lines)

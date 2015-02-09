@@ -10,6 +10,8 @@
 
 /* Needed for calloc */
 #include <stdlib.h>
+/* Needed for memcpy */
+#include <string.h>
 
 #include "Real.h"
 #include "Boolean.h"
@@ -52,6 +54,7 @@ typedef struct {
 extern StateVector *StateVector_Allocate          (const Integer nsites, Status *status);
 extern void         StateVector_AllocateSubstate  (      StateVector *self, const Integer nssites, Status *status);
 extern void         StateVector_AllocatePairs     (      StateVector *self, const Integer npairs, Status *status);
+extern void         StateVector_ReallocatePairs   (      StateVector *self, const Integer npairs, Status *status);
 extern void         StateVector_Deallocate        (      StateVector *self);
 
 /* Copying and cloning */
