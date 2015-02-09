@@ -232,7 +232,7 @@ class MEADModel (object):
 
 
   #===============================================================================
-  def CalculateProbabilitiesGMCT (self, pH=7.0, dryRun=False, doubleFlip=_DefaultDoubleFlip, tripleFlip=_DefaultTripleFlip, equilibrationScans=_DefaultEquilibrationScans, productionScans=_DefaultProductionScans, log=logFile):
+  def CalculateProbabilitiesGMCT (self, pH=7.0, dryRun=False, doubleFlip=_DefaultDoubleFlip, tripleFlip=_DefaultTripleFlip, nequi=_DefaultEquilibrationScans, nprod=_DefaultProductionScans, log=logFile):
     """Use GMCT to estimate probabilities of protonation states.
 
     With |dryRun=True|, GMCT is not called and only the directories and files are created. This is necessary in the parallel mode because the function mkdir does not work with multiple threads."""
@@ -258,7 +258,7 @@ class MEADModel (object):
       if not os.path.exists (fileConf): WriteInputFile (fileConf, ["conf  0.0  0.0  0.0\n"])
 
       fileSetup = os.path.join (dirCalc, "%s.setup" % project)
-      if not os.path.exists (fileSetup): WriteInputFile (fileSetup, _DefaultSetupGMCT % (tripleFlip, productionScans, self.temperature, doubleFlip, equilibrationScans, potential, potential))
+      if not os.path.exists (fileSetup): WriteInputFile (fileSetup, _DefaultSetupGMCT % (tripleFlip, nprod, self.temperature, doubleFlip, nequi, potential, potential))
 
       linkname = os.path.join (dirCalc, "conf")
       if not os.path.exists (linkname): os.symlink ("../conf", linkname)

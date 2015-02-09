@@ -8,9 +8,9 @@
 #include "StateVector.h"
 
 
-/*=============================================================================
-  Allocation and deallocation
-=============================================================================*/
+/*
+ * Allocate the state vector.
+ */
 StateVector *StateVector_Allocate (const Integer nsites, Status *status) {
   StateVector *self;
 
@@ -41,15 +41,15 @@ fail:
   return NULL;
 }
 
+/*
+ * Allocate a substate within the state vector.
+ */
 void StateVector_AllocateSubstate (StateVector *self, const Integer nssites, Status *status) {
   if (self->substateSites != NULL) {
-    /* Substate already allocated */
     Status_Set (status, Status_MemoryAllocationFailure);
   }
   else {
-    /* Allocate an array of pointers */
     MEMORY_ALLOCATEARRAY_POINTERS (self->substateSites, nssites, TitrSite);
-
     if (self->substateSites != NULL) 
       self->nssites = nssites;
     else
@@ -57,14 +57,16 @@ void StateVector_AllocateSubstate (StateVector *self, const Integer nssites, Sta
   }
 }
 
+/*
+ * Allocate an array of pairs within the state vector.
+ * The number of pairs and their contents are decided by the EnergyModel module.
+ */
 void StateVector_AllocatePairs (StateVector *self, const Integer npairs, Status *status) {
-  if (self->substateSites != NULL) {
-    /* Pairs already allocated */
+  if (self->pairs != NULL) {
     Status_Set (status, Status_MemoryAllocationFailure);
   }
   else {
     MEMORY_ALLOCATEARRAY (self->pairs, npairs, PairSite);
-
     if (self->pairs != NULL) 
       self->npairs = npairs;
     else
@@ -72,9 +74,21 @@ void StateVector_AllocatePairs (StateVector *self, const Integer npairs, Status 
   }
 }
 
+/*
+ * Deallocate the old pairs and allocate the new ones.
+ */
+void StateVector_ReallocatePairs (StateVector *self, const Integer npairs, Status *status) {
+  MEMORY_DEALLOCATE (self->pairs);
+  self->npairs = 0;
+
+  StateVector_AllocatePairs (self, npairs, status);
+}
+
+/*
+ * Deallocate the state vector, including the optional arrays of pairs and substate.
+ */
 void StateVector_Deallocate (StateVector *self) {
   if (self != NULL) {
-    /* First deallocate optional tables */
     if (self->pairs         != NULL) MEMORY_DEALLOCATE (self->pairs);
     if (self->substateSites != NULL) MEMORY_DEALLOCATE (self->substateSites);
 
@@ -83,45 +97,68 @@ void StateVector_Deallocate (StateVector *self) {
   }
 }
 
-/*=============================================================================
-  Copying and cloning
-=============================================================================*/
-/*StateVector *StateVector_Clone (const StateVector *self, Status *status) {
+/*
+ * Clone a state vector.
+ */
+StateVector *StateVector_Clone (const StateVector *self, Status *status) {
   StateVector *clone = NULL;
 
   if (self != NULL) {
     clone = StateVector_Allocate (self->nsites, status);
-    if (*status == Status_Continue) {
+    if (*status == Status_Continue)
       StateVector_CopyTo (self, clone, status);
-    }
   }
-
   return clone;
 }
 
+/*
+ * Copy a state vector to another vector.
+ */
 void StateVector_CopyTo (const StateVector *self, StateVector *other, Status *status) {
-  if (self->nsites != other->nsites) {
-    StateVector_Deallocate (other);
-    other = StateVector_Allocate (self->nsites, status);
+  Boolean freeSubstate = False, freePairs = False;
 
-    if (*status != Status_Continue) {
-      return;
-    }
+  if (other->nsites != self->nsites) {
+    goto failSizes;
   }
-  memcpy (other->sites, self->sites, other->nsites * sizeof (TitrSite*));
+  memcpy (other->sites, self->sites, self->nsites * sizeof (TitrSite));
 
-  if (self->substateSites != NULL) {
-    StateVector_AllocateSubstate (other, self->nssites, status);
-    if (*status != Status_Continue) {
-      return;
+  if (self->nssites > 0) {
+    if (other->nssites < 1) {
+      StateVector_AllocateSubstate (other, self->nssites, status);
+      if (*status != Status_Continue)
+        goto failMemory;
+      freeSubstate = True;
     }
-    memcpy (other->substateSites, self->substateSites, other->nssites * sizeof (TitrSite*));
+    else if (other->nssites != self->nssites)
+      goto failSizes;
+    memcpy (other->substateSites, self->substateSites, self->nssites * sizeof (TitrSite*));
   }
-}*/
 
-/*=============================================================================
-  Functions for setting all items at once
-=============================================================================*/
+  if (self->npairs > 0) {
+    if (other->npairs < 1) {
+      StateVector_AllocatePairs (other, self->npairs, status);
+      if (*status != Status_Continue)
+        goto failMemory;
+      freePairs = True;
+    }
+    else if (other->npairs != self->npairs)
+      goto failSizes;
+    memcpy (other->pairs, self->pairs, self->npairs * sizeof (PairSite*));
+  }
+
+failSizes:
+  Status_Set (status, Status_ArrayNonConformableSizes);
+
+failMemory:
+
+failDeallocate:
+  if (freeSubstate) MEMORY_DEALLOCATE (other->substateSites) ;
+  if (freePairs)    MEMORY_DEALLOCATE (other->pairs)         ;
+}
+
+/*
+ * Set all sites of the vector to their initial instances.
+ */
 void StateVector_Reset (const StateVector *self) {
   TitrSite *site = self->sites;
   Integer   i = self->nsites;
@@ -131,6 +168,9 @@ void StateVector_Reset (const StateVector *self) {
   }
 }
 
+/*
+ * Set all sites of the substate to their initial instances.
+ */
 void StateVector_ResetSubstate (const StateVector *self) {
   TitrSite *site, **pointToSite = self->substateSites;
   Integer   i = self->nssites;
@@ -141,6 +181,9 @@ void StateVector_ResetSubstate (const StateVector *self) {
   }
 }
 
+/*
+ * Set all sites of the vector to their final instances.
+ */
 void StateVector_ResetToMaximum (const StateVector *self) {
   TitrSite *site = self->sites;
   Integer   i = self->nsites;
@@ -150,6 +193,9 @@ void StateVector_ResetToMaximum (const StateVector *self) {
   }
 }
 
+/*
+ * Set all sites of the vector to randomized instances.
+ */
 void StateVector_Randomize (const StateVector *self, const RandomNumberGenerator *generator) {
   TitrSite *site = self->sites;
   Integer   i = self->nsites;
@@ -159,9 +205,9 @@ void StateVector_Randomize (const StateVector *self, const RandomNumberGenerator
   }
 }
 
-/*=============================================================================
-  Functions for accessing items
-=============================================================================*/
+/*
+ * Set a state vector site.
+ */
 void StateVector_SetSite (const StateVector *self, const Integer indexSite, const Integer indexFirst, const Integer indexLast, Status *status) {
   TitrSite *site;
 
@@ -178,6 +224,9 @@ void StateVector_SetSite (const StateVector *self, const Integer indexSite, cons
   }
 }
 
+/*
+ * Set a pair of strongly interacting sites.
+ */
 void StateVector_SetPair (const StateVector *self, const Integer indexPair, const Integer indexFirstSite, const Integer indexSecondSite, const Real Wmax, Status *status) {
   PairSite *pair;
 
@@ -192,6 +241,9 @@ void StateVector_SetPair (const StateVector *self, const Integer indexPair, cons
   }
 }
 
+/*
+ * Get indices and maximum interaction energy of a pair of strongly interacting sites.
+ */
 void StateVector_GetPair (const StateVector *self, const Integer indexPair, Integer *indexFirstSite, Integer *indexSecondSite, Real *Wmax, Status *status) {
   PairSite *pair;
   TitrSite *site;
@@ -209,6 +261,9 @@ void StateVector_GetPair (const StateVector *self, const Integer indexPair, Inte
   }
 }
 
+/*
+ * Return true if the site belongs to a substate.
+ */
 Boolean StateVector_IsSubstate (const StateVector *self, const Integer siteIndex, Status *status) {
   TitrSite *site;
 
@@ -220,6 +275,9 @@ Boolean StateVector_IsSubstate (const StateVector *self, const Integer siteIndex
   return site->isSubstate;
 }
 
+/*
+ * Get the current protonation of a site, i.e. the local index of its currently "active" instance.
+ */
 Integer StateVector_GetItem (const StateVector *self, const Integer siteIndex, Status *status) {
   TitrSite *site;
   Integer instanceLocalIndex;
@@ -229,12 +287,14 @@ Integer StateVector_GetItem (const StateVector *self, const Integer siteIndex, S
     return -1;
   }
   site = &self->sites[siteIndex];
-  /* Translate global index to local index */
   instanceLocalIndex = site->indexActive - site->indexFirst;
 
   return instanceLocalIndex;
 }
 
+/*
+ * Set the protonation of a site by defining a local index of its "active" instance.
+ */
 void StateVector_SetItem (const StateVector *self, const Integer siteIndex, const Integer instanceLocalIndex, Status *status) {
   TitrSite *site;
   Integer instanceGlobalIndex;
@@ -256,6 +316,9 @@ void StateVector_SetItem (const StateVector *self, const Integer siteIndex, cons
   }
 }
 
+/*
+ * Get the current protonation of a site, i.e. the global index of its currently "active" instance.
+ */
 Integer StateVector_GetActualItem (const StateVector *self, const Integer siteIndex, Status *status) {
   TitrSite *site;
   Integer instanceGlobalIndex;
@@ -270,6 +333,9 @@ Integer StateVector_GetActualItem (const StateVector *self, const Integer siteIn
   return instanceGlobalIndex;
 }
 
+/*
+ * Set the protonation of a site by defining a global index of its "active" instance.
+ */
 void StateVector_SetActualItem (const StateVector *self, const Integer siteIndex, const Integer instanceGlobalIndex, Status *status) {
   TitrSite *site;
 
@@ -287,6 +353,9 @@ void StateVector_SetActualItem (const StateVector *self, const Integer siteIndex
   }
 }
 
+/*
+ * Get the index of a site belonging to a substate.
+ */
 Integer StateVector_GetSubstateItem (const StateVector *self, const Integer index, Status *status) {
   TitrSite *site;
 
@@ -298,6 +367,9 @@ Integer StateVector_GetSubstateItem (const StateVector *self, const Integer inde
   return site->indexSite;
 }
 
+/*
+ * Attach the selected site to a substate by passing its index.
+ */
 void StateVector_SetSubstateItem (const StateVector *self, const Integer selectedSiteIndex, const Integer index, Status *status) {
   TitrSite *site;
 
@@ -316,9 +388,13 @@ void StateVector_SetSubstateItem (const StateVector *self, const Integer selecte
   }
 }
 
-/*=============================================================================
- Incrementation algorithm by Timm Essigke 
-=============================================================================*/
+/*
+ * Increment the state vector.
+ * After reaching the last vector, false is returned and the vector is back in its initial state. 
+ * True is returned as long as there are more vectors ahead.
+ * 
+ * Incrementation algorithm by Timm Essigke.
+ */
 Boolean StateVector_Increment (const StateVector *self) {
   TitrSite *site = self->sites;
   Integer   i    = self->nsites;
@@ -332,11 +408,12 @@ Boolean StateVector_Increment (const StateVector *self) {
       site->indexActive = site->indexFirst;
     }
   }
-  /* Return false after reaching the last vector.
-    The vector goes back to its initial state.  */
   return False;
 }
 
+/*
+ * Increment only within the substate of sites of the vector.
+ */
 Boolean StateVector_IncrementSubstate (const StateVector *self) {
   TitrSite *site, **pointToSite = self->substateSites;
   Integer   i = self->nssites;
