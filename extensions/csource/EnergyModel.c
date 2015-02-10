@@ -163,7 +163,7 @@ Real EnergyModel_CalculateMicrostateEnergy (const EnergyModel *self, const State
 
     interact   = EnergyModel_RowPointer (self, site->indexActive);
     siteInner  = vector->sites;
-    for (j = 0; j <= i; j++, siteInner++) {
+    for (j = 0; j < i; j++, siteInner++) {
       W += *(interact + (siteInner->indexActive));
     }
   }
@@ -415,7 +415,7 @@ Integer EnergyModel_FindPairs (const EnergyModel *self, const Real limit, const 
   for (i = 0; i < self->vector->nsites; i++, site++) {
 
     siteInner = self->vector->sites;
-    for (j = 0; j <= i; j++, siteInner++) {
+    for (j = 0; j < i; j++, siteInner++) {
 
       Wmax = EnergyModel_FindMaxInteraction (self, site, siteInner);
       if (Wmax >= limit) {
