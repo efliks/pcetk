@@ -24,29 +24,29 @@
 #define MEMORY_ALLOCATEARRAY_POINTERS( object, length, type ) { object = (type**) calloc ((CSize) length, sizeof (type*)) ; }
 
 typedef struct {
-  /* Site belongs to a substate */
-  Boolean isSubstate;
-  /* Index of the site itself */
-  Integer indexSite;
-  /* Global index of the currently active instance of the site */
-  Integer indexActive;
-  /* Minimum and maximum values of indexActive */
-  Integer indexFirst, indexLast;
+    /* Site belongs to a substate */
+    Boolean isSubstate;
+    /* Index of the site itself */
+    Integer indexSite;
+    /* Global index of the currently active instance of the site */
+    Integer indexActive;
+    /* Minimum and maximum values of indexActive */
+    Integer indexFirst, indexLast;
 } TitrSite;
 
 typedef struct {
-  /* Pointers to sites that make up a pair */
-  TitrSite *a, *b;
-  /* Maximum absolute energy of interaction */
-  Real Wmax;
+    /* Pointers to sites that make up a pair */
+    TitrSite *a, *b;
+    /* Maximum absolute energy of interaction */
+    Real Wmax;
 } PairSite;
 
 typedef struct {
-  TitrSite  *sites, **substateSites;
-  Integer    nsites, nssites;
-  /* Handled by the EnergyModel module */
-  PairSite  *pairs;
-  Integer    npairs;
+    TitrSite  *sites, **substateSites;
+    Integer    nsites, nssites;
+    /* Handled by the EnergyModel module */
+    PairSite  *pairs;
+    Integer    npairs;
 } StateVector;
 
 
