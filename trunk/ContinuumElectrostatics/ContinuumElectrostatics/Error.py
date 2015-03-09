@@ -13,8 +13,8 @@ import exceptions
 
 
 class ContinuumElectrostaticsError (exceptions.StandardError):
-  """A class for handling errors in the ContinuumElectrostatics module."""
-  pass
+    """A class for handling errors in the ContinuumElectrostatics module."""
+    pass
 
 
 #===============================================================================

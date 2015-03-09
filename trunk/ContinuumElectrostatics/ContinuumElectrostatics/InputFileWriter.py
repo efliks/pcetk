@@ -13,31 +13,31 @@ from pCore      import TextFileWriter
 
 
 class InputFileWriter (TextFileWriter):
-  """A simple class for writing files from lists of strings."""
+    """A simple class for writing files from lists of strings."""
 
-  def __init__ (self, name):
-    """Constructor."""
-    TextFileWriter.__init__ (self, name)
+    def __init__ (self, name):
+        """Constructor."""
+        TextFileWriter.__init__ (self, name)
 
 
-  def Write (self, listOfStrings):
-    """Write a list of strings."""
-    self.Open ()
+    def Write (self, listOfStrings):
+        """Write a list of strings."""
+        self.Open ()
 
-    self.file.writelines (listOfStrings)
-    self.Close ()
+        self.file.writelines (listOfStrings)
+        self.Close ()
 
 
 #===============================================================================
 # Helper functions
 #===============================================================================
 def WriteInputFile (filename, listOfLines, addLineBreaks=False):
-  """Writing input files from previously generated lists of strings."""
-  out = InputFileWriter (filename)
-  if addLineBreaks:
-    out.Write (map (lambda line: "%s\n" % line, listOfLines))
-  else:
-    out.Write (listOfLines)
+    """Writing input files from previously generated lists of strings."""
+    out = InputFileWriter (filename)
+    if addLineBreaks:
+        out.Write (map (lambda line: "%s\n" % line, listOfLines))
+    else:
+        out.Write (listOfLines)
 
 
 #===============================================================================

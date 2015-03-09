@@ -30,9 +30,9 @@ NEXT_RESIDUE_PRO = ("N", "CA", "HA", "CD",  "HD1", "HD2")
 NEXT_RESIDUE_GLY = ("N", "H",  "CA", "HA1", "HA2", "HN")
 
 PROTEIN_RESIDUES = (
-   "ALA", "CYS", "ASP", "GLU", "PHE", "GLY", "HIS", "ILE", "LYS", "LEU",
-   "MET", "ASN", "PRO", "GLN", "ARG", "SER", "THR", "VAL", "TRP", "TYR",
-   "HSP", "HSE", "HSD", "HIE", "HID"
+    "ALA", "CYS", "ASP", "GLU", "PHE", "GLY", "HIS", "ILE", "LYS", "LEU",
+    "MET", "ASN", "PRO", "GLN", "ARG", "SER", "THR", "VAL", "TRP", "TYR",
+    "HSP", "HSE", "HSD", "HIE", "HID"
 )
 
 REMOVE_RESIDUES  = (

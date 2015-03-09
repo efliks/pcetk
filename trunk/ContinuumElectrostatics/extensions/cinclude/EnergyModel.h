@@ -46,26 +46,26 @@
 #define EnergyModel_GetW(self, i, j) (i >= j ? self->symmetricmatrix->data[(i * (i + 1) >> 1) + j] : self->symmetricmatrix->data[(j * (j + 1) >> 1) + i])
 
 typedef struct {
-  /* Number of bound protons of each instance */
-  Integer1DArray        *protons;
-  /* Gintr of each instance */
-  Real1DArray           *intrinsic;
-  /* Interactions between instances before symmetrization */
-  Real2DArray           *interactions;
-  /* Symmetrized interactions */
-  SymmetricMatrix       *symmetricmatrix;
-  /* Probability of occurrence of each instance */
-  Real1DArray           *probabilities;
-  /* Private state vector of the energy model */
-  StateVector           *vector;
-  /* Mersenne Twister generator */
-  RandomNumberGenerator *generator;
-  /* Total number of possible protonation states, no greater than ANALYTIC_STATES */
-  Integer                nstates;
-  /* Total number of instances */
-  Integer                ninstances;
-  /* Temperature at which the MEAD part was done */
-  Real                   temperature;
+    /* Number of bound protons of each instance */
+    Integer1DArray        *protons;
+    /* Gintr of each instance */
+    Real1DArray           *intrinsic;
+    /* Interactions between instances before symmetrization */
+    Real2DArray           *interactions;
+    /* Symmetrized interactions */
+    SymmetricMatrix       *symmetricmatrix;
+    /* Probability of occurrence of each instance */
+    Real1DArray           *probabilities;
+    /* Private state vector of the energy model */
+    StateVector           *vector;
+    /* Mersenne Twister generator */
+    RandomNumberGenerator *generator;
+    /* Total number of possible protonation states, no greater than ANALYTIC_STATES */
+    Integer                nstates;
+    /* Total number of instances */
+    Integer                ninstances;
+    /* Temperature at which the MEAD part was done */
+    Real                   temperature;
 } EnergyModel;
 
 
