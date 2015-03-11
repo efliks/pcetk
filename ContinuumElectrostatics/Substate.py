@@ -91,6 +91,7 @@ class MEADSubstate (object):
             substates      = self.substates
             owner          = self.owner
             nsites         = len (indicesOfSites)
+
             if LogFileActive (log):
                 tab = log.GetTable (columns = [6, 9, 8, 8] + [14] * nsites)
                 tab.Start ()

@@ -361,15 +361,13 @@ class MEADModel (object):
                 else:
                     log.Text ("\nStarting parallel run on %d CPUs.\n" % self.nthreads)
 
-                heads = [
-                    ("Instance of a site" , 4),
-                    ("Gborn_model"        , 0),
-                    ("Gback_model"        , 0),
-                    ("Gborn_protein"      , 0),
-                    ("Gback_protein"      , 0),
-                    ("Gmodel"             , 0),
-                    ("Gintr"              , 0),
-                        ]
+                heads = [("Instance of a site" , 4),
+                         ("Gborn_model"        , 0),
+                         ("Gback_model"        , 0),
+                         ("Gborn_protein"      , 0),
+                         ("Gback_protein"      , 0),
+                         ("Gmodel"             , 0),
+                         ("Gintr"              , 0),]
                 columns = [6, 6, 6, 6, 16, 16, 16, 16, 16, 16]
                 if calculateETA:
                     heads.append (("ETA", 0))
@@ -464,11 +462,9 @@ class MEADModel (object):
                 if not printSummary:
                     log.Text ("\nWARNING: Maximum deviation of interactions is %0.4f kcal/mol.\n" % maxDeviation)
                 else:
-                    heads = [
-                       ("Instance of a site A" , 4),
-                       ("Instance of a site B" , 4),
-                       ("Deviation"            , 0),
-                            ]
+                    heads = [("Instance of a site A" , 4),
+                             ("Instance of a site B" , 4),
+                             ("Deviation"            , 0),]
                     columns = (7, 7, 7, 7, 7, 7, 7, 7, 12)
                     gaps = ("%7s", "%7s", "%7d", "%7s")
 
@@ -485,14 +481,11 @@ class MEADModel (object):
                     report = []
                     for rowSite in self.meadSites:
                         for rowInstance in rowSite.instances:
-
                             for columnSite in self.meadSites:
                                 for columnInstance in columnSite.instances:
-
                                     deviation = self.energyModel.GetDeviation (rowInstance._instIndexGlobal, columnInstance._instIndexGlobal)
                                     if abs (deviation) > tolerance:
                                         report.append ([rowInstance, columnInstance, deviation])
-
 
                     for ainstance, binstance, deviation in report:
                         asite = ainstance.parent
@@ -892,10 +885,10 @@ class MEADModel (object):
                     ninstances = len (site.instances)
                     if ninstances > maxinstances: maxinstances = ninstances
 
-                tab = log.GetTable (columns = [6, 6, 6] + [8, 8] * maxinstances)
+                tab = log.GetTable (columns=[6, 6, 6] + [8, 8] * maxinstances)
                 tab.Start ()
-                tab.Heading ("Site", columnSpan = 3)
-                tab.Heading ("Probabilities of instances", columnSpan = maxinstances * 2)
+                tab.Heading ("Site", columnSpan=3)
+                tab.Heading ("Probabilities of instances", columnSpan=maxinstances * 2)
 
                 for site in self.meadSites:
                     maxProb = 0.
@@ -963,11 +956,9 @@ class MEADModel (object):
             "GLU" : ("p", ),
             "LYS" : ("d", ),
             "TYR" : ("d", ), }
-
         translateLabels = {
             "p" :   "protonated",
             "d" : "deprotonated", }
-
         warnings = []
 
         for site in self.meadSites:
