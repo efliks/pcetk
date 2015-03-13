@@ -24,6 +24,9 @@ cdef class EnergyModel:
         EnergyModel_Deallocate (self.cObject)
 
     # Setters
+    def SetGmodel (self, Integer instIndexGlobal, Real value):
+        EnergyModel_SetGmodel (self.cObject, instIndexGlobal, value)
+
     def SetGintr (self, Integer instIndexGlobal, Real value):
         EnergyModel_SetGintr (self.cObject, instIndexGlobal, value)
 
@@ -37,6 +40,10 @@ cdef class EnergyModel:
         EnergyModel_SetInteraction (self.cObject, instIndexGlobalA, instIndexGlobalB, value)
 
     # Getters
+    def GetGmodel (self, Integer instIndexGlobal):
+        cdef Real Gmodel = EnergyModel_GetGmodel (self.cObject, instIndexGlobal)
+        return Gmodel
+
     def GetGintr (self, Integer instIndexGlobal):
         cdef Real Gintr = EnergyModel_GetGintr (self.cObject, instIndexGlobal)
         return Gintr
@@ -114,6 +121,11 @@ cdef class EnergyModel:
             log.Text ("\nSymmetrizing interactions complete.\n")
 
 
+    def ResetInteractions (self):
+        """Set all interactions to zero."""
+        EnergyModel_ResetInteractions (self.cObject)
+
+
     def CalculateMicrostateEnergy (self, StateVector vector, Real pH=7.0):
         """Calculate energy of a protonation state (=microstate)."""
         cdef Real Gmicro
@@ -186,3 +198,33 @@ cdef class EnergyModel:
                     siteFirst  = sites[indexSiteA]
                     siteSecond = sites[indexSiteB]
                     log.Text ("%4s %4s %4d -- %4s %4s %4d : %f\n" % (siteFirst.segName, siteFirst.resName, siteFirst.resSerial, siteSecond.segName, siteSecond.resName, siteSecond.resSerial, Wmax))
+
+
+    def CalculateMicrostateEnergyUnfolded (self, StateVector vector, Real pH=7.0):
+        """Calculate energy of a protonation state (=microstate) in an unfolded protein."""
+        cdef Real Gmicro
+        meadModel = self.owner
+        if not meadModel.isCalculated:
+            raise CLibraryError ("First calculate electrostatic energies.")
+        Gmicro = EnergyModel_CalculateMicrostateEnergyUnfolded (self.cObject, vector.cObject, pH)
+        return Gmicro
+
+
+    def PartitionFunctionFolded (self, Real pH=7.0, Real Gneutral=0.0):
+        """Calculate partition function of a folded protein."""
+        cdef Status  status = Status_Continue
+        cdef Real    Zfolded
+        Zfolded = EnergyModel_PartitionFunctionFolded (self.cObject, pH, Gneutral, &status)
+        if status != Status_Continue:
+            raise CLibraryError ("Cannot allocate Boltzmann factors.")
+        return Zfolded
+
+
+    def PartitionFunctionUnfolded (self, Real pH=7.0, Real Gneutral=0.0):
+        """Calculate partition function of an unfolded protein."""
+        cdef Status  status = Status_Continue
+        cdef Real    Zunfolded
+        Zunfolded = EnergyModel_PartitionFunctionUnfolded (self.cObject, pH, Gneutral, &status)
+        if status != Status_Continue:
+            raise CLibraryError ("Cannot allocate Boltzmann factors.")
+        return Zunfolded
