@@ -48,6 +48,8 @@
 typedef struct {
     /* Number of bound protons of each instance */
     Integer1DArray        *protons;
+    /* Gmodel of each instance (needed for energies of unfolded proteins) */
+    Real1DArray           *models;
     /* Gintr of each instance */
     Real1DArray           *intrinsic;
     /* Interactions between instances before symmetrization */
@@ -76,6 +78,7 @@ extern void         EnergyModel_Deallocate (EnergyModel *self);
 /* Handling of the interaction matrix */
 extern void    EnergyModel_SymmetrizeInteractions     (const EnergyModel *self, Status *status);
 extern Boolean EnergyModel_CheckInteractionsSymmetric (const EnergyModel *self, Real tolerance, Real *maxDeviation);
+extern void    EnergyModel_ResetInteractions          (const EnergyModel *self);
 
 /* Calculation functions */
 extern Real    EnergyModel_CalculateMicrostateEnergy          (const EnergyModel *self, const StateVector *vector, const Real pH);
@@ -92,6 +95,7 @@ extern Integer EnergyModel_FindPairs            (const EnergyModel *self, const 
 extern void    EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, const Real pH, const Boolean equil, Integer nscans, Status *status);
 
 /* Functions for accessing items */
+extern Real    EnergyModel_GetGmodel         (const EnergyModel *self, const Integer instIndexGlobal);
 extern Real    EnergyModel_GetGintr          (const EnergyModel *self, const Integer instIndexGlobal);
 extern Integer EnergyModel_GetProtons        (const EnergyModel *self, const Integer instIndexGlobal);
 extern Real    EnergyModel_GetProbability    (const EnergyModel *self, const Integer instIndexGlobal);
@@ -99,9 +103,15 @@ extern Real    EnergyModel_GetInteraction    (const EnergyModel *self, const Int
 extern Real    EnergyModel_GetInterSymmetric (const EnergyModel *self, const Integer instIndexGlobalA, const Integer instIndexGlobalB);
 extern Real    EnergyModel_GetDeviation      (const EnergyModel *self, const Integer instIndexGlobalA, const Integer instIndexGlobalB);
 
+extern void    EnergyModel_SetGmodel         (const EnergyModel *self, const Integer instIndexGlobal, const Real value);
 extern void    EnergyModel_SetGintr          (const EnergyModel *self, const Integer instIndexGlobal, const Real value);
 extern void    EnergyModel_SetProtons        (const EnergyModel *self, const Integer instIndexGlobal, const Integer value);
 extern void    EnergyModel_SetProbability    (const EnergyModel *self, const Integer instIndexGlobal, const Real value);
 extern void    EnergyModel_SetInteraction    (const EnergyModel *self, const Integer instIndexGlobalA, const Integer instIndexGlobalB, const Real value);
+
+/* Functions for the treatment of unfolded proteins */
+extern Real    EnergyModel_CalculateMicrostateEnergyUnfolded  (const EnergyModel *self, const StateVector *vector, const Real pH);
+extern Real    EnergyModel_PartitionFunctionUnfolded          (const EnergyModel *self, const Real pH, const Real Gneutral, Status *status);
+extern Real    EnergyModel_PartitionFunctionFolded            (const EnergyModel *self, const Real pH, const Real Gneutral, Status *status);
 
 #endif

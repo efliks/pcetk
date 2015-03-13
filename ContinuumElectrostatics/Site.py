@@ -162,19 +162,19 @@ class MEADSite (object):
     #===============================================================================
     def _CreateInstances (self, templatesOfInstances, instIndexGlobal):
         """Create instances of a site."""
+        Gmodels    = []
         protons    = []
         instances  = []
         meadModel  = self.parent
 
         for instIndex, instance in enumerate (templatesOfInstances):
-            # Set the protons later because they come from the central array
+            # Set Gmodel and protons later because they come from central arrays
             newInstance = MEADInstance (
                 parent           = self                                                           ,
                 instIndex        = instIndex                                                      ,
                 _instIndexGlobal = instIndexGlobal                                                ,
                 label            = instance [ "label"   ]                                         ,
                 charges          = instance [ "charges" ]                                         ,
-                Gmodel           = instance [ "Gmodel"  ] * meadModel.temperature / 300.          ,
                 modelPqr         = self._CreateFilename ("model", instance [ "label"   ], "pqr")  ,
                 modelLog         = self._CreateFilename ("model", instance [ "label"   ], "out")  ,
                 modelGrid        = self._CreateFilename ("model", instance [ "label"   ], "mgm")  ,
@@ -185,12 +185,16 @@ class MEADSite (object):
             instances.append (newInstance)
             instIndexGlobal = instIndexGlobal + 1
 
+            # Remember Gmodel of the current instance
+            Gmodel = instance [ "Gmodel"  ] * meadModel.temperature / 300.
+            Gmodels.append (Gmodel)
+
             # Remember the number of protons of the current instance
             nprotons  = instance [ "protons" ]
             protons.append (nprotons)
 
         self.instances = instances
-        return (protons, instIndexGlobal)
+        return (Gmodels, protons, instIndexGlobal)
 
 
 #===============================================================================

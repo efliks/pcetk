@@ -58,12 +58,31 @@ class MEADInstance (object):
         "sitePqr"           :  None  ,
         "siteLog"           :  None  ,
         "siteGrid"          :  None  ,
-        "Gmodel"            :  None  ,
         "Gborn_model"       :  None  ,
         "Gback_model"       :  None  ,
         "Gborn_protein"     :  None  ,
         "Gback_protein"     :  None  ,
                         }
+
+    @property
+    def Gmodel (self):
+        site        = self.parent
+        meadModel   = site.parent
+        energyModel = meadModel.energyModel
+        if energyModel:
+            return energyModel.GetGmodel (self._instIndexGlobal)
+        else:
+            return None
+
+    @Gmodel.setter
+    def Gmodel (self, value):
+        site        = self.parent
+        meadModel   = site.parent
+        energyModel = meadModel.energyModel
+        if energyModel:
+            energyModel.SetGmodel (self._instIndexGlobal, value)
+        else:
+            pass
 
     @property
     def Gintr (self):

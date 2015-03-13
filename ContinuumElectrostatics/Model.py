@@ -522,7 +522,8 @@ class MEADModel (object):
             siteIndex       = 0
             self.meadSites  = []
 
-            # A temporary list of protons is needed because the central array of protons is initialized only after the initialization of all instances
+            # Temporary lists of Gmodels and protons are needed because the central arrays of Gmodels and protons are initialized only after the initialization of all instances
+            Gmodels         = []
             protons         = []
 
             if excludeSegments is None:
@@ -702,8 +703,9 @@ class MEADModel (object):
                                 newSite.CalculateCenterOfGeometry (system, libSite["center"])
 
                                 # Add instances to the newly created site
-                                protonsOfInstances, updatedIndexGlobal = newSite._CreateInstances (libSite["instances"], instIndexGlobal)
+                                GmodelsOfInstances, protonsOfInstances, updatedIndexGlobal = newSite._CreateInstances (libSite["instances"], instIndexGlobal)
 
+                                Gmodels.extend (GmodelsOfInstances)
                                 protons.extend (protonsOfInstances)
                                 instIndexGlobal = updatedIndexGlobal
 
@@ -761,8 +763,9 @@ class MEADModel (object):
                                     modelAtomIndices = modelAtomIndices  ,
                                                    )
                                 newSite.CalculateCenterOfGeometry (system, libSite["center"])
-                                protonsOfInstances, updatedIndexGlobal = newSite._CreateInstances (libSite["instances"], instIndexGlobal)
+                                GmodelsOfInstances, protonsOfInstances, updatedIndexGlobal = newSite._CreateInstances (libSite["instances"], instIndexGlobal)
 
+                                Gmodels.extend (GmodelsOfInstances)
                                 protons.extend (protonsOfInstances)
                                 instIndexGlobal = updatedIndexGlobal
 
@@ -808,14 +811,14 @@ class MEADModel (object):
             self.pathPqrBack        = os.path.join (self.pathScratch, "back.pqr")
             self.pathFptSites       = os.path.join (self.pathScratch, "site.fpt")
 
-            # Allocate arrays of protons, intrinsic energies, interaction energies and probabilities
+            # Allocate arrays of Gmodels, protons, intrinsic energies, interaction energies and probabilities
             self.energyModel = EnergyModel (self)
 
-            # Initialize the array of protons
+            # Initialize the arrays of Gmodels and protons
             for site in self.meadSites:
                 for instance in site.instances:
+                    instance.Gmodel  = Gmodels[instance._instIndexGlobal]
                     instance.protons = protons[instance._instIndexGlobal]
-                    # Or: self.energyModel.SetProtons (instance._instIndexGlobal, protons[instance._instIndexGlobal])
 
             # Finish up
             self.isInitialized = True
