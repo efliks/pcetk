@@ -510,33 +510,41 @@ class MEADModel (object):
                     if exclSegmentName == segmentName and exclResidueName == residueName and exclResidueSerial == residueSerial:
                         includeResidue = False
                         break
+
                 elif (    exclSegmentName) and (    exclResidueName) and (not exclResidueSerial):
                     if exclSegmentName == segmentName and exclResidueName == residueName:
                         includeResidue = False
                         break
+
                 elif (    exclSegmentName) and (not exclResidueName) and (    exclResidueSerial):
                     if exclSegmentName == segmentName and exclResidueSerial == residueSerial:
                         includeResidue = False
                         break
+
                 elif (    exclSegmentName) and (not exclResidueName) and (not exclResidueSerial):
                     if exclSegmentName == segmentName:
                         includeResidue = False
                         break
+
                 elif (not exclSegmentName) and (    exclResidueName) and (    exclResidueSerial):
                     if exclResidueName == residueName and exclResidueSerial == residueSerial:
                         includeResidue = False
                         break
+
                 elif (not exclSegmentName) and (    exclResidueName) and (not exclResidueSerial):
                     if exclResidueName == residueName:
                         includeResidue = False
                         break
+
                 elif (not exclSegmentName) and (not exclResidueName) and (    exclResidueSerial):
                     if exclResidueSerial == residueSerial:
                         includeResidue = False
                         break
+
                 elif (not exclSegmentName) and (not exclResidueName) and (not exclResidueSerial):
                     includeResidue = False
                     break
+
             if not includeResidue:
                 if LogFileActive (log):
                     log.Text ("\nExcluding residue: %s %s %d\n" % (segmentName, residueName, residueSerial))
