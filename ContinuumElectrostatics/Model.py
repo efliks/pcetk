@@ -501,6 +501,55 @@ class MEADModel (object):
 
 
     #===============================================================================
+    def _CheckResidue (self, excludeResidues, segmentName, residueName, residueSerial, log=logFile):
+        """Check if the residue should be included."""
+        includeResidue = True
+        for exclSegmentName, exclResidueName, exclResidueSerial in excludeResidues:
+            if   (    exclSegmentName) and (    exclResidueName) and (    exclResidueSerial):
+                if exclSegmentName == segmentName and exclResidueName == residueName and exclResidueSerial == residueSerial:
+                    includeResidue = False
+                    break
+
+            elif (    exclSegmentName) and (    exclResidueName) and (not exclResidueSerial):
+                if exclSegmentName == segmentName and exclResidueName == residueName:
+                    includeResidue = False
+                    break
+
+            elif (    exclSegmentName) and (not exclResidueName) and (    exclResidueSerial):
+                if exclSegmentName == segmentName and exclResidueSerial == residueSerial:
+                    includeResidue = False
+                    break
+
+            elif (    exclSegmentName) and (not exclResidueName) and (not exclResidueSerial):
+                if exclSegmentName == segmentName:
+                    includeResidue = False
+                    break
+
+            elif (not exclSegmentName) and (    exclResidueName) and (    exclResidueSerial):
+                if exclResidueName == residueName and exclResidueSerial == residueSerial:
+                    includeResidue = False
+                    break
+
+            elif (not exclSegmentName) and (    exclResidueName) and (not exclResidueSerial):
+                if exclResidueName == residueName:
+                    includeResidue = False
+                    break
+
+            elif (not exclSegmentName) and (not exclResidueName) and (    exclResidueSerial):
+                if exclResidueSerial == residueSerial:
+                    includeResidue = False
+                    break
+
+            elif (not exclSegmentName) and (not exclResidueName) and (not exclResidueSerial):
+                includeResidue = False
+                break
+        if not includeResidue:
+            if LogFileActive (log):
+                log.Text ("\nExcluding residue: %s %s %d\n" % (segmentName, residueName, residueSerial))
+        return includeResidue
+
+
+    #===============================================================================
     def Initialize (self, excludeSegments=None, excludeResidues=None, includeTermini=False, log=logFile):
         """Decompose the system into model compounds, sites and a background charge set.
         |excludeSegments| is a sequence of segment names to exclude from the model, usually segments of water molecules.
@@ -518,17 +567,38 @@ class MEADModel (object):
             ParseLabel = system.sequence.ParseLabel
             segments   = system.sequence.children
 
-            instIndexGlobal = 0
-            siteIndex       = 0
-            self.meadSites  = []
-
-            # Temporary lists of Gmodels and protons are needed because the central arrays of Gmodels and protons are initialized only after the initialization of all instances
-            Gmodels         = []
-            protons         = []
-
             if excludeSegments is None:
                 excludeSegments = ["WATA", "WATB", "WATC", "WATD", ]
 
+
+            # Initial run to calculate the total numbers of sites and instances
+            totalSites     = 0
+            totalInstances = 0
+            for segment in segments:
+                segmentName = segment.label
+
+                if segmentName not in excludeSegments:
+                    residues  = segment.children
+
+                    for residue in residues:
+                        residueName, residueSerial = ParseLabel (residue.label, fields=2)
+                        residueSerial  = int (residueSerial)
+                        titratableSite = residueName in self.librarySites
+
+                        if titratableSite:
+                            includeResidue = self._CheckResidue (excludeResidues, segmentName, residueName, residueSerial, log=None)
+                            if includeResidue:
+                                libSite        = self.librarySites[residueName]
+                                totalSites     = totalSites     + 1
+                                totalInstances = totalInstances + len (libSite["instances"])
+
+            # Allocate arrays of Gmodels, protons, intrinsic energies, interaction energies and probabilities
+            self.energyModel = EnergyModel (self, totalSites, totalInstances)
+
+
+            instIndexGlobal = 0
+            siteIndex       = 0
+            self.meadSites  = []
 
             #============ Go over segments ============
             for segment in segments:
@@ -542,58 +612,11 @@ class MEADModel (object):
 
                     #============ Go over residues ============
                     for residueIndex, residue in enumerate (residues):
-                        residueName, residueSerial = ParseLabel (residue.label, fields = 2)
+                        residueName, residueSerial = ParseLabel (residue.label, fields=2)
                         residueSerial = int (residueSerial)
 
                         # Include residue?
-                        includeResidue = True
-
-                        if excludeResidues:
-                            for exclSegmentName, exclResidueName, exclResidueSerial in excludeResidues:
-                                if   (    exclSegmentName) and (    exclResidueName) and (    exclResidueSerial):
-                                    if exclSegmentName == segmentName and exclResidueName == residueName and exclResidueSerial == residueSerial:
-                                        includeResidue = False
-                                        break
-
-                                elif (    exclSegmentName) and (    exclResidueName) and (not exclResidueSerial):
-                                    if exclSegmentName == segmentName and exclResidueName == residueName:
-                                        includeResidue = False
-                                        break
-
-                                elif (    exclSegmentName) and (not exclResidueName) and (    exclResidueSerial):
-                                    if exclSegmentName == segmentName and exclResidueSerial == residueSerial:
-                                        includeResidue = False
-                                        break
-
-                                elif (    exclSegmentName) and (not exclResidueName) and (not exclResidueSerial):
-                                    if exclSegmentName == segmentName:
-                                        includeResidue = False
-                                        break
-
-                                elif (not exclSegmentName) and (    exclResidueName) and (    exclResidueSerial):
-                                    if exclResidueName == residueName and exclResidueSerial == residueSerial:
-                                        includeResidue = False
-                                        break
-
-                                elif (not exclSegmentName) and (    exclResidueName) and (not exclResidueSerial):
-                                    if exclResidueName == residueName:
-                                        includeResidue = False
-                                        break
-
-                                elif (not exclSegmentName) and (not exclResidueName) and (    exclResidueSerial):
-                                    if exclResidueSerial == residueSerial:
-                                        includeResidue = False
-                                        break
-
-                                elif (not exclSegmentName) and (not exclResidueName) and (not exclResidueSerial):
-                                    includeResidue = False
-                                    break
-
-                            if not includeResidue:
-                                if LogFileActive (log):
-                                    log.Text ("\nExcluding residue: %s %s %d\n" % (segmentName, residueName, residueSerial))
-
-
+                        includeResidue = self._CheckResidue (excludeResidues, segmentName, residueName, residueSerial, log=log)
                         if includeResidue:
 
                             #============= Start experimental code =============
@@ -633,7 +656,7 @@ class MEADModel (object):
                                 # Include atoms from the previous residue to the model compound?
                                 if residueIndex > 1:
                                     prevResidue = residues[residueIndex - 1]
-                                    prevResidueName, prevResidueSerial = ParseLabel (prevResidue.label, fields = 2)
+                                    prevResidueName, prevResidueSerial = ParseLabel (prevResidue.label, fields=2)
                                     prevResidueSerial = int (prevResidueSerial)
 
                                     if prevResidueName in PROTEIN_RESIDUES:
@@ -646,7 +669,7 @@ class MEADModel (object):
                                 # Include atoms from the next residue to the model compound?
                                 if residueIndex < (nresidues - 1):
                                     nextResidue = residues[residueIndex + 1]
-                                    nextResidueName, nextResidueSerial = ParseLabel (nextResidue.label, fields = 2)
+                                    nextResidueName, nextResidueSerial = ParseLabel (nextResidue.label, fields=2)
                                     nextResidueSerial = int (nextResidueSerial)
 
                                     if nextResidueName in PROTEIN_RESIDUES:
@@ -703,11 +726,7 @@ class MEADModel (object):
                                 newSite.CalculateCenterOfGeometry (system, libSite["center"])
 
                                 # Add instances to the newly created site
-                                GmodelsOfInstances, protonsOfInstances, updatedIndexGlobal = newSite._CreateInstances (libSite["instances"], instIndexGlobal)
-
-                                Gmodels.extend (GmodelsOfInstances)
-                                protons.extend (protonsOfInstances)
-                                instIndexGlobal = updatedIndexGlobal
+                                instIndexGlobal = newSite._CreateInstances (libSite["instances"], instIndexGlobal)
 
                                 # Add the newly created site to the list of sites
                                 self.meadSites.append (newSite)
@@ -763,11 +782,7 @@ class MEADModel (object):
                                     modelAtomIndices = modelAtomIndices  ,
                                                    )
                                 newSite.CalculateCenterOfGeometry (system, libSite["center"])
-                                GmodelsOfInstances, protonsOfInstances, updatedIndexGlobal = newSite._CreateInstances (libSite["instances"], instIndexGlobal)
-
-                                Gmodels.extend (GmodelsOfInstances)
-                                protons.extend (protonsOfInstances)
-                                instIndexGlobal = updatedIndexGlobal
+                                instIndexGlobal = newSite._CreateInstances (libSite["instances"], instIndexGlobal)
 
                                 self.meadSites.append (newSite)
                                 siteIndex = siteIndex + 1
@@ -789,7 +804,7 @@ class MEADModel (object):
 
                 #============ Go over residues ============
                 for residue in residues:
-                    residueName, residueSerial = ParseLabel (residue.label, fields = 2)
+                    residueName, residueSerial = ParseLabel (residue.label, fields=2)
                     residueSerial = int (residueSerial)
 
                     # Remove residues not defined in PROTEIN_RESIDUES, usually waters and ions
@@ -811,14 +826,8 @@ class MEADModel (object):
             self.pathPqrBack        = os.path.join (self.pathScratch, "back.pqr")
             self.pathFptSites       = os.path.join (self.pathScratch, "site.fpt")
 
-            # Allocate arrays of Gmodels, protons, intrinsic energies, interaction energies and probabilities
-            self.energyModel = EnergyModel (self)
-
-            # Initialize the arrays of Gmodels and protons
-            for site in self.meadSites:
-                for instance in site.instances:
-                    instance.Gmodel  = Gmodels[instance._instIndexGlobal]
-                    instance.protons = protons[instance._instIndexGlobal]
+            # Complete the initialization of the energy model
+            self.energyModel.Initialize ()
 
             # Finish up
             self.isInitialized = True
