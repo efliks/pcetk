@@ -41,9 +41,9 @@ cdef extern from "EnergyModel.h":
     cdef void    EnergyModel_CalculateProbabilitiesMonteCarlo (CEnergyModel *self, Real pH, Boolean equil, Integer nscans, Status *status)
 
     # Unfolded proteins
-    cdef Real    EnergyModel_CalculateMicrostateEnergyUnfolded  (CEnergyModel *self, CStateVector *vector, Real pH)
-    cdef Real    EnergyModel_PartitionFunctionUnfolded          (CEnergyModel *self, Real pH, Real Gneutral, Status *status)
-    cdef Real    EnergyModel_PartitionFunctionFolded            (CEnergyModel *self, Real pH, Real Gneutral, Status *status)
+    cdef Real    EnergyModel_CalculateMicrostateEnergyUnfolded (CEnergyModel *self, CStateVector *vector, Real pH)
+    cdef Real    EnergyModel_CalculateZunfolded                (CEnergyModel *self, Real pH, Real Gzero, Status *status)
+    cdef Real    EnergyModel_CalculateZfolded                  (CEnergyModel *self, Real pH, Real Gzero, Status *status)
 
     # Functions for accessing items
     cdef Real    EnergyModel_GetGmodel         (CEnergyModel *self, Integer instIndexGlobal)

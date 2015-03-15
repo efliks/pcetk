@@ -215,21 +215,27 @@ cdef class EnergyModel:
         return Gmicro
 
 
-    def PartitionFunctionFolded (self, Real pH=7.0, Real Gneutral=0.0):
+    def CalculateZfolded (self, Real Gzero=0.0, Real pH=7.0):
         """Calculate partition function of a folded protein."""
         cdef Status  status = Status_Continue
         cdef Real    Zfolded
-        Zfolded = EnergyModel_PartitionFunctionFolded (self.cObject, pH, Gneutral, &status)
+        if self.cObject.nstates > ANALYTIC_STATES:
+            raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)
+
+        Zfolded = EnergyModel_CalculateZfolded (self.cObject, pH, Gzero, &status)
         if status != Status_Continue:
             raise CLibraryError ("Cannot allocate Boltzmann factors.")
         return Zfolded
 
 
-    def PartitionFunctionUnfolded (self, Real pH=7.0, Real Gneutral=0.0):
+    def CalculateZunfolded (self, Real Gzero=0.0, Real pH=7.0):
         """Calculate partition function of an unfolded protein."""
         cdef Status  status = Status_Continue
         cdef Real    Zunfolded
-        Zunfolded = EnergyModel_PartitionFunctionUnfolded (self.cObject, pH, Gneutral, &status)
+        if self.cObject.nstates > ANALYTIC_STATES:
+            raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)
+
+        Zunfolded = EnergyModel_CalculateZunfolded (self.cObject, pH, Gzero, &status)
         if status != Status_Continue:
             raise CLibraryError ("Cannot allocate Boltzmann factors.")
         return Zunfolded
