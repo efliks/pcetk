@@ -11,9 +11,9 @@ logFile.Header ("Calculate protonation states in lysozyme")
 
 
 #===========================================
-par_tab = ["toppar/par_all27_prot_na.inp", ]
+parTable = ["toppar/par_all27_prot_na.inp", ]
 
-mol  = CHARMMPSFFile_ToSystem ("lysozyme1990_xplor.psf", isXPLOR=True, parameters=CHARMMParameterFiles_ToParameters (par_tab))
+mol  = CHARMMPSFFile_ToSystem ("lysozyme1990_xplor.psf", isXPLOR=True, parameters=CHARMMParameterFiles_ToParameters (parTable))
 mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("lysozyme1990.crd")
 
 
@@ -22,17 +22,15 @@ cem = MEADModel (system=mol, pathMEAD="/home/mikolaj/local/bin/", pathGMCT="/hom
 
 # Exclude cysteines involved in disulfide bonds
 # Also exclude all arginines (otherwise the system has too many sites for analytic treatment)
-exclusions = (
-("PRTA", "CYS",   6),
-("PRTA", "CYS", 127),
-("PRTA", "CYS",  30),
-("PRTA", "CYS", 115),
-("PRTA", "CYS",  64),
-("PRTA", "CYS",  80),
-("PRTA", "CYS",  76),
-("PRTA", "CYS",  94),
-("PRTA", "ARG",   0),
-)
+exclusions = (("PRTA", "CYS",   6),
+              ("PRTA", "CYS", 127),
+              ("PRTA", "CYS",  30),
+              ("PRTA", "CYS", 115),
+              ("PRTA", "CYS",  64),
+              ("PRTA", "CYS",  80),
+              ("PRTA", "CYS",  76),
+              ("PRTA", "CYS",  94),
+              ("PRTA", "ARG",   0),)
 
 cem.Initialize (excludeResidues=exclusions)
 cem.Summary ()
@@ -59,12 +57,8 @@ cem.SummaryProbabilities ()
 
 
 #===========================================
-sites = (
-("PRTA", "GLU" , 35),
-("PRTA", "ASP" , 52),
-#  ("PRTA", "ASP" , 66),
-#  ("PRTA", "HIS" , 15),
-)
+sites = (("PRTA", "GLU" , 35),
+         ("PRTA", "ASP" , 52),)
 
 substate = MEADSubstate (cem, sites)
 substate.CalculateSubstateEnergies ()
@@ -74,7 +68,6 @@ substate.Summary ()
 #===========================================
 # vector = StateVector (cem)
 # go = True
-# 
 # while go:
 #     cem.CalculateMicrostateEnergy (vector)
 #     go = vector.Increment ()

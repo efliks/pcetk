@@ -69,20 +69,30 @@ cdef class EnergyModel:
         return deviate
 
 
-    def __init__ (self, meadModel):
+    def __init__ (self, meadModel, Integer totalSites, Integer totalInstances):
         """Constructor."""
-        cdef Integer nstates, ninstances, totalSites, totalInstances
-        cdef Integer indexSite, indexDown, indexUp, index
         cdef Status  status
-
-        status         = Status_Continue
-        totalSites     = meadModel.nsites
-        totalInstances = meadModel.ninstances
-        self.cObject   = EnergyModel_Allocate (totalSites, totalInstances, &status)
+        status        = Status_Continue
+        self.cObject  = EnergyModel_Allocate (totalSites, totalInstances, &status)
         if status != Status_Continue:
             raise CLibraryError ("Cannot allocate energy model.")
 
-        nstates = 1
+        self.cObject.temperature = meadModel.temperature
+        self.cObject.ninstances  = totalInstances
+        self.isOwner             = False
+        self.owner               = meadModel
+
+
+    def Initialize (self):
+        """Set up sites and calculate the number of possible states."""
+        cdef Integer nstates, ninstances, totalSites
+        cdef Integer indexSite, indexDown, indexUp, index
+        cdef Status  status
+        totalSites = self.cObject.vector.nsites
+        status     = Status_Continue
+        meadModel  = self.owner
+        nstates    = 1
+
         for indexSite from 0 <= indexSite < totalSites:
             ninstances =  0
             indexUp    =  0
@@ -97,12 +107,7 @@ cdef class EnergyModel:
 
             if nstates <= ANALYTIC_STATES:
                 nstates = nstates * ninstances
-
-        self.cObject.nstates     = nstates
-        self.cObject.ninstances  = totalInstances
-        self.cObject.temperature = meadModel.temperature
-        self.isOwner = False
-        self.owner   = meadModel
+        self.cObject.nstates = nstates
 
 
     def CheckIfSymmetric (self, Real tolerance=0.05):

@@ -22,17 +22,15 @@ import os
 class MEADSite (object):
     """Titratable site.
     Each site has at least two instances (protonated and deprotonated)."""
-    defaultAttributes = {
-        "parent"           : None , # <--This should point to the MEAD model
-        "siteIndex"        : None ,
-        "segName"          : None ,
-        "resName"          : None ,
-        "resSerial"        : None , # <--Keep it as integer
-        "instances"        : None ,
-        "center"           : None ,
-        "siteAtomIndices"  : None ,
-        "modelAtomIndices" : None ,
-                        }
+    defaultAttributes = { "parent"           : None ,
+                          "siteIndex"        : None ,
+                          "segName"          : None ,
+                          "resName"          : None ,
+                          "resSerial"        : None ,
+                          "instances"        : None ,
+                          "center"           : None ,
+                          "siteAtomIndices"  : None ,
+                          "modelAtomIndices" : None }
 
     @property
     def label (self):
@@ -162,13 +160,10 @@ class MEADSite (object):
     #===============================================================================
     def _CreateInstances (self, templatesOfInstances, instIndexGlobal):
         """Create instances of a site."""
-        Gmodels    = []
-        protons    = []
         instances  = []
         meadModel  = self.parent
 
         for instIndex, instance in enumerate (templatesOfInstances):
-            # Set Gmodel and protons later because they come from central arrays
             newInstance = MEADInstance (
                 parent           = self                                                           ,
                 instIndex        = instIndex                                                      ,
@@ -182,19 +177,16 @@ class MEADSite (object):
                 siteLog          = self._CreateFilename ("site",  instance [ "label"   ], "out")  ,
                 siteGrid         = self._CreateFilename ("site",  instance [ "label"   ], "ogm")  ,
                                        )
+            Gmodel   = instance [ "Gmodel"  ] * meadModel.temperature / 300.
+            meadModel.energyModel.SetGmodel  (instIndexGlobal, Gmodel)
+            nprotons = instance [ "protons" ]
+            meadModel.energyModel.SetProtons (instIndexGlobal, nprotons)
+
             instances.append (newInstance)
             instIndexGlobal = instIndexGlobal + 1
 
-            # Remember Gmodel of the current instance
-            Gmodel = instance [ "Gmodel"  ] * meadModel.temperature / 300.
-            Gmodels.append (Gmodel)
-
-            # Remember the number of protons of the current instance
-            nprotons  = instance [ "protons" ]
-            protons.append (nprotons)
-
         self.instances = instances
-        return (Gmodels, protons, instIndexGlobal)
+        return instIndexGlobal
 
 
 #===============================================================================
