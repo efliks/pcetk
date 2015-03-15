@@ -82,6 +82,7 @@ extern void    EnergyModel_ResetInteractions          (const EnergyModel *self);
 
 /* Calculation functions */
 extern Real    EnergyModel_CalculateMicrostateEnergy          (const EnergyModel *self, const StateVector *vector, const Real pH);
+extern Real1DArray *EnergyModel_CalculateBoltzmannFactors (const EnergyModel *self, Real (*EnergyFunction)(const EnergyModel*, const StateVector*, const Real), const Real pH, const Real Gzero, Real *Z, Status *status);
 extern void    EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const Real pH, Status *status);
 
 /* Monte Carlo-related functions */
@@ -110,8 +111,8 @@ extern void    EnergyModel_SetProbability    (const EnergyModel *self, const Int
 extern void    EnergyModel_SetInteraction    (const EnergyModel *self, const Integer instIndexGlobalA, const Integer instIndexGlobalB, const Real value);
 
 /* Functions for the treatment of unfolded proteins */
-extern Real    EnergyModel_CalculateMicrostateEnergyUnfolded  (const EnergyModel *self, const StateVector *vector, const Real pH);
-extern Real    EnergyModel_PartitionFunctionUnfolded          (const EnergyModel *self, const Real pH, const Real Gneutral, Status *status);
-extern Real    EnergyModel_PartitionFunctionFolded            (const EnergyModel *self, const Real pH, const Real Gneutral, Status *status);
+extern Real    EnergyModel_CalculateMicrostateEnergyUnfolded (const EnergyModel *self, const StateVector *vector, const Real pH);
+extern Real    EnergyModel_CalculateZunfolded                (const EnergyModel *self, const Real pH, const Real Gzero, Status *status);
+extern Real    EnergyModel_CalculateZfolded                  (const EnergyModel *self, const Real pH, const Real Gzero, Status *status);
 
 #endif
