@@ -323,6 +323,15 @@ class MEADModel (object):
         return self._FinalizeProbabilities ()
 
 
+    def CalculateProbabilitiesAnalyticallyUnfolded (self, pH=7.0, log=logFile):
+        """Calculate the probability of occurence of each instance of each site, using statistical mechanics (unfolded protein)."""
+        nstates = self.energyModel.CalculateProbabilitiesAnalyticallyUnfolded (pH=pH)
+
+        if LogFileActive (log):
+            log.Text ("\nCalculated %d protonation states.\n" % nstates)
+        return self._FinalizeProbabilities ()
+
+
     def _FinalizeProbabilities (self):
         # The instances now contain calculated probabilities
         self.isProbability = True

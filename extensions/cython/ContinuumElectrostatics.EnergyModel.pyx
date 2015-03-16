@@ -156,7 +156,23 @@ cdef class EnergyModel:
         EnergyModel_CalculateProbabilitiesAnalytically (self.cObject, pH, &status)
         if status != Status_Continue:
             raise CLibraryError ("Cannot allocate Boltzmann factors.")
+        return self.cObject.nstates
 
+
+    def CalculateProbabilitiesAnalyticallyUnfolded (self, Real pH=7.0):
+        """Calculate probabilities of protonation states analytically (unfolded protein)."""
+        cdef Status status
+        status     = Status_Continue
+        meadModel  = self.owner
+
+        if self.cObject.nstates > ANALYTIC_STATES:
+            raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)
+        if not meadModel.isCalculated:
+            raise CLibraryError ("First calculate electrostatic energies.")
+
+        EnergyModel_CalculateProbabilitiesAnalyticallyUnfolded (self.cObject, pH, &status)
+        if status != Status_Continue:
+            raise CLibraryError ("Cannot allocate Boltzmann factors.")
         return self.cObject.nstates
 
 

@@ -188,17 +188,34 @@ Real EnergyModel_CalculateMicrostateEnergy (const EnergyModel *self, const State
 }
 
 /*
- * Calculate Boltzmann factors using a custom energy function.
+ * Calculate the energy of a microstate in an unfolded (=denaturated) protein.
+ * In the unfolded state, Gintr become Gmodel and all interactions are set to zero.
+ * 
+ * Reference: Yang A.-S., Honig B., J. Mol. Biol. 1993, 231, 459-474
  */
-Real1DArray *EnergyModel_CalculateBoltzmannFactors (const EnergyModel *self, Real (*EnergyFunction)(const EnergyModel*, const StateVector*, const Real), const Real pH, const Real Gzero, Real *Z, Status *status) {
-    Real         *bfactor, G, Gmin;
-    Real1DArray  *bfactors;
-    Integer       i;
+Real EnergyModel_CalculateMicrostateEnergyUnfolded (const EnergyModel *self, const StateVector *vector, const Real pH) {
+    Integer   nprotons, i;
+    TitrSite *site;
+    Real      Gmodel;
 
-    bfactors = Real1DArray_Allocate (self->nstates, status);
-    if (*status != Status_Continue) {
-        return NULL;
+    Gmodel   = 0. ;
+    nprotons = 0  ;
+    site     = vector->sites;
+    for (i = 0; i < vector->nsites; i++, site++) {
+        Gmodel    +=    Real1DArray_Item (self->models  , site->indexActive);
+        nprotons  += Integer1DArray_Item (self->protons , site->indexActive);
     }
+    return (Gmodel - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * self->temperature * CONSTANT_LN10 * pH));
+}
+
+/*
+ * Calculate partition function and Boltzmann factors using a custom energy function.
+ *
+ * Note: bfactors should be allocated beforehand.
+ */
+Real EnergyModel_CalculateZ (const EnergyModel *self, Real (*EnergyFunction)(const EnergyModel*, const StateVector*, const Real), const Real pH, const Real Gzero, Real1DArray *bfactors) {
+    Real     *bfactor, G, Gmin, Z;
+    Integer   i;
 
     StateVector_Reset (self->vector);
     i       = self->nstates;
@@ -216,23 +233,50 @@ Real1DArray *EnergyModel_CalculateBoltzmannFactors (const EnergyModel *self, Rea
     Real1DArray_Scale (bfactors, -1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * self->temperature));
     Real1DArray_Exp (bfactors);
 
-    *Z = Real1DArray_Sum (bfactors);
-    return bfactors;
+    Z = Real1DArray_Sum (bfactors);
+    return Z;
 }
 
 /*
- * Evaluate the probabilities of occurrence of instances from the statistical mechanical partition function.
+ * Calculate the statistical mechanical partition function of an unfolded protein.
  */
-void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const Real pH, Status *status) {
-    Real         *bfactor, Z;
-    Real1DArray  *bfactors;
-    Integer       i, j;
-    TitrSite     *ts;
+Real EnergyModel_CalculateZunfolded (const EnergyModel *self, const Real pH, const Real Gzero, Status *status) {
+    Real1DArray *bfactors;
+    Real Z;
 
-    bfactors = EnergyModel_CalculateBoltzmannFactors (self, EnergyModel_CalculateMicrostateEnergy, pH, 0., &Z, status);
+    bfactors = Real1DArray_Allocate (self->nstates, status);
     if (*status != Status_Continue) {
-        return;
+        return -1.;
     }
+    Z = EnergyModel_CalculateZ (self, EnergyModel_CalculateMicrostateEnergyUnfolded, pH, Gzero, bfactors);
+    Real1DArray_Deallocate (&bfactors);
+    return Z;
+}
+
+/*
+ * Calculate the statistical mechanical partition function of a folded protein.
+ */
+Real EnergyModel_CalculateZfolded (const EnergyModel *self, const Real pH, const Real Gzero, Status *status) {
+    Real1DArray *bfactors;
+    Real Z;
+
+    bfactors = Real1DArray_Allocate (self->nstates, status);
+    if (*status != Status_Continue) {
+        return -1.;
+    }
+    Z = EnergyModel_CalculateZ (self, EnergyModel_CalculateMicrostateEnergy, pH, Gzero, bfactors);
+    Real1DArray_Deallocate (&bfactors);
+    return Z;
+}
+
+/*
+ * Calculate protonation state probabilities from the statistical mechanical partition function.
+ */
+void EnergyModel_CalculateProbabilitiesFromZ (const EnergyModel *self, const Real Z, const Real1DArray *bfactors) {
+    Real      *bfactor;
+    Integer    i, j;
+    TitrSite  *ts;
+
     Real1DArray_Set (self->probabilities, 0.);
     StateVector_Reset (self->vector);
 
@@ -247,6 +291,39 @@ void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, co
         StateVector_Increment (self->vector);
     }
     Real1DArray_Scale (self->probabilities, 1. / Z);
+}
+
+/*
+ * Analytic evaluation of protonation state probabilities.
+ */
+void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const Real pH, Status *status) {
+    Real1DArray *bfactors;
+    Real         Z;
+
+    bfactors = Real1DArray_Allocate (self->nstates, status);
+    if (*status != Status_Continue) {
+        return;
+    }
+    Z = EnergyModel_CalculateZ (self, EnergyModel_CalculateMicrostateEnergy, pH, 0., bfactors);
+    EnergyModel_CalculateProbabilitiesFromZ (self, Z, bfactors);
+
+    Real1DArray_Deallocate (&bfactors);
+}
+
+/*
+ * Analytic evaluation of protonation state probabilities (unfolded protein).
+ */
+void EnergyModel_CalculateProbabilitiesAnalyticallyUnfolded (const EnergyModel *self, const Real pH, Status *status) {
+    Real1DArray *bfactors;
+    Real         Z;
+
+    bfactors = Real1DArray_Allocate (self->nstates, status);
+    if (*status != Status_Continue) {
+        return;
+    }
+    Z = EnergyModel_CalculateZ (self, EnergyModel_CalculateMicrostateEnergyUnfolded, pH, 0., bfactors);
+    EnergyModel_CalculateProbabilitiesFromZ (self, Z, bfactors);
+
     Real1DArray_Deallocate (&bfactors);
 }
 
@@ -487,55 +564,4 @@ void EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, cons
         }
         Real1DArray_Scale (self->probabilities, scale);
     }
-}
-
-/*
- * Calculate the energy of a microstate in an unfolded (=denaturated) protein.
- * In the unfolded state, Gintr become Gmodel and all interactions are set to zero.
- * 
- * Reference: Yang A.-S., Honig B., J. Mol. Biol. 1993, 231, 459-474
- */
-Real EnergyModel_CalculateMicrostateEnergyUnfolded (const EnergyModel *self, const StateVector *vector, const Real pH) {
-    Integer   nprotons, i;
-    TitrSite *site;
-    Real      Gmodel;
-
-    Gmodel   = 0. ;
-    nprotons = 0  ;
-    site     = vector->sites;
-    for (i = 0; i < vector->nsites; i++, site++) {
-        Gmodel    +=    Real1DArray_Item (self->models  , site->indexActive);
-        nprotons  += Integer1DArray_Item (self->protons , site->indexActive);
-    }
-    return (Gmodel - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * self->temperature * CONSTANT_LN10 * pH));
-}
-
-/*
- * Calculate the statistical mechanical partition function of an unfolded protein.
- */
-Real EnergyModel_CalculateZunfolded (const EnergyModel *self, const Real pH, const Real Gzero, Status *status) {
-    Real1DArray *bfactors;
-    Real Z;
-
-    bfactors = EnergyModel_CalculateBoltzmannFactors (self, EnergyModel_CalculateMicrostateEnergyUnfolded, pH, Gzero, &Z, status);
-    if (*status != Status_Continue) {
-        return -1.;
-    }
-    Real1DArray_Deallocate (&bfactors);
-    return Z;
-}
-
-/*
- * Calculate the statistical mechanical partition function of a folded protein.
- */
-Real EnergyModel_CalculateZfolded (const EnergyModel *self, const Real pH, const Real Gzero, Status *status) {
-    Real1DArray *bfactors;
-    Real Z;
-
-    bfactors = EnergyModel_CalculateBoltzmannFactors (self, EnergyModel_CalculateMicrostateEnergy, pH, Gzero, &Z, status);
-    if (*status != Status_Continue) {
-        return -1.;
-    }
-    Real1DArray_Deallocate (&bfactors);
-    return Z;
 }

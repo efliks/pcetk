@@ -48,8 +48,10 @@ class CurveThread (threading.Thread):
             self.sites = model.CalculateProbabilitiesGMCT         (pH=self.pH, log=None, nequi=curves.mcEquilibrationScans, nprod=curves.mcProductionScans)
         elif method == "MonteCarlo":
             self.sites = model.CalculateProbabilitiesMonteCarlo   (pH=self.pH, log=None, nequi=curves.mcEquilibrationScans, nprod=curves.mcProductionScans)
-        else:
+        elif method == "analytically":
             self.sites = model.CalculateProbabilitiesAnalytically (pH=self.pH, log=None)
+        else:
+            self.sites = model.CalculateProbabilitiesAnalyticallyUnfolded (pH=self.pH, log=None)
 
 
 #-------------------------------------------------------------------------------
@@ -134,8 +136,10 @@ class TitrationCurves (object):
                         result = meadModel.CalculateProbabilitiesGMCT         (pH=pH, log=None, nequi=self.mcEquilibrationScans, nprod=self.mcProductionScans)
                     elif self.method == "MonteCarlo":
                         result = meadModel.CalculateProbabilitiesMonteCarlo   (pH=pH, log=None, nequi=self.mcEquilibrationScans, nprod=self.mcProductionScans)
-                    else:
+                    elif self.method == "analytically":
                         result = meadModel.CalculateProbabilitiesAnalytically (pH=pH, log=None)
+                    else:
+                        result = meadModel.CalculateProbabilitiesAnalyticallyUnfolded (pH=pH, log=None)
 
                     steps.append (result)
                     if tab:
