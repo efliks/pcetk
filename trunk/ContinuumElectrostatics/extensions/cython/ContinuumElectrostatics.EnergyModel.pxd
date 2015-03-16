@@ -30,20 +30,23 @@ cdef extern from "EnergyModel.h":
     cdef void    EnergyModel_SymmetrizeInteractions     (CEnergyModel *self, Status *status)
     cdef void    EnergyModel_ResetInteractions          (CEnergyModel *self)
 
-    # Calculation functions
-    cdef Real    EnergyModel_CalculateMicrostateEnergy          (CEnergyModel *self, CStateVector *vector, Real pH)
-    cdef void    EnergyModel_CalculateProbabilitiesAnalytically (CEnergyModel *self, Real pH, Status *status)
+    # Calculation of energies
+    cdef Real EnergyModel_CalculateMicrostateEnergy         (CEnergyModel *self, CStateVector *vector, Real pH)
+    cdef Real EnergyModel_CalculateMicrostateEnergyUnfolded (CEnergyModel *self, CStateVector *vector, Real pH)
+
+    # Calculation of partition functions
+    cdef Real EnergyModel_CalculateZunfolded (CEnergyModel *self, Real pH, Real Gzero, Status *status)
+    cdef Real EnergyModel_CalculateZfolded (CEnergyModel *self, Real pH, Real Gzero, Status *status)
+
+    # Calculation of probabilities
+    cdef void EnergyModel_CalculateProbabilitiesAnalytically (CEnergyModel *self, Real pH, Status *status)
+    cdef void EnergyModel_CalculateProbabilitiesAnalyticallyUnfolded (CEnergyModel *self, Real pH, Status *status)
 
     # Monte Carlo-related functions
     cdef Real    EnergyModel_MCScan               (CEnergyModel *self, Real pH, Integer nmoves)
     cdef void    EnergyModel_UpdateProbabilities  (CEnergyModel *self)
     cdef Integer EnergyModel_FindPairs            (CEnergyModel *self, Real limit, Integer npairs, Status *status)
     cdef void    EnergyModel_CalculateProbabilitiesMonteCarlo (CEnergyModel *self, Real pH, Boolean equil, Integer nscans, Status *status)
-
-    # Unfolded proteins
-    cdef Real    EnergyModel_CalculateMicrostateEnergyUnfolded (CEnergyModel *self, CStateVector *vector, Real pH)
-    cdef Real    EnergyModel_CalculateZunfolded                (CEnergyModel *self, Real pH, Real Gzero, Status *status)
-    cdef Real    EnergyModel_CalculateZfolded                  (CEnergyModel *self, Real pH, Real Gzero, Status *status)
 
     # Functions for accessing items
     cdef Real    EnergyModel_GetGmodel         (CEnergyModel *self, Integer instIndexGlobal)

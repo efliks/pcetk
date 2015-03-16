@@ -13,6 +13,9 @@
 /* Needed for exp */
 #include <math.h>
 
+#include <stdio.h>
+
+
 /* Data types */
 #include "Real.h"
 #include "Boolean.h"
@@ -80,10 +83,19 @@ extern void    EnergyModel_SymmetrizeInteractions     (const EnergyModel *self, 
 extern Boolean EnergyModel_CheckInteractionsSymmetric (const EnergyModel *self, Real tolerance, Real *maxDeviation);
 extern void    EnergyModel_ResetInteractions          (const EnergyModel *self);
 
-/* Calculation functions */
-extern Real    EnergyModel_CalculateMicrostateEnergy          (const EnergyModel *self, const StateVector *vector, const Real pH);
-extern Real1DArray *EnergyModel_CalculateBoltzmannFactors (const EnergyModel *self, Real (*EnergyFunction)(const EnergyModel*, const StateVector*, const Real), const Real pH, const Real Gzero, Real *Z, Status *status);
-extern void    EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const Real pH, Status *status);
+/* Calculation of energies */
+extern Real EnergyModel_CalculateMicrostateEnergy         (const EnergyModel *self, const StateVector *vector, const Real pH);
+extern Real EnergyModel_CalculateMicrostateEnergyUnfolded (const EnergyModel *self, const StateVector *vector, const Real pH);
+
+/* Calculation of partition functions */
+extern Real EnergyModel_CalculateZ (const EnergyModel *self, Real (*EnergyFunction)(const EnergyModel*, const StateVector*, const Real), const Real pH, const Real Gzero, Real1DArray *bfactors);
+extern Real EnergyModel_CalculateZunfolded (const EnergyModel *self, const Real pH, const Real Gzero, Status *status);
+extern Real EnergyModel_CalculateZfolded (const EnergyModel *self, const Real pH, const Real Gzero, Status *status);
+
+/* Calculation of probabilities */
+extern void EnergyModel_CalculateProbabilitiesFromZ (const EnergyModel *self, const Real Z, const Real1DArray *bfactors);
+extern void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const Real pH, Status *status);
+extern void EnergyModel_CalculateProbabilitiesAnalyticallyUnfolded (const EnergyModel *self, const Real pH, Status *status);
 
 /* Monte Carlo-related functions */
 extern Boolean EnergyModel_Metropolis           (const Real GdeltaRT, const RandomNumberGenerator *generator);
@@ -109,10 +121,5 @@ extern void    EnergyModel_SetGintr          (const EnergyModel *self, const Int
 extern void    EnergyModel_SetProtons        (const EnergyModel *self, const Integer instIndexGlobal, const Integer value);
 extern void    EnergyModel_SetProbability    (const EnergyModel *self, const Integer instIndexGlobal, const Real value);
 extern void    EnergyModel_SetInteraction    (const EnergyModel *self, const Integer instIndexGlobalA, const Integer instIndexGlobalB, const Real value);
-
-/* Functions for the treatment of unfolded proteins */
-extern Real    EnergyModel_CalculateMicrostateEnergyUnfolded (const EnergyModel *self, const StateVector *vector, const Real pH);
-extern Real    EnergyModel_CalculateZunfolded                (const EnergyModel *self, const Real pH, const Real Gzero, Status *status);
-extern Real    EnergyModel_CalculateZfolded                  (const EnergyModel *self, const Real pH, const Real Gzero, Status *status);
 
 #endif
