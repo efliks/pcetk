@@ -43,6 +43,14 @@ class MEADSite (object):
         else:
             return 0
 
+    @property
+    def charge (self):
+        """Get the current charge of a site."""
+        probability, index, label = self.GetMostProbableInstance ()
+        instance = self.instances[index]
+        charge   = sum (instance.charges)
+        return charge
+
 
     #===============================================================================
     def __init__ (self, *arguments, **keywordArguments):
