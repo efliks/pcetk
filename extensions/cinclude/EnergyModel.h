@@ -13,9 +13,6 @@
 /* Needed for exp */
 #include <math.h>
 
-#include <stdio.h>
-
-
 /* Data types */
 #include "Real.h"
 #include "Boolean.h"
