@@ -25,7 +25,7 @@ The key features of the module:
 
 Auxiliary software:
  * pDynamo (Martin Field)
-    http://pdynamo.org
+    http://www.pdynamo.org
 
  * Extended MEAD (Donald Bashford, Timm Essigke, Thomas R. Ullmann)
     http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=extended-mead
