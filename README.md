@@ -24,7 +24,7 @@ The key features of the module:
   * Close integration with pDynamo
 
 
-Auxillary software:
+Auxiliary software:
  * pDynamo (Martin Field)
     http://pdynamo.org
 
