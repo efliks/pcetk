@@ -1,8 +1,7 @@
 # pcetk
-
-The pcetk (a pDynamo-based continuum electrostatic toolkit) module extends
-the pDynamo library with a Poisson-Boltzmann continuum electrostatic model
-that allows for protonation state calculations in proteins.
+Pcetk, a pDynamo-based continuum electrostatic toolkit, is a Python module
+extending the pDynamo library with a Poisson-Boltzmann continuum electrostatic
+model that allows for protonation state calculations in proteins.
 
 The module links pDynamo to the external solver of the Poisson-Boltzmann
 equation, extended MEAD, which is used for the calculation of electrostatic
@@ -26,7 +25,7 @@ The key features of the module:
 
 Auxiliary software:
  * pDynamo (Martin Field)
-    http://pdynamo.org
+    http://www.pdynamo.org
 
  * Extended MEAD (Donald Bashford, Timm Essigke, Thomas R. Ullmann)
     http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=extended-mead
