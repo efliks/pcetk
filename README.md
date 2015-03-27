@@ -1,5 +1,4 @@
 # pcetk
-
 The pcetk (a pDynamo-based continuum electrostatic toolkit) module extends
 the pDynamo library with a Poisson-Boltzmann continuum electrostatic model
 that allows for protonation state calculations in proteins.
@@ -24,7 +23,7 @@ The key features of the module:
   * Close integration with pDynamo
 
 
-Auxillary software:
+Auxiliary software:
  * pDynamo (Martin Field)
     http://pdynamo.org
 
