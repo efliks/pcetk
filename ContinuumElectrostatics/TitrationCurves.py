@@ -218,6 +218,63 @@ class TitrationCurves (object):
                 log.Text ("\nWriting curve files complete.\n")
 
 
+    #===============================================================================
+    def PrintHalfpKs (self, decimalPlaces=2, log=logFile):
+        """Find and print pK1/2 values."""
+        if self.isCalculated:
+            owner     = self.owner
+            data      = self.steps
+            nsteps    = self.nsteps
+            sites     = []
+
+            for site in owner.meadSites:
+                instances = []
+                for instance in site.instances:
+                    pa  = data[0][site.siteIndex][instance.instIndex]
+                    pKs = []
+                    for step in range (1, nsteps):
+                        pb = data[step][site.siteIndex][instance.instIndex]
+                        if ((pa - .5) * (pb - .5)) < 0.:
+                            a  = self.curveStart + (step - 1) * self.curveSampling
+                            b  = self.curveStart + (step    ) * self.curveSampling
+                            pK = a + (.5 - pa) * (b - a) / (pb - pa)
+                            pKs.append (pK)
+                        pa = pb
+                    instances.append (pKs)
+                sites.append (instances)
+
+            if LogFileActive (log):
+                entries = []
+                longest = 0
+                for site in owner.meadSites:
+                    entry = ""
+                    for instance in site.instances:
+                        pKs     = sites[site.siteIndex][instance.instIndex]
+                        nvalues = len (pKs)
+                        entry   = "%s%7s" % (entry, instance.label)
+                        if nvalues < 1:
+                            entry = "%s%7s" % (entry, "n/a")
+                        else:
+                            for pK in pKs:
+                                entry = ("%%s%%7.%df" % decimalPlaces) % (entry, pK)
+                    entries.append (entry)
+                    length = len (entry)
+                    if length > longest: longest = length
+
+                tab = log.GetTable (columns=[6, 6, 6, longest])
+                tab.Start ()
+                tab.Heading ("Site", columnSpan=3)
+                tab.Heading ("pK1/2 values of instances".center (longest))
+                form = "%%-%ds" % longest
+
+                for site, entry in zip (owner.meadSites, entries):
+                    tab.Entry ("%6s" % site.segName)
+                    tab.Entry ("%6s" % site.resName)
+                    tab.Entry ("%6d" % site.resSerial)
+                    tab.Entry (form  % entry)
+                tab.Stop ()
+
+
 #===============================================================================
 # Testing
 #===============================================================================

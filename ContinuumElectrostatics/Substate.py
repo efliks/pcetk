@@ -13,6 +13,7 @@ from pCore           import logFile, LogFileActive
 from Error           import ContinuumElectrostaticsError
 from StateVector     import StateVector
 from InputFileWriter import WriteInputFile
+from Constants       import *
 
 
 class MEADSubstate (object):
@@ -37,19 +38,55 @@ class MEADSubstate (object):
                 raise ContinuumElectrostaticsError ("Site %s %s %d not found." % (selectedSegment, selectedResidueName, selectedResidueSerial))
             pairs.append ([selectedSegment, selectedResidueSerial])
 
-        vector = StateVector_FromProbabilities (meadModel)
-        vector.DefineSubstate (pairs)
-
         self.indicesOfSites = indicesOfSites
         self.isCalculated   = False
         self.substates      = None
-        self.vector         = vector
         self.owner          = meadModel
         self.pH             = pH
+        self.vector         = self._DetermineLowestEnergyVector ()
+        self.vector.DefineSubstate (pairs)
 
         if LogFileActive (log):
             nsites = len (indicesOfSites)
             log.Text ("\nSubstate is initialized with %d site%s.\n" % (nsites, "s" if nsites > 1 else ""))
+
+
+    def _DetermineLowestEnergyVector (self):
+        """Find a vector representing the lowest energy protonation state."""
+        backup = self._ProbabilitiesSave ()
+        owner  = self.owner
+        if self.owner.nsites < ANALYTIC_SITES:
+            owner.CalculateProbabilitiesAnalytically (pH=self.pH)
+        else:
+            owner.CalculateProbabilitiesMonteCarlo (pH=self.pH, log=None)
+
+        vector = StateVector_FromProbabilities (self.owner)
+        self._ProbabilitiesRestore (backup)
+        return vector
+
+
+    def _ProbabilitiesSave (self):
+        """Backup the probabilities of the owner."""
+        meadModel     = self.owner
+        probabilities = None
+
+        if meadModel.isProbability:
+            energyModel   = meadModel.energyModel
+            probabilities = [0.] * meadModel.ninstances
+            for site in meadModel.meadSites:
+                for instance in site.instances:
+                    probabilities[instance._instIndexGlobal] = energyModel.GetProbability (instance._instIndexGlobal)
+        return probabilities
+
+
+    def _ProbabilitiesRestore (self, probabilities):
+        """Restore the original probabilities to the owner."""
+        if probabilities:
+            meadModel   = self.owner
+            energyModel = meadModel.energyModel
+            for site in meadModel.meadSites:
+                for instance in site.instances:
+                    energyModel.SetProbability (instance._instIndexGlobal, probabilities[instance._instIndexGlobal])
 
 
     def CalculateSubstateEnergies (self, log=logFile):
@@ -83,7 +120,7 @@ class MEADSubstate (object):
                 log.Text ("\nCalculating substate energies at pH=%.1f complete.\n" % self.pH)
 
 
-    def Summary (self, relativeEnergy=True, roundCharge=True, log=logFile):
+    def Summary (self, relativeEnergy=True, roundCharge=True, title="", log=logFile):
         """Summarize calculated substate energies in a table."""
         if self.isCalculated:
             indicesOfSites = self.indicesOfSites
@@ -95,6 +132,7 @@ class MEADSubstate (object):
             if LogFileActive (log):
                 tab = log.GetTable (columns = [6, 9, 8, 8] + [14] * nsites)
                 tab.Start ()
+                if title: tab.Title (title)
                 tab.Heading ("State")
                 tab.Heading ("Gmicro")
                 tab.Heading ("Charge")
@@ -148,9 +186,7 @@ class MEADSubstate (object):
             owner          = self.owner
             nsites         = len (indicesOfSites)
 
-            lines = ["\\begin{tabular}{@{\\extracolsep{2mm}}cc%sc}" % ("l" * nsites), ]
-            lines.append ("\\hline\\noalign{\\smallskip}")
-
+            lines  = ["\\begin{tabular}{@{\\extracolsep{2mm}}cc%sc}" % ("l" * nsites), ]
             header = "State & $\\Delta E$ (kcal/mol) & "
             for siteIndex in indicesOfSites:
                 site = owner.meadSites[siteIndex]
@@ -160,6 +196,7 @@ class MEADSubstate (object):
                     header = "%s %s%d &"    % (header,               site.resName.capitalize (), site.resSerial)
             header = "%s No. of protons \\\\" % header
             lines.append (header)
+            lines.append ("\\hline\\noalign{\\smallskip}")
 
             for substateCount, (energy, indicesOfInstances) in enumerate (substates, 1):
                 if relativeEnergy:

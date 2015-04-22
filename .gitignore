@@ -2,3 +2,8 @@
 *.o
 *.so
 *.pyc
+doc/ContinuumElectrostatics_manual.aux
+doc/ContinuumElectrostatics_manual.bbl
+doc/ContinuumElectrostatics_manual.blg
+doc/ContinuumElectrostatics_manual.log
+doc/ContinuumElectrostatics_manual.out
