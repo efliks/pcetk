@@ -302,7 +302,6 @@ class MEADModel (object):
 
 
     #===============================================================================
-    # Wrapper methods for the calculation of energies and protonation states
     def CalculateMicrostateEnergy (self, stateVector, pH=7.0):
         """Calculate energy of a microstate defined by the state vector."""
         return self.energyModel.CalculateMicrostateEnergy (stateVector, pH=pH)

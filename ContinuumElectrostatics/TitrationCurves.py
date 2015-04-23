@@ -48,10 +48,12 @@ class CurveThread (threading.Thread):
             self.sites = model.CalculateProbabilitiesGMCT         (pH=self.pH, log=None, nequi=curves.mcEquilibrationScans, nprod=curves.mcProductionScans)
         elif method == "MonteCarlo":
             self.sites = model.CalculateProbabilitiesMonteCarlo   (pH=self.pH, log=None, nequi=curves.mcEquilibrationScans, nprod=curves.mcProductionScans)
-        elif method == "analytically":
+        elif method == "analytic":
             self.sites = model.CalculateProbabilitiesAnalytically (pH=self.pH, log=None)
-        else:
+        elif method == "unfolded":
             self.sites = model.CalculateProbabilitiesAnalyticallyUnfolded (pH=self.pH, log=None)
+        else:
+            raise ContinuumElectrostaticsError ("Unknown method %s." % method)
 
 
 #-------------------------------------------------------------------------------
@@ -136,10 +138,12 @@ class TitrationCurves (object):
                         result = meadModel.CalculateProbabilitiesGMCT         (pH=pH, log=None, nequi=self.mcEquilibrationScans, nprod=self.mcProductionScans)
                     elif self.method == "MonteCarlo":
                         result = meadModel.CalculateProbabilitiesMonteCarlo   (pH=pH, log=None, nequi=self.mcEquilibrationScans, nprod=self.mcProductionScans)
-                    elif self.method == "analytically":
+                    elif self.method == "analytic":
                         result = meadModel.CalculateProbabilitiesAnalytically (pH=pH, log=None)
+                    elif self.method == "unfolded":
+                        self.sites = model.CalculateProbabilitiesAnalyticallyUnfolded (pH=self.pH, log=None)
                     else:
-                        result = meadModel.CalculateProbabilitiesAnalyticallyUnfolded (pH=pH, log=None)
+                        raise ContinuumElectrostaticsError ("Unknown method %s." % method)
 
                     steps.append (result)
                     if tab:
@@ -219,13 +223,13 @@ class TitrationCurves (object):
 
 
     #===============================================================================
-    def PrintHalfpKs (self, decimalPlaces=2, log=logFile):
-        """Find and print pK1/2 values."""
+    def FindHalfpKs (self):
+        """Find pK1/2 values."""
+        sites = []
         if self.isCalculated:
-            owner     = self.owner
-            data      = self.steps
-            nsteps    = self.nsteps
-            sites     = []
+            owner  = self.owner
+            data   = self.steps
+            nsteps = self.nsteps
 
             for site in owner.meadSites:
                 instances = []
@@ -242,10 +246,19 @@ class TitrationCurves (object):
                         pa = pb
                     instances.append (pKs)
                 sites.append (instances)
+        return sites
 
+
+    #===============================================================================
+    def PrintHalfpKs (self, decimalPlaces=2, log=logFile):
+        """Print pK1/2 values."""
+        if self.isCalculated:
             if LogFileActive (log):
+                owner   = self.owner
+                sites   = self.FindHalfpKs ()
                 entries = []
                 longest = 0
+
                 for site in owner.meadSites:
                     entry = ""
                     for instance in site.instances:
