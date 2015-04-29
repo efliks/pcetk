@@ -75,10 +75,11 @@ typedef struct {
 extern EnergyModel *EnergyModel_Allocate (const Integer nsites, const Integer ninstances, Status *status);
 extern void         EnergyModel_Deallocate (EnergyModel *self);
 
-/* Handling of the interaction matrix */
-extern void    EnergyModel_SymmetrizeInteractions     (const EnergyModel *self, Status *status);
-extern Boolean EnergyModel_CheckInteractionsSymmetric (const EnergyModel *self, Real tolerance, Real *maxDeviation);
-extern void    EnergyModel_ResetInteractions          (const EnergyModel *self);
+/* Miscellaneous functions */
+extern void    EnergyModel_SymmetrizeInteractions       (const EnergyModel *self, Status *status);
+extern Boolean EnergyModel_CheckInteractionsSymmetric   (const EnergyModel *self, Real tolerance, Real *maxDeviation);
+extern void    EnergyModel_ResetInteractions            (const EnergyModel *self);
+extern void    EnergyModel_StateVectorFromProbabilities (const EnergyModel *self, StateVector *vector, Status *status);
 
 /* Calculation of energies */
 extern Real EnergyModel_CalculateMicrostateEnergy         (const EnergyModel *self, const StateVector *vector, const Real pH);

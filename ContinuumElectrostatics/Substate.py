@@ -53,15 +53,21 @@ class MEADSubstate (object):
 
     def _DetermineLowestEnergyVector (self):
         """Find a vector representing the lowest energy protonation state."""
-        backup = self._ProbabilitiesSave ()
-        owner  = self.owner
+        owner   = self.owner
+        restore = False
+        if owner.isProbability:
+            backup  = self._ProbabilitiesSave ()
+            restore = True
         if self.owner.nsites < ANALYTIC_SITES:
             owner.CalculateProbabilitiesAnalytically (pH=self.pH)
         else:
             owner.CalculateProbabilitiesMonteCarlo (pH=self.pH, log=None)
-
         vector = StateVector_FromProbabilities (self.owner)
-        self._ProbabilitiesRestore (backup)
+
+        if restore:
+            self._ProbabilitiesRestore (backup)
+        else:
+            owner.isProbabilty = False
         return vector
 
 
@@ -172,9 +178,9 @@ class MEADSubstate (object):
     def Summary_ToLatex (self, filename="table.tex", relativeEnergy=True, includeSegment=False, translateToLatex=None):
         """Summarize calculated substate energies in a Latex table."""
         transl = {
-            "ASP" : {"p" : "0", "d" : "(--)"},
-            "GLU" : {"p" : "0", "d" : "(--)"},
-            "HIS" : {"HSP" : "$\\epsilon$, $\\delta$(+)", "HSE" : "$\\epsilon$", "HSD" : "$\\delta$", "fd" : "(--)"},
+            "ASP" : {"p" : "0", "d" : "($-$)"},
+            "GLU" : {"p" : "0", "d" : "($-$)"},
+            "HIS" : {"HSP" : "$\\epsilon$, $\\delta$(+)", "HSE" : "$\\epsilon$", "HSD" : "$\\delta$", "fd" : "($-$)"},
                  }
         if translateToLatex:
             transl.update (translateToLatex)

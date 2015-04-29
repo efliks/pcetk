@@ -104,6 +104,44 @@ void EnergyModel_ResetInteractions (const EnergyModel *self) {
 }
 
 /*
+ * Generate the lowest energy state vector.
+ * If "vector" is NULL, use the EnergyModel's private vector.
+ */
+void EnergyModel_StateVectorFromProbabilities (const EnergyModel *self, StateVector *vector, Status *status) {
+    TitrSite *ts;
+    Integer   i, index, maxi;
+    Real      probability, maxp; 
+
+    if (vector != NULL) {
+        ts = vector->sites  ;
+        i  = vector->nsites ;
+        if (i != self->vector->nsites)
+            goto fail;
+    }
+    else {
+        ts = self->vector->sites  ;
+        i  = self->vector->nsites ;
+    }
+    for (; i >= 0; i--, ts++) {
+        index = ts->indexFirst;
+        maxi  = index;
+        maxp  = -1.;
+        do {
+            probability = Real1DArray_Item (self->probabilities, index);
+            if (probability > maxp) {
+                maxi = index;
+                maxp = probability;
+            }
+        } while (++index <= ts->indexLast);
+        ts->indexActive = maxi;
+    }
+    return;
+
+fail:
+    Status_Set (status, Status_ArrayNonConformableSizes);
+}
+
+/*
  * Getters.
  */
 Real EnergyModel_GetGmodel (const EnergyModel *self, const Integer instIndexGlobal) {

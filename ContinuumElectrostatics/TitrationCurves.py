@@ -224,7 +224,7 @@ class TitrationCurves (object):
 
     #===============================================================================
     def FindHalfpKs (self):
-        """Find pK1/2 values."""
+        """Scan the calculated curves to find pK1/2 values."""
         sites = []
         if self.isCalculated:
             owner  = self.owner
@@ -250,7 +250,7 @@ class TitrationCurves (object):
 
 
     #===============================================================================
-    def PrintHalfpKs (self, decimalPlaces=2, log=logFile):
+    def PrintHalfpKs (self, decimalPlaces=2, sortSites=False, log=logFile):
         """Print pK1/2 values."""
         if self.isCalculated:
             if LogFileActive (log):
@@ -280,10 +280,16 @@ class TitrationCurves (object):
                 tab.Heading ("pK1/2 values of instances".center (longest))
                 form = "%%-%ds" % longest
 
+                table = []
                 for site, entry in zip (owner.meadSites, entries):
-                    tab.Entry ("%6s" % site.segName)
-                    tab.Entry ("%6s" % site.resName)
-                    tab.Entry ("%6d" % site.resSerial)
+                    table.append ([site.segName, site.resName, site.resSerial, entry])
+                if sortSites:
+                    table.sort (key=lambda k: (k[0], k[1], k[2]))
+
+                for segName, resName, resSerial, entry in table:
+                    tab.Entry ("%6s" % segName)
+                    tab.Entry ("%6s" % resName)
+                    tab.Entry ("%6d" % resSerial)
                     tab.Entry (form  % entry)
                 tab.Stop ()
 
