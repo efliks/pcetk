@@ -13,7 +13,6 @@ from pCore           import logFile, LogFileActive
 from Error           import ContinuumElectrostaticsError
 from StateVector     import StateVector
 from InputFileWriter import WriteInputFile
-from Constants       import *
 
 
 class MEADSubstate (object):
@@ -58,16 +57,11 @@ class MEADSubstate (object):
         if owner.isProbability:
             backup  = self._ProbabilitiesSave ()
             restore = True
-        if self.owner.nsites < ANALYTIC_SITES:
-            owner.CalculateProbabilitiesAnalytically (pH=self.pH)
-        else:
-            owner.CalculateProbabilitiesMonteCarlo (pH=self.pH, log=None)
-        vector = StateVector_FromProbabilities (self.owner)
+        owner.CalculateProbabilities (pH=self.pH, log=None)
+        vector = StateVector_FromProbabilities (owner)
 
-        if restore:
-            self._ProbabilitiesRestore (backup)
-        else:
-            owner.isProbabilty = False
+        if restore : self._ProbabilitiesRestore (backup)
+        else       : owner.isProbabilty = False
         return vector
 
 

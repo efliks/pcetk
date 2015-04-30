@@ -12,22 +12,16 @@ CurveThread is a class for running parallel calculations of titration curves."""
 __lastchanged__ = "$Id$"
 
 
-from pCore           import logFile, LogFileActive
-from Error           import ContinuumElectrostaticsError
-from InputFileWriter import WriteInputFile
-
+from   pCore           import logFile, LogFileActive
+from   Error           import ContinuumElectrostaticsError
+from   MonteCarlo      import MCModel
+from   InputFileWriter import WriteInputFile
 import os, threading
 
-
-_DefaultDirectory          = "curves"
-_DefaultMethod             = "MonteCarlo"
-_DefaultSampling           =   .5
-_DefaultStart              =  0.
-_DefaultStop               = 14.
-_DefaultDoubleFlip         =  2.
-_DefaultTripleFlip         =  3.
-_DefaultEquilibrationScans = 500
-_DefaultProductionScans    = 20000
+_DefaultDirectory  = "curves"
+_DefaultSampling   =   .5
+_DefaultStart      =  0.
+_DefaultStop       = 14.
 
 
 class CurveThread (threading.Thread):
@@ -41,19 +35,9 @@ class CurveThread (threading.Thread):
 
     def run (self):
         """The method that runs the calculations."""
-        curves = self.curves
-        model  = curves.owner
-        method = curves.method
-        if method == "GMCT":
-            self.sites = model.CalculateProbabilitiesGMCT         (pH=self.pH, log=None, nequi=curves.mcEquilibrationScans, nprod=curves.mcProductionScans)
-        elif method == "MonteCarlo":
-            self.sites = model.CalculateProbabilitiesMonteCarlo   (pH=self.pH, log=None, nequi=curves.mcEquilibrationScans, nprod=curves.mcProductionScans)
-        elif method == "analytic":
-            self.sites = model.CalculateProbabilitiesAnalytically (pH=self.pH, log=None)
-        elif method == "unfolded":
-            self.sites = model.CalculateProbabilitiesAnalyticallyUnfolded (pH=self.pH, log=None)
-        else:
-            raise ContinuumElectrostaticsError ("Unknown method %s." % method)
+        curves     = self.curves
+        model      = curves.owner
+        self.sites = model.CalculateProbabilities (pH=self.pH, log=None, generateList=True, unfolded=curves.unfolded)
 
 
 #-------------------------------------------------------------------------------
@@ -61,15 +45,11 @@ class TitrationCurves (object):
     """Titration curves."""
 
     defaultAttributes = {
-        "method"               :  _DefaultMethod              ,
-        "curveSampling"        :  _DefaultSampling            ,
-        "curveStart"           :  _DefaultStart               ,
-        "curveStop"            :  _DefaultStop                ,
-        "mcEquilibrationScans" :  _DefaultEquilibrationScans  ,
-        "mcProductionScans"    :  _DefaultProductionScans     ,
-        "mcDoubleLimit"        :  _DefaultDoubleFlip          ,
-        "mcTripleLimit"        :  _DefaultTripleFlip          ,
-                        }
+        "curveSampling"  :  _DefaultSampling  ,
+        "curveStart"     :  _DefaultStart     ,
+        "curveStop"      :  _DefaultStop      ,
+        "unfolded"       :  False             ,
+            }
 
     def __init__ (self, meadModel, log=logFile, *arguments, **keywordArguments):
         """Constructor."""
@@ -111,11 +91,14 @@ class TitrationCurves (object):
     def CalculateCurves (self, forceSerial=True, printTable=False, log=logFile):
         """Calculate titration curves."""
         if not self.isCalculated:
-            probabilities  =  self._ProbabilitiesSave ()
-            meadModel      =  self.owner
-            nthreads       =  meadModel.nthreads
-            steps          =  []
-            tab            =  None
+            owner   = self.owner
+            restore = False
+            if owner.isProbability:
+                probabilities  = self._ProbabilitiesSave ()
+                restore        = True
+            nthreads  =  owner.nthreads
+            steps     =  []
+            tab       =  None
 
             if LogFileActive (log):
                 if nthreads < 2 or forceSerial:
@@ -129,27 +112,14 @@ class TitrationCurves (object):
                     tab.Heading ("Step")
                     tab.Heading ("pH")
 
-
             # Serial run?
             if nthreads < 2 or forceSerial:
                 for step in range (self.nsteps):
-                    pH = self.curveStart + step * self.curveSampling
-                    if self.method == "GMCT":
-                        result = meadModel.CalculateProbabilitiesGMCT         (pH=pH, log=None, nequi=self.mcEquilibrationScans, nprod=self.mcProductionScans)
-                    elif self.method == "MonteCarlo":
-                        result = meadModel.CalculateProbabilitiesMonteCarlo   (pH=pH, log=None, nequi=self.mcEquilibrationScans, nprod=self.mcProductionScans)
-                    elif self.method == "analytic":
-                        result = meadModel.CalculateProbabilitiesAnalytically (pH=pH, log=None)
-                    elif self.method == "unfolded":
-                        self.sites = model.CalculateProbabilitiesAnalyticallyUnfolded (pH=self.pH, log=None)
-                    else:
-                        raise ContinuumElectrostaticsError ("Unknown method %s." % method)
-
-                    steps.append (result)
+                    sites = owner.CalculateProbabilities (pH=(self.curveStart + step * self.curveSampling), log=None, generateList=True, unfolded=self.unfolded)
+                    steps.append (sites)
                     if tab:
                         tab.Entry ("%10d"   % step)
                         tab.Entry ("%10.2f" % pH)
-
             # Parallel run?
             else:
                 limit   = nthreads - 1
@@ -164,9 +134,14 @@ class TitrationCurves (object):
                     batches.append (batch)
 
                 # If GMCT is to be used, first perform a dry run in serial mode to create directories and files
-                if method == "GMCT":
-                    for step in range (self.nsteps):
-                        meadModel.CalculateProbabilitiesGMCT (pH=(self.curveStart + step * self.curveSampling), dryRun=True, log=None)
+                owner   = self.owner
+                sampler = owner.sampler
+                if isinstance (sampler, MCModel):
+                    if sampler.label == "MCmodelGMCT":
+                        sampler.dryRun = True
+                        for step in range (self.nsteps):
+                            sampler.CalculateOwnerProbabilities (pH=(self.curveStart + step * self.curveSampling), log=None)
+                        sampler.dryRun = False
 
                 step = 0
                 for batch in batches:
@@ -188,9 +163,10 @@ class TitrationCurves (object):
                 log.Text ("\nCalculating titration curves complete.\n")
 
             # Finalize
-            self.steps = steps
+            if restore : self._ProbabilitiesRestore (probabilities)
+            else       : owner.isProbability = False
             self.isCalculated = True
-            self._ProbabilitiesRestore (probabilities)
+            self.steps        = steps
 
 
     #===============================================================================

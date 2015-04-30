@@ -10,85 +10,69 @@
 __lastchanged__ = "$Id$"
 
 
-import os, glob, subprocess, time
+import os, glob, time
 
-from pCore                 import logFile, LogFileActive, Selection, YAMLUnpickle
-from Constants             import *
-from Error                 import ContinuumElectrostaticsError
-from Site                  import MEADSite
-from Instance              import InstanceThread
-from Utils                 import FormatEntry, ConvertAttribute
-from EnergyModel           import EnergyModel
+from pCore           import logFile, LogFileActive, Selection, YAMLUnpickle
+from Constants       import *
+from Error           import ContinuumElectrostaticsError
+from Site            import MEADSite
+from Instance        import InstanceThread
+from Utils           import FormatEntry, ConvertAttribute
+from EnergyModel     import EnergyModel
+from MonteCarlo      import MCModel, MCModelDefault
 
 # File handling
-from ESTFileReader         import ESTFileReader
-from GMCTOutputFileReader  import GMCTOutputFileReader
-from InputFileWriter       import WriteInputFile
-from PQRFileWriter         import PQRFile_FromSystem
+from ESTFileReader   import ESTFileReader
+from InputFileWriter import WriteInputFile
+from PQRFileWriter   import PQRFile_FromSystem
 
-
-_DefaultTemperature        = 300.0
-_DefaultIonicStrength      = 0.1
-_DefaultPathScratch        = "/tmp"
-_DefaultPathMEAD           = "/usr/bin"
-_DefaultPathGMCT           = "/usr/bin"
-_DefaultThreads            = 1
-_DefaultDoubleFlip         = 2.0
-_DefaultTripleFlip         = 3.0
-_DefaultEquilibrationScans = 500
-_DefaultProductionScans    = 20000
-_DefaultFocussingSteps     = ((121, 2.00), (101, 1.00), (101, 0.50), (101, 0.25))
-
-_DefaultSetupGMCT = """
-blab        1
-nconfflip   10
-tlimit      %f
-itraj       0
-nmcfull     %d
-temp        %f
-icorr       0
-limit       %f
-nmcequi     %d
-nmu         1
-mu          %f  %f  0.0  0  0
-"""
+_DefaultTemperature     =  300.0
+_DefaultIonicStrength   =  0.1
+_DefaultPathScratch     =  "/tmp"
+_DefaultPathMEAD        =  "/usr/local/bin"
+_DefaultThreads         =  1
+_DefaultFocussingSteps  =  ((121, 2.00), (101, 1.00), (101, 0.50), (101, 0.25))
 
 
 class MEADModel (object):
     """Continuum electrostatic model."""
 
-    defAttr = { "nthreads"             :   _DefaultThreads          ,
-                "temperature"          :   _DefaultTemperature      ,
-                "ionicStrength"        :   _DefaultIonicStrength    ,
-                "splitToDirectories"   :   True                     ,
-                "deleteJobFiles"       :   False                    ,
-                "isInitialized"        :   False                    ,
-                "isFilesWritten"       :   False                    ,
-                "isCalculated"         :   False                    ,
-                "isProbability"        :   False                    ,
-                "proteinAtomIndices"   :   None                     ,
-                "backAtomIndices"      :   None                     ,
-                "pathMEAD"             :   _DefaultPathMEAD         ,
-                "pathGMCT"             :   _DefaultPathGMCT         ,
-                "pathScratch"          :   _DefaultPathScratch      ,
-                "pathFptSites"         :   None                     ,
-                "pathPqrProtein"       :   None                     ,
-                "pathPqrBack"          :   None                     ,
-                "focussingSteps"       :   _DefaultFocussingSteps   ,
-                "librarySites"         :   None                     ,
-                "meadSites"            :   None                     ,
-                "energyModel"          :   None                     ,
-                "owner"                :   None                     }
+    defaultAttributes = {
+        "nthreads"             :   _DefaultThreads          ,
+        "temperature"          :   _DefaultTemperature      ,
+        "ionicStrength"        :   _DefaultIonicStrength    ,
+        "splitToDirectories"   :   True                     ,
+        "deleteJobFiles"       :   False                    ,
+        "isInitialized"        :   False                    ,
+        "isFilesWritten"       :   False                    ,
+        "isCalculated"         :   False                    ,
+        "isProbability"        :   False                    ,
+        "proteinAtomIndices"   :   None                     ,
+        "backAtomIndices"      :   None                     ,
+        "pathMEAD"             :   _DefaultPathMEAD         ,
+        "pathScratch"          :   _DefaultPathScratch      ,
+        "pathFptSites"         :   None                     ,
+        "pathPqrProtein"       :   None                     ,
+        "pathPqrBack"          :   None                     ,
+        "focussingSteps"       :   _DefaultFocussingSteps   ,
+        "librarySites"         :   None                     ,
+        "meadSites"            :   None                     ,
+        "energyModel"          :   None                     ,
+        "sampler"              :   None                     ,
+        "owner"                :   None                     ,
+            }
 
-    defAttrNames = { "Temperature"        :  "temperature"        ,
-                     "Ionic Strength"     :  "ionicStrength"      ,
-                     "Threads"            :  "nthreads"           ,
-                     "Split Directories"  :  "splitToDirectories" ,
-                     "Delete Job Files"   :  "deleteJobFiles"     ,
-                     "Initialized"        :  "isInitialized"      ,
-                     "Files Written"      :  "isFilesWritten"     ,
-                     "Calculated"         :  "isCalculated"       ,
-                     "Calculated Prob."   :  "isProbability"      }
+    defaultAttributeNames = {
+        "Temperature"          :  "temperature"             ,
+        "Ionic Strength"       :  "ionicStrength"           ,
+        "Threads"              :  "nthreads"                ,
+        "Split Directories"    :  "splitToDirectories"      ,
+        "Delete Job Files"     :  "deleteJobFiles"          ,
+        "Initialized"          :  "isInitialized"           ,
+        "Files Written"        :  "isFilesWritten"          ,
+        "Calculated"           :  "isCalculated"            ,
+        "Calculated Prob."     :  "isProbability"           ,
+            }
 
     @property
     def ninstances (self):
@@ -114,12 +98,11 @@ class MEADModel (object):
     #===============================================================================
     def __init__ (self, system, log=logFile, *arguments, **keywordArguments):
         """Constructor."""
-        for (key, value) in self.__class__.defAttr.iteritems (): setattr (self, key, value)
+        for (key, value) in self.__class__.defaultAttributes.iteritems (): setattr (self, key, value)
         for (key, value) in keywordArguments.iteritems (): setattr (self, key, value)
 
         self.owner       = system
         self.pathMEAD    = os.path.abspath (self.pathMEAD)
-        self.pathGMCT    = os.path.abspath (self.pathGMCT)
         self.pathScratch = os.path.abspath (self.pathScratch)
         self.LoadLibraryOfSites (log=log)
 
@@ -226,122 +209,52 @@ class MEADModel (object):
 
 
     #===============================================================================
-    def CalculateProbabilitiesGMCT (self, pH=7.0, dryRun=False, doubleFlip=_DefaultDoubleFlip, tripleFlip=_DefaultTripleFlip, nequi=_DefaultEquilibrationScans, nprod=_DefaultProductionScans, log=logFile):
-        """Use GMCT to estimate probabilities of protonation states.
-
-        With |dryRun=True|, GMCT is not called and only the directories and files are created. This is necessary in the parallel mode because the function mkdir does not work with multiple threads."""
-        if self.isCalculated:
-            potential = -CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10 * pH
-            project   = "job"
-            sites     = None
-
-            # Prepare input files and directories for GMCT
-            dirConf = os.path.join (self.pathScratch, "gmct", "conf")
-            if not os.path.exists (dirConf): os.makedirs (dirConf)
-
-            dirCalc = os.path.join (self.pathScratch, "gmct", "%s" % pH)
-            if not os.path.exists (dirCalc): os.makedirs (dirCalc)
-
-            fileGint = os.path.join (dirConf, "%s.gint" % project)
-            if not os.path.exists (fileGint): self.WriteGintr (fileGint, precision=8)
-
-            fileInter = os.path.join (dirConf, "%s.inter" % project)
-            if not os.path.exists (fileInter): self.WriteW (fileInter, precision=8)
-
-            fileConf = os.path.join (dirCalc, "%s.conf" % project)
-            if not os.path.exists (fileConf): WriteInputFile (fileConf, ["conf  0.0  0.0  0.0\n"])
-
-            fileSetup = os.path.join (dirCalc, "%s.setup" % project)
-            if not os.path.exists (fileSetup): WriteInputFile (fileSetup, _DefaultSetupGMCT % (tripleFlip, nprod, self.temperature, doubleFlip, nequi, potential, potential))
-
-            linkname = os.path.join (dirCalc, "conf")
-            if not os.path.exists (linkname): os.symlink ("../conf", linkname)
-
-
-            if not dryRun:
-                output = os.path.join (dirCalc, "%s.gmct-out" % project)
-                error  = os.path.join (dirCalc, "%s.gmct-err" % project)
-
-                if os.path.exists (os.path.join (dirCalc, output)):
-                    pass
-                else:
-                    command = [os.path.join (self.pathGMCT, "gmct"), project]
-                    try:
-                        out = open (output, "w")
-                        err = open (error,  "w")
-                        subprocess.check_call (command, stderr=err, stdout=out, cwd=dirCalc)
-                        out.close ()
-                        err.close ()
-                    except:
-                        raise ContinuumElectrostaticsError ("Failed running command: %s" % " ".join (command))
-
-                # Read probabilities from the output file
-                reader = GMCTOutputFileReader (output)
-                reader.Parse (temperature = self.temperature)
-
-                # Construct a two-dimensional list of M-sites, each site N-instances, initiated with zeros
-                sites = []
-                for site in self.meadSites:
-                    instances = []
-                    for instance in site.instances:
-                        instances.append (0.)
-                    sites.append (instances)
-
-                for siteIndex, site in enumerate (self.meadSites):
-                    for instanceIndex, instance in enumerate (site.instances):
-                        key                             = "conf_%s_%s%d_%s" % (site.segName, site.resName, site.resSerial, instance.label)
-                        probability                     = reader.probabilities[key][0]
-                        sites[siteIndex][instanceIndex] = probability
-                        instance.probability            = probability
-
-            # The instances now contain calculated probabilities
-            self.isProbability = True
-
-            # Return the two-dimensional list (useful for calculating titration curves)
-            return sites
-
-
-    #===============================================================================
     def CalculateMicrostateEnergy (self, stateVector, pH=7.0):
-        """Calculate energy of a microstate defined by the state vector."""
+        """Wrapper function to calculate microstate energy."""
         return self.energyModel.CalculateMicrostateEnergy (stateVector, pH=pH)
 
 
-    def CalculateProbabilitiesMonteCarlo (self, pH=7.0, nequi=_DefaultEquilibrationScans, nprod=_DefaultProductionScans, log=logFile):
-        """Calculate the probability of occurence of each instance of each site, using the in-house implementation of Metropolis Monte Carlo (experimental)."""
-        self.energyModel.CalculateProbabilitiesMonteCarlo (pH=pH, nequi=nequi, nprod=nprod, log=log)
-        return self._FinalizeProbabilities ()
+    #===============================================================================
+    def DefineMCModel (self, sampler, log=logFile):
+        """Define Monte Carlo model."""
+        if isinstance (sampler, MCModel):
+            self.sampler  = sampler
+            sampler.owner = self
+
+            if isinstance (sampler, MCModelDefault):
+                self.energyModel.FindPairs (limit=sampler.doubleFlip, log=log)
+            sampler.Summary (log=log)
+
+    def UndefineMCModel (self):
+        """Undefine Monte Carlo model."""
+        self.sampler = None
 
 
-    def CalculateProbabilitiesAnalytically (self, pH=7.0, log=logFile):
-        """Calculate the probability of occurence of each instance of each site, using statistical mechanics."""
-        nstates = self.energyModel.CalculateProbabilitiesAnalytically (pH=pH)
-
-        if LogFileActive (log):
-            log.Text ("\nCalculated %d protonation states.\n" % nstates)
-        return self._FinalizeProbabilities ()
-
-
-    def CalculateProbabilitiesAnalyticallyUnfolded (self, pH=7.0, log=logFile):
-        """Calculate the probability of occurence of each instance of each site, using statistical mechanics (unfolded protein)."""
-        nstates = self.energyModel.CalculateProbabilitiesAnalyticallyUnfolded (pH=pH)
-
-        if LogFileActive (log):
-            log.Text ("\nCalculated %d protonation states.\n" % nstates)
-        return self._FinalizeProbabilities ()
-
-
-    def _FinalizeProbabilities (self):
-        # The instances now contain calculated probabilities
+    #===============================================================================
+    def CalculateProbabilities (self, pH=7.0, unfolded=False, generateList=False, log=logFile):
+        """Calculate probabilities."""
+        nstates = 0
+        sites   = None
+        sampler = self.sampler
+        if isinstance (sampler, MCModel):
+            if unfolded : ContinuumElectrostaticsError ("Monte Carlo sampling of unfolded proteins unsupported.")
+            else        : sampler.CalculateOwnerProbabilities (pH=pH, log=log)
+        else:
+            if unfolded : nstates = self.energyModel.CalculateProbabilitiesAnalyticallyUnfolded (pH=pH)
+            else        : nstates = self.energyModel.CalculateProbabilitiesAnalytically         (pH=pH)
         self.isProbability = True
 
+        if nstates > 0:
+            if LogFileActive (log):
+                log.Text ("\nCalculated %d protonation states.\n" % nstates)
         # It is necessary in parallel mode to return a list of probabilities
-        sites = []
-        for site in self.meadSites:
-            instances = []
-            for instance in site.instances:
-                instances.append (instance.probability)
-            sites.append (instances)
+        if generateList:
+            sites = []
+            for site in self.meadSites:
+                instances = []
+                for instance in site.instances:
+                    instances.append (instance.probability)
+                sites.append (instances)
         return sites
 
 
@@ -449,9 +362,6 @@ class MEADModel (object):
 
             # Symmetrize interaction energies inside the matrix of interactions
             self.energyModel.SymmetrizeInteractions (log=log)
-
-            # Find pairs of sites for double moves
-            self.energyModel.FindPairs (limit=_DefaultDoubleFlip, log=log)
 
             self.isCalculated = True
 
@@ -850,10 +760,10 @@ class MEADModel (object):
             summary = log.GetSummary ()
             summary.Start ("Continuum Electrostatic Model MEAD")
 
-            keys = self.__class__.defAttrNames.keys ()
+            keys = self.__class__.defaultAttributeNames.keys ()
             keys.sort ()
             for key in keys:
-                attr     = getattr (self, self.__class__.defAttrNames[key])
+                attr     = getattr (self, self.__class__.defaultAttributeNames[key])
                 attrConv = ConvertAttribute (attr)
                 summary.Entry (key, attrConv)
 
