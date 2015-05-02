@@ -14,7 +14,7 @@ __lastchanged__ = "$Id$"
 
 from   pCore           import logFile, LogFileActive
 from   Error           import ContinuumElectrostaticsError
-from   MonteCarlo      import MCModel
+from   MCModelGMCT     import MCModelGMCT
 from   InputFileWriter import WriteInputFile
 import os, threading
 
@@ -37,7 +37,7 @@ class CurveThread (threading.Thread):
         """The method that runs the calculations."""
         curves     = self.curves
         model      = curves.owner
-        self.sites = model.CalculateProbabilities (pH=self.pH, log=None, generateList=True, unfolded=curves.unfolded)
+        self.sites = model.CalculateProbabilities (pH=self.pH, log=None, isCalculateCurves=True, unfolded=curves.unfolded)
 
 
 #-------------------------------------------------------------------------------
@@ -115,7 +115,7 @@ class TitrationCurves (object):
             # Serial run?
             if nthreads < 2 or forceSerial:
                 for step in range (self.nsteps):
-                    sites = owner.CalculateProbabilities (pH=(self.curveStart + step * self.curveSampling), log=None, generateList=True, unfolded=self.unfolded)
+                    sites = owner.CalculateProbabilities (pH=(self.curveStart + step * self.curveSampling), log=None, isCalculateCurves=True, unfolded=self.unfolded)
                     steps.append (sites)
                     if tab:
                         tab.Entry ("%10d"   % step)
@@ -136,20 +136,14 @@ class TitrationCurves (object):
                 # If GMCT is to be used, first perform a dry run in serial mode to create directories and files
                 owner   = self.owner
                 sampler = owner.sampler
-                if isinstance (sampler, MCModel):
-                    if sampler.label == "MCmodelGMCT":
-                        sampler.dryRun = True
-                        for step in range (self.nsteps):
-                            sampler.CalculateOwnerProbabilities (pH=(self.curveStart + step * self.curveSampling), log=None)
-                        sampler.dryRun = False
+                if isinstance (sampler, MCModelGMCT):
+                    for step in range (self.nsteps):
+                        sampler.CalculateOwnerProbabilities (pH=(self.curveStart + step * self.curveSampling), dryRun=True, log=None)
 
                 step = 0
                 for batch in batches:
-                    for thread in batch:
-                        thread.start ()
-                    for thread in batch:
-                        thread.join ()
-
+                    for thread in batch: thread.start ()
+                    for thread in batch: thread.join ()
                     for thread in batch:
                         steps.append (thread.sites)
                         if tab:

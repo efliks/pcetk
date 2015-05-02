@@ -58,7 +58,7 @@ void StateVector_AllocateSubstate (StateVector *self, const Integer nssites, Sta
 
 /*
  * Allocate an array of pairs within the state vector.
- * The number of pairs and their contents are decided by the EnergyModel module.
+ * The number of pairs and their contents are decided by the MCModelDefault module.
  */
 void StateVector_AllocatePairs (StateVector *self, const Integer npairs, Status *status) {
     if (self->pairs != NULL) {
@@ -113,45 +113,7 @@ StateVector *StateVector_Clone (const StateVector *self, Status *status) {
  * Copy a state vector to another vector.
  */
 void StateVector_CopyTo (const StateVector *self, StateVector *other, Status *status) {
-    Boolean freeSubstate = False, freePairs = False;
-
-    if (other->nsites != self->nsites) {
-        goto failSizes;
-    }
     memcpy (other->sites, self->sites, self->nsites * sizeof (TitrSite));
-
-    if (self->nssites > 0) {
-        if (other->nssites < 1) {
-            StateVector_AllocateSubstate (other, self->nssites, status);
-            if (*status != Status_Continue)
-                goto failMemory;
-            freeSubstate = True;
-        }
-        else if (other->nssites != self->nssites)
-            goto failSizes;
-        memcpy (other->substateSites, self->substateSites, self->nssites * sizeof (TitrSite*));
-    }
-
-    if (self->npairs > 0) {
-        if (other->npairs < 1) {
-            StateVector_AllocatePairs (other, self->npairs, status);
-            if (*status != Status_Continue)
-                goto failMemory;
-            freePairs = True;
-        }
-        else if (other->npairs != self->npairs)
-            goto failSizes;
-        memcpy (other->pairs, self->pairs, self->npairs * sizeof (PairSite*));
-    }
-
-failSizes:
-    Status_Set (status, Status_ArrayNonConformableSizes);
-
-failMemory:
-
-failDeallocate:
-    if (freeSubstate) MEMORY_DEALLOCATE (other->substateSites) ;
-    if (freePairs)    MEMORY_DEALLOCATE (other->pairs)         ;
 }
 
 /*

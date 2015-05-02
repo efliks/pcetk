@@ -8,11 +8,6 @@
 #ifndef _ENERGYMODEL
 #define _ENERGYMODEL
 
-/* Needed for random seed */
-#include <time.h>
-/* Needed for exp */
-#include <math.h>
-
 /* Data types */
 #include "Real.h"
 #include "Boolean.h"
@@ -28,7 +23,6 @@
 /* Other */
 #include "Memory.h"
 #include "Status.h"
-#include "RandomNumberGenerator.h"
 
 /* Own modules */
 #include "StateVector.h"
@@ -37,9 +31,6 @@
 #define CONSTANT_MOLAR_GAS_KCAL_MOL  0.001987165392
 #define CONSTANT_LN10                2.302585092994
 
-/* Taken from GMCT */
-#define TOO_SMALL -500.0
-
 /* Macros */
 #define EnergyModel_RowPointer(self, i) (&self->symmetricmatrix->data[(i * (i + 1) >> 1)])
 
@@ -47,27 +38,25 @@
 
 typedef struct {
     /* Number of bound protons of each instance */
-    Integer1DArray        *protons;
+    Integer1DArray   *protons;
     /* Gmodel of each instance (needed for energies of unfolded proteins) */
-    Real1DArray           *models;
+    Real1DArray      *models;
     /* Gintr of each instance */
-    Real1DArray           *intrinsic;
+    Real1DArray      *intrinsic;
     /* Interactions between instances before symmetrization */
-    Real2DArray           *interactions;
+    Real2DArray      *interactions;
     /* Symmetrized interactions */
-    SymmetricMatrix       *symmetricmatrix;
+    SymmetricMatrix  *symmetricmatrix;
     /* Probability of occurrence of each instance */
-    Real1DArray           *probabilities;
+    Real1DArray      *probabilities;
     /* Private state vector of the energy model */
-    StateVector           *vector;
-    /* Mersenne Twister generator */
-    RandomNumberGenerator *generator;
+    StateVector      *vector;
     /* Total number of possible protonation states, no greater than ANALYTIC_STATES */
-    Integer                nstates;
+    Integer           nstates;
     /* Total number of instances */
-    Integer                ninstances;
+    Integer           ninstances;
     /* Temperature at which the MEAD part was done */
-    Real                   temperature;
+    Real              temperature;
 } EnergyModel;
 
 
@@ -94,16 +83,6 @@ extern Real EnergyModel_CalculateZfolded (const EnergyModel *self, const Real pH
 extern void EnergyModel_CalculateProbabilitiesFromZ (const EnergyModel *self, const Real Z, const Real1DArray *bfactors);
 extern void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, const Real pH, Status *status);
 extern void EnergyModel_CalculateProbabilitiesAnalyticallyUnfolded (const EnergyModel *self, const Real pH, Status *status);
-
-/* Monte Carlo-related functions */
-extern Boolean EnergyModel_Metropolis           (const Real GdeltaRT, const RandomNumberGenerator *generator);
-extern Boolean EnergyModel_Move                 (const EnergyModel *self, const Real pH, const Real G, Real *Gnew);
-extern Boolean EnergyModel_DoubleMove           (const EnergyModel *self, const Real pH, const Real G, Real *Gnew);
-extern Real    EnergyModel_MCScan               (const EnergyModel *self, const Real pH, Integer nmoves);
-extern void    EnergyModel_UpdateProbabilities  (const EnergyModel *self);
-extern Real    EnergyModel_FindMaxInteraction   (const EnergyModel *self, const TitrSite *site, const TitrSite *other);
-extern Integer EnergyModel_FindPairs            (const EnergyModel *self, const Real limit, const Integer npairs, Status *status);
-extern void    EnergyModel_CalculateProbabilitiesMonteCarlo (const EnergyModel *self, const Real pH, const Boolean equil, Integer nscans, Status *status);
 
 /* Functions for accessing items */
 extern Real    EnergyModel_GetGmodel         (const EnergyModel *self, const Integer instIndexGlobal);

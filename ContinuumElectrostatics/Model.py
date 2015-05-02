@@ -19,19 +19,21 @@ from Site            import MEADSite
 from Instance        import InstanceThread
 from Utils           import FormatEntry, ConvertAttribute
 from EnergyModel     import EnergyModel
-from MonteCarlo      import MCModel, MCModelDefault
+from MCModelGMCT     import MCModelGMCT
+from MCModelDefault  import MCModelDefault
 
 # File handling
 from ESTFileReader   import ESTFileReader
 from InputFileWriter import WriteInputFile
 from PQRFileWriter   import PQRFile_FromSystem
 
-_DefaultTemperature     =  300.0
-_DefaultIonicStrength   =  0.1
+
+_DefaultTemperature     =  300.
+_DefaultIonicStrength   =     .1
 _DefaultPathScratch     =  "/tmp"
 _DefaultPathMEAD        =  "/usr/local/bin"
 _DefaultThreads         =  1
-_DefaultFocussingSteps  =  ((121, 2.00), (101, 1.00), (101, 0.50), (101, 0.25))
+_DefaultFocussingSteps  =  ((121, 2.), (101, 1.), (101, .5), (101, .25))
 
 
 class MEADModel (object):
@@ -217,49 +219,49 @@ class MEADModel (object):
     #===============================================================================
     def DefineMCModel (self, sampler, log=logFile):
         """Define Monte Carlo model."""
-        if isinstance (sampler, MCModel):
-            self.sampler  = sampler
-            sampler.owner = self
-
-            if isinstance (sampler, MCModelDefault):
-                self.energyModel.FindPairs (limit=sampler.doubleFlip, log=log)
-            sampler.Summary (log=log)
-
-    def UndefineMCModel (self):
-        """Undefine Monte Carlo model."""
-        self.sampler = None
+        if isinstance (sampler, MCModelDefault) or isinstance (sampler, MCModelGMCT):
+            self.sampler = sampler
+            self.sampler.Initialize (self)
+            self.sampler.PrintPairs (log=log)
+            self.sampler.Summary    (log=log)
+        elif sampler is None:
+            self.sampler = None
+        else:
+            raise ContinuumElectrostaticsError ("Cannot define MC model.")
 
 
     #===============================================================================
-    def CalculateProbabilities (self, pH=7.0, unfolded=False, generateList=False, log=logFile):
+    def CalculateProbabilities (self, pH=7.0, unfolded=False, isCalculateCurves=False, log=logFile):
         """Calculate probabilities."""
-        nstates = 0
+        nstates = -1
         sites   = None
-        sampler = self.sampler
-        if isinstance (sampler, MCModel):
-            if unfolded : ContinuumElectrostaticsError ("Monte Carlo sampling of unfolded proteins unsupported.")
-            else        : sampler.CalculateOwnerProbabilities (pH=pH, log=log)
-        else:
-            if unfolded : nstates = self.energyModel.CalculateProbabilitiesAnalyticallyUnfolded (pH=pH)
-            else        : nstates = self.energyModel.CalculateProbabilitiesAnalytically         (pH=pH)
-        self.isProbability = True
+        if       self.sampler and     unfolded:
+            raise ContinuumElectrostaticsError ("Monte Carlo sampling of unfolded proteins unsupported.")
+        elif     self.sampler and not unfolded:
+            self.sampler.CalculateOwnerProbabilities (pH=pH, log=log)
+        elif not self.sampler and     unfolded:
+            nstates = self.energyModel.CalculateProbabilitiesAnalyticallyUnfolded (pH=pH)
+        elif not self.sampler and not unfolded:
+            nstates = self.energyModel.CalculateProbabilitiesAnalytically (pH=pH)
 
-        if nstates > 0:
-            if LogFileActive (log):
-                log.Text ("\nCalculated %d protonation states.\n" % nstates)
-        # It is necessary in parallel mode to return a list of probabilities
-        if generateList:
+        if isCalculateCurves:
             sites = []
             for site in self.meadSites:
                 instances = []
                 for instance in site.instances:
                     instances.append (instance.probability)
                 sites.append (instances)
+
+        if nstates > 0:
+            if LogFileActive (log):
+                log.Text ("\nCalculated %d protonation states.\n" % nstates)
+
+        self.isProbability = True
         return sites
 
 
     #===============================================================================
-    def CalculateElectrostaticEnergies (self, calculateETA=True, asymmetricTolerance=0.05, asymmetricSummary=False, log=logFile):
+    def CalculateElectrostaticEnergies (self, calculateETA=False, asymmetricTolerance=0.05, asymmetricSummary=False, log=logFile):
         """
         Calculate for each instance of each site:
         - self (Born) energy in the model compound

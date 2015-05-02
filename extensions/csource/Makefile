@@ -4,7 +4,10 @@
 CFLAGS        = -O2 -fPIC -c -W -Wall -pedantic -I$(PDYNAMO_PCORE)/extensions/cinclude -I../cinclude
 CC            = gcc
 
-default: EnergyModel.o StateVector.o lib/libpcore.a
+default: MCModelDefault.o EnergyModel.o StateVector.o lib/libpcore.a
+
+MCModelDefault.o: MCModelDefault.c ../cinclude/MCModelDefault.h
+	$(CC) $(CFLAGS) MCModelDefault.c -o MCModelDefault.o
 
 EnergyModel.o: EnergyModel.c ../cinclude/EnergyModel.h
 	$(CC) $(CFLAGS) EnergyModel.c -o EnergyModel.o
@@ -16,8 +19,9 @@ lib/libpcore.a:
 	+$(MAKE) -C lib
 
 clean:
-	if [ -e EnergyModel.o ] ; then rm EnergyModel.o ; fi
-	if [ -e StateVector.o ] ; then rm StateVector.o ; fi
+	if [ -e MCModelDefault.o ] ; then rm MCModelDefault.o ; fi
+	if [ -e EnergyModel.o    ] ; then rm EnergyModel.o    ; fi
+	if [ -e StateVector.o    ] ; then rm StateVector.o    ; fi
 
 clean_all: clean
 	+$(MAKE) -C lib clean

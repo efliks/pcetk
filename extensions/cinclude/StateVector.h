@@ -44,7 +44,7 @@ typedef struct {
 typedef struct {
     TitrSite  *sites, **substateSites;
     Integer    nsites, nssites;
-    /* Handled by the EnergyModel module */
+    /* Handled by MCModelDefault */
     PairSite  *pairs;
     Integer    npairs;
 } StateVector;

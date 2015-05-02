@@ -6,23 +6,27 @@ CFLAGS        = -O2 -fPIC -c -I$(PDYNAMO_PCORE)/extensions/cinclude -I$(PY_INCLU
 CC            = gcc
 
 
-default: EnergyModel.so StateVector.so
+default: MCModelDefault.so EnergyModel.so StateVector.so
 	@echo "\n*** Use 'make clean_all' and then 'make' if you want to recompile Cython sources ***\n"
 
-install: EnergyModel.so StateVector.so
-	mv EnergyModel.so ../../ContinuumElectrostatics/
-	mv StateVector.so ../../ContinuumElectrostatics/
+install: MCModelDefault.so EnergyModel.so StateVector.so
+	mv MCModelDefault.so ../../ContinuumElectrostatics/
+	mv EnergyModel.so    ../../ContinuumElectrostatics/
+	mv StateVector.so    ../../ContinuumElectrostatics/
 
 clean:
-	if [ -e ContinuumElectrostatics.EnergyModel.o ]; then rm ContinuumElectrostatics.EnergyModel.o ; fi
-	if [ -e ContinuumElectrostatics.StateVector.o ]; then rm ContinuumElectrostatics.StateVector.o ; fi
-	if [ -e EnergyModel.so                        ]; then rm EnergyModel.so                        ; fi
-	if [ -e StateVector.so                        ]; then rm StateVector.so                        ; fi
+	if [ -e ContinuumElectrostatics.MCModelDefault.o ]; then rm ContinuumElectrostatics.MCModelDefault.o ; fi
+	if [ -e ContinuumElectrostatics.EnergyModel.o    ]; then rm ContinuumElectrostatics.EnergyModel.o    ; fi
+	if [ -e ContinuumElectrostatics.StateVector.o    ]; then rm ContinuumElectrostatics.StateVector.o    ; fi
+	if [ -e MCModelDefault.so                        ]; then rm MCModelDefault.so                        ; fi
+	if [ -e EnergyModel.so                           ]; then rm EnergyModel.so                           ; fi
+	if [ -e StateVector.so                           ]; then rm StateVector.so                           ; fi
 	+$(MAKE) -C ../csource clean
 
 clean_all: clean
-	if [ -e ContinuumElectrostatics.EnergyModel.c ]; then rm ContinuumElectrostatics.EnergyModel.c ; fi
-	if [ -e ContinuumElectrostatics.StateVector.c ]; then rm ContinuumElectrostatics.StateVector.c ; fi
+	if [ -e ContinuumElectrostatics.MCModelDefault.c ]; then rm ContinuumElectrostatics.MCModelDefault.c ; fi
+	if [ -e ContinuumElectrostatics.EnergyModel.c    ]; then rm ContinuumElectrostatics.EnergyModel.c    ; fi
+	if [ -e ContinuumElectrostatics.StateVector.c    ]; then rm ContinuumElectrostatics.StateVector.c    ; fi
 	+$(MAKE) -C ../csource clean_all
 
 
@@ -34,14 +38,30 @@ clean_all: clean
 
 
 #===============================================================================
+#                                MCModelDefault 
+#===============================================================================
+../csource/MCModelDefault.o:
+	+$(MAKE) -C ../csource
+
+# -lm is needed because of exp
+MCModelDefault.so: ../csource/MCModelDefault.o ../csource/EnergyModel.o ../csource/StateVector.o ../csource/lib/libpcore.a ContinuumElectrostatics.MCModelDefault.o
+	$(CC) -shared ContinuumElectrostatics.MCModelDefault.o ../csource/MCModelDefault.o ../csource/EnergyModel.o ../csource/StateVector.o ../csource/lib/libpcore.a -o MCModelDefault.so -lm
+
+ContinuumElectrostatics.MCModelDefault.o: ContinuumElectrostatics.MCModelDefault.c
+	$(CC) $(CFLAGS) ContinuumElectrostatics.MCModelDefault.c -o ContinuumElectrostatics.MCModelDefault.o
+
+ContinuumElectrostatics.MCModelDefault.c: ContinuumElectrostatics.MCModelDefault.pyx ContinuumElectrostatics.MCModelDefault.pxd
+	python cython_compile.py $(PDYNAMO_PCORE) ContinuumElectrostatics.MCModelDefault.pyx
+
+
+#===============================================================================
 #                                  EnergyModel
 #===============================================================================
 ../csource/EnergyModel.o:
 	+$(MAKE) -C ../csource
 
-# -lm is needed because of exp
 EnergyModel.so: ../csource/EnergyModel.o ../csource/StateVector.o ../csource/lib/libpcore.a ContinuumElectrostatics.EnergyModel.o
-	$(CC) -shared ContinuumElectrostatics.EnergyModel.o ../csource/EnergyModel.o ../csource/StateVector.o ../csource/lib/libpcore.a -o EnergyModel.so -lm
+	$(CC) -shared ContinuumElectrostatics.EnergyModel.o ../csource/EnergyModel.o ../csource/StateVector.o ../csource/lib/libpcore.a -o EnergyModel.so
 
 ContinuumElectrostatics.EnergyModel.o: ContinuumElectrostatics.EnergyModel.c
 	$(CC) $(CFLAGS) ContinuumElectrostatics.EnergyModel.c -o ContinuumElectrostatics.EnergyModel.o

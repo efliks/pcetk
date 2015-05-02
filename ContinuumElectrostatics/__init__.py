@@ -15,5 +15,6 @@ from Model             import MEADModel
 from StateVector       import StateVector
 from Substate          import StateVector_FromProbabilities, MEADSubstate
 from Constants         import CONSTANT_MOLAR_GAS_KCAL_MOL, CONSTANT_LN10
-from MonteCarlo        import MCModelDefault, MCModelGMCT
+from MCModelGMCT       import MCModelGMCT
+from MCModelDefault    import MCModelDefault
 from TitrationCurves   import TitrationCurves

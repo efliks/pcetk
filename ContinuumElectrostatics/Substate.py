@@ -59,9 +59,10 @@ class MEADSubstate (object):
             restore = True
         owner.CalculateProbabilities (pH=self.pH, log=None)
         vector = StateVector_FromProbabilities (owner)
-
-        if restore : self._ProbabilitiesRestore (backup)
-        else       : owner.isProbabilty = False
+        if restore:
+            self._ProbabilitiesRestore (backup)
+        else:
+            owner.isProbabilty = False
         return vector
 
 

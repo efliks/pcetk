@@ -176,51 +176,6 @@ cdef class EnergyModel:
         return self.cObject.nstates
 
 
-    def CalculateProbabilitiesMonteCarlo (self, Real pH=7.0, Integer nequi=500, Integer nprod=20000, log=logFile):
-        """Calculate probabilities of protonation states by using Metropolis Monte Carlo."""
-        cdef Status  status
-        status     = Status_Continue
-        meadModel  = self.owner
-
-        if not meadModel.isCalculated:
-            raise CLibraryError ("First calculate electrostatic energies.")
-
-        # Equilibration
-        EnergyModel_CalculateProbabilitiesMonteCarlo (self.cObject, pH, CTrue,  nequi, &status)
-        if LogFileActive (log):
-            log.Text ("\nCompleted %d equilibration scans.\n" % nequi)
-
-        # Production
-        EnergyModel_CalculateProbabilitiesMonteCarlo (self.cObject, pH, CFalse, nprod, &status)
-        if LogFileActive (log):
-            log.Text ("\nCompleted %d production scans.\n" % nprod)
-
-
-    def FindPairs (self, Real limit=2.0, log=logFile):
-        """Identify pairs of sites for double moves """
-        cdef Status  status = Status_Continue
-        cdef Integer indexPair, indexSiteA, indexSiteB
-        cdef Integer npairs
-        cdef Real    Wmax
-        npairs = EnergyModel_FindPairs (self.cObject, limit, -1, &status)
-
-        if npairs > 0:
-            EnergyModel_FindPairs (self.cObject, limit, npairs, &status)
-            if status != Status_Continue:
-                raise CLibraryError ("Cannot allocate pairs.")
-
-            if LogFileActive (log):
-                log.Text ("\nFound %d pair%s of strongly interacting sites:\n" % (npairs, "s" if npairs != 1 else ""))
-                meadModel = self.owner
-                sites     = meadModel.meadSites
-
-                for indexPair from 0 <= indexPair < npairs:
-                    StateVector_GetPair (self.cObject.vector, indexPair, &indexSiteA, &indexSiteB, &Wmax, &status)
-                    siteFirst  = sites[indexSiteA]
-                    siteSecond = sites[indexSiteB]
-                    log.Text ("%4s %4s %4d -- %4s %4s %4d : %f\n" % (siteFirst.segName, siteFirst.resName, siteFirst.resSerial, siteSecond.segName, siteSecond.resName, siteSecond.resSerial, Wmax))
-
-
     def CalculateMicrostateEnergyUnfolded (self, StateVector vector, Real pH=7.0):
         """Calculate energy of a protonation state (=microstate) in an unfolded protein."""
         cdef Real Gmicro
