@@ -24,12 +24,12 @@ cdef class MCModelDefault:
         MCModelDefault_Deallocate (self.cObject)
 
 
-    def __init__ (self, Real limit=_DefaultDoubleFlip, Integer nequil=_DefaultEquilibrationScans, Integer nprod=_DefaultProductionScans, Integer randomSeed=-1):
+    def __init__ (self, Real doubleFlip=_DefaultDoubleFlip, Integer nequil=_DefaultEquilibrationScans, Integer nprod=_DefaultProductionScans, Integer randomSeed=-1):
         """Constructor."""
         cdef Status  status
         status        = Status_Continue
         self.isOwner  = True
-        self.cObject  = MCModelDefault_Allocate (limit, nequil, nprod, randomSeed, &status)
+        self.cObject  = MCModelDefault_Allocate (doubleFlip, nequil, nprod, randomSeed, &status)
         if status != Status_Continue:
             raise CLibraryError ("Cannot allocate Monte Carlo model.")
 
@@ -70,16 +70,16 @@ cdef class MCModelDefault:
 
     def Summary (self, log=logFile):
         """Summary."""
-        cdef Integer nequil = self.cObject.nequil
-        cdef Integer nprod  = self.cObject.nprod
-        cdef Real    limit  = self.cObject.limit
+        cdef Integer nequil     = self.cObject.nequil
+        cdef Integer nprod      = self.cObject.nprod
+        cdef Real    doubleFlip = self.cObject.limit
 
         if LogFileActive (log):
             summary = log.GetSummary ()
             summary.Start ("Default Monte Carlo sampling model")
             summary.Entry ("Equilibration scans"    , "%d"   % nequil)
             summary.Entry ("Production scans"       , "%d"   % nprod)
-            summary.Entry ("Limit for double moves" , "%.1f" % limit)
+            summary.Entry ("Limit for double moves" , "%.1f" % doubleFlip)
             summary.Stop ()
 
 

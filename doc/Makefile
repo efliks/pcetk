@@ -1,4 +1,5 @@
-PROJECT = ContinuumElectrostatics_manual
+# This is not a proper makefile
+PROJECT = Pcetk_manual
 
 default: compile
 

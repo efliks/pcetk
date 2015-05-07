@@ -1,4 +1,4 @@
-# pcetk
+# Pcetk
 Pcetk, a pDynamo-based continuum electrostatic toolkit, is a Python module
 extending the pDynamo library with a Poisson-Boltzmann continuum electrostatic
 model that allows for protonation state calculations in proteins.
