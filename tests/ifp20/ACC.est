@@ -1,0 +1,12 @@
+label           p              d
+Gmodel          0             6.00
+proton          1              0
+ACC  CBA      -0.21          -0.28
+ACC  HO1       0.09           0.09
+ACC  HO2       0.09           0.09
+ACC  CGA       0.75           0.62
+ACC  O2A      -0.36          -0.76
+ACC  O1A      -0.36          -0.76
+ACC  CAA      -0.18          -0.18
+ACC  HO5       0.09           0.09
+ACC  HO6       0.09           0.09

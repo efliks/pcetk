@@ -1,0 +1,309 @@
+* Fully protonated biliverdin
+* Parameters from Kaminski et. al, J. Phys. Chem. B 2009, 113, 945-958
+*
+
+! V(bond) = Kb(b - b0)**2
+!
+! Kb: kcal/mole/A**2
+! b0: A
+!
+! atom type         Kb        b0
+!
+BONDS
+NR1     CPA      377.200    1.3817
+NR1     C        260.000    1.4190
+CT2     CPM      230.000    1.4830
+NR1     CA       377.200    1.4117
+SE      CT2      198.000    1.8180
+CPY1    CA       305.000    1.4772
+CT1     CPY1     230.000    1.4907
+CPM     CPY1     360.000    1.3266
+CPY2    CA       360.000    1.3800
+HA      CPY2     367.600    1.0902
+CPY2    CPA      360.000    1.4455
+CPY3    CA       360.000    1.3676
+HA      CPY3     367.600    1.0900
+CPY3    CPA      360.000    1.4225
+CPY4    CPA      299.800    1.4052
+CPY4    CPB      340.700    1.4018
+CT2     CPY4     230.000    1.4946
+CPY5    CA       305.000    1.4620
+CT3     CPY5     230.000    1.4850
+CPY6    C        250.000    1.4711
+CPY6    CE1      450.000    1.4290
+CPY6    CPY5     305.000    1.3470
+
+
+! V(angle) = Ktheta(Theta - Theta0)**2
+!
+! V(Urey-Bradley) = Kub(S - S0)**2
+!
+! Ktheta: kcal/mole/rad**2
+! Theta0: degrees
+! Kub:    kcal/mole/A**2 (Urey-Bradley)
+! S0:     A
+!
+! atom types          Ktheta       Theta0      Kub         S0
+ANGLES
+NR1   CPA   CPB      122.00       110.000
+CPA   NR1   CPA      139.30       116.300
+H     NR1   CPA       30.000      125.50      20.00     2.15000
+CPM   CPA   NR1       88.000      131.800
+NR1   C     O         80.000      118.000
+C     NR1   H         34.000      123.000
+NR1   C     CT1       20.000      112.500
+HA    CT2   CPM       49.300      107.500
+HA    CPM   CT2       34.500      110.10      22.53     2.17900
+C     NR1   CA        50.000      133.50
+H     NR1   CA        30.000      125.50      20.00     2.15000
+CT2   SE    CT2       34.000       95.000
+SE    CT2   CPM       58.000      112.500
+SE    CT2   CT1       58.000      112.500
+SE    CT2   HA        38.000      111.000
+HA    CPM   CPY1      12.700      117.440
+CT2   CPM   CPY1      45.800      117.490
+NR1   CA    CPY1     122.00       115.000
+CT1   CPY1  CPM       45.80       116.600
+CT1   CPY1  CA        45.80       128.000
+CPY1  CT1   C         52.00       113.700
+HA    CT1   CPY1      49.30       107.500
+CT3   CT1   CPY1      51.80       107.500
+CPM   CPY1  CA        61.60       124.100
+CPY2  CPA   NR1       88.00       112.390
+CPY2  CPA   CPB       61.60       124.070
+CPY2  CA    NR1       88.00       129.000
+CA    CPY2  CPA       94.20       127.000
+HA    CPY2  CPA       12.70       117.440
+HA    CPY2  CA        12.70       117.440
+CPY3  CA    NR1       88.00       124.390
+CPY1  CA    CPY3      61.60       127.570
+CA    CPY3  CPA       94.20       122.800
+HA    CPY3  CPA       12.70       117.440
+CPY3  CPA   NR1       88.00       124.390
+CPY3  CPA   CPB       61.60       125.070
+HA    CPY3  CA        12.70       117.440
+CPM   CPA   CPY4      61.60       132.500
+NR1   CPA   CPY4     122.00       111.540
+CPB   CPY4  CPA       30.80       136.010
+CT2   CPY4  CPB       65.00       126.750
+CPY4  CPB   CPA       30.80       145.010
+CT3   CPB   CPY4      65.00       126.750
+CT2   CT2   CPY4      70.00       114.700
+HA    CT2   CPY4      50.00       109.500
+CT2   CPY4  CPA       65.00       126.740
+NR1   CA    CPY5     122.00       112.400
+CPY5  CA    CPY2      61.60       124.970
+CT3   CPY5  CA        45.80       115.900
+HA    CT3   CPY5      49.30       107.500
+NR1   C     CPY6      20.00       109.500
+CPY6  C     O         80.00       118.000
+CT3   CPY5  CPY6      45.80       122.300
+C     CPY6  CPY5      52.00       116.000
+C     CPY6  CE1       70.00       114.490
+CPY5  CPY6  CE1       70.00       126.740
+HE1   CE1   CPY6      50.00       120.000
+CE2   CE1   CPY6      40.00       117.600
+CA    CPY5  CPY6      40.00       116.500
+
+
+! V(dihedral) = Kchi(1 + cos(n(chi) - delta))
+!
+! Kchi:  kcal/mole
+! n:     multiplicity
+! delta: degrees
+!
+!       atom types                 Kchi    n    delta
+!
+DIHEDRALS
+H      NR1     CPA     CPB        1.0000   2   180.00
+H      NR1     CPA     CPM        1.0000   2   180.00
+CPM    CPA     NR1     CPA       14.0000   2   180.00
+CPA    NR1     CPA     CPB       14.0000   2   180.00
+NR1    C       CT1     HA         0.1900   3     0.00
+O      C       CT1     HA         0.0000   3   180.00
+NR1    C       CT1     CT3        0.0000   1     0.00
+H      NR1     C       CT1        2.5000   2   180.00
+HA     CT2     CPM     HA         0.1600   3   100.00
+H      NR1     C       O          2.5000   2   180.00
+CA     NR1     C       O          2.7500   2   180.00
+CA     NR1     C       CT1        2.7500   2   180.00
+HA     CT3     CT1     C          0.0000   6     0.00
+CPA    CPB     CPB     CT2       14.0000   2   180.00
+CPA    CPB     CPB     CT3       14.0000   2   180.00
+SE     CT2     CPM     CA         0.0000   6     0.00
+CT1    CT2     SE      CT2        0.2400   1   180.00
+HA     CT2     SE      CT2        0.2800   3     0.00
+SE     CT2     CPM     HA         0.0100   3     0.00
+HS     SE      CT2     CPM        0.2700   3     0.00
+NR1    CA      CPY1    CPM        3.0000   2   180.00
+CPM    CPY1    CT1     C          3.0000   3     0.00
+HA     CT1     CPY1    CPM        0.0400   3     0.00
+CT3    CT1     CPY1    CPM        3.1000   2   180.00
+HA     CPM     CPY1    CT1        1.2000   2   180.00
+C      NR1     CA      CPY1       0.0000   2     0.00
+CA     CPY1    CT1     C          0.0400   3     0.00
+HA     CT1     CPY1    CA         0.0400   3     0.00
+NR1    C       CT1     CPY1       0.0000   1     0.00
+NR1    CA      CPY1    CT1        0.1900   3     0.00
+H      NR1     CA      CPY1       1.0000   2   180.00
+CT3    CT1     CPY1    CA         3.1000   2   180.00
+HA     CT2     CPM     CPY1       0.0000   3     0.00
+O      C       CT1     CPY1       1.4000   1   180.00
+CT2    CPM     CPY1    CT1        3.1000   2   180.00
+CT1    CPY1    CA      CPM        3.1000   2   180.00
+HA     CPM     CPY1    CA         0.0000   2     0.00
+HA     CPM     CA      CPY1       0.0000   2     0.00
+CPY2   CPA     NR1     CPA       14.0000   2   180.00
+NR1    CPA     CPY2    HA         1.9000   2   180.00
+H      NR1     CPA     CPY2       0.0000   2   180.00
+CPB    CPA     CPY2    HA         0.0000   2   180.00
+CPA    CPY2    CA      NR1        3.0000   2   180.00
+C      NR1     CA      CPY2       0.0000   2     0.00
+NR1    CA      CPY2    HA         0.0000   2     0.00
+H      NR1     CA      CPY2       1.0000   2   180.00
+NR1    CPA     CPY2    CA         0.0000   2   180.00
+CPY3   CPA     NR1     CPA       14.0000   2   180.00
+NR1    CPA     CPY3    HA         0.1900   3     0.00
+H      NR1     CPA     CPY3       1.0000   2   180.00
+CPB    CPA     CPY3    HA         0.0000   2     0.00
+CPA    CPY3    CA      NR1        3.0000   2   180.00
+C      NR1     CA      CPY3       0.0000   2     0.00
+NR1    CA      CPY3    HA         0.0000   2     0.00
+H      NR1     CA      CPY3       1.0000   2   180.00
+NR1    CPA     CPY3    CA         3.0000   2   180.00
+CPM    CPY1    CA      CPY3       3.1000   2   180.00
+CPY1   CA      CPY3    HA         3.1000   2   180.00
+CT1    CPY1    CA      CPY3       3.1000   2   180.00
+CPM    CPA     CPY4    CPB        0.0000   2     0.00
+CPM    CPA     CPY4    CT2        0.0000   2     0.00
+CPA    CPY4    CPB     CT3        0.0000   2   180.00
+CPA    CPY4    CT2     CT2        0.0000   6     0.00
+CPA    CPY4    CT2     HA         0.0000   6     0.00
+NR1    CPA     CPY4    CPB        0.0000   2     0.00
+NR1    CPA     CPY4    CT2        0.0000   2     0.00
+H      NR1     CPA     CPY4       0.0000   2     0.00
+CPY4   CPA     NR1     CPA       14.0000   2   180.00
+CPB    CPY4    CT2     CT2        0.0000   6     0.00
+CPB    CPY4    CT2     HA         0.0000   6     0.00
+CPA    CPY4    CPB     CPA       14.0000   2   180.00
+CPA    CPB     CPY4    CT2        1.0000   2   180.00
+CT3    CPB     CPY4    CT2        0.0000   2   180.00
+C      NR1     CA      CPY5       0.0000   2     0.00
+CA     CPY5    CT3     HA         0.0000   3     0.00
+CPY5   CA      CPY2    HA         0.0000   2     0.00
+CPY2   CA      CPY5    CT3        3.1000   2   180.00
+NR1    CA      CPY5    CT3        3.0000   2   180.00
+H      NR1     CA      CPY5       1.0000   2   180.00
+CE1    CA      CPY5    CA         3.1000   2   180.00
+CA     CPY5    CPY6    C          0.0400   3     0.00
+CT3    CPY5    CPY6    C         14.0000   3     0.00
+C      CPY6    CE1     HE1        0.0000   2   180.00
+C      CPY6    CE1     CE2        1.0000   2   180.00
+NR1    C       CPY6    CPY5       0.0000   1     0.00
+NR1    C       CPY6    CE1        0.0000   1     0.00
+NR1    CA      CPY5    CPY6       3.0000   2   180.00
+H      NR1     C       CPY6       2.5000   2   180.00
+CA     NR1     C       CPY6      14.0000   2   180.00
+CE1    CPY6    CPY5    CA         3.1000   2   180.00
+O      C       CPY6    CPY5       0.4000   1   180.00
+CPY5   CPY6    CE1     HE1        1.0000   2   180.00
+CPY6   CPY5    CA      CPY2       1.1000   2   180.00
+CPY6   CPY5    CT3     HA         0.0000   3     0.00
+CPY6   CE1     CE2     HE2        5.2000   2   180.00
+O      C       CPY6    CE1        1.4000   1     0.00
+CE1    CPY6    CPY5    CT3        3.1000   2   180.00
+!
+! multiple terms for dihedral optimization
+! VINYL
+CPY5   CPY6    CE1     CE2        0.90     1     0.00
+CPY5   CPY6    CE1     CE2        2.35     2   180.00
+CPY5   CPY6    CE1     CE2        0.50     3     0.00
+!
+! DB pyrrol-pyrrolinone ring A-B
+CPY1   CA      CPY3    CPA        1.9      1      0.0
+CPY1   CA      CPY3    CPA        6.4      2    178.0
+CPY1   CA      CPY3    CPA        1.8      3    160.0
+!
+! EB pyrrol-pyrrolinone ring A-B
+CA     CPY3    CPA     CPB        1.2      3     62.0
+CA     CPY3    CPA     CPB        4.4      2    162.0
+CA     CPY3    CPA     CPB        2.5      1    252.0
+!
+! pyrrol-pyrrol 1
+CPY4   CPA     CPM     CPA        9.2      2    183.0
+CPY4   CPA     CPM     CPA        4.5      1      2.0
+CPY4   CPA     CPM     CPA        2.2      3    190.0
+!
+! pyrrol-pyrrol 2
+CPB    CPA     CPM     CPA        8.9      2    184.0
+CPB    CPA     CPM     CPA        1.5      1      0.0
+CPB    CPA     CPM     CPA        1.9      3    196.0
+!
+! DB pyrrol-pyrrolinone ring C-D
+CPA    CPY2    CA      CPY5      11.8      1      0.0
+CPA    CPY2    CA      CPY5       3.0      2    190.0
+!
+! EB pyrrol-pyrrolinone ring C-D
+CPB    CPA     CPY2    CA         2.0      3      0.0
+CPB    CPA     CPY2    CA         4.4      2    138.0
+CPB    CPA     CPY2    CA         2.1      1    243.0
+!
+! linking fragment
+CT2    SE      CT2     CPM        0.7      3     10.00
+CT2    SE      CT2     CPM        1.1      1     88.00
+SE     CT2     CPM     CPY1       1.4      2     45.00
+CT2    CPM     CPY1    CA         2.4      2    180.00
+CT2    CPM     CPY1    CA        16.4      1      4.00
+
+
+! V(improper) = Kpsi(psi - psi0)**2
+!
+! Kpsi: kcal/mole/rad**2
+! psi0: degrees
+! note that the second column of numbers (0) is ignored
+!
+!atom types    Kpsi      psi0
+!
+IMPROPER
+CPA    CPB     NR1     CPM      200.0000   0      0.0000
+HE2    HE2     CE1     CE2        3.0000   0      0.0000
+CD     OB      OH1     CT2       96.0000   0      0.0000
+CPB    CPB     CPA     CT2       90.0000   0      0.0000
+CPB    CPA     CPB     CT2       90.0000   0      0.0000
+CPY1   CT1     CA      CPM        0.0000   0      0.0000
+CPY1   CT2     CPM     HA        29.4000   0    180.000
+CPA    CPB     NR1     CPY2     140.0000   0      0.0000
+CPY2   CPA     CA      HA        29.4000   0      0.0000
+CPA    CPB     NR1     CPY3     145.000    0      0.0000
+HA     CPA     CA      CPY3      29.4000   0      0.0000
+CPY1   NR1     CA      CPY3     140.0000   0    180.00
+CPA    CPM     NR1     CPY4      61.0000   0      0.0000
+CPY4   CPA     CPB     CT2       64.0000   0      0.0000
+CPB    CPY4    CPA     CT3       90.0000   0      0.0000
+CPY5   NR1     CA      CPY2       7.0000   0    180.000
+CPY5   C       CA      CE1       90.0000   0    180.000
+CPY5   X       X       CT3        0.0000   0      0.0000
+CPY6   CE1     C       CPY5     180.0000   0      0.0000
+HE1    X       X       CE1        3.0000   0      0.0000
+
+
+NONBONDED nbxmod 5 atom cdiel shift vatom vdistance vswitch -
+cutnb 14.0 ctofnb 12.0 ctonnb 10.0 eps 1.0 e14fac 1.0 wmin 1.5
+!
+! adm jr., 5/08/91, suggested cutoff scheme
+! V(Lennard-Jones) = Eps,i,j[(Rmin,i,j/ri,j)**12 - 2(Rmin,i,j/ri,j)**6]
+!
+! epsilon:   kcal/mole, Eps, i, j = sqrt (eps, i * eps, j)
+! Rmin / 2:  A, Rmin, i, j        = Rmin / 2, i + Rmin / 2, j
+!
+!
+! atom ignored epsilon       Rmin/2 ignored eps,1-4      Rmin/2,1-4
+CPY1     0.000000     -0.070000      1.992400
+CPY2     0.000000     -0.090000      1.800000
+CPY3     0.000000     -0.090000      1.800000
+CPY4     0.000000     -0.090000      1.800000
+CPY5     0.000000     -0.070000      1.992400
+CPY6     0.000000     -0.070000      1.992400
+SE       0.000000     -0.470000      2.200000
+
+END

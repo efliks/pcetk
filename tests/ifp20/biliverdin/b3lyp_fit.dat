@@ -1,0 +1,16 @@
+# pKa_lfit = 7.068990 + 0.664054 * pKa_calc
+#      pKa_exp      pKa_calc   DeltaG_corr      pKa_lfit         error
+           1.5          -8.1          13.2           1.7           0.1     "25-dichloro-anilinium"
+           1.6          -7.7          12.7           1.9           0.4     "4-cyano-anilinium"
+           3.9          -5.3          12.6           3.5          -0.4     "4-bromo-anilinium"
+           4.6          -4.2          12.0           4.3          -0.3     "anilinium"
+           5.4          -3.4          11.9           4.8          -0.5     "p-anisidinium"
+           6.7          -0.0           9.2           7.1           0.4     "26-dimethyl-pyridinium"
+           7.3           0.1           9.9           7.1          -0.2     "246-collidinium"
+           9.3           4.5           6.5          10.1           0.8     "benzylammonium"
+           9.6           3.7           8.1           9.5          -0.1     "DMAP"
+          10.4           5.1           7.2          10.5           0.1     "lysine"
+          10.7           6.1           6.3          11.1           0.4     "triethylammonium"
+          11.3           5.7           7.6          10.8          -0.4     "pyrrolidinium"
+          13.6           9.6           5.5          13.4          -0.2     "guanidinium"
+# sigma=0.376408

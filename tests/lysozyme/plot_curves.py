@@ -65,7 +65,7 @@ def writepage (counter, data):
 
 
 #===========================================================
-proteinlabels = ("curves_analytic", "curves_gmct", "curves_custom", )
+proteinlabels = ("curves_analytic", "curves_mc", )
 #"curves_analytic_unfolded" 
 nproteins = len (proteinlabels)
 

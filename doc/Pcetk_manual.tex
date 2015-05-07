@@ -323,7 +323,7 @@ mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("charmm/testpeptide.crd")
 In the second step, a continuum electrostatic model is constructed:
 
 {\footnotesize \singlespacing \begin{lstlisting}
-cem = MEADModel (system=mol, pathMEAD="/home/mikolaj/local/bin/", pathScratch="scratch", nthreads=2)
+cem = MEADModel (system=mol, pathMEAD="/home/mikolaj/local/bin/", pathScratch="mead", nthreads=2)
 \end{lstlisting} }
 
 \bigskip
@@ -618,7 +618,9 @@ lowestEnergyVector = StateVector_FromProbabilities (cem)
 \end{lstlisting} }
 
 \bigskip
-The microstate energy ($G_{\mathrm{micro}}$) in the lowest energy protonation state can
+The microstate energy,
+$G^{\rm micro}$,
+in the lowest energy protonation state can
 be calculated in the following way:
 
 {\footnotesize \singlespacing \begin{lstlisting}

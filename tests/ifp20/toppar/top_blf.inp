@@ -1,0 +1,175 @@
+* Fully protonated biliverdin
+* Modified topology from Kaminski et. al, J. Phys. Chem. B 2009, 113, 945-958
+*
+  31    1
+
+MASS    201     CPY1      12.011    C
+MASS    202     CPY2      12.011    C
+MASS    203     CPY3      12.011    C
+MASS    204     CPY4      12.011    C
+MASS    205     CPY5      12.011    C
+MASS    206     CPY6      12.011    C
+MASS    207     SE        32.060    S
+
+AUTO  ANGLE DIHE
+
+
+!========================================
+RESI BLF               -1.00
+GROUP       ! methine bridge
+ATOM    CAC     CPM    -0.082
+ATOM    HAC     HA      0.123
+GROUP       ! RING A
+ATOM    C1C     C       0.289
+ATOM    H2C     HA      0.057
+ATOM    N_C     NR1    -0.555
+ATOM    H_C     H       0.332
+ATOM    C4C     CA      0.312
+ATOM    C3C     CPY1   -0.160
+ATOM    C2C     CT1     0.315
+ATOM    O_C     O      -0.445
+GROUP
+ATOM    CHD     CPY3   -0.501
+ATOM    HHD     HA      0.214
+GROUP       ! RING B
+ATOM    C1D     CPA     0.375
+ATOM    N_D     NR1    -0.543
+ATOM    H_D     H       0.306
+ATOM    C4D     CPA     0.364
+ATOM    C3D     CPB    -0.091
+ATOM    C2D     CPB    -0.031
+GROUP
+ATOM    CHA     CPM    -0.111
+ATOM    HHA     HA      0.319
+GROUP       ! RING C
+ATOM    C1A     CPA     0.119
+ATOM    N_A     NR1    -0.654
+ATOM    H_A     H       0.355
+ATOM    C2A     CPY4   -0.038
+ATOM    C3A     CPB    -0.155
+ATOM    C4A     CPA     0.487
+GROUP       ! RING D
+ATOM    C4B     C       0.476
+ATOM    N_B     NR1    -0.560
+ATOM    H_B     H       0.425
+ATOM    C1B     CA      0.452
+ATOM    C2B     CPY5   -0.115
+ATOM    C3B     CPY6   -0.091
+ATOM    O_B     O      -0.407
+GROUP
+ATOM    CHB     CPY2   -0.448
+ATOM    HHB     HA      0.219
+GROUP       ! VINYL RING D
+ATOM    CAB     CE1    -0.332
+ATOM    HAB     HE1     0.307
+ATOM    CBB     CE2    -0.269
+ATOM    HV1     HE2     0.189
+ATOM    HV2     HE2     0.153
+GROUP       ! CH3 RING A (Cys binding point)
+ATOM    CBC     CT2     0.043
+ATOM    HL1     HA      0.058
+ATOM    HL2     HA      0.058
+GROUP       ! CH3 RING A (close to Cys)
+ATOM    CMC     CT3    -0.119
+ATOM    HE1     HA      0.038
+ATOM    HE2     HA      0.038
+ATOM    HE3     HA      0.038
+GROUP       ! CH3 RING B
+ATOM    CMD     CT3    -0.024
+ATOM    HD1     HA      0.022
+ATOM    HD2     HA      0.022
+ATOM    HD3     HA      0.022
+GROUP       ! CH3 RING C
+ATOM    CMA     CT3    -0.075
+ATOM    HA1     HA      0.050
+ATOM    HA2     HA      0.050
+ATOM    HA3     HA      0.050
+GROUP       ! CH3 RING D
+ATOM    CMB     CT3    -0.018
+ATOM    HB1     HA      0.049
+ATOM    HB2     HA      0.049
+ATOM    HB3     HA      0.049
+GROUP       ! CH2_COO- RING B   (Heme)
+ATOM    CBD     CT2    -0.28
+ATOM    HO3     HA      0.09
+ATOM    HO4     HA      0.09
+ATOM    CGD     CC      0.62
+ATOM    O2D     OC     -0.76
+ATOM    O1D     OC     -0.76
+GROUP       ! CH2 RING B        (Heme)
+ATOM    CAD     CT2    -0.18
+ATOM    HO7     HA      0.09
+ATOM    HO8     HA      0.09
+GROUP       ! CH2_COO- RING C   (Heme)
+ATOM    CBA     CT2    -0.28
+ATOM    HO1     HA      0.09
+ATOM    HO2     HA      0.09
+ATOM    CGA     CC      0.62
+ATOM    O2A     OC     -0.76
+ATOM    O1A     OC     -0.76
+GROUP       ! CH2 RING C        (Heme)
+ATOM    CAA     CT2    -0.18
+ATOM    HO5     HA      0.09
+ATOM    HO6     HA      0.09
+!
+BOND  CHA  HHA    CHA  C1A    CHA  C4D    CGA  O1A
+BOND  N_A  H_A    N_A  C1A    N_A  C4A    N_B  C4B
+BOND  C1A  C2A    C2A  C3A    C2A  CAA    C3B  C4B
+BOND  C3A  C4A    C3A  CMA    C4A  CHB    CMB  HB3
+BOND  CMA  HA1    CMA  HA2    CMA  HA3    CBB  HV2
+BOND  CAA  HO5    CAA  HO6    CAA  CBA    CGA  O2A
+BOND  CBA  HO1    CBA  HO2    CBA  CGA    CMC  HE3
+BOND  CHB  C1B    N_B  H_B    N_B  C1B    CMC  HE2
+BOND  C1B  C2B    C2B  C3B    C2B  CMB    CAC  CBC
+BOND  C4B  O_B    CMB  HB1    CMB  HB2    C3B  CAB
+BOND  CAB  HAB    CAB  CBB    CBB  HV1    CMD  HD3
+BOND  N_C  H_C    N_C  C1C    N_C  C4C    CGD  O1D
+BOND  C1C  C2C    C1C  O_C    C2C  H2C    CGD  O2D
+BOND  C2C  C3C    C2C  CMC    CMC  HE1
+BOND  C3C  C4C    C3C  CAC    CAC  HAC
+BOND  CBC  HL1    CBC  HL2    CHB  HHB
+BOND  C4C  CHD    CHD  HHD    CHD  C1D
+BOND  N_D  H_D    N_D  C1D    N_D  C4D
+BOND  C1D  C2D    C2D  C3D    C3D  C4D
+BOND  C2D  CMD    CMD  HD1    CMD  HD2
+BOND  C3D  CAD    CAD  HO7    CAD  HO8
+BOND  CAD  CBD    CBD  HO3    CBD  HO4
+BOND  CBD  CGD ! <-- added by Mfx
+!
+IMPH  HHA  C4D  C1A  CHA    C1A  CHA  N_A  C2A    C2A  C1A  C3A  CAA
+IMPH  C3A  C2A  C4A  CMA    C4A  C3A  N_A  CHB    C2B  N_B  C1B  CHB
+IMPH  CGA  O1A  O2A  CBA    CHB  C4A  C1B  HHB    C4B  N_B  C3B  O_B
+IMPH  C2B  C1B  C3B  CMB    C3B  CAB  C4B  C2B    C3C  N_C  C4C  CHD
+IMPH  CAB  CBB  C3B  HAB    CBB  CAB  HV1  HV2    C3D  C2D  C4D  CAD
+IMPH  C1C  N_C  C2C  O_C    CHD  C4C  C1D  HHD
+IMPH  C3C  C2C  C4C  CAC    C3C  CBC  CAC  HAC
+IMPH  C1D  C2D  N_D  CHD    C2D  C1D  C3D  CMD
+IMPH  C4D  C3D  N_D  CHA    CGD  O2D  O1D  CBD
+!
+DONOR     H_C  N_C  H_D  N_D  H_A  N_A  H_B  N_B
+ACCEPTOR  O_C  C1C  O1D  CGD  O2D  CGD  O1A  CGA  O2A  CGA  O_B  C4B
+
+
+!========================================
+! Patch to link BV to a cysteine residue
+PRES  ABV              0.00
+GROUP
+ATOM    CB    CT2     -0.11
+ATOM    HB1   HA       0.09
+ATOM    HB2   HA       0.09
+ATOM    SG    SE      -0.07
+GROUP
+ATOM    C     C        0.51
+ATOM    O     O       -0.51
+DELETE  ATOM  1HG1
+!
+BOND    2CBC  1SG
+ANGLE   1CB   1SG   2CBC  1SG   2CBC  2CAC
+!
+ANGLE   2HL1  2CBC  1SG   2HL2  2CBC  1SG
+!
+DIHE    1CB   1SG   2CBC  2CAC  1HB1  1CB   1SG   2CBC  1HB2  1CB  1SG  2CBC
+DIHE    1SG   2CBC  2CAC  2C3C  1SG   2CBC  2CAC  2HAC
+DIHE    1CB   1SG   2CBC  2HL1  1CB   1SG   2CBC  2HL2
+
+END

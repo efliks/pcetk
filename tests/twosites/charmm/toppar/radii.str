@@ -1,0 +1,58 @@
+* Assigning radii to atoms
+* M. Ullmann, Feb 2009
+* .
+
+scalar wmain set 150.0  sele all end
+scalar wmain set 1.50 sele chem DUM end
+scalar wmain set 2.00 sele chem P*  end
+scalar wmain set 1.70 sele chem C*  end
+scalar wmain set 1.50 sele chem O*  end
+scalar wmain set 1.55 sele chem N*  end
+scalar wmain set 1.80 sele chem S*  end
+scalar wmain set 1.30 sele chem FE  end
+scalar wmain set 1.30 sele chem MG  end
+scalar wmain set 1.46 sele chem W   end
+!lone pair
+scalar wmain set 0.30 sele chem LP  end
+! polar hydrogens
+scalar wmain set 0.30 sele chem H   end
+scalar wmain set 0.30 sele chem HS   end
+scalar wmain set 0.30 sele chem HB   end
+scalar wmain set 0.30 sele chem HT   end
+scalar wmain set 0.30 sele chem HC   end
+
+scalar wmain set 0.30 sele chem HN1  end
+scalar wmain set 0.30 sele chem HN2  end
+scalar wmain set 0.30 sele chem HN3B end
+scalar wmain set 0.30 sele chem HN4  end
+scalar wmain set 0.30 sele chem HN5  end
+scalar wmain set 0.30 sele chem HC   end
+
+! aromatic or double-bond hydrogens
+scalar wmain set 0.80 sele chem HP   end
+scalar wmain set 0.80 sele chem HR1  end
+scalar wmain set 0.80 sele chem HR2  end
+scalar wmain set 0.80 sele chem HR3  end
+scalar wmain set 0.80 sele chem HE1  end
+scalar wmain set 0.80 sele chem HE2  end
+scalar wmain set 0.80 sele chem HN3  end
+
+scalar wmain set 0.80 sele chem HN3C end
+scalar wmain set 0.80 sele chem HNP  end
+scalar wmain set 0.80 sele chem HN8  end
+scalar wmain set 0.80 sele chem HN9  end
+scalar wmain set 0.80 sele chem HNE1 end
+scalar wmain set 0.80 sele chem HNE2 end
+
+! unpolar hydrogens
+scalar wmain set 1.00 sele chem HA   end
+scalar wmain set 1.00 sele chem HN6  end
+scalar wmain set 1.00 sele chem HN7  end
+
+!
+! check if all atoms got a radius
+!
+scalar wmain statistics select all end
+define check select  property wmain .eq. 150.0 show end
+if ?nsel ne 0  stop  !some heavy atom have a zero radius
+

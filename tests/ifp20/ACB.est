@@ -1,0 +1,12 @@
+label           p              d
+Gmodel          0             6.00
+proton          1              0
+ACB  CBD      -0.21          -0.28
+ACB  HO3       0.09           0.09
+ACB  HO4       0.09           0.09
+ACB  CGD       0.75           0.62
+ACB  O2D      -0.36          -0.76
+ACB  O1D      -0.36          -0.76
+ACB  CAD      -0.18          -0.18
+ACB  HO7       0.09           0.09
+ACB  HO8       0.09           0.09

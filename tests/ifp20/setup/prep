@@ -1,0 +1,71 @@
+#=================
+# Slice PDB file
+#=================
+f=fit3D/ifp20_2013_added_loop.pdb
+
+g=`mktemp`
+
+grep -E "^(HETATM|ATOM  )" $f | grep -Ev "^.{16}B" | grep -Ev "(^.{12}H|^.{13}H)" | sed "/HOH/ s/O  /OH2/ ; s/HOH /TP3M/" > $g
+
+grep -Ev "LBV|TP3|GOL" $g | ./segid PRTA > prot.pdb
+
+grep LBV $g | ./pdb_recount 1 | ./segid CHRO | sed "s/LBV/BLF/" | sed -f rename.sed > chro.pdb
+
+grep TP3 $g | ./pdb_recount 1 | ./segid WATA > wat.pdb
+
+
+#============================
+# Repair and mutate residues
+#============================
+python -c "
+from os   import system
+mutants = (
+(100, \"ARG\"),
+) 
+
+blocks = []
+ids    = []
+
+for muti, (resid, resname) in enumerate (mutants):
+  system (\"mutate.py prot %d %s A > repair%d.log\" % (resid, resname, muti))
+
+for resid, resname in mutants:
+  fo       = open (\"prot%s%d.pdb\" % (resname, resid)).readlines ()
+  changed  = []
+  for line in fo:
+    if line.count (\"A%4d\" % resid):
+      changed.append (line)
+    else:
+      if changed:
+        break
+  blocks.append (changed)
+  ids.append (\"A%4d\" % resid)
+
+pdb_file = open (\"prot.pdb\").readlines ()
+skip     = False
+out      = []
+
+for line in pdb_file:
+  if skip:
+    if line.count (block_id):
+      continue
+    else:
+      skip = False
+
+  if not skip:
+    for block_id, block in zip (ids, blocks):
+      if line.count (block_id):
+        for block_line in block:
+          out.append (block_line)
+        skip  = True
+        break
+    if not skip:
+      out.append (line)
+
+
+outf = open (\"prot_fixed.pdb\", \"w\")
+outf.writelines (out)
+outf.close ()
+"
+
+./segid PRTA  prot_fixed.pdb > prot_fixed2.pdb
