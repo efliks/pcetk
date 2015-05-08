@@ -27,7 +27,7 @@ Auxiliary software:
  * pDynamo (Martin Field)
     http://www.pdynamo.org
 
- * Extended MEAD (Donald Bashford, Timm Essigke, Thomas R. Ullmann)
+ * Extended-MEAD (Donald Bashford, Timm Essigke, Thomas R. Ullmann)
     http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=extended-mead
 
  * GMCT (Matthias G. Ullmann, Thomas R. Ullmann)
