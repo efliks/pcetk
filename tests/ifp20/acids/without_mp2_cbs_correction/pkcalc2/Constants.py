@@ -20,11 +20,11 @@ DEFAULT_B = 6.990225
 
 
 pKasExperimental = {
-"2_chloro_pyridinium"    :    0.49   ,  # <--OUT
-"4_cyano_pyridinium"     :    1.86   ,  # <--OUT
+"2_chloro_pyridinium"    :    0.49   ,
+"4_cyano_pyridinium"     :    1.86   ,
 "4_bromo_anilinium"      :    3.89   ,
 "anilinium"              :    4.62   ,
-"pyridinium"             :    5.24   ,  # <--OUT
+"pyridinium"             :    5.24   ,
 "246_collidinium"        :    7.33   ,
 "benzylammonium"         :    9.30   ,
 "triethylammonium"       :   10.72   ,
@@ -40,5 +40,5 @@ pKasExperimental = {
 "benzoquinoline"         :    5.05   ,  #<--To do
 "acridine"               :    5.60   ,  #<--To do
 "lysine"                 :   10.40   ,
-"arginine"               :   12.00   ,  #<--OUT
+"arginine"               :   12.00   ,
 }

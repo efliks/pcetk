@@ -88,10 +88,12 @@ class ProtonationForm (object):
             self.isExperimental = True
 
 
-    def CorrectDeltas (self, a=DEFAULT_A, b=DEFAULT_B):
-        """Correct calculated DeltaGs and pKas by fitting."""
-        if self.isCalcDeltas:
-            self.pKa_lfit    = b + a * self.pKa
+    def CalculateCorrections (self, a=DEFAULT_A, b=DEFAULT_B):
+        """Correct pKa by linear fitting."""
+        if hasattr (self, "pKa"):
+            self.pKa_lfit = b + a * self.pKa
+            if hasattr (self, "pKa_exp"):
+                self.pKa_error = self.pKa_lfit - self.pKa_exp
             self.Gmodel      = self.pKa_lfit * CONSTANT_MOLAR_GAS_KCAL_MOL * self.temperature * CONSTANT_LN10
             self.isCorrected = True
 
