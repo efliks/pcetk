@@ -30,7 +30,7 @@ from PQRFileWriter   import PQRFile_FromSystem
 
 _DefaultTemperature     =  300.
 _DefaultIonicStrength   =     .1
-_DefaultPathScratch     =  "/tmp"
+_DefaultPathScratch     =  os.getenv ("PDYNAMO_SCRATCH")
 _DefaultPathMEAD        =  "/usr/local/bin"
 _DefaultThreads         =  1
 _DefaultFocussingSteps  =  ((121, 2.), (101, 1.), (101, .5), (101, .25))

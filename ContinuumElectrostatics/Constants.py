@@ -19,7 +19,7 @@ CONSTANT_LN10               = 2.302585092994
 UNITS_ENERGY_PKA_UNITS_TO_KILOCALORIES_PER_MOL = CONSTANT_MOLAR_GAS_KCAL_MOL * 300.0 * CONSTANT_LN10
 
 
-YAMLPATHIN       = os.path.join (os.getenv ("PDYNAMO_CONTINUUMELECTROSTATICS"), "parameters")
+YAMLPATHIN       = os.path.join (os.getenv ("PDYNAMO_PCETK"), "parameters")
 
 # Maximum number of states for analytic treatment (set arbitraily to 2^26)
 ANALYTIC_SITES   = 26
