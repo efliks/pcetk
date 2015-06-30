@@ -53,19 +53,79 @@ cdef class MCModelDefault:
         self.owner   = meadModel
 
 
-    def CalculateOwnerProbabilities (self, Real pH=7.0, log=logFile):
-        """Calculate probabilities of the owner"""
-        owner = self.owner
+    def CalculateOwnerProbabilities (self, Real pH=7.0, Integer logFrequency=500, log=logFile):
+        """Calculate probabilities of the owner."""
+        cdef CMCModelDefault   *mcModel
+        cdef CMCScanStatistics  stats
+        cdef Integer  nmoves, i, j
+        cdef Real     scale, Ginit
+        cdef Boolean  active
+        owner   = self.owner
         if not owner.isCalculated:
             raise CLibraryError ("First calculate electrostatic energies.")
 
-        MCModelDefault_CalculateProbabilities (self.cObject, pH, CTrue)
+        if logFrequency < 0:
+            MCModelDefault_CalculateProbabilities (self.cObject, pH, CTrue)
+            if LogFileActive (log):
+                log.Text ("\nCompleted %d equilibration scans.\n" % self.cObject.nequil)
+            MCModelDefault_CalculateProbabilities (self.cObject, pH, CFalse)
+            if LogFileActive (log):
+                log.Text ("\nCompleted %d production scans.\n" % self.cObject.nprod)
+            return
+
+        active  = CFalse
+        mcModel = self.cObject
+        nmoves  = mcModel.vector.nsites + mcModel.vector.npairs
+        StateVector_Randomize (mcModel.vector, mcModel.generator)
+
         if LogFileActive (log):
-            log.Text ("\nCompleted %d equilibration scans.\n" % self.cObject.nequil)
-        
-        MCModelDefault_CalculateProbabilities (self.cObject, pH, CFalse)
-        if LogFileActive (log):
-            log.Text ("\nCompleted %d production scans.\n" % self.cObject.nprod)
+            j      = 0
+            active = CTrue
+            MCModelDefault_StatisticsReset (&stats)
+            table  = log.GetTable (columns=[8, 10, 10, 10, 10])
+            table.Start ()
+            table.Heading ("%8s"   % "Scan"  )
+            table.Heading ("%10s"  % "Moves" )
+            table.Heading ("%10s"  % "M-Acc" )
+            table.Heading ("%10s"  % "Flips" )
+            table.Heading ("%10s"  % "F-Acc" )
+
+        for i from 0 <= i < mcModel.nequil:
+            MCModelDefault_MCScan (mcModel, pH, nmoves, &stats)
+            if active:
+                j += 1
+                if j >= logFrequency:
+                    j = 0
+                    table.Entry ("%8d"    % (i + 1)          )
+                    table.Entry ("%10d"   % stats.nsingle    )
+                    table.Entry ("%10d"   % stats.nsingleacc )
+                    table.Entry ("%10d"   % stats.ndouble    )
+                    table.Entry ("%10d"   % stats.ndoubleacc )
+                    MCModelDefault_StatisticsReset (&stats)
+        if active:
+            j = 0
+            MCModelDefault_StatisticsReset (&stats)
+            table.Entry ("** Equilibration phase done **".center (8 + 10 * 4), columnSpan=5)
+
+        Real1DArray_Set (mcModel.energyModel.probabilities, 0.)
+        for i from 0 <= i < mcModel.nprod:
+            MCModelDefault_MCScan (mcModel, pH, nmoves, &stats)
+            MCModelDefault_UpdateProbabilities (mcModel)
+            if active:
+                j += 1
+                if j >= logFrequency:
+                    j = 0
+                    table.Entry ("%8d"    % (i + 1)          )
+                    table.Entry ("%10d"   % stats.nsingle    )
+                    table.Entry ("%10d"   % stats.nsingleacc )
+                    table.Entry ("%10d"   % stats.ndouble    )
+                    table.Entry ("%10d"   % stats.ndoubleacc )
+                    MCModelDefault_StatisticsReset (&stats)
+        if active:
+            table.Entry ("** Production phase done **".center (8 + 10 * 4), columnSpan=5)
+            table.Stop ()
+        scale = 1. / mcModel.nprod
+        Real1DArray_Scale (mcModel.energyModel.probabilities, scale)
 
 
     def Summary (self, log=logFile):
@@ -73,7 +133,6 @@ cdef class MCModelDefault:
         cdef Integer nequil     = self.cObject.nequil
         cdef Integer nprod      = self.cObject.nprod
         cdef Real    doubleFlip = self.cObject.limit
-
         if LogFileActive (log):
             summary = log.GetSummary ()
             summary.Start ("Default Monte Carlo sampling model")

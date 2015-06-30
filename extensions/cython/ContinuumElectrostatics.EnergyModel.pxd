@@ -7,6 +7,7 @@
 #-------------------------------------------------------------------------------
 from pCore.cDefinitions                  cimport Boolean, CFalse, CTrue, Integer, Real
 from pCore.Status                        cimport Status, Status_Continue, Status_IndexOutOfRange, Status_ValueError
+from pCore.Real1DArray                   cimport CReal1DArray, Real1DArray
 from ContinuumElectrostatics.StateVector cimport CStateVector, StateVector, StateVector_SetSite
 
 __lastchanged__ = "$Id: $"
@@ -15,10 +16,11 @@ __lastchanged__ = "$Id: $"
 # Include EnergyModel.h in the generated C code
 cdef extern from "EnergyModel.h":
     ctypedef struct CEnergyModel "EnergyModel":
-        CStateVector *vector
-        Integer       nstates
-        Integer       ninstances
-        Real          temperature
+        Integer        nstates
+        Integer        ninstances
+        Real           temperature
+        CStateVector  *vector
+        CReal1DArray  *probabilities
 
     # Allocation and deallocation
     cdef CEnergyModel *EnergyModel_Allocate                          (Integer nsites, Integer ninstances, Status *status)

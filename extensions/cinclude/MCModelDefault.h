@@ -53,6 +53,23 @@ typedef struct {
     RandomNumberGenerator *generator;
 } MCModelDefault;
 
+typedef struct {
+    /* Number of single moves done */
+    Integer     nsingle;
+    /* Number of double moves done */
+    Integer     ndouble;
+    /* Number of accepted single moves */
+    Integer     nsingleacc;
+    /* Number of accepted double moves */
+    Integer     ndoubleacc;
+    /* Energy of the final state */
+    Real        Gfinal;
+    /* Highest energy */
+    Real        Ghigh;
+    /* Lowest energy */
+    Real        Glow;
+} MCScanStatistics;
+
 
 /* Allocation and deallocation */
 extern MCModelDefault *MCModelDefault_Allocate          (const Real limit, const Integer nequil, const Integer nprod, const Integer randomSeed, Status *status);
@@ -63,10 +80,12 @@ extern void            MCModelDefault_LinkToEnergyModel (MCModelDefault *self, E
 extern Boolean MCModelDefault_Metropolis             (const Real GdeltaRT, const RandomNumberGenerator *generator);
 extern Boolean MCModelDefault_Move                   (const MCModelDefault *self, const Real pH, const Real G, Real *Gnew);
 extern Boolean MCModelDefault_DoubleMove             (const MCModelDefault *self, const Real pH, const Real G, Real *Gnew);
-extern Real    MCModelDefault_MCScan                 (const MCModelDefault *self, const Real pH, Integer nmoves);
+extern void    MCModelDefault_MCScan                 (const MCModelDefault *self, const Real pH, Integer nmoves, MCScanStatistics *stats);
 extern void    MCModelDefault_UpdateProbabilities    (const MCModelDefault *self);
 extern Real    MCModelDefault_FindMaxInteraction     (const MCModelDefault *self, const TitrSite *site, const TitrSite *other);
 extern Integer MCModelDefault_FindPairs              (const MCModelDefault *self, const Integer npairs, Status *status);
 extern void    MCModelDefault_CalculateProbabilities (const MCModelDefault *self, const Real pH, const Boolean equil);
+extern void    MCModelDefault_StatisticsReset        (MCScanStatistics *stats);
+extern void    MCModelDefault_StatisticsUpdate       (MCScanStatistics *stats, const Boolean isFlip, const Boolean isAccepted);
 
 #endif

@@ -5,8 +5,9 @@
 #                          Mikolaj J. Feliks (2014-2015)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
-from pCore.cDefinitions     cimport Boolean, CFalse, CTrue, Integer, Real
-from pCore.Status           cimport Status, Status_Continue, Status_IndexOutOfRange, Status_ValueError
+from pCore.Status                 cimport Status, Status_Continue, Status_IndexOutOfRange, Status_ValueError
+from pCore.cDefinitions           cimport Boolean, CFalse, CTrue, Integer, Real
+from pCore.RandomNumberGenerator  cimport CRandomNumberGenerator
 
 __lastchanged__ = "$Id$"
 
@@ -46,7 +47,7 @@ cdef extern from "StateVector.h":
     cdef void          StateVector_Reset             (CStateVector *self)
     cdef void          StateVector_ResetSubstate     (CStateVector *self)
     cdef void          StateVector_ResetToMaximum    (CStateVector *self)
-    cdef void          StateVector_Randomize         (CStateVector *self)
+    cdef void          StateVector_Randomize         (CStateVector *self, CRandomNumberGenerator *generator)
 
     # Accessing items
     cdef void          StateVector_SetSite           (CStateVector *self, Integer indexSite, Integer indexFirst, Integer indexLast, Status *status)

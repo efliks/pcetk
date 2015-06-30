@@ -231,14 +231,14 @@ class MEADModel (object):
 
 
     #===============================================================================
-    def CalculateProbabilities (self, pH=7.0, unfolded=False, isCalculateCurves=False, log=logFile):
+    def CalculateProbabilities (self, pH=7.0, unfolded=False, isCalculateCurves=False, logFrequency=-1, log=logFile):
         """Calculate probabilities."""
         nstates = -1
         sites   = None
         if       self.sampler and     unfolded:
             raise ContinuumElectrostaticsError ("Monte Carlo sampling of unfolded proteins unsupported.")
         elif     self.sampler and not unfolded:
-            self.sampler.CalculateOwnerProbabilities (pH=pH, log=log)
+            self.sampler.CalculateOwnerProbabilities (pH=pH, logFrequency=logFrequency, log=log)
         elif not self.sampler and     unfolded:
             nstates = self.energyModel.CalculateProbabilitiesAnalyticallyUnfolded (pH=pH)
         elif not self.sampler and not unfolded:

@@ -166,25 +166,23 @@ Boolean MCModelDefault_DoubleMove (const MCModelDefault *self, const Real pH, co
  * Generate a state vector representing a low-energy, statistically relevant protonation state.
  * The energy of the vector is returned only for information.
  */
-Real MCModelDefault_MCScan (const MCModelDefault *self, const Real pH, Integer nmoves) {
+void MCModelDefault_MCScan (const MCModelDefault *self, const Real pH, Integer nmoves, MCScanStatistics *stats) {
     Integer  selection, select;
     Real     G, Gnew;
-    Boolean  accept;
+    Boolean  accept, flip;
 
     G = EnergyModel_CalculateMicrostateEnergy (self->energyModel, self->vector, pH);
     selection = self->vector->nsites + self->vector->npairs;
 
     for (; nmoves > 0; nmoves--) {
         select = RandomNumberGenerator_NextCardinal (self->generator) % selection;
-        if (select < self->vector->nsites)
-            accept = MCModelDefault_Move (self, pH, G, &Gnew);
-        else
-            accept = MCModelDefault_DoubleMove (self, pH, G, &Gnew);
+        flip   = select >= self->vector->nsites;
+        if   (flip) accept = MCModelDefault_DoubleMove (self, pH, G, &Gnew);
+        else        accept = MCModelDefault_Move       (self, pH, G, &Gnew);
 
-        if (accept)
-            G = Gnew;
+        if (accept) G = Gnew;
+        MCModelDefault_StatisticsUpdate (stats, flip, accept);
     }
-    return G;
 }
 
 /*
@@ -274,25 +272,52 @@ Integer MCModelDefault_FindPairs (const MCModelDefault *self, const Integer npai
  * The number of moves during each scan is proportional to the number of sites and pairs.
  */
 void MCModelDefault_CalculateProbabilities (const MCModelDefault *self, const Real pH, const Boolean equil) {
-    Integer nmoves, nscans;
-    Real    scale;
+    Integer          nmoves, nscans;
+    Real             scale;
+    MCScanStatistics scanStats;
 
     nmoves = self->vector->nsites + self->vector->npairs;
     if (equil) {
         StateVector_Randomize (self->vector, self->generator);
         nscans = self->nequil;
         for (; nscans > 0; nscans--)
-            MCModelDefault_MCScan (self, pH, nmoves);
+            MCModelDefault_MCScan (self, pH, nmoves, &scanStats);
     }
     else {
         Real1DArray_Set (self->energyModel->probabilities, 0.);
         nscans = self->nprod;
 
         for (; nscans > 0; nscans--) {
-            MCModelDefault_MCScan (self, pH, nmoves);
+            MCModelDefault_MCScan (self, pH, nmoves, &scanStats);
             MCModelDefault_UpdateProbabilities (self);
         }
         scale = 1. / self->nprod;
         Real1DArray_Scale (self->energyModel->probabilities, scale);
+    }
+}
+
+/*
+ * Reset statistics.
+ */
+void MCModelDefault_StatisticsReset (MCScanStatistics *stats) {
+    stats->nsingle     =  0 ;
+    stats->nsingleacc  =  0 ;
+    stats->ndouble     =  0 ;
+    stats->ndoubleacc  =  0 ;
+}
+
+/*
+ * Update statistics of a MC scan.
+ */
+void MCModelDefault_StatisticsUpdate (MCScanStatistics *stats, const Boolean isFlip, const Boolean isAccepted) {
+    if (isFlip) {
+        stats->ndouble++;
+        if (isAccepted)
+            stats->ndoubleacc++;
+    }
+    else {
+        stats->nsingle++;
+        if (isAccepted)
+            stats->nsingleacc++;
     }
 }

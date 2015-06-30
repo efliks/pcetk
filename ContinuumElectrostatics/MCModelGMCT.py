@@ -78,7 +78,7 @@ class MCModelGMCT (object):
         self.owner   = meadModel
 
 
-    def CalculateOwnerProbabilities (self, pH=7.0, dryRun=False, log=logFile):
+    def CalculateOwnerProbabilities (self, pH=7.0, dryRun=False, logFrequency=None, log=logFile):
         """Calculate probabilities of the owner."""
         owner       = self.owner
         if not owner.isCalculated:

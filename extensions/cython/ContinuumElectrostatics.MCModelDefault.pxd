@@ -7,7 +7,9 @@
 #-------------------------------------------------------------------------------
 from pCore.cDefinitions                  cimport Boolean, CFalse, CTrue, Integer, Real
 from pCore.Status                        cimport Status, Status_Continue, Status_IndexOutOfRange, Status_ValueError
-from ContinuumElectrostatics.StateVector cimport CStateVector, StateVector, StateVector_GetPair
+from pCore.Real1DArray                   cimport Real1DArray_Set, Real1DArray_Scale
+from pCore.RandomNumberGenerator         cimport CRandomNumberGenerator as CGenerator
+from ContinuumElectrostatics.StateVector cimport CStateVector, StateVector, StateVector_GetPair, StateVector_Randomize
 from ContinuumElectrostatics.EnergyModel cimport CEnergyModel, EnergyModel
 
 __lastchanged__ = "$Id: $"
@@ -20,13 +22,23 @@ cdef extern from "MCModelDefault.h":
         Integer        nequil
         CEnergyModel  *energyModel
         CStateVector  *vector
+        CGenerator    *generator
+
+    ctypedef struct CMCScanStatistics "MCScanStatistics":
+        Integer  nsingleacc
+        Integer  ndoubleacc
+        Integer  nsingle
+        Integer  ndouble
 
     cdef CMCModelDefault *MCModelDefault_Allocate               (Real limit, Integer nequil, Integer nprod, Integer randomSeed, Status *status)
     cdef void             MCModelDefault_Deallocate             (CMCModelDefault *self)
     cdef void             MCModelDefault_LinkToEnergyModel      (CMCModelDefault *self, CEnergyModel *energyModel, Status *status)
-    cdef Real             MCModelDefault_MCScan                 (CMCModelDefault *self, Real pH, Integer nmoves)
+    cdef void             MCModelDefault_MCScan                 (CMCModelDefault *self, Real pH, Integer nmoves, CMCScanStatistics *stats)
     cdef Integer          MCModelDefault_FindPairs              (CMCModelDefault *self, Integer npairs, Status *status)
+    cdef void             MCModelDefault_UpdateProbabilities    (CMCModelDefault *self)
     cdef void             MCModelDefault_CalculateProbabilities (CMCModelDefault *self, Real pH, Boolean equil)
+    cdef void             MCModelDefault_StatisticsReset        (CMCScanStatistics *stats)
+    cdef void             MCModelDefault_StatisticsUpdate       (CMCScanStatistics *stats, Boolean isFlip, Boolean isAccepted)
 
 #-------------------------------------------------------------------------------
 cdef class MCModelDefault:
