@@ -24,21 +24,14 @@ cdef extern from "MCModelDefault.h":
         CStateVector  *vector
         CGenerator    *generator
 
-    ctypedef struct CMCScanStatistics "MCScanStatistics":
-        Integer  nsingleacc
-        Integer  ndoubleacc
-        Integer  nsingle
-        Integer  ndouble
 
     cdef CMCModelDefault *MCModelDefault_Allocate               (Real limit, Integer nequil, Integer nprod, Integer randomSeed, Status *status)
     cdef void             MCModelDefault_Deallocate             (CMCModelDefault *self)
     cdef void             MCModelDefault_LinkToEnergyModel      (CMCModelDefault *self, CEnergyModel *energyModel, Status *status)
-    cdef void             MCModelDefault_MCScan                 (CMCModelDefault *self, Real pH, Integer nmoves, CMCScanStatistics *stats)
+    cdef Real             MCModelDefault_MCScan                 (CMCModelDefault *self, Real pH, Integer nmoves, Integer *movesDone, Integer *movesAccepted, Integer *flipsDone, Integer *flipsAccepted)
     cdef Integer          MCModelDefault_FindPairs              (CMCModelDefault *self, Integer npairs, Status *status)
     cdef void             MCModelDefault_UpdateProbabilities    (CMCModelDefault *self)
     cdef void             MCModelDefault_CalculateProbabilities (CMCModelDefault *self, Real pH, Boolean equil)
-    cdef void             MCModelDefault_StatisticsReset        (CMCScanStatistics *stats)
-    cdef void             MCModelDefault_StatisticsUpdate       (CMCScanStatistics *stats, Boolean isFlip, Boolean isAccepted)
 
 #-------------------------------------------------------------------------------
 cdef class MCModelDefault:

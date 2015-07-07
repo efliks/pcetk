@@ -56,7 +56,7 @@ cdef class MCModelDefault:
     def CalculateOwnerProbabilities (self, Real pH=7.0, Integer logFrequency=500, log=logFile):
         """Calculate probabilities of the owner."""
         cdef CMCModelDefault   *mcModel
-        cdef CMCScanStatistics  stats
+        cdef Integer  moves, movesAcc, flips, flipsAcc
         cdef Integer  nmoves, i, j
         cdef Real     scale, Ginit
         cdef Boolean  active
@@ -79,9 +79,12 @@ cdef class MCModelDefault:
         StateVector_Randomize (mcModel.vector, mcModel.generator)
 
         if LogFileActive (log):
-            j      = 0
-            active = CTrue
-            MCModelDefault_StatisticsReset (&stats)
+            active    =  CTrue
+            j         =  0
+            moves     =  0
+            flips     =  0
+            movesAcc  =  0
+            flipsAcc  =  0
             table  = log.GetTable (columns=[8, 10, 10, 10, 10])
             table.Start ()
             table.Heading ("%8s"   % "Scan"  )
@@ -91,36 +94,45 @@ cdef class MCModelDefault:
             table.Heading ("%10s"  % "F-Acc" )
 
         for i from 0 <= i < mcModel.nequil:
-            MCModelDefault_MCScan (mcModel, pH, nmoves, &stats)
+            MCModelDefault_MCScan (mcModel, pH, nmoves, &moves, &movesAcc, &flips, &flipsAcc)
             if active:
                 j += 1
                 if j >= logFrequency:
-                    j = 0
-                    table.Entry ("%8d"    % (i + 1)          )
-                    table.Entry ("%10d"   % stats.nsingle    )
-                    table.Entry ("%10d"   % stats.nsingleacc )
-                    table.Entry ("%10d"   % stats.ndouble    )
-                    table.Entry ("%10d"   % stats.ndoubleacc )
-                    MCModelDefault_StatisticsReset (&stats)
+                    table.Entry ("%8d"    % (i + 1)   )
+                    table.Entry ("%10d"   % moves     )
+                    table.Entry ("%10d"   % movesAcc  )
+                    table.Entry ("%10d"   % flips     )
+                    table.Entry ("%10d"   % flipsAcc  )
+                    j         =  0
+                    moves     =  0
+                    flips     =  0
+                    movesAcc  =  0
+                    flipsAcc  =  0
         if active:
-            j = 0
-            MCModelDefault_StatisticsReset (&stats)
+            j        =  0
+            moves    =  0
+            flips    =  0
+            movesAcc =  0
+            flipsAcc =  0
             table.Entry ("** Equilibration phase done **".center (8 + 10 * 4), columnSpan=5)
 
         Real1DArray_Set (mcModel.energyModel.probabilities, 0.)
         for i from 0 <= i < mcModel.nprod:
-            MCModelDefault_MCScan (mcModel, pH, nmoves, &stats)
+            MCModelDefault_MCScan (mcModel, pH, nmoves, &moves, &movesAcc, &flips, &flipsAcc)
             MCModelDefault_UpdateProbabilities (mcModel)
             if active:
                 j += 1
                 if j >= logFrequency:
-                    j = 0
-                    table.Entry ("%8d"    % (i + 1)          )
-                    table.Entry ("%10d"   % stats.nsingle    )
-                    table.Entry ("%10d"   % stats.nsingleacc )
-                    table.Entry ("%10d"   % stats.ndouble    )
-                    table.Entry ("%10d"   % stats.ndoubleacc )
-                    MCModelDefault_StatisticsReset (&stats)
+                    table.Entry ("%8d"    % (i + 1)   )
+                    table.Entry ("%10d"   % moves     )
+                    table.Entry ("%10d"   % movesAcc  )
+                    table.Entry ("%10d"   % flips     )
+                    table.Entry ("%10d"   % flipsAcc  )
+                    j         =  0
+                    moves     =  0
+                    flips     =  0
+                    movesAcc  =  0
+                    flipsAcc  =  0
         if active:
             table.Entry ("** Production phase done **".center (8 + 10 * 4), columnSpan=5)
             table.Stop ()
