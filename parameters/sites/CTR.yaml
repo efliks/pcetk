@@ -1,6 +1,12 @@
-# Standard C-terminus
+
+# C-terminus (from CHARMM force field)
+#    OXT(-)
+#   /
+#  -C
+#   \\
+#    O
 ---
-site      : CTER
+site      : CTR
 atoms     : [C, O, OXT]
 instances :
   - label   : p

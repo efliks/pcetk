@@ -474,285 +474,225 @@ class MEADModel (object):
     #===============================================================================
     def Initialize (self, excludeSegments=None, excludeResidues=None, includeTermini=False, log=logFile):
         """Decompose the system into model compounds, sites and a background charge set.
+
         |excludeSegments| is a sequence of segment names to exclude from the model, usually segments of water molecules.
         |excludeResidues| is a sequence of three-element sequences (segmentName, residueName, residueSerial).
+
         It is possible to leave some of the elements blank, for example ("PRTA", "CYS", "") means exclude all cysteines in segment PRTA.
-        Only C-terminus is supported and the support is experimental."""
-
-        # Check for the CHARMM energy model
-        system = self.owner
-
-        if system.energyModel.mmModel.label is not "CHARMM":
-            raise ContinuumElectrostaticsError ("The energy model of the system is different from CHARMM.")
-
+        """
         if not self.isInitialized:
-            ParseLabel = system.sequence.ParseLabel
-            segments   = system.sequence.children
+            system = self.owner
 
-            if excludeSegments is None:
-                excludeSegments = ["WATA", "WATB", "WATC", "WATD", ]
+            # Check for the CHARMM energy model
+            if system.energyModel.mmModel.label is not "CHARMM":
+                raise ContinuumElectrostaticsError ("The energy model of the system is different from CHARMM.")
 
-
-            # Initial run to calculate the total numbers of sites and instances
-            totalSites     = 0
-            totalInstances = 0
-            for segment in segments:
-                segmentName = segment.label
-
-                if segmentName not in excludeSegments:
-                    residues  = segment.children
-
-                    for residue in residues:
-                        residueName, residueSerial = ParseLabel (residue.label, fields=2)
-                        residueSerial  = int (residueSerial)
-                        titratableSite = residueName in self.librarySites
-
-                        if titratableSite:
-                            includeResidue = self._CheckResidue (excludeResidues, segmentName, residueName, residueSerial, log=None)
-                            if includeResidue:
-                                libSite        = self.librarySites[residueName]
-                                totalSites     = totalSites     + 1
-                                totalInstances = totalInstances + len (libSite["instances"])
-
+            # Perform a dry run to calculate the numbers of sites and instances
+            totalSites, totalInstances = self._SplitModel (excludeSegments=excludeSegments, excludeResidues=excludeResidues, includeTermini=includeTermini, dryRun=True, log=log)
+    
             # Allocate arrays of Gmodels, protons, intrinsic energies, interaction energies and probabilities
             self.energyModel = EnergyModel (self, totalSites, totalInstances)
-
-
-            instIndexGlobal = 0
-            siteIndex       = 0
-            self.meadSites  = []
-
-            #============ Go over segments ============
-            for segment in segments:
-                segmentName = segment.label
-
-                # Include segment?
-                if segmentName not in excludeSegments:
-                    residues  = segment.children
-                    nresidues = len (residues)
-
-
-                    #============ Go over residues ============
-                    for residueIndex, residue in enumerate (residues):
-                        residueName, residueSerial = ParseLabel (residue.label, fields=2)
-                        residueSerial = int (residueSerial)
-
-                        # Include residue?
-                        includeResidue = self._CheckResidue (excludeResidues, segmentName, residueName, residueSerial, log=log)
-                        if includeResidue:
-
-                            #============= Start experimental code =============
-                            terminus = None
-                            excludeTerminusNames = []
-
-                            if includeTermini:
-                                if residueName in PROTEIN_RESIDUES:
-
-                                    # Check for C-terminus
-                                    if residueIndex > (nresidues - 2):
-                                        terminus       = "CTER"
-                                        libTerminus    = self.librarySites[terminus]
-                                        terminusSerial = residueSerial + 1
-
-                                    # Check for N-terminus
-                                    #elif residueIndex < 1:
-                                    #  if   residueName == "GLY":
-                                    #    terminus = "GLYP"
-                                    #  elif residueName == "PRO":
-                                    #    terminus = "PROP"
-                                    #  else:
-                                    #    terminus = "NTER"
-                                    #  libTerminus    = self.librarySites[terminus]
-                                    #  terminusSerial = residueSerial - 1
-
-                                    if terminus:
-                                        excludeTerminusNames = libTerminus["atoms"]
-                            #============== End experimental code ==============
-
-
-                            # Titratable residue?
-                            if residueName in self.librarySites:
-                                prevIndices = []
-                                nextIndices = []
-
-                                # Include atoms from the previous residue to the model compound?
-                                if residueIndex > 1:
-                                    prevResidue = residues[residueIndex - 1]
-                                    prevResidueName, prevResidueSerial = ParseLabel (prevResidue.label, fields=2)
-                                    prevResidueSerial = int (prevResidueSerial)
-
-                                    if prevResidueName in PROTEIN_RESIDUES:
-                                        prevNames = PREV_RESIDUE
-
-                                        for atom in prevResidue.children:
-                                            if atom.label in prevNames:
-                                                prevIndices.append (atom.index)
-
-                                # Include atoms from the next residue to the model compound?
-                                if residueIndex < (nresidues - 1):
-                                    nextResidue = residues[residueIndex + 1]
-                                    nextResidueName, nextResidueSerial = ParseLabel (nextResidue.label, fields=2)
-                                    nextResidueSerial = int (nextResidueSerial)
-
-                                    if nextResidueName in PROTEIN_RESIDUES:
-                                        if   nextResidueName == "PRO":
-                                            nextNames = NEXT_RESIDUE_PRO
-                                        elif nextResidueName == "GLY":
-                                            nextNames = NEXT_RESIDUE_GLY
-                                        else:
-                                            nextNames = NEXT_RESIDUE
-
-                                        for atom in nextResidue.children:
-                                            if atom.label in nextNames:
-                                                nextIndices.append (atom.index)
-
-
-                                # Collect atom indices
-                                libSite          = self.librarySites[residueName]
-                                libSiteAtoms     = libSite["atoms"]
-                                atoms            = residue.children
-                                modelAtomIndices = prevIndices
-                                siteAtomIndices  = []
-                                missingNames     = []
-
-                                for libAtomName in libSiteAtoms:
-                                    index = -1
-                                    for atom in atoms:
-                                        if libAtomName == atom.label:
-                                            index = atom.index
-                                            break
-                                    if index >= 0:
-                                        siteAtomIndices.append (index)
-                                    else:
-                                        missingNames.append (libAtomName)
-                                if missingNames:
-                                    raise ContinuumElectrostaticsError ("Cannot include site %s %s %d because of missing atoms: %s" % (segmentName, residueName, residueSerial, " ".join (missingNames)))
-
-                                for atom in atoms:
-                                    if atom.label not in excludeTerminusNames:
-                                        modelAtomIndices.append (atom.index)
-                                modelAtomIndices.extend (nextIndices)
-
-
-                                # Create a site (add instances later)
-                                newSite = MEADSite (
-                                    parent           = self              ,
-                                    siteIndex        = siteIndex         ,
-                                    segName          = segmentName       ,
-                                    resName          = residueName       ,
-                                    resSerial        = residueSerial     ,
-                                    siteAtomIndices  = siteAtomIndices   ,
-                                    modelAtomIndices = modelAtomIndices  ,
-                                                   )
-                                # Calculate center of geometry
-                                newSite.CalculateCenterOfGeometry (system, libSite["center"])
-
-                                # Add instances to the newly created site
-                                instIndexGlobal = newSite._CreateInstances (libSite["instances"], instIndexGlobal)
-
-                                # Add the newly created site to the list of sites
-                                self.meadSites.append (newSite)
-                                siteIndex = siteIndex + 1
-
-
-                            #============= Start experimental code =============
-                            if terminus:
-                                libSiteAtoms     = libTerminus["atoms"]
-                                atoms            = residue.children
-                                siteAtomIndices  = []
-                                modelAtomIndices = []
-                                missingNames     = []
-
-                                for libAtomName in libSiteAtoms:
-                                    index = -1
-                                    for atom in atoms:
-                                        if libAtomName == atom.label:
-                                            index = atom.index
-                                            break
-                                    if index >= 0:
-                                        siteAtomIndices.append (index)
-                                    else:
-                                        missingNames.append (libAtomName)
-                                if missingNames:
-                                    raise ContinuumElectrostaticsError ("Cannot include terminus %s %s %d because of missing atoms: %s" % (segmentName, residueName, residueSerial, " ".join (missingNames)))
-
-                                # Construct a model compound
-                                if residueIndex > 1:
-                                    prevResidue = residues[residueIndex - 1]
-                                    prevNames = PREV_RESIDUE
-                                    for atom in prevResidue.children:
-                                        if atom.label in prevNames:
-                                            modelAtomIndices.append (atom.index)
-
-                                # Do not include atoms in the model compound which are already part of another site
-                                if self.librarySites.has_key (residueName):
-                                    excludeSiteNames = self.librarySites[residueName]["atoms"]
-                                else:
-                                    excludeSiteNames = []
-
-                                for atom in atoms:
-                                    if atom.label not in excludeSiteNames:
-                                        modelAtomIndices.append (atom.index)
-
-                                newSite = MEADSite (
-                                    parent           = self              ,
-                                    siteIndex        = siteIndex         ,
-                                    segName          = segmentName       ,
-                                    resName          = terminus          ,
-                                    resSerial        = terminusSerial    ,
-                                    siteAtomIndices  = siteAtomIndices   ,
-                                    modelAtomIndices = modelAtomIndices  ,
-                                                   )
-                                newSite.CalculateCenterOfGeometry (system, libSite["center"])
-                                instIndexGlobal = newSite._CreateInstances (libSite["instances"], instIndexGlobal)
-
-                                self.meadSites.append (newSite)
-                                siteIndex = siteIndex + 1
-                            #============== End experimental code ==============
-
-
-
+    
+            # Perform the actual initialization
+            self._SplitModel (excludeSegments=excludeSegments, excludeResidues=excludeResidues, includeTermini=includeTermini, dryRun=False, log=None)
+    
+            # Complete the initialization of the energy model
+            self.energyModel.Initialize ()
+   
             # Construct the background set of charges and the protein (to be used as eps2set_region)
-            allSiteAtomIndices  = []
-            for site in self.meadSites:
-                allSiteAtomIndices.extend (site.siteAtomIndices)
-
-            backAtomIndices     = []
-            proteinAtomIndices  = []
-
-            #============ Go over segments ============
-            for segment in segments:
-                residues = segment.children
-
-                #============ Go over residues ============
-                for residue in residues:
-                    residueName, residueSerial = ParseLabel (residue.label, fields=2)
-                    residueSerial = int (residueSerial)
-
-                    # Remove residues not defined in PROTEIN_RESIDUES, usually waters and ions
-                    if residueName not in REMOVE_RESIDUES:
-                        atoms = residue.children
-
-                        #============ Go over atoms ============
-                        for atom in atoms:
-                            proteinAtomIndices.append (atom.index)
-
-                            if atom.index not in allSiteAtomIndices:
-                                backAtomIndices.append (atom.index)
-
-
-            self.proteinAtomIndices = proteinAtomIndices
-            self.backAtomIndices    = backAtomIndices
-
+            self._SetupBackground ()
+ 
+            # Prepare the filenames (does not write the actual files)
             self.pathPqrProtein     = os.path.join (self.pathScratch, "protein.pqr")
             self.pathPqrBack        = os.path.join (self.pathScratch, "back.pqr")
             self.pathFptSites       = os.path.join (self.pathScratch, "site.fpt")
-
-            # Complete the initialization of the energy model
-            self.energyModel.Initialize ()
-
+    
             # Finish up
             self.isInitialized = True
+
+
+    #===============================================================================
+    def _GetResidueInfo (self, residue):
+        system        = self.owner
+        ParseLabel    = system.sequence.ParseLabel
+        residueName, residueSerial = ParseLabel (residue.label, fields=2)
+        residueSerial = int (residueSerial)
+
+        segment       = residue.parent
+        segmentName   = segment.label
+        return (segmentName, residueName, residueSerial)
+
+
+    #===============================================================================
+    def _GetIndices (self, residue, atomLabels, check=True):
+        missingLabels = []
+        atomIndices   = []
+        atoms         = residue.children
+        for label in atomLabels:
+            index = -1
+            for atom in atoms:
+                if label == atom.label:
+                    index = atom.index
+                    break
+            if index >= 0:
+                atomIndices.append (index)
+            else:
+                missingLabels.append (label)
+
+            if check and missingLabels:
+                segmentName, residueName, residueSerial = self._GetResidueInfo (residue)
+                raise ContinuumElectrostaticsError ("Cannot include residue %s %s %d because of missing atoms: %s" % (segmentName, residueName, residueSerial, " ".join (missingLabels)))
+        return atomIndices
+
+
+    #===============================================================================
+    def _SetupBackground (self):
+        allSiteAtomIndices  = []
+        for site in self.meadSites:
+            allSiteAtomIndices.extend (site.siteAtomIndices)
+        system              = self.owner
+        segments            = system.sequence.children
+        backAtomIndices     = []
+        proteinAtomIndices  = []
+
+        #============ Iterate segments ============
+        for segment in segments:
+            residues = segment.children
+        
+            #============ Iterate residues ============
+            for residue in residues:
+                foo, residueName, residueSerial = self._GetResidueInfo (residue)
+        
+                # Remove residues not defined in PROTEIN_RESIDUES, usually waters and ions
+                if residueName not in REMOVE_RESIDUES:
+                    atoms = residue.children
+        
+                    #============ Iterate atoms ============
+                    for atom in atoms:
+                        proteinAtomIndices.append (atom.index)
+                        if atom.index not in allSiteAtomIndices:
+                            backAtomIndices.append (atom.index)
+        self.proteinAtomIndices = proteinAtomIndices
+        self.backAtomIndices    = backAtomIndices
+
+
+    #===============================================================================
+    def _SetupSites (self, residue, prevResidue=None, nextResidue=None, terminal=None, log=logFile):
+        segmentName, residueName, residueSerial = self._GetResidueInfo (residue)
+        setupSites    = []
+
+        if residueName in PROTEIN_RESIDUES:
+            if terminal:
+                if   terminal == "N":
+                    if   residueName == "GLY":
+                        libTerm = self.librarySites["NGL"]
+                    elif residueName == "PRO":
+                        libTerm = self.librarySites["NPR"]
+                    else:
+                        libTerm = self.librarySites["NTR"]
+                elif terminal == "C":
+                    libTerm = self.librarySites["CTR"]
+                termAtomIndices = self._GetIndices (residue, libTerm["atoms"])
+
+        # Check if titratable residue
+        if residueName in self.librarySites:
+            libSite      = self.librarySites[residueName]
+            siteIndices  = self._GetIndices (residue, libSite["atoms"])
+            modelIndices = []
+            for atom in residue.children:
+                modelIndices.append (atom.index)
+
+            prevIndices  = []
+            if prevResidue:
+                foo, prevResidueName, prevResidueSerial = self._GetResidueInfo (prevResidue)
+                if prevResidueName in PROTEIN_RESIDUES:
+                    prevIndices = self._GetIndices (prevResidue, PREV_RESIDUE, check=False) 
+
+            nextIndices  = []
+            if nextResidue:
+                foo, nextResidueName, nextResidueSerial = self._GetResidueInfo (nextResidue)
+                if nextResidueName in PROTEIN_RESIDUES:
+                    if   nextResidueName == "GLY":
+                        nextLabels = NEXT_RESIDUE_GLY
+                    elif nextResidueName == "PRO":
+                        nextLabels = NEXT_RESIDUE_PRO
+                    else:
+                        nextLabels = NEXT_RESIDUE
+                    nextIndices = self._GetIndices (nextResidue, nextLabels, check=False)
+
+            setupSites.append ([libSite, siteIndices, prevIndices + modelIndices + nextIndices])
+        return setupSites
+
+
+    #===============================================================================
+    def _SplitModel (self, excludeSegments=None, excludeResidues=None, includeTermini=False, dryRun=True, log=logFile):
+        totalSites       =  0
+        totalInstances   =  0
+        siteIndex        =  0
+        instIndexGlobal  =  0
+        if not dryRun:
+            self.meadSites = []
+
+        if excludeSegments is None:
+            excludeSegments = ["WATA", "WATB", "WATC", "WATD", ]
+        system     = self.owner
+        segments   = system.sequence.children
+
+
+        #============ Iterate segments ============
+        for segment in segments:
+            segmentName = segment.label
+
+            # Include segment?
+            if segmentName not in excludeSegments:
+                residues  = segment.children
+                nresidues = len (residues)
+
+                #============ Iterate residues ============
+                for residueIndex, residue in enumerate (residues):
+                    foo, residueName, residueSerial = self._GetResidueInfo (residue)
+                    includeResidue = self._CheckResidue (excludeResidues, segmentName, residueName, residueSerial, log=log)
+                    if not includeResidue:
+                        continue
+                    if residueIndex < 1:
+                        prevResidue = None
+                        terminal    = "N"
+                    else:
+                        prevResidue = residues[residueIndex - 1]
+                        terminal    = None
+                    if residueIndex > (nresidues - 2):
+                        nextResidue = None
+                        terminal    = "C"
+                    else:
+                        nextResidue = residues[residueIndex + 1]
+                        terminal    = None
+
+                    setupSites = self._SetupSites (residue, prevResidue, nextResidue, terminal=(terminal if includeTermini else None), log=log)
+                    for libSite, siteAtomIndices, modelAtomIndices in setupSites:
+                        if not dryRun:
+                            newSite = MEADSite (
+                                parent           = self              ,
+                                siteIndex        = siteIndex         ,
+                                segName          = segmentName       ,
+                                resName          = residueName       ,
+                                resSerial        = residueSerial     ,
+                                siteAtomIndices  = siteAtomIndices   ,
+                                modelAtomIndices = modelAtomIndices  ,
+                                               )
+                            # Calculate center of geometry
+                            newSite.CalculateCenterOfGeometry (system, libSite["center"])
+
+                            # Add instances to the newly created site
+                            instIndexGlobal = newSite._CreateInstances (libSite["instances"], instIndexGlobal)
+
+                            # Add the newly created site to the list of sites
+                            self.meadSites.append (newSite)
+                        siteIndex      = siteIndex      + 1
+                        totalSites     = totalSites     + 1
+                        totalInstances = totalInstances + len (libSite["instances"])
+
+        # Return the calculated numbers of sites and instances (useful for dryRun)
+        return (totalSites, totalInstances)
 
 
     #===============================================================================
