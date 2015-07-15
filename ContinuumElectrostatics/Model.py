@@ -130,7 +130,7 @@ class MEADModel (object):
             name      = site [ "site"      ]
             atoms     = site [ "atoms"     ]
             instances = site [ "instances" ]
-            self.librarySites[name] = {"atoms" : atoms, "instances" : instances, "center" : None}
+            self.librarySites[name] = {"atoms" : atoms, "instances" : instances, "center" : None, "site" : name}
 
         for fileSite in filesEST:
             reader    = ESTFileReader (fileSite)
@@ -139,7 +139,7 @@ class MEADModel (object):
             atoms     = reader.siteAtoms
             instances = reader.siteInstances
             center    = reader.siteCenter
-            self.librarySites[name] = {"atoms" : atoms, "instances" : instances, "center" : center}
+            self.librarySites[name] = {"atoms" : atoms, "instances" : instances, "center" : center, "site" : name}
 
 
     #===============================================================================
@@ -592,7 +592,8 @@ class MEADModel (object):
                         libTerm = self.librarySites["NTR"]
                 elif terminal == "C":
                     libTerm = self.librarySites["CTR"]
-                termAtomIndices = self._GetIndices (residue, libTerm["atoms"])
+                termIndices = self._GetIndices (residue, libTerm["atoms"])
+                setupSites.append ([terminal, libTerm, termIndices, termIndices])
 
         # Check if titratable residue
         if residueName in self.librarySites:
@@ -620,7 +621,25 @@ class MEADModel (object):
                         nextLabels = NEXT_RESIDUE
                     nextIndices = self._GetIndices (nextResidue, nextLabels, check=False)
 
-            setupSites.append ([libSite, siteIndices, prevIndices + modelIndices + nextIndices])
+            finalModelIndices = []
+            collectIndices    = prevIndices + modelIndices + nextIndices
+            if terminal:
+                for index in collectIndices:
+                    if index not in termIndices:
+                        finalModelIndices.append (index)
+            else:
+                finalModelIndices = collectIndices
+            setupSites.append (["SITE", libSite, siteIndices, finalModelIndices])
+            #if terminal:
+            #    finalModelIndices = []
+            #    for index in modelIndices:
+            #        if index not in termIndices:
+            #            finalModelIndices.append (index)
+            #else:
+            #    finalModelIndices = prevIndices + modelIndices + nextIndices
+
+            if terminal == "C":
+                setupSites.reverse ()
         return setupSites
 
 
@@ -654,28 +673,40 @@ class MEADModel (object):
                     includeResidue = self._CheckResidue (excludeResidues, segmentName, residueName, residueSerial, log=log)
                     if not includeResidue:
                         continue
-                    if residueIndex < 1:
-                        prevResidue = None
-                        terminal    = "N"
-                    else:
+                    if residueIndex > 0:
                         prevResidue = residues[residueIndex - 1]
-                        terminal    = None
-                    if residueIndex > (nresidues - 2):
-                        nextResidue = None
-                        terminal    = "C"
                     else:
+                        prevResidue = None
+                    if residueIndex < (nresidues - 1):
                         nextResidue = residues[residueIndex + 1]
-                        terminal    = None
+                    else:
+                        nextResidue = None
+                    if   residueIndex < 1:
+                        terminal = "N"
+                    elif residueIndex > (nresidues - 2):
+                        terminal = "C"
+                    else:
+                        terminal = None
 
                     setupSites = self._SetupSites (residue, prevResidue, nextResidue, terminal=(terminal if includeTermini else None), log=log)
-                    for libSite, siteAtomIndices, modelAtomIndices in setupSites:
+                    for siteType, libSite, siteAtomIndices, modelAtomIndices in setupSites:
                         if not dryRun:
+                            if   siteType == "N":
+                                updatedSerial = 998
+                                updatedName   = libSite["site"]
+                            elif siteType == "C":
+                                updatedSerial = 999
+                                updatedName   = libSite["site"]
+                            else:
+                                updatedSerial = residueSerial
+                                updatedName   = residueName
+
                             newSite = MEADSite (
                                 parent           = self              ,
                                 siteIndex        = siteIndex         ,
                                 segName          = segmentName       ,
-                                resName          = residueName       ,
-                                resSerial        = residueSerial     ,
+                                resName          = updatedName       ,
+                                resSerial        = updatedSerial     ,
                                 siteAtomIndices  = siteAtomIndices   ,
                                 modelAtomIndices = modelAtomIndices  ,
                                                )

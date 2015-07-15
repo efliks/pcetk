@@ -1,6 +1,6 @@
 PDYNAMO_VERSION=1.8.0
 
-export PDYNAMO_ROOT=/home/mikolaj/local/opt/pDynamo-$PDYNAMO_VERSION-vanilla
+export PDYNAMO_ROOT=/home/mikolaj/local/opt/pDynamo-$PDYNAMO_VERSION
 
 export PDYNAMO_PBABEL=$PDYNAMO_ROOT/pBabel-$PDYNAMO_VERSION
 export PDYNAMO_PCORE=$PDYNAMO_ROOT/pCore-$PDYNAMO_VERSION
@@ -12,6 +12,6 @@ export PDYNAMO_SCRATCH=/tmp
 export PDYNAMO_STYLE=$PDYNAMO_PARAMETERS/ccsStyleSheets/defaultStyle.css
 
 
-export PDYNAMO_PCETK=/home/mikolaj/devel/pcetk
+export PDYNAMO_PCETK=/home/mikolaj/devel/Pcetk
 
 export PYTHONPATH=$PDYNAMO_ROOT/pBabel-$PDYNAMO_VERSION:$PDYNAMO_ROOT/pCore-$PDYNAMO_VERSION:$PDYNAMO_ROOT/pMolecule-$PDYNAMO_VERSION:$PDYNAMO_ROOT/pMoleculeScripts-$PDYNAMO_VERSION:$PDYNAMO_PCETK
