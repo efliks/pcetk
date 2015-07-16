@@ -4,7 +4,7 @@
        Copyright(c) 1984,1992  President and Fellows of Harvard College
                               All Rights Reserved
       Current operating system: Linux-3.2.0-4-amd64(x86_64)@vic.local
-                 Created on  5/20/15 at 23:42: 8 by user: mikolaj     
+                 Created on  7/15/15 at 20:41:28 by user: mikolaj     
 
             Maximum number of ATOMS:    240480, and RESidues:       72000
             Current HEAP size:        10240000, and STACK size:   2000000
@@ -14,8 +14,8 @@
   
  CHARMM>     
   
- CHARMM>    set mol lysozyme1990
- Parameter: MOL <- "LYSOZYME1990"
+ CHARMM>    set mol lysozyme1977
+ Parameter: MOL <- "LYSOZYME1977"
   
  CHARMM>     
   
@@ -332,7 +332,7 @@
  ** WARNING ** After reading, there are no coordinates for selected atom:    14     1 LYS  HD1 
  ** WARNING ** After reading, there are no coordinates for selected atom:    15     1 LYS  HD2 
 
- ** A total of   968 selected atoms have no coordinates
+ ** A total of   969 selected atoms have no coordinates
  *** LEVEL  2 WARNING *** BOMLEV IS    0
   
  CHARMM>    close           unit 1
@@ -340,65 +340,12 @@
   
  CHARMM>     
   
- CHARMM>    open   read     unit 1 card name "waters.pdb"
- VOPEN> Attempting to open::waters.pdb::
- OPNLGU> Unit  1 opened for READONLY access to waters.pdb
-  
- CHARMM>    read   sequ pdb unit 1
- MAINIO> Sequence information being read from unit   1.
- TITLE>  *
-
-          RESIDUE SEQUENCE --   249 RESIDUES
-          HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH 
-          HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH 
-          HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH 
-          HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH 
-          HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH 
-          HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH 
-          HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH 
-          HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH 
-          HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH 
-          HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH 
-          HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH 
-          HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH HOH 
-          HOH HOH HOH HOH HOH HOH HOH HOH HOH 
-  
- CHARMM>    gene   WATA setup noan nodi
- NO PATCHING WILL BE DONE ON THE FIRST RESIDUE
- NO PATCHING WILL BE DONE ON THE LAST  RESIDUE
- GENPSF> Segment   2 has been generated. Its identifier is WATA.
- PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
- PSFSUM> Summary of the structure file counters :
-         Number of segments      =        2   Number of residues   =      378
-         Number of atoms         =     2716   Number of groups     =      835
-         Number of bonds         =     2736   Number of angles     =     3799
-         Number of dihedrals     =     5187   Number of impropers  =      350
-         Number of HB acceptors  =      435   Number of HB donors  =      272
-         Number of NB exclusions =        0   Total charge =    9.00000
-  
- CHARMM>    rewind          unit 1
-                    REWINDING UNIT     1
-  
- CHARMM>    read   coor pdb unit 1
-          SPATIAL COORDINATES BEING READ FROM UNIT  1
- TITLE>  *
- ** WARNING ** After reading, there are no coordinates for selected atom:     2     1 LYS  H1  
- ** WARNING ** After reading, there are no coordinates for selected atom:     3     1 LYS  H2  
- ** WARNING ** After reading, there are no coordinates for selected atom:     4     1 LYS  H3  
- ** WARNING ** After reading, there are no coordinates for selected atom:     6     1 LYS  HA  
- ** WARNING ** After reading, there are no coordinates for selected atom:     8     1 LYS  HB1 
- ** WARNING ** After reading, there are no coordinates for selected atom:     9     1 LYS  HB2 
- ** WARNING ** After reading, there are no coordinates for selected atom:    11     1 LYS  HG1 
- ** WARNING ** After reading, there are no coordinates for selected atom:    12     1 LYS  HG2 
- ** WARNING ** After reading, there are no coordinates for selected atom:    14     1 LYS  HD1 
- ** WARNING ** After reading, there are no coordinates for selected atom:    15     1 LYS  HD2 
-
- ** A total of  1466 selected atoms have no coordinates
- *** LEVEL  2 WARNING *** BOMLEV IS    0
-  
- CHARMM>    close           unit 1
- VCLOSE: Closing unit    1 with status "KEEP"
-  
+ CHARMM>    ! open   read     unit 1 card name "waters.pdb"
+ CHARMM>    ! read   sequ pdb unit 1
+ CHARMM>    ! gene   WATA setup noan nodi
+ CHARMM>    ! rewind          unit 1
+ CHARMM>    ! read   coor pdb unit 1
+ CHARMM>    ! close           unit 1
  CHARMM>     
   
  CHARMM>     
@@ -422,11 +369,11 @@
  DELTIC:    1 acceptors deleted
  PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
  PSFSUM> Summary of the structure file counters :
-         Number of segments      =        2   Number of residues   =      378
-         Number of atoms         =     2714   Number of groups     =      835
-         Number of bonds         =     2735   Number of angles     =     3799
+         Number of segments      =        1   Number of residues   =      129
+         Number of atoms         =     1967   Number of groups     =      586
+         Number of bonds         =     1988   Number of angles     =     3550
          Number of dihedrals     =     5188   Number of impropers  =      350
-         Number of HB acceptors  =      434   Number of HB donors  =      270
+         Number of HB acceptors  =      185   Number of HB donors  =      270
          Number of NB exclusions =        0   Total charge =    9.00000
   
  CHARMM>    patch DISU PRTA  30 PRTA 115 setup
@@ -440,11 +387,11 @@
  DELTIC:    2 donors deleted
  PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
  PSFSUM> Summary of the structure file counters :
-         Number of segments      =        2   Number of residues   =      378
-         Number of atoms         =     2712   Number of groups     =      835
-         Number of bonds         =     2734   Number of angles     =     3799
+         Number of segments      =        1   Number of residues   =      129
+         Number of atoms         =     1965   Number of groups     =      586
+         Number of bonds         =     1987   Number of angles     =     3550
          Number of dihedrals     =     5189   Number of impropers  =      350
-         Number of HB acceptors  =      434   Number of HB donors  =      268
+         Number of HB acceptors  =      185   Number of HB donors  =      268
          Number of NB exclusions =        0   Total charge =    9.00000
   
  CHARMM>    patch DISU PRTA  64 PRTA  80 setup
@@ -458,11 +405,11 @@
  DELTIC:    2 donors deleted
  PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
  PSFSUM> Summary of the structure file counters :
-         Number of segments      =        2   Number of residues   =      378
-         Number of atoms         =     2710   Number of groups     =      835
-         Number of bonds         =     2733   Number of angles     =     3799
+         Number of segments      =        1   Number of residues   =      129
+         Number of atoms         =     1963   Number of groups     =      586
+         Number of bonds         =     1986   Number of angles     =     3550
          Number of dihedrals     =     5190   Number of impropers  =      350
-         Number of HB acceptors  =      434   Number of HB donors  =      266
+         Number of HB acceptors  =      185   Number of HB donors  =      266
          Number of NB exclusions =        0   Total charge =    9.00000
   
  CHARMM>    patch DISU PRTA  76 PRTA  94 setup
@@ -476,17 +423,13 @@
  DELTIC:    2 donors deleted
  PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
  PSFSUM> Summary of the structure file counters :
-         Number of segments      =        2   Number of residues   =      378
-         Number of atoms         =     2708   Number of groups     =      835
-         Number of bonds         =     2732   Number of angles     =     3799
+         Number of segments      =        1   Number of residues   =      129
+         Number of atoms         =     1961   Number of groups     =      586
+         Number of bonds         =     1985   Number of angles     =     3550
          Number of dihedrals     =     5191   Number of impropers  =      350
-         Number of HB acceptors  =      434   Number of HB donors  =      264
+         Number of HB acceptors  =      185   Number of HB donors  =      264
          Number of NB exclusions =        0   Total charge =    9.00000
   
- CHARMM>     
-  
- CHARMM>    ! patch NTER PRTA   1 setup
- CHARMM>    ! patch CTER PRTA 129 setup
  CHARMM>     
   
  CHARMM>     
@@ -495,7 +438,7 @@
  CHARMM>    !#              Add missing atoms              #
  CHARMM>    !###############################################
  CHARMM>    coor    init sele type h* end
- SELRPN>   1458 atoms have been selected out of   2708
+ SELRPN>    960 atoms have been selected out of   1961
  SELECTED COORDINATES INITIALIZED IN THE MAIN SET.
 
   
@@ -521,7 +464,7 @@
  NBXMOD =      5
  There are        0 atom  pairs and        0 atom  exclusions.
  There are        0 group pairs and        0 group exclusions.
- <MAKINB> with mode   5 found   6281 exclusions and   5110 interactions(1-4)
+ <MAKINB> with mode   5 found   5534 exclusions and   5110 interactions(1-4)
  <MAKGRP> found   1681 group exclusions.
 
  CUToff Hydrogen Bond  distance =    0.5000           Angle =   90.0000
@@ -1035,1382 +978,386 @@
  Place: HB1 ,HB2 ,    , constructed for donor PRTA 129  LEU  CB  .
  Place: HG  ,    ,    , constructed for donor PRTA 129  LEU  CG  .
 
- NBONDX:      1272 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1116 atom and      0 group interactions within 14.00 A.
  Spin: H1  ,H2  ,H3  , constructed for donor PRTA 1    LYS  N   .
 
- NBONDX:      1326 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1011 atom and      0 group interactions within 14.00 A.
  Spin: HZ1 ,HZ2 ,HZ3 , constructed for donor PRTA 1    LYS  NZ  .
 
- NBONDX:      1290 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1092 atom and      0 group interactions within 14.00 A.
  Spin: HG11,HG12,HG13, constructed for donor PRTA 2    VAL  CG1 .
 
- NBONDX:      1188 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1107 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 2    VAL  CG2 .
 
- NBONDX:       960 atom and      0 group interactions within 14.00 A.
+ NBONDX:       900 atom and      0 group interactions within 14.00 A.
  Spin: HH11,HH12,    , constructed for donor PRTA 5    ARG  NH1 .
 
- NBONDX:       810 atom and      0 group interactions within 14.00 A.
+ NBONDX:       754 atom and      0 group interactions within 14.00 A.
  Spin: HH21,HH22,    , constructed for donor PRTA 5    ARG  NH2 .
 
- NBONDX:      2460 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2274 atom and      0 group interactions within 14.00 A.
  Spin: HD11,HD12,HD13, constructed for donor PRTA 8    LEU  CD1 .
 
- NBONDX:      2532 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2304 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,HD23, constructed for donor PRTA 8    LEU  CD2 .
 
- NBONDX:      1932 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1773 atom and      0 group interactions within 14.00 A.
  Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 9    ALA  CB  .
 
- NBONDX:      1494 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1326 atom and      0 group interactions within 14.00 A.
  Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 10   ALA  CB  .
 
- NBONDX:      1920 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1764 atom and      0 group interactions within 14.00 A.
  Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 11   ALA  CB  .
 
- NBONDX:      2916 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2784 atom and      0 group interactions within 14.00 A.
  Spin: HE1 ,HE2 ,HE3 , constructed for donor PRTA 12   MET  CE  .
 
- NBONDX:      1089 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1092 atom and      0 group interactions within 14.00 A.
  Spin: HZ1 ,HZ2 ,HZ3 , constructed for donor PRTA 13   LYS  NZ  .
 
- NBONDX:       790 atom and      0 group interactions within 14.00 A.
+ NBONDX:       622 atom and      0 group interactions within 14.00 A.
  Spin: HH11,HH12,    , constructed for donor PRTA 14   ARG  NH1 .
 
- NBONDX:       900 atom and      0 group interactions within 14.00 A.
+ NBONDX:       652 atom and      0 group interactions within 14.00 A.
  Spin: HH21,HH22,    , constructed for donor PRTA 14   ARG  NH2 .
 
- NBONDX:      2487 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2286 atom and      0 group interactions within 14.00 A.
  Spin: HD11,HD12,HD13, constructed for donor PRTA 17   LEU  CD1 .
 
- NBONDX:      2217 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2058 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,HD23, constructed for donor PRTA 17   LEU  CD2 .
 
- NBONDX:       544 atom and      0 group interactions within 14.00 A.
+ NBONDX:       680 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,    , constructed for donor PRTA 19   ASN  ND2 .
 
- NBONDX:       476 atom and      0 group interactions within 14.00 A.
+ NBONDX:       424 atom and      0 group interactions within 14.00 A.
  Spin: HH  ,    ,    , constructed for donor PRTA 20   TYR  OH  .
 
- NBONDX:       700 atom and      0 group interactions within 14.00 A.
+ NBONDX:       564 atom and      0 group interactions within 14.00 A.
  Spin: HH11,HH12,    , constructed for donor PRTA 21   ARG  NH1 .
 
- NBONDX:       628 atom and      0 group interactions within 14.00 A.
+ NBONDX:       532 atom and      0 group interactions within 14.00 A.
  Spin: HH21,HH22,    , constructed for donor PRTA 21   ARG  NH2 .
 
- NBONDX:       499 atom and      0 group interactions within 14.00 A.
+ NBONDX:       483 atom and      0 group interactions within 14.00 A.
  Spin: HH  ,    ,    , constructed for donor PRTA 23   TYR  OH  .
 
- NBONDX:       567 atom and      0 group interactions within 14.00 A.
+ NBONDX:       533 atom and      0 group interactions within 14.00 A.
  Spin: HG1 ,    ,    , constructed for donor PRTA 24   SER  OG  .
 
- NBONDX:      2235 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1812 atom and      0 group interactions within 14.00 A.
  Spin: HD11,HD12,HD13, constructed for donor PRTA 25   LEU  CD1 .
 
- NBONDX:      1944 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2214 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,HD23, constructed for donor PRTA 25   LEU  CD2 .
 
- NBONDX:      1252 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1174 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,    , constructed for donor PRTA 27   ASN  ND2 .
 
- NBONDX:      2472 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2289 atom and      0 group interactions within 14.00 A.
  Spin: HG11,HG12,HG13, constructed for donor PRTA 29   VAL  CG1 .
 
- NBONDX:      2592 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2406 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 29   VAL  CG2 .
 
- NBONDX:      2640 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2496 atom and      0 group interactions within 14.00 A.
  Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 31   ALA  CB  .
 
- NBONDX:      2835 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2718 atom and      0 group interactions within 14.00 A.
  Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 32   ALA  CB  .
 
- NBONDX:      1359 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1209 atom and      0 group interactions within 14.00 A.
  Spin: HZ1 ,HZ2 ,HZ3 , constructed for donor PRTA 33   LYS  NZ  .
 
- NBONDX:       761 atom and      0 group interactions within 14.00 A.
+ NBONDX:       720 atom and      0 group interactions within 14.00 A.
  Spin: HG1 ,    ,    , constructed for donor PRTA 36   SER  OG  .
 
- NBONDX:       840 atom and      0 group interactions within 14.00 A.
+ NBONDX:       748 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,    , constructed for donor PRTA 37   ASN  ND2 .
 
- NBONDX:       904 atom and      0 group interactions within 14.00 A.
+ NBONDX:       792 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,    , constructed for donor PRTA 39   ASN  ND2 .
 
- NBONDX:       576 atom and      0 group interactions within 14.00 A.
+ NBONDX:       516 atom and      0 group interactions within 14.00 A.
  Spin: HG1 ,    ,    , constructed for donor PRTA 40   THR  OG1 .
 
- NBONDX:      2043 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1890 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 40   THR  CG2 .
 
- NBONDX:       772 atom and      0 group interactions within 14.00 A.
+ NBONDX:       600 atom and      0 group interactions within 14.00 A.
  Spin: HE21,HE22,    , constructed for donor PRTA 41   GLN  NE2 .
 
- NBONDX:      1794 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1569 atom and      0 group interactions within 14.00 A.
  Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 42   ALA  CB  .
 
- NBONDX:       477 atom and      0 group interactions within 14.00 A.
+ NBONDX:       399 atom and      0 group interactions within 14.00 A.
  Spin: HG1 ,    ,    , constructed for donor PRTA 43   THR  OG1 .
 
- NBONDX:      1629 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1416 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 43   THR  CG2 .
 
- NBONDX:       900 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1020 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,    , constructed for donor PRTA 44   ASN  ND2 .
 
- NBONDX:       852 atom and      0 group interactions within 14.00 A.
+ NBONDX:       602 atom and      0 group interactions within 14.00 A.
  Spin: HH11,HH12,    , constructed for donor PRTA 45   ARG  NH1 .
 
- NBONDX:       772 atom and      0 group interactions within 14.00 A.
+ NBONDX:       638 atom and      0 group interactions within 14.00 A.
  Spin: HH21,HH22,    , constructed for donor PRTA 45   ARG  NH2 .
 
- NBONDX:      1022 atom and      0 group interactions within 14.00 A.
+ NBONDX:       812 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,    , constructed for donor PRTA 46   ASN  ND2 .
 
- NBONDX:       200 atom and      0 group interactions within 14.00 A.
+ NBONDX:       223 atom and      0 group interactions within 14.00 A.
  Spin: HG1 ,    ,    , constructed for donor PRTA 47   THR  OG1 .
 
- NBONDX:       540 atom and      0 group interactions within 14.00 A.
+ NBONDX:       504 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 47   THR  CG2 .
 
- NBONDX:       517 atom and      0 group interactions within 14.00 A.
+ NBONDX:       459 atom and      0 group interactions within 14.00 A.
  Spin: HG1 ,    ,    , constructed for donor PRTA 50   SER  OG  .
 
- NBONDX:       505 atom and      0 group interactions within 14.00 A.
+ NBONDX:       458 atom and      0 group interactions within 14.00 A.
  Spin: HG1 ,    ,    , constructed for donor PRTA 51   THR  OG1 .
 
- NBONDX:      1713 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1638 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 51   THR  CG2 .
 
- NBONDX:       579 atom and      0 group interactions within 14.00 A.
+ NBONDX:       529 atom and      0 group interactions within 14.00 A.
  Spin: HH  ,    ,    , constructed for donor PRTA 53   TYR  OH  .
 
- NBONDX:      2784 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2601 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 55   ILE  CG2 .
 
- NBONDX:      2544 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2274 atom and      0 group interactions within 14.00 A.
  Spin: HD11,HD12,HD13, constructed for donor PRTA 55   ILE  CD1 .
 
- NBONDX:      3105 atom and      0 group interactions within 14.00 A.
+ NBONDX:      3012 atom and      0 group interactions within 14.00 A.
  Spin: HD11,HD12,HD13, constructed for donor PRTA 56   LEU  CD1 .
 
- NBONDX:      3102 atom and      0 group interactions within 14.00 A.
+ NBONDX:      3024 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,HD23, constructed for donor PRTA 56   LEU  CD2 .
 
- NBONDX:      1474 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1400 atom and      0 group interactions within 14.00 A.
  Spin: HE21,HE22,    , constructed for donor PRTA 57   GLN  NE2 .
 
- NBONDX:      2664 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2490 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 58   ILE  CG2 .
 
- NBONDX:      2850 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2592 atom and      0 group interactions within 14.00 A.
  Spin: HD11,HD12,HD13, constructed for donor PRTA 58   ILE  CD1 .
 
- NBONDX:      1326 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1220 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,    , constructed for donor PRTA 59   ASN  ND2 .
 
- NBONDX:       624 atom and      0 group interactions within 14.00 A.
+ NBONDX:       578 atom and      0 group interactions within 14.00 A.
  Spin: HG1 ,    ,    , constructed for donor PRTA 60   SER  OG  .
 
- NBONDX:       750 atom and      0 group interactions within 14.00 A.
+ NBONDX:       898 atom and      0 group interactions within 14.00 A.
  Spin: HH11,HH12,    , constructed for donor PRTA 61   ARG  NH1 .
 
- NBONDX:       788 atom and      0 group interactions within 14.00 A.
+ NBONDX:       830 atom and      0 group interactions within 14.00 A.
  Spin: HH21,HH22,    , constructed for donor PRTA 61   ARG  NH2 .
 
- NBONDX:       746 atom and      0 group interactions within 14.00 A.
+ NBONDX:       696 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,    , constructed for donor PRTA 65   ASN  ND2 .
 
- NBONDX:       844 atom and      0 group interactions within 14.00 A.
+ NBONDX:       628 atom and      0 group interactions within 14.00 A.
  Spin: HH11,HH12,    , constructed for donor PRTA 68   ARG  NH1 .
 
- NBONDX:       960 atom and      0 group interactions within 14.00 A.
+ NBONDX:       774 atom and      0 group interactions within 14.00 A.
  Spin: HH21,HH22,    , constructed for donor PRTA 68   ARG  NH2 .
 
- NBONDX:       548 atom and      0 group interactions within 14.00 A.
+ NBONDX:       502 atom and      0 group interactions within 14.00 A.
  Spin: HG1 ,    ,    , constructed for donor PRTA 69   THR  OG1 .
 
- NBONDX:      1536 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1449 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 69   THR  CG2 .
 
- NBONDX:       464 atom and      0 group interactions within 14.00 A.
+ NBONDX:       435 atom and      0 group interactions within 14.00 A.
  Spin: HG1 ,    ,    , constructed for donor PRTA 72   SER  OG  .
 
- NBONDX:       624 atom and      0 group interactions within 14.00 A.
+ NBONDX:       592 atom and      0 group interactions within 14.00 A.
  Spin: HH11,HH12,    , constructed for donor PRTA 73   ARG  NH1 .
 
- NBONDX:       556 atom and      0 group interactions within 14.00 A.
+ NBONDX:       426 atom and      0 group interactions within 14.00 A.
  Spin: HH21,HH22,    , constructed for donor PRTA 73   ARG  NH2 .
 
- NBONDX:       896 atom and      0 group interactions within 14.00 A.
+ NBONDX:       970 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,    , constructed for donor PRTA 74   ASN  ND2 .
 
- NBONDX:      1395 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1149 atom and      0 group interactions within 14.00 A.
  Spin: HD11,HD12,HD13, constructed for donor PRTA 75   LEU  CD1 .
 
- NBONDX:      1233 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1344 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,HD23, constructed for donor PRTA 75   LEU  CD2 .
 
- NBONDX:       562 atom and      0 group interactions within 14.00 A.
+ NBONDX:       512 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,    , constructed for donor PRTA 77   ASN  ND2 .
 
- NBONDX:      1554 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1845 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 78   ILE  CG2 .
 
- NBONDX:      2061 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1437 atom and      0 group interactions within 14.00 A.
  Spin: HD11,HD12,HD13, constructed for donor PRTA 78   ILE  CD1 .
 
- NBONDX:       466 atom and      0 group interactions within 14.00 A.
+ NBONDX:       435 atom and      0 group interactions within 14.00 A.
  Spin: HG1 ,    ,    , constructed for donor PRTA 81   SER  OG  .
 
- NBONDX:      1677 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1503 atom and      0 group interactions within 14.00 A.
  Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 82   ALA  CB  .
 
- NBONDX:      2589 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2328 atom and      0 group interactions within 14.00 A.
  Spin: HD11,HD12,HD13, constructed for donor PRTA 83   LEU  CD1 .
 
- NBONDX:      2505 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2325 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,HD23, constructed for donor PRTA 83   LEU  CD2 .
 
- NBONDX:      1842 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1719 atom and      0 group interactions within 14.00 A.
  Spin: HD11,HD12,HD13, constructed for donor PRTA 84   LEU  CD1 .
 
- NBONDX:      2130 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1971 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,HD23, constructed for donor PRTA 84   LEU  CD2 .
 
- NBONDX:       551 atom and      0 group interactions within 14.00 A.
+ NBONDX:       487 atom and      0 group interactions within 14.00 A.
  Spin: HG1 ,    ,    , constructed for donor PRTA 85   SER  OG  .
 
- NBONDX:       451 atom and      0 group interactions within 14.00 A.
+ NBONDX:       373 atom and      0 group interactions within 14.00 A.
  Spin: HG1 ,    ,    , constructed for donor PRTA 86   SER  OG  .
 
- NBONDX:      2511 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2310 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 88   ILE  CG2 .
 
- NBONDX:      2553 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2391 atom and      0 group interactions within 14.00 A.
  Spin: HD11,HD12,HD13, constructed for donor PRTA 88   ILE  CD1 .
 
- NBONDX:       527 atom and      0 group interactions within 14.00 A.
+ NBONDX:       460 atom and      0 group interactions within 14.00 A.
  Spin: HG1 ,    ,    , constructed for donor PRTA 89   THR  OG1 .
 
- NBONDX:      1599 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1410 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 89   THR  CG2 .
 
- NBONDX:      2040 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1878 atom and      0 group interactions within 14.00 A.
  Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 90   ALA  CB  .
 
- NBONDX:       933 atom and      0 group interactions within 14.00 A.
+ NBONDX:       875 atom and      0 group interactions within 14.00 A.
  Spin: HG1 ,    ,    , constructed for donor PRTA 91   SER  OG  .
 
- NBONDX:      2349 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2106 atom and      0 group interactions within 14.00 A.
  Spin: HG11,HG12,HG13, constructed for donor PRTA 92   VAL  CG1 .
 
- NBONDX:      2661 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2469 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 92   VAL  CG2 .
 
- NBONDX:      1068 atom and      0 group interactions within 14.00 A.
+ NBONDX:       970 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,    , constructed for donor PRTA 93   ASN  ND2 .
 
- NBONDX:      2961 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2811 atom and      0 group interactions within 14.00 A.
  Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 95   ALA  CB  .
 
- NBONDX:      1719 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1572 atom and      0 group interactions within 14.00 A.
  Spin: HZ1 ,HZ2 ,HZ3 , constructed for donor PRTA 96   LYS  NZ  .
 
- NBONDX:      1239 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1140 atom and      0 group interactions within 14.00 A.
  Spin: HZ1 ,HZ2 ,HZ3 , constructed for donor PRTA 97   LYS  NZ  .
 
- NBONDX:      2382 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2289 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 98   ILE  CG2 .
 
- NBONDX:      2718 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2667 atom and      0 group interactions within 14.00 A.
  Spin: HD11,HD12,HD13, constructed for donor PRTA 98   ILE  CD1 .
 
- NBONDX:      1821 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1818 atom and      0 group interactions within 14.00 A.
  Spin: HG11,HG12,HG13, constructed for donor PRTA 99   VAL  CG1 .
 
- NBONDX:      2193 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2241 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 99   VAL  CG2 .
 
- NBONDX:       471 atom and      0 group interactions within 14.00 A.
+ NBONDX:       453 atom and      0 group interactions within 14.00 A.
  Spin: HG1 ,    ,    , constructed for donor PRTA 100  SER  OG  .
 
- NBONDX:      1070 atom and      0 group interactions within 14.00 A.
+ NBONDX:       828 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,    , constructed for donor PRTA 103  ASN  ND2 .
 
- NBONDX:      2769 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2586 atom and      0 group interactions within 14.00 A.
  Spin: HE1 ,HE2 ,HE3 , constructed for donor PRTA 105  MET  CE  .
 
  NBONDX:       756 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,    , constructed for donor PRTA 106  ASN  ND2 .
 
- NBONDX:      2133 atom and      0 group interactions within 14.00 A.
+ NBONDX:      2103 atom and      0 group interactions within 14.00 A.
  Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 107  ALA  CB  .
 
- NBONDX:      1593 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1518 atom and      0 group interactions within 14.00 A.
  Spin: HG11,HG12,HG13, constructed for donor PRTA 109  VAL  CG1 .
 
- NBONDX:      1653 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1344 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 109  VAL  CG2 .
 
- NBONDX:      1968 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1881 atom and      0 group interactions within 14.00 A.
  Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 110  ALA  CB  .
 
- NBONDX:       646 atom and      0 group interactions within 14.00 A.
+ NBONDX:       660 atom and      0 group interactions within 14.00 A.
  Spin: HH11,HH12,    , constructed for donor PRTA 112  ARG  NH1 .
 
- NBONDX:       816 atom and      0 group interactions within 14.00 A.
+ NBONDX:       812 atom and      0 group interactions within 14.00 A.
  Spin: HH21,HH22,    , constructed for donor PRTA 112  ARG  NH2 .
 
- NBONDX:       666 atom and      0 group interactions within 14.00 A.
+ NBONDX:       568 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,    , constructed for donor PRTA 113  ASN  ND2 .
 
- NBONDX:       692 atom and      0 group interactions within 14.00 A.
+ NBONDX:       586 atom and      0 group interactions within 14.00 A.
  Spin: HH11,HH12,    , constructed for donor PRTA 114  ARG  NH1 .
 
- NBONDX:       642 atom and      0 group interactions within 14.00 A.
+ NBONDX:       570 atom and      0 group interactions within 14.00 A.
  Spin: HH21,HH22,    , constructed for donor PRTA 114  ARG  NH2 .
 
- NBONDX:       864 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1068 atom and      0 group interactions within 14.00 A.
  Spin: HZ1 ,HZ2 ,HZ3 , constructed for donor PRTA 116  LYS  NZ  .
 
- NBONDX:       497 atom and      0 group interactions within 14.00 A.
+ NBONDX:       464 atom and      0 group interactions within 14.00 A.
  Spin: HG1 ,    ,    , constructed for donor PRTA 118  THR  OG1 .
 
- NBONDX:      1200 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1182 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 118  THR  CG2 .
 
- NBONDX:      1896 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1776 atom and      0 group interactions within 14.00 A.
  Spin: HG11,HG12,HG13, constructed for donor PRTA 120  VAL  CG1 .
 
- NBONDX:      1815 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1788 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 120  VAL  CG2 .
 
- NBONDX:       888 atom and      0 group interactions within 14.00 A.
+ NBONDX:       596 atom and      0 group interactions within 14.00 A.
  Spin: HE21,HE22,    , constructed for donor PRTA 121  GLN  NE2 .
 
- NBONDX:      1326 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1131 atom and      0 group interactions within 14.00 A.
  Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 122  ALA  CB  .
 
- NBONDX:      2124 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1917 atom and      0 group interactions within 14.00 A.
  Spin: HG21,HG22,HG23, constructed for donor PRTA 124  ILE  CG2 .
 
- NBONDX:      1749 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1569 atom and      0 group interactions within 14.00 A.
  Spin: HD11,HD12,HD13, constructed for donor PRTA 124  ILE  CD1 .
 
- NBONDX:       540 atom and      0 group interactions within 14.00 A.
+ NBONDX:       474 atom and      0 group interactions within 14.00 A.
  Spin: HH11,HH12,    , constructed for donor PRTA 125  ARG  NH1 .
 
- NBONDX:       592 atom and      0 group interactions within 14.00 A.
+ NBONDX:       570 atom and      0 group interactions within 14.00 A.
  Spin: HH21,HH22,    , constructed for donor PRTA 125  ARG  NH2 .
 
- NBONDX:       370 atom and      0 group interactions within 14.00 A.
+ NBONDX:       500 atom and      0 group interactions within 14.00 A.
  Spin: HH11,HH12,    , constructed for donor PRTA 128  ARG  NH1 .
 
- NBONDX:       294 atom and      0 group interactions within 14.00 A.
+ NBONDX:       626 atom and      0 group interactions within 14.00 A.
  Spin: HH21,HH22,    , constructed for donor PRTA 128  ARG  NH2 .
 
- NBONDX:      1764 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1626 atom and      0 group interactions within 14.00 A.
  Spin: HD11,HD12,HD13, constructed for donor PRTA 129  LEU  CD1 .
 
- NBONDX:      1752 atom and      0 group interactions within 14.00 A.
+ NBONDX:      1554 atom and      0 group interactions within 14.00 A.
  Spin: HD21,HD22,HD23, constructed for donor PRTA 129  LEU  CD2 .
-
- NBONDX:      1024 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 49   HOH  O   .
- Minimum distance between this water and protein is  1.53250 A.
-
- NBONDX:       916 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 15   HOH  O   .
- Minimum distance between this water and protein is  1.55148 A.
-
- NBONDX:      1032 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 40   HOH  O   .
- Minimum distance between this water and protein is  1.56102 A.
-
- NBONDX:       976 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 110  HOH  O   .
- Minimum distance between this water and protein is  1.59908 A.
-
- NBONDX:       828 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 152  HOH  O   .
- Minimum distance between this water and protein is  1.60850 A.
-
- NBONDX:       562 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 144  HOH  O   .
- Minimum distance between this water and protein is  1.69112 A.
-
- NBONDX:       766 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 203  HOH  O   .
- Minimum distance between this water and protein is  1.70017 A.
-
- NBONDX:      1020 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 9    HOH  O   .
- Minimum distance between this water and protein is  1.72193 A.
-
- NBONDX:      1104 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 54   HOH  O   .
- Minimum distance between this water and protein is  1.72643 A.
-
- NBONDX:      1086 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 3    HOH  O   .
- Minimum distance between this water and protein is  1.72917 A.
-
- NBONDX:       648 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 200  HOH  O   .
- Minimum distance between this water and protein is  1.74169 A.
-
- NBONDX:       682 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 99   HOH  O   .
- Minimum distance between this water and protein is  1.76529 A.
-
- NBONDX:       984 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 168  HOH  O   .
- Minimum distance between this water and protein is  1.77108 A.
-
- NBONDX:      1286 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 46   HOH  O   .
- Minimum distance between this water and protein is  1.77649 A.
-
- NBONDX:       890 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 73   HOH  O   .
- Minimum distance between this water and protein is  1.79583 A.
-
- NBONDX:       856 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 204  HOH  O   .
- Minimum distance between this water and protein is  1.79859 A.
-
- NBONDX:      1036 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 17   HOH  O   .
- Minimum distance between this water and protein is  1.80144 A.
-
- NBONDX:       600 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 92   HOH  O   .
- Minimum distance between this water and protein is  1.80649 A.
-
- NBONDX:       786 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 229  HOH  O   .
- Minimum distance between this water and protein is  1.82621 A.
-
- NBONDX:       718 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 21   HOH  O   .
- Minimum distance between this water and protein is  1.85834 A.
-
- NBONDX:       978 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 27   HOH  O   .
- Minimum distance between this water and protein is  1.85977 A.
-
- NBONDX:       880 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 34   HOH  O   .
- Minimum distance between this water and protein is  1.88915 A.
-
- NBONDX:      1204 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 5    HOH  O   .
- Minimum distance between this water and protein is  1.89006 A.
-
- NBONDX:       692 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 91   HOH  O   .
- Minimum distance between this water and protein is  1.90335 A.
-
- NBONDX:       566 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 221  HOH  O   .
- Minimum distance between this water and protein is  1.92892 A.
-
- NBONDX:       806 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 22   HOH  O   .
- Minimum distance between this water and protein is  1.93404 A.
-
- NBONDX:      1466 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 20   HOH  O   .
- Minimum distance between this water and protein is  1.93748 A.
-
- NBONDX:       722 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 220  HOH  O   .
- Minimum distance between this water and protein is  1.94418 A.
-
- NBONDX:      1270 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 51   HOH  O   .
- Minimum distance between this water and protein is  1.96584 A.
-
- NBONDX:       830 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 82   HOH  O   .
- Minimum distance between this water and protein is  2.00071 A.
-
- NBONDX:       934 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 207  HOH  O   .
- Minimum distance between this water and protein is  2.00124 A.
-
- NBONDX:      1132 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 16   HOH  O   .
- Minimum distance between this water and protein is  2.00186 A.
-
- NBONDX:       494 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 246  HOH  O   .
- Minimum distance between this water and protein is  2.00683 A.
-
- NBONDX:       624 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 68   HOH  O   .
- Minimum distance between this water and protein is  2.01097 A.
-
- NBONDX:      1136 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 19   HOH  O   .
- Minimum distance between this water and protein is  2.01659 A.
-
- NBONDX:      2116 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 1    HOH  O   .
- Minimum distance between this water and protein is  2.02104 A.
-
- NBONDX:      1804 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 13   HOH  O   .
- Minimum distance between this water and protein is  2.03541 A.
-
- NBONDX:       860 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 232  HOH  O   .
- Minimum distance between this water and protein is  2.05050 A.
-
- NBONDX:      1040 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 171  HOH  O   .
- Minimum distance between this water and protein is  2.05698 A.
-
- NBONDX:       838 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 45   HOH  O   .
- Minimum distance between this water and protein is  2.06216 A.
-
- NBONDX:       786 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 28   HOH  O   .
- Minimum distance between this water and protein is  2.06424 A.
-
- NBONDX:      1054 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 10   HOH  O   .
- Minimum distance between this water and protein is  2.06796 A.
-
- NBONDX:       344 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 117  HOH  O   .
- Minimum distance between this water and protein is  2.08317 A.
-
- NBONDX:       900 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 80   HOH  O   .
- Minimum distance between this water and protein is  2.08665 A.
-
- NBONDX:      1882 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 33   HOH  O   .
- Minimum distance between this water and protein is  2.09755 A.
-
- NBONDX:       688 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 160  HOH  O   .
- Minimum distance between this water and protein is  2.10277 A.
-
- NBONDX:      1156 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 7    HOH  O   .
- Minimum distance between this water and protein is  2.10667 A.
-
- NBONDX:      1168 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 31   HOH  O   .
- Minimum distance between this water and protein is  2.11778 A.
-
- NBONDX:       616 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 142  HOH  O   .
- Minimum distance between this water and protein is  2.11778 A.
-
- NBONDX:      1186 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 32   HOH  O   .
- Minimum distance between this water and protein is  2.12680 A.
-
- NBONDX:      1026 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 225  HOH  O   .
- Minimum distance between this water and protein is  2.13271 A.
-
- NBONDX:       896 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 53   HOH  O   .
- Minimum distance between this water and protein is  2.13799 A.
-
- NBONDX:       868 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 181  HOH  O   .
- Minimum distance between this water and protein is  2.13818 A.
-
- NBONDX:       894 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 65   HOH  O   .
- Minimum distance between this water and protein is  2.13859 A.
-
- NBONDX:      1716 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 8    HOH  O   .
- Minimum distance between this water and protein is  2.15151 A.
-
- NBONDX:       750 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 61   HOH  O   .
- Minimum distance between this water and protein is  2.16334 A.
-
- NBONDX:      1050 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 4    HOH  O   .
- Minimum distance between this water and protein is  2.22454 A.
-
- NBONDX:      1150 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 43   HOH  O   .
- Minimum distance between this water and protein is  2.27343 A.
-
- NBONDX:       790 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 234  HOH  O   .
- Minimum distance between this water and protein is  2.27977 A.
-
- NBONDX:       986 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 185  HOH  O   .
- Minimum distance between this water and protein is  2.28400 A.
-
- NBONDX:       798 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 113  HOH  O   .
- Minimum distance between this water and protein is  2.28636 A.
-
- NBONDX:       664 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 155  HOH  O   .
- Minimum distance between this water and protein is  2.35751 A.
-
- NBONDX:      1016 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 64   HOH  O   .
- Minimum distance between this water and protein is  2.37667 A.
-
- NBONDX:      1278 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 81   HOH  O   .
- Minimum distance between this water and protein is  2.39043 A.
-
- NBONDX:       902 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 219  HOH  O   .
- Minimum distance between this water and protein is  2.39866 A.
-
- NBONDX:      1018 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 30   HOH  O   .
- Minimum distance between this water and protein is  2.41084 A.
-
- NBONDX:      1096 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 206  HOH  O   .
- Minimum distance between this water and protein is  2.42533 A.
-
- NBONDX:      1026 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 84   HOH  O   .
- Minimum distance between this water and protein is  2.43185 A.
-
- NBONDX:       928 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 239  HOH  O   .
- Minimum distance between this water and protein is  2.43695 A.
-
- NBONDX:      1176 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 107  HOH  O   .
- Minimum distance between this water and protein is  2.43794 A.
-
- NBONDX:       824 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 177  HOH  O   .
- Minimum distance between this water and protein is  2.47219 A.
-
- NBONDX:       726 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 11   HOH  O   .
- Minimum distance between this water and protein is  2.48083 A.
-
- NBONDX:      1110 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 89   HOH  O   .
- Minimum distance between this water and protein is  2.48672 A.
-
- NBONDX:       782 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 247  HOH  O   .
- Minimum distance between this water and protein is  2.49157 A.
-
- NBONDX:      1762 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 14   HOH  O   .
- Minimum distance between this water and protein is  2.53778 A.
-
- NBONDX:      1702 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 210  HOH  O   .
- Minimum distance between this water and protein is  2.54090 A.
-
- NBONDX:       704 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 63   HOH  O   .
- Minimum distance between this water and protein is  2.54198 A.
-
- NBONDX:       964 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 129  HOH  O   .
- Minimum distance between this water and protein is  2.54849 A.
-
- NBONDX:      1010 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 183  HOH  O   .
- Minimum distance between this water and protein is  2.56135 A.
-
- NBONDX:       460 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 153  HOH  O   .
- Minimum distance between this water and protein is  2.56692 A.
-
- NBONDX:       946 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 93   HOH  O   .
- Minimum distance between this water and protein is  2.56938 A.
-
- NBONDX:       962 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 50   HOH  O   .
- Minimum distance between this water and protein is  2.57559 A.
-
- NBONDX:      1236 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 175  HOH  O   .
- Minimum distance between this water and protein is  2.57581 A.
-
- NBONDX:       992 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 103  HOH  O   .
- Minimum distance between this water and protein is  2.59001 A.
-
- NBONDX:       998 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 2    HOH  O   .
- Minimum distance between this water and protein is  2.59495 A.
-
- NBONDX:       740 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 231  HOH  O   .
- Minimum distance between this water and protein is  2.59509 A.
-
- NBONDX:      1496 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 6    HOH  O   .
- Minimum distance between this water and protein is  2.60194 A.
-
- NBONDX:       800 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 184  HOH  O   .
- Minimum distance between this water and protein is  2.60906 A.
-
- NBONDX:       840 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 44   HOH  O   .
- Minimum distance between this water and protein is  2.64342 A.
-
- NBONDX:       950 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 23   HOH  O   .
- Minimum distance between this water and protein is  2.64510 A.
-
- NBONDX:      1500 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 38   HOH  O   .
- Minimum distance between this water and protein is  2.64688 A.
-
- NBONDX:      1238 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 25   HOH  O   .
- Minimum distance between this water and protein is  2.65357 A.
-
- NBONDX:       872 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 178  HOH  O   .
- Minimum distance between this water and protein is  2.66547 A.
-
- NBONDX:       718 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 249  HOH  O   .
- Minimum distance between this water and protein is  2.67202 A.
-
- NBONDX:       718 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 235  HOH  O   .
- Minimum distance between this water and protein is  2.67705 A.
-
- NBONDX:       974 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 119  HOH  O   .
- Minimum distance between this water and protein is  2.67804 A.
-
- NBONDX:       646 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 48   HOH  O   .
- Minimum distance between this water and protein is  2.67906 A.
-
- NBONDX:       738 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 151  HOH  O   .
- Minimum distance between this water and protein is  2.68043 A.
-
- NBONDX:      1174 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 35   HOH  O   .
- Minimum distance between this water and protein is  2.69699 A.
-
- NBONDX:       908 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 163  HOH  O   .
- Minimum distance between this water and protein is  2.69790 A.
-
- NBONDX:       940 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 101  HOH  O   .
- Minimum distance between this water and protein is  2.70099 A.
-
- NBONDX:      1454 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 72   HOH  O   .
- Minimum distance between this water and protein is  2.70912 A.
-
- NBONDX:       676 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 217  HOH  O   .
- Minimum distance between this water and protein is  2.71073 A.
-
- NBONDX:      1372 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 26   HOH  O   .
- Minimum distance between this water and protein is  2.71409 A.
-
- NBONDX:       902 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 12   HOH  O   .
- Minimum distance between this water and protein is  2.71650 A.
-
- NBONDX:      1040 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 18   HOH  O   .
- Minimum distance between this water and protein is  2.71998 A.
-
- NBONDX:       680 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 138  HOH  O   .
- Minimum distance between this water and protein is  2.72152 A.
-
- NBONDX:       874 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 244  HOH  O   .
- Minimum distance between this water and protein is  2.74728 A.
-
- NBONDX:       878 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 41   HOH  O   .
- Minimum distance between this water and protein is  2.75549 A.
-
- NBONDX:       914 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 97   HOH  O   .
- Minimum distance between this water and protein is  2.76397 A.
-
- NBONDX:       856 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 114  HOH  O   .
- Minimum distance between this water and protein is  2.76532 A.
-
- NBONDX:      1020 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 199  HOH  O   .
- Minimum distance between this water and protein is  2.76587 A.
-
- NBONDX:      1160 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 87   HOH  O   .
- Minimum distance between this water and protein is  2.77635 A.
-
- NBONDX:       998 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 78   HOH  O   .
- Minimum distance between this water and protein is  2.77670 A.
-
- NBONDX:       874 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 79   HOH  O   .
- Minimum distance between this water and protein is  2.78343 A.
-
- NBONDX:      1258 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 179  HOH  O   .
- Minimum distance between this water and protein is  2.79858 A.
-
- NBONDX:       962 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 56   HOH  O   .
- Minimum distance between this water and protein is  2.80410 A.
-
- NBONDX:       928 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 146  HOH  O   .
- Minimum distance between this water and protein is  2.82746 A.
-
- NBONDX:      1140 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 228  HOH  O   .
- Minimum distance between this water and protein is  2.83230 A.
-
- NBONDX:       696 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 29   HOH  O   .
- Minimum distance between this water and protein is  2.84365 A.
-
- NBONDX:       570 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 226  HOH  O   .
- Minimum distance between this water and protein is  2.84459 A.
-
- NBONDX:       904 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 216  HOH  O   .
- Minimum distance between this water and protein is  2.85965 A.
-
- NBONDX:       900 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 233  HOH  O   .
- Minimum distance between this water and protein is  2.86739 A.
-
- NBONDX:       554 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 108  HOH  O   .
- Minimum distance between this water and protein is  2.87257 A.
-
- NBONDX:       974 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 52   HOH  O   .
- Minimum distance between this water and protein is  2.87487 A.
-
- NBONDX:      1468 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 211  HOH  O   .
- Minimum distance between this water and protein is  2.88732 A.
-
- NBONDX:       766 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 76   HOH  O   .
- Minimum distance between this water and protein is  2.89209 A.
-
- NBONDX:       844 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 240  HOH  O   .
- Minimum distance between this water and protein is  2.89576 A.
-
- NBONDX:      1886 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 96   HOH  O   .
- Minimum distance between this water and protein is  2.90070 A.
-
- NBONDX:       636 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 120  HOH  O   .
- Minimum distance between this water and protein is  2.91681 A.
-
- NBONDX:      1162 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 59   HOH  O   .
- Minimum distance between this water and protein is  2.92657 A.
-
- NBONDX:       878 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 85   HOH  O   .
- Minimum distance between this water and protein is  2.92815 A.
-
- NBONDX:       676 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 42   HOH  O   .
- Minimum distance between this water and protein is  2.94552 A.
-
- NBONDX:      1144 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 148  HOH  O   .
- Minimum distance between this water and protein is  2.96348 A.
-
- NBONDX:      1124 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 127  HOH  O   .
- Minimum distance between this water and protein is  2.97463 A.
-
- NBONDX:       726 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 104  HOH  O   .
- Minimum distance between this water and protein is  2.97530 A.
-
- NBONDX:       938 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 242  HOH  O   .
- Minimum distance between this water and protein is  2.97770 A.
-
- NBONDX:      1254 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 238  HOH  O   .
- Minimum distance between this water and protein is  2.98145 A.
-
- NBONDX:      1040 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 94   HOH  O   .
- Minimum distance between this water and protein is  2.98275 A.
-
- NBONDX:      1274 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 57   HOH  O   .
- Minimum distance between this water and protein is  2.98695 A.
-
- NBONDX:       730 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 55   HOH  O   .
- Minimum distance between this water and protein is  2.99965 A.
-
- NBONDX:       792 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 202  HOH  O   .
- Minimum distance between this water and protein is  3.00505 A.
-
- NBONDX:       698 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 90   HOH  O   .
- Minimum distance between this water and protein is  3.01759 A.
-
- NBONDX:       224 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 106  HOH  O   .
- Minimum distance between this water and protein is  3.02691 A.
-
- NBONDX:       874 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 83   HOH  O   .
- Minimum distance between this water and protein is  3.05813 A.
-
- NBONDX:      1026 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 115  HOH  O   .
- Minimum distance between this water and protein is  3.07282 A.
-
- NBONDX:       416 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 109  HOH  O   .
- Minimum distance between this water and protein is  3.08184 A.
-
- NBONDX:       688 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 58   HOH  O   .
- Minimum distance between this water and protein is  3.08303 A.
-
- NBONDX:       898 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 150  HOH  O   .
- Minimum distance between this water and protein is  3.08547 A.
-
- NBONDX:      1046 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 128  HOH  O   .
- Minimum distance between this water and protein is  3.09111 A.
-
- NBONDX:       624 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 111  HOH  O   .
- Minimum distance between this water and protein is  3.09422 A.
-
- NBONDX:      1020 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 125  HOH  O   .
- Minimum distance between this water and protein is  3.09549 A.
-
- NBONDX:       738 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 145  HOH  O   .
- Minimum distance between this water and protein is  3.09989 A.
-
- NBONDX:      1226 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 88   HOH  O   .
- Minimum distance between this water and protein is  3.10660 A.
-
- NBONDX:      1196 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 136  HOH  O   .
- Minimum distance between this water and protein is  3.10749 A.
-
- NBONDX:       792 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 133  HOH  O   .
- Minimum distance between this water and protein is  3.12241 A.
-
- NBONDX:      1034 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 24   HOH  O   .
- Minimum distance between this water and protein is  3.12461 A.
-
- NBONDX:       948 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 100  HOH  O   .
- Minimum distance between this water and protein is  3.13323 A.
-
- NBONDX:      1136 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 116  HOH  O   .
- Minimum distance between this water and protein is  3.14184 A.
-
- NBONDX:      1372 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 112  HOH  O   .
- Minimum distance between this water and protein is  3.15451 A.
-
- NBONDX:       742 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 118  HOH  O   .
- Minimum distance between this water and protein is  3.15608 A.
-
- NBONDX:       996 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 209  HOH  O   .
- Minimum distance between this water and protein is  3.16821 A.
-
- NBONDX:       816 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 126  HOH  O   .
- Minimum distance between this water and protein is  3.17170 A.
-
- NBONDX:       956 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 135  HOH  O   .
- Minimum distance between this water and protein is  3.18373 A.
-
- NBONDX:       936 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 189  HOH  O   .
- Minimum distance between this water and protein is  3.18836 A.
-
- NBONDX:      1002 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 143  HOH  O   .
- Minimum distance between this water and protein is  3.19410 A.
-
- NBONDX:       814 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 70   HOH  O   .
- Minimum distance between this water and protein is  3.21444 A.
-
- NBONDX:       772 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 39   HOH  O   .
- Minimum distance between this water and protein is  3.26785 A.
-
- NBONDX:       868 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 149  HOH  O   .
- Minimum distance between this water and protein is  3.31258 A.
-
- NBONDX:       872 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 218  HOH  O   .
- Minimum distance between this water and protein is  3.38853 A.
-
- NBONDX:       928 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 102  HOH  O   .
- Minimum distance between this water and protein is  3.39134 A.
-
- NBONDX:       950 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 157  HOH  O   .
- Minimum distance between this water and protein is  3.40115 A.
-
- NBONDX:       956 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 194  HOH  O   .
- Minimum distance between this water and protein is  3.40316 A.
-
- NBONDX:       714 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 248  HOH  O   .
- Minimum distance between this water and protein is  3.40918 A.
-
- NBONDX:       500 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 236  HOH  O   .
- Minimum distance between this water and protein is  3.41847 A.
-
- NBONDX:       906 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 36   HOH  O   .
- Minimum distance between this water and protein is  3.43360 A.
-
- NBONDX:       968 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 74   HOH  O   .
- Minimum distance between this water and protein is  3.50265 A.
-
- NBONDX:       798 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 75   HOH  O   .
- Minimum distance between this water and protein is  3.50306 A.
-
- NBONDX:       172 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 71   HOH  O   .
- Minimum distance between this water and protein is  3.53179 A.
-
- NBONDX:       976 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 67   HOH  O   .
- Minimum distance between this water and protein is  3.53882 A.
-
- NBONDX:      1354 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 215  HOH  O   .
- Minimum distance between this water and protein is  3.58354 A.
-
- NBONDX:       738 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 223  HOH  O   .
- Minimum distance between this water and protein is  3.58703 A.
-
- NBONDX:       842 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 123  HOH  O   .
- Minimum distance between this water and protein is  3.85028 A.
-
- NBONDX:       884 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 77   HOH  O   .
- Minimum distance between this water and protein is  3.85141 A.
-
- NBONDX:      1260 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 230  HOH  O   .
- Minimum distance between this water and protein is  3.86284 A.
-
- NBONDX:       768 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 141  HOH  O   .
- Minimum distance between this water and protein is  3.93535 A.
-
- NBONDX:       764 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 164  HOH  O   .
- Minimum distance between this water and protein is  3.94552 A.
-
- NBONDX:       686 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 227  HOH  O   .
- Minimum distance between this water and protein is  4.03900 A.
-
- NBONDX:       264 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 224  HOH  O   .
- Minimum distance between this water and protein is  4.05930 A.
-
- NBONDX:       732 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 121  HOH  O   .
- Minimum distance between this water and protein is  4.09998 A.
-
- NBONDX:       796 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 188  HOH  O   .
- Minimum distance between this water and protein is  4.17402 A.
-
- NBONDX:       856 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 62   HOH  O   .
- Minimum distance between this water and protein is  4.22810 A.
-
- NBONDX:       170 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 47   HOH  O   .
- Minimum distance between this water and protein is  4.26658 A.
-
- NBONDX:      1176 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 169  HOH  O   .
- Minimum distance between this water and protein is  4.35253 A.
-
- NBONDX:       596 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 180  HOH  O   .
- Minimum distance between this water and protein is  4.48030 A.
-
- NBONDX:       582 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 166  HOH  O   .
- Minimum distance between this water and protein is  4.71785 A.
-
- NBONDX:       644 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 130  HOH  O   .
- Minimum distance between this water and protein is  4.96383 A.
-
- NBONDX:       814 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 176  HOH  O   .
- Minimum distance between this water and protein is  4.96817 A.
-
- NBONDX:       472 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 182  HOH  O   .
- Minimum distance between this water and protein is  4.98973 A.
-
- NBONDX:       132 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 154  HOH  O   .
- Minimum distance between this water and protein is  5.01792 A.
-
- NBONDX:       726 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 131  HOH  O   .
- Minimum distance between this water and protein is  5.02839 A.
-
- NBONDX:       556 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 69   HOH  O   .
- Minimum distance between this water and protein is  5.11805 A.
-
- NBONDX:       792 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 37   HOH  O   .
- Minimum distance between this water and protein is  5.34586 A.
-
- NBONDX:       632 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 98   HOH  O   .
- Minimum distance between this water and protein is  5.35878 A.
-
- NBONDX:       618 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 66   HOH  O   .
- Minimum distance between this water and protein is  5.38047 A.
-
- NBONDX:       570 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 196  HOH  O   .
- Minimum distance between this water and protein is  5.52798 A.
-
- NBONDX:       634 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 140  HOH  O   .
- Minimum distance between this water and protein is  5.53718 A.
-
- NBONDX:       716 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 190  HOH  O   .
- Minimum distance between this water and protein is  5.72756 A.
-
- NBONDX:       524 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 208  HOH  O   .
- Minimum distance between this water and protein is  5.74717 A.
-
- NBONDX:       692 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 214  HOH  O   .
- Minimum distance between this water and protein is  6.00469 A.
-
- NBONDX:       598 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 170  HOH  O   .
- Minimum distance between this water and protein is  6.05977 A.
-
- NBONDX:       610 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 162  HOH  O   .
- Minimum distance between this water and protein is  6.23520 A.
-
- NBONDX:       554 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 167  HOH  O   .
- Minimum distance between this water and protein is  6.32846 A.
-
- NBONDX:       564 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 172  HOH  O   .
- Minimum distance between this water and protein is  6.51420 A.
-
- NBONDX:       554 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 212  HOH  O   .
- Minimum distance between this water and protein is  6.63201 A.
-
- NBONDX:       596 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 237  HOH  O   .
- Minimum distance between this water and protein is  6.76618 A.
-
- NBONDX:       496 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 122  HOH  O   .
- Minimum distance between this water and protein is  7.23364 A.
-
- NBONDX:       486 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 191  HOH  O   .
- Minimum distance between this water and protein is  7.52485 A.
-
- NBONDX:       526 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 195  HOH  O   .
- Minimum distance between this water and protein is  7.54056 A.
-
- NBONDX:       490 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 158  HOH  O   .
- Minimum distance between this water and protein is  7.73220 A.
-
- NBONDX:       478 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 187  HOH  O   .
- Minimum distance between this water and protein is  8.57160 A.
-
- NBONDX:       428 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 159  HOH  O   .
- Minimum distance between this water and protein is  8.70225 A.
-
- NBONDX:       424 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 137  HOH  O   .
- Minimum distance between this water and protein is  8.84258 A.
-
- NBONDX:       412 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 147  HOH  O   .
- Minimum distance between this water and protein is  8.89046 A.
-
- NBONDX:       442 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 173  HOH  O   .
- Minimum distance between this water and protein is  9.01094 A.
-
- NBONDX:       316 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 198  HOH  O   .
- Minimum distance between this water and protein is  9.05740 A.
-
- NBONDX:       408 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 156  HOH  O   .
- Minimum distance between this water and protein is  9.13163 A.
-
- NBONDX:       300 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 205  HOH  O   .
- Minimum distance between this water and protein is  9.59250 A.
-
- NBONDX:       380 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 213  HOH  O   .
- Minimum distance between this water and protein is  9.70274 A.
-
- NBONDX:       360 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 161  HOH  O   .
- Minimum distance between this water and protein is  9.70539 A.
-
- NBONDX:       390 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 201  HOH  O   .
- Minimum distance between this water and protein is  9.83604 A.
-
- NBONDX:       356 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 165  HOH  O   .
- Minimum distance between this water and protein is 10.27262 A.
-
- NBONDX:       180 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 95   HOH  O   .
- Minimum distance between this water and protein is 10.30883 A.
-
- NBONDX:       194 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 134  HOH  O   .
- Minimum distance between this water and protein is 10.80690 A.
-
- NBONDX:       254 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 124  HOH  O   .
- Minimum distance between this water and protein is 11.07245 A.
-
- NBONDX:       168 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 186  HOH  O   .
- Minimum distance between this water and protein is 11.76636 A.
-
- NBONDX:       258 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 245  HOH  O   .
- Minimum distance between this water and protein is 12.27286 A.
-
- NBONDX:       184 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 174  HOH  O   .
- Minimum distance between this water and protein is 12.39100 A.
-
- NBONDX:       122 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 105  HOH  O   .
- Minimum distance between this water and protein is 12.48347 A.
-
- NBONDX:        64 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 60   HOH  O   .
- Minimum distance between this water and protein is 12.92977 A.
-
- NBONDX:       122 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 139  HOH  O   .
- Minimum distance between this water and protein is 13.21098 A.
-
- NBONDX:        40 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 243  HOH  O   .
- Minimum distance between this water and protein is 14.78843 A.
-
- NBONDX:        42 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 241  HOH  O   .
- Minimum distance between this water and protein is 15.03529 A.
-
- NBONDX:        42 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 222  HOH  O   .
- Minimum distance between this water and protein is 15.36724 A.
-
- NBONDX:        38 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 86   HOH  O   .
- Minimum distance between this water and protein is 16.93223 A.
-
- NBONDX:        42 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 192  HOH  O   .
- Minimum distance between this water and protein is 17.06357 A.
-
- NBONDX:        46 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 193  HOH  O   .
- Minimum distance between this water and protein is 17.53107 A.
-
- NBONDX:        50 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 197  HOH  O   .
- Minimum distance between this water and protein is 19.93423 A.
-
- NBONDX:        52 atom and      0 group interactions within 14.00 A.
- Spin:H1  ,H2  ,    ,     constructed for water WATA 132  HOH  O   .
- Minimum distance between this water and protein is 19.94819 A.
   
  CHARMM>     
   
@@ -2420,9 +1367,9 @@
  CHARMM>    !#              Optimize and save              #
  CHARMM>    !###############################################
  CHARMM>    open  write         unit 1 card name @mol_pre.pdb
- Parameter: MOL -> "LYSOZYME1990"
- VOPEN> Attempting to open::lysozyme1990_pre.pdb::
- OPNLGU> Unit  1 opened for WRITE access to lysozyme1990_pre.pdb
+ Parameter: MOL -> "LYSOZYME1977"
+ VOPEN> Attempting to open::lysozyme1977_pre.pdb::
+ OPNLGU> Unit  1 opened for WRITE access to lysozyme1977_pre.pdb
   
  CHARMM>    write coor pdb      unit 1
  RDTITL> CLOSE               UNIT 1
@@ -2566,7 +1513,7 @@ SEGId RESId RESName  .. TYPEs ..
  PRTA 127  CYS  N    CA   CB   SG   C    O   
  PRTA 128  ARG  N    CA   CB   CG   CD   NE   CZ   NH1  NH2  C    O   
  PRTA 129  LEU  N    CA   CB   CG   CD1  CD2  C    O    OXT 
- SELRPN>   1001 atoms have been selected out of   2708
+ SELRPN>   1001 atoms have been selected out of   1961
   
  CHARMM>     
   
@@ -2581,14 +1528,17 @@ SEGId RESId RESName  .. TYPEs ..
  NBXMOD =      5
  There are        0 atom  pairs and        0 atom  exclusions.
  There are        0 group pairs and        0 group exclusions.
- <MAKINB> with mode   5 found   6281 exclusions and   5110 interactions(1-4)
+ <MAKINB> with mode   5 found   5534 exclusions and   5110 interactions(1-4)
  <MAKGRP> found   1681 group exclusions.
  Generating nonbond list with Exclusion mode = 5
- == PRIMARY == SPACE FOR   778148 ATOM PAIRS AND        0 GROUP PAIRS
+ == PRIMARY == SPACE FOR   563496 ATOM PAIRS AND        0 GROUP PAIRS
+ NBONDA>>  Maximum group spatial extent (12A) exceeded.
+   Size is    10017.25 Angstroms and starts with atom:    1959
+   Please check group boundary definitions.
 
  General atom nonbond list generation found:
-   708426 ATOM PAIRS WERE FOUND FOR ATOM LIST
-    42465 GROUP PAIRS REQUIRED ATOM SEARCHES
+   422280 ATOM PAIRS WERE FOUND FOR ATOM LIST
+    27203 GROUP PAIRS REQUIRED ATOM SEARCHES
 
 
 
@@ -2602,33 +1552,39 @@ MINI MIN: Cycle      ENERgy      Delta-E         GRMS    Step-size
 MINI INTERN:          BONDs       ANGLes       UREY-b    DIHEdrals    IMPRopers
 MINI EXTERN:        VDWaals         ELEC       HBONds          ASP         USER
  ----------       ---------    ---------    ---------    ---------    ---------
-MINI>        0 188671.81988      0.00000  42950.43583      0.02000
-MINI INTERN>        0.11181     98.51404     16.54577    143.40880      0.00000
-MINI EXTERN>   228474.65715 -40061.41769      0.00000      0.00000      0.00000
+MINI>        0 -37168.52785      0.00000     26.02705      0.02000
+MINI INTERN>        0.17886     81.75448     11.95065    248.43764      0.00000
+MINI EXTERN>      425.51054 -37936.36002      0.00000      0.00000      0.00000
  ----------       ---------    ---------    ---------    ---------    ---------
  UPDECI: Nonbond update at step        20
  Generating nonbond list with Exclusion mode = 5
- == PRIMARY == SPACE FOR   778148 ATOM PAIRS AND        0 GROUP PAIRS
+ == PRIMARY == SPACE FOR   563496 ATOM PAIRS AND        0 GROUP PAIRS
+ NBONDA>>  Maximum group spatial extent (12A) exceeded.
+   Size is    10017.25 Angstroms and starts with atom:    1959
+   Please check group boundary definitions.
 
  General atom nonbond list generation found:
-   707976 ATOM PAIRS WERE FOUND FOR ATOM LIST
-    42481 GROUP PAIRS REQUIRED ATOM SEARCHES
+   422479 ATOM PAIRS WERE FOUND FOR ATOM LIST
+    27217 GROUP PAIRS REQUIRED ATOM SEARCHES
 
-MINI>       20 -40108.40108 228780.22096      2.91663      0.00401
-MINI INTERN>       50.87476    172.16417     11.99958    131.20289      1.98946
-MINI EXTERN>      172.25529 -40648.88723      0.00000      0.00000      0.00000
+MINI>       20 -37648.59125    480.06340      0.61772      0.00167
+MINI INTERN>       19.96429    173.82887     21.62131    245.27691     10.59055
+MINI EXTERN>       36.23091 -38156.10408      0.00000      0.00000      0.00000
  ----------       ---------    ---------    ---------    ---------    ---------
  UPDECI: Nonbond update at step        40
  Generating nonbond list with Exclusion mode = 5
- == PRIMARY == SPACE FOR   778148 ATOM PAIRS AND        0 GROUP PAIRS
+ == PRIMARY == SPACE FOR   563496 ATOM PAIRS AND        0 GROUP PAIRS
+ NBONDA>>  Maximum group spatial extent (12A) exceeded.
+   Size is    10017.25 Angstroms and starts with atom:    1959
+   Please check group boundary definitions.
 
  General atom nonbond list generation found:
-   707850 ATOM PAIRS WERE FOUND FOR ATOM LIST
-    42527 GROUP PAIRS REQUIRED ATOM SEARCHES
+   422492 ATOM PAIRS WERE FOUND FOR ATOM LIST
+    27226 GROUP PAIRS REQUIRED ATOM SEARCHES
 
-MINI>       40 -40616.28620    507.88512      4.53869      0.00464
-MINI INTERN>       70.27410    159.82883     12.78759    132.12566      5.48798
-MINI EXTERN>       -5.59747 -40991.19288      0.00000      0.00000      0.00000
+MINI>       40 -37655.10120      6.50995      0.47300      0.00080
+MINI INTERN>       17.40544    177.02332     21.85664    250.20495     12.46142
+MINI EXTERN>       35.16891 -38169.22189      0.00000      0.00000      0.00000
  ----------       ---------    ---------    ---------    ---------    ---------
 
  STEEPD> Minimization exiting with number of steps limit (        50) exceeded.
@@ -2637,9 +1593,9 @@ STPD MIN: Cycle      ENERgy      Delta-E         GRMS    Step-size
 STPD INTERN:          BONDs       ANGLes       UREY-b    DIHEdrals    IMPRopers
 STPD EXTERN:        VDWaals         ELEC       HBONds          ASP         USER
  ----------       ---------    ---------    ---------    ---------    ---------
-STPD>       50 -40766.33176    150.04555      1.44830      0.00249
-STPD INTERN>       54.32774    159.41848     12.92773    133.15304      6.12529
-STPD EXTERN>      -32.62701 -41099.65702      0.00000      0.00000      0.00000
+STPD>       50 -37656.58443      1.48323      0.58932      0.00043
+STPD INTERN>       17.61133    176.83948     21.72816    252.54205     12.67093
+STPD EXTERN>       33.31089 -38171.28726      0.00000      0.00000      0.00000
  ----------       ---------    ---------    ---------    ---------    ---------
   
  CHARMM>    mini  conj  nstep 100 nprint 20 inbfrq 20
@@ -2650,14 +1606,17 @@ STPD EXTERN>      -32.62701 -41099.65702      0.00000      0.00000      0.00000
  CUTNB  = 14.000 CTEXNB =999.000 CTONNB = 10.000 CTOFNB = 12.000
  WMIN   =  1.500 WRNMXD =  0.500 E14FAC =  1.000 EPS    =  1.000
  NBXMOD =      5
- There are   707850 atom  pairs and    11391 atom  exclusions.
+ There are   422492 atom  pairs and    10644 atom  exclusions.
  There are        0 group pairs and     1681 group exclusions.
  Generating nonbond list with Exclusion mode = 5
- == PRIMARY == SPACE FOR   778148 ATOM PAIRS AND        0 GROUP PAIRS
+ == PRIMARY == SPACE FOR   563496 ATOM PAIRS AND        0 GROUP PAIRS
+ NBONDA>>  Maximum group spatial extent (12A) exceeded.
+   Size is    10017.25 Angstroms and starts with atom:    1959
+   Please check group boundary definitions.
 
  General atom nonbond list generation found:
-   707820 ATOM PAIRS WERE FOUND FOR ATOM LIST
-    42528 GROUP PAIRS REQUIRED ATOM SEARCHES
+   422483 ATOM PAIRS WERE FOUND FOR ATOM LIST
+    27218 GROUP PAIRS REQUIRED ATOM SEARCHES
 
 
 
@@ -2673,29 +1632,29 @@ MINI MIN: Cycle      ENERgy      Delta-E         GRMS    Step-size
 MINI INTERN:          BONDs       ANGLes       UREY-b    DIHEdrals    IMPRopers
 MINI EXTERN:        VDWaals         ELEC       HBONds          ASP         USER
  ----------       ---------    ---------    ---------    ---------    ---------
-MINI>        0 -40766.33176    150.04555      1.44830      0.00000
-MINI INTERN>       54.32774    159.41848     12.92773    133.15304      6.12529
-MINI EXTERN>      -32.62701 -41099.65702      0.00000      0.00000      0.00000
+MINI>        0 -37656.73706      0.15263      0.27888      0.00000
+MINI INTERN>       15.53799    176.89283     21.75232    252.24908     12.65182
+MINI EXTERN>       33.47973 -38169.30083      0.00000      0.00000      0.00000
  ----------       ---------    ---------    ---------    ---------    ---------
-MINI>       20 -41329.60865    563.27689      1.92277      0.81586
-MINI INTERN>       65.06953    168.73121     12.82087    134.23757      6.41450
-MINI EXTERN>      -56.40720 -41660.47513      0.00000      0.00000      0.00000
+MINI>       20 -37666.49807      9.76101      1.83986      0.07452
+MINI INTERN>       20.81875    180.11237     22.24063    268.62659     13.73327
+MINI EXTERN>       25.45088 -38197.48057      0.00000      0.00000      0.00000
  ----------       ---------    ---------    ---------    ---------    ---------
-MINI>       40 -41513.50673    183.89808      2.01181      0.64697
-MINI INTERN>       92.78572    174.25103     13.34506    136.67024      6.81996
-MINI EXTERN>       60.59257 -41997.97132      0.00000      0.00000      0.00000
+MINI>       40 -37672.36192      5.86384      0.45773      0.14071
+MINI INTERN>       16.07387    177.23824     21.58344    261.02393     13.03367
+MINI EXTERN>       32.80889 -38194.12395      0.00000      0.00000      0.00000
  ----------       ---------    ---------    ---------    ---------    ---------
-MINI>       60 -41632.20731    118.70058      1.63029      0.53893
-MINI INTERN>       87.99240    185.97912     13.15571    141.86113      7.05207
-MINI EXTERN>       73.50734 -42141.75508      0.00000      0.00000      0.00000
+MINI>       60 -37674.93352      2.57161      0.23333      0.07966
+MINI INTERN>       15.20914    175.40842     21.29161    261.49084     12.85812
+MINI EXTERN>       30.39404 -38191.58568      0.00000      0.00000      0.00000
  ----------       ---------    ---------    ---------    ---------    ---------
-MINI>       80 -41711.19175     78.98444      1.60484      0.45551
-MINI INTERN>       92.47158    180.49427     13.30095    141.95636      6.32490
-MINI EXTERN>       78.73865 -42224.47846      0.00000      0.00000      0.00000
+MINI>       80 -37676.08703      1.15351      0.14801      0.02149
+MINI INTERN>       15.26223    176.72317     21.50004    262.15212     12.94418
+MINI EXTERN>       30.40893 -38195.07770      0.00000      0.00000      0.00000
  ----------       ---------    ---------    ---------    ---------    ---------
-MINI>      100 -41771.33149     60.13974      1.40394      0.42074
-MINI INTERN>       91.95319    181.63903     13.30215    144.25453      7.37935
-MINI EXTERN>      101.30984 -42311.16958      0.00000      0.00000      0.00000
+MINI>      100 -37677.25324      1.16621      0.29629      0.04477
+MINI INTERN>       15.43308    177.34852     21.57033    263.55227     12.94510
+MINI EXTERN>       30.04092 -38198.14347      0.00000      0.00000      0.00000
  ----------       ---------    ---------    ---------    ---------    ---------
 
  CONJUG> Minimization exiting with number of steps limit (  100) exceeded.
@@ -2704,16 +1663,16 @@ CONJ MIN: Cycle      ENERgy      Delta-E         GRMS    Step-size
 CONJ INTERN:          BONDs       ANGLes       UREY-b    DIHEdrals    IMPRopers
 CONJ EXTERN:        VDWaals         ELEC       HBONds          ASP         USER
  ----------       ---------    ---------    ---------    ---------    ---------
-CONJ>      100 -41771.33149     60.13974      1.40394      0.02000
-CONJ INTERN>       91.95319    181.63903     13.30215    144.25453      7.37935
-CONJ EXTERN>      101.30984 -42311.16958      0.00000      0.00000      0.00000
+CONJ>      100 -37677.25324      1.16621      0.29629      0.02000
+CONJ INTERN>       15.43308    177.34852     21.57033    263.55227     12.94510
+CONJ EXTERN>       30.04092 -38198.14347      0.00000      0.00000      0.00000
  ----------       ---------    ---------    ---------    ---------    ---------
   
  CHARMM>     
   
  CHARMM>    ! Release all constraints
  CHARMM>    cons fix sele none end
- SELRPN>      0 atoms have been selected out of   2708
+ SELRPN>      0 atoms have been selected out of   1961
   
  CHARMM>     
   
@@ -2723,9 +1682,9 @@ CONJ EXTERN>      101.30984 -42311.16958      0.00000      0.00000      0.00000
  CHARMM>     
   
  CHARMM>    open  write         unit 1 card name @mol.pdb
- Parameter: MOL -> "LYSOZYME1990"
- VOPEN> Attempting to open::lysozyme1990.pdb::
- OPNLGU> Unit  1 opened for WRITE access to lysozyme1990.pdb
+ Parameter: MOL -> "LYSOZYME1977"
+ VOPEN> Attempting to open::lysozyme1977.pdb::
+ OPNLGU> Unit  1 opened for WRITE access to lysozyme1977.pdb
   
  CHARMM>    write coor pdb      unit 1
  RDTITL> CLOSE               UNIT 1
@@ -2737,9 +1696,9 @@ CONJ EXTERN>      101.30984 -42311.16958      0.00000      0.00000      0.00000
  CHARMM>     
   
  CHARMM>    open  write         unit 1 card name @mol.crd
- Parameter: MOL -> "LYSOZYME1990"
- VOPEN> Attempting to open::lysozyme1990.crd::
- OPNLGU> Unit  1 opened for WRITE access to lysozyme1990.crd
+ Parameter: MOL -> "LYSOZYME1977"
+ VOPEN> Attempting to open::lysozyme1977.crd::
+ OPNLGU> Unit  1 opened for WRITE access to lysozyme1977.crd
   
  CHARMM>    write coor card     unit 1
  RDTITL> CLOSE               UNIT 1
@@ -2752,9 +1711,9 @@ CONJ EXTERN>      101.30984 -42311.16958      0.00000      0.00000      0.00000
  CHARMM>     
   
  CHARMM>    open  write         unit 1 card name @mol.psf
- Parameter: MOL -> "LYSOZYME1990"
- VOPEN> Attempting to open::lysozyme1990.psf::
- OPNLGU> Unit  1 opened for WRITE access to lysozyme1990.psf
+ Parameter: MOL -> "LYSOZYME1977"
+ VOPEN> Attempting to open::lysozyme1977.psf::
+ OPNLGU> Unit  1 opened for WRITE access to lysozyme1977.psf
   
  CHARMM>    write psf card      unit 1
  RDTITL> CLOSE               UNIT 1
@@ -2766,9 +1725,9 @@ CONJ EXTERN>      101.30984 -42311.16958      0.00000      0.00000      0.00000
  CHARMM>     
   
  CHARMM>    open  write         unit 1 card name @mol_xplor.psf
- Parameter: MOL -> "LYSOZYME1990"
- VOPEN> Attempting to open::lysozyme1990_xplor.psf::
- OPNLGU> Unit  1 opened for WRITE access to lysozyme1990_xplor.psf
+ Parameter: MOL -> "LYSOZYME1977"
+ VOPEN> Attempting to open::lysozyme1977_xplor.psf::
+ OPNLGU> Unit  1 opened for WRITE access to lysozyme1977_xplor.psf
   
  CHARMM>    write psf xplo card unit 1
  RDTITL> CLOSE               UNIT 1
@@ -2781,25 +1740,25 @@ CONJ EXTERN>      101.30984 -42311.16958      0.00000      0.00000      0.00000
   
  CHARMM>    stop
 $$$$$$  New timer profile $$$$$
-               Nonbond force          45.91089 Other:    0.00000
-               Bond energy             0.11200 Other:    0.00000
-               Angle energy            0.46802 Other:    0.00000
-               Dihedral energy         0.80804 Other:    0.00000
-          Energy time            47.37897 Other:    0.08002
-     Dynamics total         47.37897 Other:    0.00000
- Total time             55.76748 Other:    8.38852
+               Nonbond force          21.80937 Other:    0.00000
+               Bond energy             0.05200 Other:    0.00000
+               Angle energy            0.39602 Other:    0.00000
+               Dihedral energy         0.64403 Other:    0.00000
+          Energy time            22.93743 Other:    0.03600
+     Dynamics total         22.93743 Other:    0.00000
+ Total time             27.10569 Other:    4.16826
 
                     NORMAL TERMINATION BY NORMAL STOP
                     MAXIMUM STACK SPACE USED IS   99024
                     STACK CURRENTLY IN USE IS         0
                     MOST SEVERE WARNING WAS AT LEVEL  2
                     HEAP PRINTOUT-  HEAP SIZE  10240000
-                    SPACE CURRENTLY IN USE IS      4768
-                    MAXIMUM SPACE USED IS        959986
+                    SPACE CURRENTLY IN USE IS      4224
+                    MAXIMUM SPACE USED IS        710490
                     FREE LIST
-            PRINHP> ADDRESS:         1 LENGTH:   9381236 NEXT:   9386005
-            PRINHP> ADDRESS:   9386005 LENGTH:    853996 NEXT:         0
+            PRINHP> ADDRESS:         1 LENGTH:   9608322 NEXT:   9612547
+            PRINHP> ADDRESS:   9612547 LENGTH:    627454 NEXT:         0
 
                     $$$$$ JOB ACCOUNTING INFORMATION $$$$$
-                     ELAPSED TIME:    56.38  SECONDS 
-                         CPU TIME:    55.76  SECONDS 
+                     ELAPSED TIME:    27.16  SECONDS 
+                         CPU TIME:    27.08  SECONDS 

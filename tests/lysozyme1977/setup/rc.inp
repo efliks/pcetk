@@ -1,7 +1,7 @@
 * Make PSF and PDB files
 *
 
-set mol lysozyme1990
+set mol lysozyme1977
 
 
 !###############################################
@@ -30,12 +30,12 @@ rewind          unit 1
 read   coor pdb unit 1
 close           unit 1
 
-open   read     unit 1 card name "waters.pdb"
-read   sequ pdb unit 1
-gene   WATA setup noan nodi
-rewind          unit 1
-read   coor pdb unit 1
-close           unit 1
+! open   read     unit 1 card name "waters.pdb"
+! read   sequ pdb unit 1
+! gene   WATA setup noan nodi
+! rewind          unit 1
+! read   coor pdb unit 1
+! close           unit 1
 
 
 !###############################################
@@ -46,17 +46,14 @@ patch DISU PRTA  30 PRTA 115 setup
 patch DISU PRTA  64 PRTA  80 setup
 patch DISU PRTA  76 PRTA  94 setup
 
-! patch NTER PRTA   1 setup
-! patch CTER PRTA 129 setup
-
 
 !###############################################
 !#              Add missing atoms              #
 !###############################################
-coor    init sele type h* end
 ic      fill pres
 ic      para
-! ic      build
+ic      build
+coor    init sele type h* end
 hbuild
 
 

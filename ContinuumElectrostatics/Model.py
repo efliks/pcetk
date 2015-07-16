@@ -580,20 +580,18 @@ class MEADModel (object):
     def _SetupSites (self, residue, prevResidue=None, nextResidue=None, terminal=None, log=logFile):
         segmentName, residueName, residueSerial = self._GetResidueInfo (residue)
         setupSites    = []
-
-        if residueName in PROTEIN_RESIDUES:
-            if terminal:
-                if   terminal == "N":
-                    if   residueName == "GLY":
-                        libTerm = self.librarySites["NGL"]
-                    elif residueName == "PRO":
-                        libTerm = self.librarySites["NPR"]
-                    else:
-                        libTerm = self.librarySites["NTR"]
-                elif terminal == "C":
-                    libTerm = self.librarySites["CTR"]
-                termIndices = self._GetIndices (residue, libTerm["atoms"])
-                setupSites.append ([terminal, libTerm, termIndices, termIndices])
+        if terminal:
+            if   terminal == "N":
+                if   residueName == "GLY":
+                    libTerm = self.librarySites["NGL"]
+                elif residueName == "PRO":
+                    libTerm = self.librarySites["NPR"]
+                else:
+                    libTerm = self.librarySites["NTR"]
+            elif terminal == "C":
+                libTerm = self.librarySites["CTR"]
+            termIndices = self._GetIndices (residue, libTerm["atoms"])
+            setupSites.append ([terminal, libTerm, termIndices, termIndices])
 
         # Check if titratable residue
         if residueName in self.librarySites:
@@ -601,42 +599,32 @@ class MEADModel (object):
             siteIndices  = self._GetIndices (residue, libSite["atoms"])
             modelIndices = []
             for atom in residue.children:
+                if terminal:
+                    if (atom.label in TERM_REMOVE) or (atom.index in termIndices):
+                        continue
                 modelIndices.append (atom.index)
 
-            prevIndices  = []
-            if prevResidue:
-                foo, prevResidueName, prevResidueSerial = self._GetResidueInfo (prevResidue)
-                if prevResidueName in PROTEIN_RESIDUES:
-                    prevIndices = self._GetIndices (prevResidue, PREV_RESIDUE, check=False) 
-
-            nextIndices  = []
-            if nextResidue:
-                foo, nextResidueName, nextResidueSerial = self._GetResidueInfo (nextResidue)
-                if nextResidueName in PROTEIN_RESIDUES:
-                    if   nextResidueName == "GLY":
-                        nextLabels = NEXT_RESIDUE_GLY
-                    elif nextResidueName == "PRO":
-                        nextLabels = NEXT_RESIDUE_PRO
-                    else:
-                        nextLabels = NEXT_RESIDUE
-                    nextIndices = self._GetIndices (nextResidue, nextLabels, check=False)
-
-            finalModelIndices = []
-            collectIndices    = prevIndices + modelIndices + nextIndices
-            if terminal:
-                for index in collectIndices:
-                    if index not in termIndices:
-                        finalModelIndices.append (index)
-            else:
-                finalModelIndices = collectIndices
-            setupSites.append (["SITE", libSite, siteIndices, finalModelIndices])
-            #if terminal:
-            #    finalModelIndices = []
-            #    for index in modelIndices:
-            #        if index not in termIndices:
-            #            finalModelIndices.append (index)
-            #else:
-            #    finalModelIndices = prevIndices + modelIndices + nextIndices
+            if not terminal:
+                prevIndices  = []
+                if prevResidue:
+                    foo, prevResidueName, prevResidueSerial = self._GetResidueInfo (prevResidue)
+                    if prevResidueName in PROTEIN_RESIDUES:
+                        prevIndices = self._GetIndices (prevResidue, PREV_RESIDUE, check=False)
+                    modelIndices = prevIndices + modelIndices
+    
+                nextIndices  = []
+                if nextResidue:
+                    foo, nextResidueName, nextResidueSerial = self._GetResidueInfo (nextResidue)
+                    if nextResidueName in PROTEIN_RESIDUES:
+                        if   nextResidueName == "GLY":
+                            nextLabels = NEXT_RESIDUE_GLY
+                        elif nextResidueName == "PRO":
+                            nextLabels = NEXT_RESIDUE_PRO
+                        else:
+                            nextLabels = NEXT_RESIDUE
+                        nextIndices = self._GetIndices (nextResidue, nextLabels, check=False)
+                    modelIndices = modelIndices + nextIndices
+            setupSites.append (["SITE", libSite, siteIndices, modelIndices])
 
             if terminal == "C":
                 setupSites.reverse ()
@@ -688,7 +676,7 @@ class MEADModel (object):
                     else:
                         terminal = None
 
-                    setupSites = self._SetupSites (residue, prevResidue, nextResidue, terminal=(terminal if includeTermini else None), log=log)
+                    setupSites = self._SetupSites (residue, prevResidue, nextResidue, terminal=(terminal if (includeTermini and (residueName in PROTEIN_RESIDUES)) else None), log=log)
                     for siteType, libSite, siteAtomIndices, modelAtomIndices in setupSites:
                         if not dryRun:
                             if   siteType == "N":

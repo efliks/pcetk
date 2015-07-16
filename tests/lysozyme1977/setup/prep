@@ -1,0 +1,5 @@
+#==========
+f=7LYZ.pdb
+grep ^ATOM $f  | ./segid PRTA > protein.pdb
+
+# grep ^HETATM $f | grep -v NO3 | ./pdb_recount 1 | ./segid WATA > waters.pdb

@@ -6,8 +6,8 @@ from ContinuumElectrostatics import MEADModel, MEADSubstate, StateVector, Titrat
 
 parameters = ["toppar/par_all27_prot_na.inp", ]
 
-mol = CHARMMPSFFile_ToSystem ("setup/lysozyme1990_xplor.psf", isXPLOR=True, parameters=CHARMMParameterFiles_ToParameters (parameters))
-mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("setup/lysozyme1990.crd")
+mol = CHARMMPSFFile_ToSystem ("setup/lysozyme1977_xplor.psf", isXPLOR=True, parameters=CHARMMParameterFiles_ToParameters (parameters))
+mol.coordinates3 = CHARMMCRDFile_ToCoordinates3 ("setup/lysozyme1977.crd")
 
 
 electrostaticModel = MEADModel (system=mol, pathMEAD="/home/mikolaj/local/bin/", pathScratch="mead", nthreads=1)
@@ -49,6 +49,9 @@ for mcModel, folded, direc, message, sedFile, substateFile in (
     curves = TitrationCurves (electrostaticModel, curveSampling=.5)
     curves.CalculateCurves ()
     curves.WriteCurves (directory=direc)
+
+    logFile.Text ("\n***Calculating pK1/2 values %s***\n" % message)
+    curves.PrintHalfpKs ()
 
     logFile.Text ("\n***Calculating protonation states at pH=7 %s***\n" % message)
     electrostaticModel.CalculateProbabilities (pH=7.)
