@@ -65,18 +65,17 @@ def writepage (counter, data):
 
 
 #===========================================================
-proteinlabels = ("curves_analytic", "curves_gmct", "curves_custom", )
-#"curves_analytic_unfolded" 
+proteinlabels = ("7LYZ", "2LZT", )
 nproteins = len (proteinlabels)
 
 files = []
 for directory in proteinlabels:
-    files.extend (glob.glob ("%s/*dat" % directory))
+    files.extend (glob.glob ("curves/%s/*dat" % directory))
 
 
 proteins = {}
 for f in files:
-    protein, filename = f.split ("/")
+    foo, protein, filename = f.split ("/")
     segment, site, label = filename.split ("_")
     name   = site[:3]
     serial = int (site[3:])
