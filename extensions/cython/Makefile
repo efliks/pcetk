@@ -1,4 +1,4 @@
-PDYNAMO_PCORE = /home/mikolaj/local/opt/pDynamo-1.8.0/pCore-1.8.0
+PDYNAMO_PCORE = /home/mikolaj/local/opt/pDynamo-1.9.0/pCore-1.9.0
 PY_INCLUDE    = /usr/include/python2.7
 
 # The options -fdata-sections and -ffunction-sections are for not linking the unused code

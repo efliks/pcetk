@@ -61,6 +61,8 @@ class TitrationCurves (object):
         self.owner         =  meadModel
         self.nsteps        =  int ((self.curveStop - self.curveStart) / self.curveSampling + 1)
         self.steps         =  None
+        self.halves        =  None
+        self.isHalves      =  False
         self.isCalculated  =  False
 
 
@@ -193,14 +195,13 @@ class TitrationCurves (object):
 
 
     #===============================================================================
-    def FindHalfpKs (self):
+    def CalculateHalfpKs (self):
         """Scan the calculated curves to find pK1/2 values."""
-        sites = []
         if self.isCalculated:
-            owner  = self.owner
-            data   = self.steps
-            nsteps = self.nsteps
-
+            owner   =  self.owner
+            data    =  self.steps
+            nsteps  =  self.nsteps
+            halves  =  []
             for site in owner.meadSites:
                 instances = []
                 for instance in site.instances:
@@ -215,31 +216,41 @@ class TitrationCurves (object):
                             pKs.append (pK)
                         pa = pb
                     instances.append (pKs)
-                sites.append (instances)
-        return sites
+                halves.append (instances)
+
+            self.halves   = halves
+            self.isHalves = True
+
+
+    #===============================================================================
+    def _GetEntry (self, site, decimalPlaces=2):
+        entry = ""
+        if self.isHalves:
+            for instance in site.instances:
+                pKs     = self.halves[site.siteIndex][instance.instIndex]
+                nvalues = len (pKs)
+                entry   = "%s%7s" % (entry, instance.label)
+                if nvalues < 1:
+                    entry = "%s%7s" % (entry, "n/a")
+                else:
+                    for pK in pKs:
+                        entry = ("%%s%%7.%df" % decimalPlaces) % (entry, pK)
+        return entry
 
 
     #===============================================================================
     def PrintHalfpKs (self, decimalPlaces=2, sortSites=False, log=logFile):
         """Print pK1/2 values."""
-        if self.isCalculated:
-            if LogFileActive (log):
-                owner   = self.owner
-                sites   = self.FindHalfpKs ()
-                entries = []
-                longest = 0
+        if LogFileActive (log):
+            if self.isCalculated:
+                owner    =  self.owner
+                entries  =  []
+                longest  =  0
+                if not self.isHalves:
+                    self.CalculateHalfpKs ()
 
                 for site in owner.meadSites:
-                    entry = ""
-                    for instance in site.instances:
-                        pKs     = sites[site.siteIndex][instance.instIndex]
-                        nvalues = len (pKs)
-                        entry   = "%s%7s" % (entry, instance.label)
-                        if nvalues < 1:
-                            entry = "%s%7s" % (entry, "n/a")
-                        else:
-                            for pK in pKs:
-                                entry = ("%%s%%7.%df" % decimalPlaces) % (entry, pK)
+                    entry  = self._GetEntry (site, decimalPlaces)
                     entries.append (entry)
                     length = len (entry)
                     if length > longest: longest = length
