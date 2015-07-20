@@ -1,0 +1,1764 @@
+1
+                 Chemistry at HARvard Macromolecular Mechanics
+                   (CHARMM) - Developmental Version 28a3     August 15, 2000   
+       Copyright(c) 1984,1992  President and Fellows of Harvard College
+                              All Rights Reserved
+      Current operating system: Linux-3.2.0-4-amd64(x86_64)@vic.local
+                 Created on  7/15/15 at 20:41:28 by user: mikolaj     
+
+            Maximum number of ATOMS:    240480, and RESidues:       72000
+            Current HEAP size:        10240000, and STACK size:   2000000
+
+ RDTITL> * MAKE PSF AND PDB FILES
+ RDTITL> *
+  
+ CHARMM>     
+  
+ CHARMM>    set mol lysozyme1977
+ Parameter: MOL <- "LYSOZYME1977"
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    !###############################################
+ CHARMM>    !#                Topology files               #
+ CHARMM>    !###############################################
+ CHARMM>    open  read unit  1 card name "../toppar/top_all27_prot_na.inp"
+ VOPEN> Attempting to open::../toppar/top_all27_prot_na.inp::
+ OPNLGU> Unit  1 opened for READONLY access to ../toppar/top_all27_prot_na.inp
+  
+ CHARMM>    read  rtf  unit  1 card
+ MAINIO> Residue topology file being read from unit   1.
+ TITLE> *>>>>>> COMBINED CHARMM ALL-HYDROGEN TOPOLOGY FILE FOR <<<<<<<<<
+ TITLE> *>>>>>>> CHARMM22 PROTEINS AND CHARMM27 NUCLEIC ACIDS <<<<<<<<<<
+ TITLE> *FROM
+ TITLE> *>>>> CHARMM22 ALL-HYDROGEN TOPOLOGY FILE FOR PROTEINS <<<<<<<<
+ TITLE> *>>>>>>>>>>>>>>>>>>>>>>> AUGUST 1999 <<<<<<<<<<<<<<<<<<<<<<<<<<<
+ TITLE> *>>>>>>> DIRECT COMMENTS TO ALEXANDER D. MACKERELL JR. <<<<<<<<<
+ TITLE> *>>>>>> 410-706-7442 OR EMAIL: ALEX,MMIRIS.AB.UMD.EDU  <<<<<<<<<
+ TITLE> *AND
+ TITLE> *  \\\\ CHARMM27 ALL-HYDROGEN NUCLEIC ACID TOPOLOGY FILE ////
+ TITLE> *  \\\\\\\\\\\\\\\\\\ DEVELOPMENTAL ////////////////////////
+ TITLE> *        ALEXANDER D. MACKERELL JR. AND NICOLAS FOLOPPE
+ TITLE> *                        AUGUST 1999
+ TITLE> *     ALL COMMENTS TO ADM JR.  EMAIL: ALEX,MMIRIS.AB.UMD.EDU
+ TITLE> *                 TELEPHONE: 410-706-7442
+ TITLE> * .
+ TITLE> * CHANGES: GMU JULY 2002
+ TITLE> *          ILE CD --> ILE CD1 AND ALSO ASSOCIATED HYDROGENS (PDB CONVENTION)
+ TITLE> *          CTER OT1, OT2 --> OXT, O (PDB CONVENTION)
+ TITLE> *          NTER HT* --> H* (PDB CONVENTION)
+ TITLE> *          HSP --> HIS
+ TITLE> *          NADP ---> NAP (PDB CONVENTION)
+ TITLE> *          COPY TIP --> HOH (PDB CONVENTION)
+ TITLE> *          MOVE CAL --> CA
+ TITLE> *          ADDED TYPES NO, ON FOR NO2*          BACKBONE HN --> H (PDB CONVENTION)
+ TITLE> *
+*** WARNING **** residue HSD  already exists (old one deleted)
+          RESI HSD          0.00
+*** WARNING **** residue DUM  already exists (old one deleted)
+          RESI DUM       0.00
+ There were   2 warning(s) from RTFRDR.
+  
+ CHARMM>    close      unit  1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    !###############################################
+ CHARMM>    !#               Parameter files               #
+ CHARMM>    !###############################################
+ CHARMM>    open  read unit  1 card name "../toppar/par_all27_prot_na.inp"
+ VOPEN> Attempting to open::../toppar/par_all27_prot_na.inp::
+ OPNLGU> Unit  1 opened for READONLY access to ../toppar/par_all27_prot_na.inp
+  
+ CHARMM>    read  para unit  1 card
+
+          PARAMETER FILE BEING READ FROM UNIT  1
+ TITLE> *>>>>>> COMBINED CHARMM ALL-HYDROGEN PARAMETER FILE FOR <<<<<<<<<
+ TITLE> *>>>>>>> CHARMM22 PROTEINS AND CHARMM27 NUCLEIC ACIDS <<<<<<<<<<
+ TITLE> *FROM
+ TITLE> *>>>> CHARMM22 ALL-HYDROGEN PARAMETER FILE FOR PROTEINS <<<<<<<<
+ TITLE> *>>>>>>>>>>>>>>>>>>>>>>> AUGUST 1999 <<<<<<<<<<<<<<<<<<<<<<<<<<<
+ TITLE> *>>>>>>> DIRECT COMMENTS TO ALEXANDER D. MACKERELL JR. <<<<<<<<<
+ TITLE> *>>>>>> 410-706-7442 OR EMAIL: ALEX,MMIRIS.AB.UMD.EDU  <<<<<<<<<
+ TITLE> *AND
+ TITLE> *  \\\\ CHARMM27 ALL-HYDROGEN NUCLEIC ACID PARAMETER FILE ////
+ TITLE> *  \\\\\\\\\\\\\\\\\\ DEVELOPMENTAL ////////////////////////
+ TITLE> *       ALEXANDER D. MACKERELL JR. AND NICOLAS FOLOPPE
+ TITLE> *                       AUGUST 1999
+ TITLE> *    ALL COMMENTS TO ADM JR.  EMAIL: ALEX,MMIRIS.AB.UMD.EDU
+ TITLE> *            TELEPHONE: 410-706-7442
+ TITLE> * .
+ TITLE> * CHANGE BY GMU FEB 2003
+ TITLE> *        ADD ANGLE AND TORSIONS FOR FOR
+ TITLE> *
+ PARRDR> Multiple terms for dihedral type: INDEX 1053 CODE********     ON3 -P2  -ON2 -P2  
+ PARRDR> Multiple terms for dihedral type: INDEX 1051 CODE********     ON3 -P   -ON2 -P2  
+ PARRDR> Multiple terms for dihedral type: INDEX 1049 CODE********     ON2 -P2  -ON2 -P2  
+ PARRDR> Multiple terms for dihedral type: INDEX 1047 CODE********     ON2 -P   -ON2 -P2  
+ PARRDR> Multiple terms for dihedral type: INDEX 1045 CODE********     ON3 -P2  -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX 1043 CODE********     ON3 -P   -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX 1041 CODE********     ON2 -P2  -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX 1039 CODE********     ON2 -P   -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX 1035 CODE********     CN5 -NN2B-CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX 1026 CODE********     CN1T-NN2B-CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX 1015 CODE********     CN5 -NN2B-CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX 1006 CODE********     CN1T-NN2B-CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  997 CODE********     CN7B-CN8 -CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  996 CODE********     CN7B-CN8 -CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  994 CODE********     CN7B-CN7C-CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  993 CODE********     CN7B-CN7C-CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  991 CODE********     CN7B-CN7B-CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  990 CODE********     CN7B-CN7B-CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  984 CODE********     CN7B-CN8 -CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  983 CODE********     CN7B-CN8 -CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  981 CODE********     CN7B-CN7C-CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  980 CODE********     CN7B-CN7C-CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  978 CODE********     CN7B-CN7B-CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  977 CODE********     CN7B-CN7B-CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  967 CODE********     CN8 -CN3 -CN1A-ON1 
+ PARRDR> Multiple terms for dihedral type: INDEX  966 CODE********     CN8 -CN3 -CN1A-ON1 
+ PARRDR> Multiple terms for dihedral type: INDEX  962 CODE********     CN3C-CN3 -CN1A-ON1 
+ PARRDR> Multiple terms for dihedral type: INDEX  889 CODE********     CN8 -CN3 -CN1A-NN1 
+ PARRDR> Multiple terms for dihedral type: INDEX  888 CODE********     CN8 -CN3 -CN1A-NN1 
+ PARRDR> Multiple terms for dihedral type: INDEX  883 CODE********     CN3C-CN3 -CN1A-NN1 
+ PARRDR> Multiple terms for dihedral type: INDEX  881 CODE********     CN3B-CN3 -CN1A-NN1 
+ PARRDR> Multiple terms for dihedral type: INDEX  879 CODE********     CN3A-CN3 -CN1A-NN1 
+ PARRDR> Multiple terms for dihedral type: INDEX  857 CODE********     HN5 -ON5 -CN7 -CN8 
+ PARRDR> Multiple terms for dihedral type: INDEX  856 CODE********     HN5 -ON5 -CN7 -CN8 
+ PARRDR> Multiple terms for dihedral type: INDEX  845 CODE********     HN5 -ON5 -CN7 -CN7C
+ PARRDR> Multiple terms for dihedral type: INDEX  831 CODE********     HN5 -ON5 -CN7B-CN7B
+ PARRDR> Multiple terms for dihedral type: INDEX  830 CODE********     HN5 -ON5 -CN7B-CN7B
+ PARRDR> Multiple terms for dihedral type: INDEX  829 CODE********     HN5 -ON5 -CN7B-CN7B
+ PARRDR> Multiple terms for dihedral type: INDEX  827 CODE********     HN5 -ON5 -CN7 -CN7B
+ PARRDR> Multiple terms for dihedral type: INDEX  817 CODE********     HN5 -ON5 -CN8B-CN7 
+ PARRDR> Multiple terms for dihedral type: INDEX  816 CODE********     HN5 -ON5 -CN8B-CN7 
+ PARRDR> Multiple terms for dihedral type: INDEX  813 CODE********     HN5 -ON5 -CN7B-CN7 
+ PARRDR> Multiple terms for dihedral type: INDEX  811 CODE********     HN5 -ON5 -CN7 -CN7 
+ PARRDR> Multiple terms for dihedral type: INDEX  810 CODE********     HN5 -ON5 -CN7 -CN7 
+ PARRDR> Multiple terms for dihedral type: INDEX  763 CODE********     CT3 -OS  -CD  -OB  
+ PARRDR> Multiple terms for dihedral type: INDEX  761 CODE********     CT2 -OS  -CD  -OB  
+ PARRDR> Multiple terms for dihedral type: INDEX  754 CODE********     CP3 -N   -C   -O   
+ PARRDR> Multiple terms for dihedral type: INDEX  752 CODE********     CP2 -CP1 -C   -O   
+ PARRDR> Multiple terms for dihedral type: INDEX  750 CODE********     CP1 -N   -C   -O   
+ PARRDR> Multiple terms for dihedral type: INDEX  741 CODE********     HB  -CP1 -C   -O   
+ PARRDR> Multiple terms for dihedral type: INDEX  726 CODE********     N   -CP1 -C   -NH1 
+ PARRDR> Multiple terms for dihedral type: INDEX  724 CODE********     CP2 -CP1 -C   -NH1 
+ PARRDR> Multiple terms for dihedral type: INDEX  718 CODE********     HB  -CP1 -C   -NH1 
+ PARRDR> Multiple terms for dihedral type: INDEX  707 CODE********     CP2 -CP1 -C   -N   
+ PARRDR> Multiple terms for dihedral type: INDEX  701 CODE********     HB  -CP1 -C   -N   
+ PARRDR> Multiple terms for dihedral type: INDEX  673 CODE********     CT3 -NH1 -C   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  671 CODE********     CT2 -NH1 -C   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  669 CODE********     CT1 -NH1 -C   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  654 CODE********     CT2 -NH1 -C   -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  652 CODE********     CT1 -NH1 -C   -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  646 CODE********     HS  -S   -CT2 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  645 CODE********     HS  -S   -CT2 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  643 CODE********     H   -OH1 -CT2 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  642 CODE********     H   -OH1 -CT2 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  640 CODE********     H   -OH1 -CT1 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  639 CODE********     H   -OH1 -CT1 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  631 CODE********     CT1 -NH1 -C   -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  626 CODE********     H   -OH1 -CT2 -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  625 CODE********     H   -OH1 -CT2 -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  615 CODE********     HS  -S   -CT2 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  614 CODE********     HS  -S   -CT2 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  612 CODE********     H   -OH1 -CT2 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  611 CODE********     H   -OH1 -CT2 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  609 CODE********     H   -OH1 -CT1 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  608 CODE********     H   -OH1 -CT1 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  580 CODE********     H   -NH1 -C   -HA  
+ PARRDR> Multiple terms for dihedral type: INDEX  572 CODE********     CN7 -CN7 -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX  571 CODE********     CN7 -CN7 -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX  570 CODE********     CN7 -CN7 -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX  569 CODE********     CN7 -CN7 -ON2 -P   
+ PARRDR> Multiple terms for dihedral type: INDEX  562 CODE********     CA  -CA  -ON2B-P   
+ PARRDR> Multiple terms for dihedral type: INDEX  557 CODE********     ON5 -CN7 -CN7 -ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  556 CODE********     ON5 -CN7 -CN7 -ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  555 CODE********     ON5 -CN7 -CN7 -ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  553 CODE********     ON2 -CN7B-CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  552 CODE********     ON2 -CN7B-CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  551 CODE********     ON2 -CN7B-CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  549 CODE********     ON2 -CN7 -CN7 -ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  548 CODE********     ON2 -CN7 -CN7 -ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  547 CODE********     ON2 -CN7 -CN7 -ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  540 CODE********     CPH1-NR1 -CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  539 CODE********     CPH1-NR1 -CN7B-ON6B
+ PARRDR> Multiple terms for dihedral type: INDEX  536 CODE********     ON5 -CN7 -CN7 -ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  535 CODE********     ON5 -CN7 -CN7 -ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  534 CODE********     ON5 -CN7 -CN7 -ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  532 CODE********     ON2 -CN7 -CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  531 CODE********     ON2 -CN7 -CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  530 CODE********     ON2 -CN7 -CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  528 CODE********     ON2 -CN7 -CN7 -ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  527 CODE********     ON2 -CN7 -CN7 -ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  526 CODE********     ON2 -CN7 -CN7 -ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  516 CODE********     CPH1-NR1 -CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  515 CODE********     CPH1-NR1 -CN7B-ON6 
+ PARRDR> Multiple terms for dihedral type: INDEX  506 CODE********     CN8B-CN7 -CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  504 CODE********     CN7 -CN7 -CN8B-ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  503 CODE********     CN7 -CN7 -CN8B-ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  502 CODE********     CN7 -CN7 -CN8B-ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  498 CODE********     CN7 -CN7 -CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  497 CODE********     CN7 -CN7 -CN7 -ON5 
+ PARRDR> Multiple terms for dihedral type: INDEX  488 CODE********     CN9 -ON2 -P   -ON4 
+ PARRDR> Multiple terms for dihedral type: INDEX  486 CODE********     CN8B-ON2 -P   -ON4 
+ PARRDR> Multiple terms for dihedral type: INDEX  484 CODE********     CN8 -ON2 -P   -ON4 
+ PARRDR> Multiple terms for dihedral type: INDEX  482 CODE********     CN7B-ON2 -P   -ON4 
+ PARRDR> Multiple terms for dihedral type: INDEX  480 CODE********     CN7 -ON2 -P   -ON4 
+ PARRDR> Multiple terms for dihedral type: INDEX  478 CODE********     CA  -ON2B-P   -ON4 
+ PARRDR> Multiple terms for dihedral type: INDEX  469 CODE********     CN9 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  468 CODE********     CN9 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  467 CODE********     CN9 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  465 CODE********     CN8B-ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  464 CODE********     CN8B-ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  463 CODE********     CN8B-ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  461 CODE********     CN8B-CN7 -CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  459 CODE********     CN8 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  458 CODE********     CN8 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  457 CODE********     CN8 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  455 CODE********     CN7 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  454 CODE********     CN7 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  453 CODE********     CN7 -ON2 -P   -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  451 CODE********     CN7 -CN7 -CN8B-ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  450 CODE********     CN7 -CN7 -CN8B-ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  449 CODE********     CN7 -CN7 -CN8B-ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  447 CODE********     CN7 -CN7 -CN7B-ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  446 CODE********     CN7 -CN7 -CN7B-ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  444 CODE********     CN7 -CN7 -CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  443 CODE********     CN7 -CN7 -CN7 -ON2 
+ PARRDR> Multiple terms for dihedral type: INDEX  403 CODE********     CPH2-NR1 -CN7B-CN8 
+ PARRDR> Multiple terms for dihedral type: INDEX  402 CODE********     CPH2-NR1 -CN7B-CN8 
+ PARRDR> Multiple terms for dihedral type: INDEX  377 CODE********     CPH2-NR1 -CN7B-CN7B
+ PARRDR> Multiple terms for dihedral type: INDEX  376 CODE********     CPH2-NR1 -CN7B-CN7B
+ PARRDR> Multiple terms for dihedral type: INDEX  287 CODE46724475     CP2 -CP1 -CC  -O   
+ PARRDR> Multiple terms for dihedral type: INDEX  285 CODE46265835     HB  -CP1 -CC  -O   
+ PARRDR> Multiple terms for dihedral type: INDEX  271 CODE29334375     N   -CP1 -CC  -NH2 
+ PARRDR> Multiple terms for dihedral type: INDEX  269 CODE28952175     CP2 -CP1 -CC  -NH2 
+ PARRDR> Multiple terms for dihedral type: INDEX  267 CODE28493535     HB  -CP1 -CC  -NH2 
+ PARRDR> Multiple terms for dihedral type: INDEX  234 CODE24365676     N   -C   -CP1 -N   
+ PARRDR> Multiple terms for dihedral type: INDEX  226 CODE 9441585     CP1 -C   -N   -CP3 
+ PARRDR> Multiple terms for dihedral type: INDEX  224 CODE 9346035     CT3 -C   -N   -CP3 
+ PARRDR> Multiple terms for dihedral type: INDEX  222 CODE 9326925     CT2 -C   -N   -CP3 
+ PARRDR> Multiple terms for dihedral type: INDEX  220 CODE 9307815     CT1 -C   -N   -CP3 
+ PARRDR> Multiple terms for dihedral type: INDEX  214 CODE 8314095     CP1 -C   -N   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  212 CODE 8218545     CT3 -C   -N   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  210 CODE 8199435     CT2 -C   -N   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  208 CODE 8180325     CT1 -C   -N   -CP1 
+ PARRDR> Multiple terms for dihedral type: INDEX  177 CODE 6191963     CT3 -CT2 -CPH1-CPH1
+ PARRDR> Multiple terms for dihedral type: INDEX  176 CODE 6191963     CT3 -CT2 -CPH1-CPH1
+ PARRDR> Multiple terms for dihedral type: INDEX  173 CODE 6153743     CT1 -CT2 -CPH1-CPH1
+ PARRDR> Multiple terms for dihedral type: INDEX  172 CODE 6153743     CT1 -CT2 -CPH1-CPH1
+ PARRDR> Multiple terms for dihedral type: INDEX  165 CODE 5736403     CT3 -SM  -SM  -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  164 CODE 5736403     CT3 -SM  -SM  -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  162 CODE 5736263     CT3 -CT2 -S   -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  160 CODE 5734451     CT3 -C   -NH1 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  157 CODE 5717153     CT2 -CT2 -S   -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  155 CODE 5715341     CT2 -C   -NH1 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  152 CODE 5696231     CT1 -C   -NH1 -CT3 
+ PARRDR> Multiple terms for dihedral type: INDEX  144 CODE 5277763     CT2 -SM  -SM  -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  143 CODE 5277763     CT2 -SM  -SM  -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  141 CODE 5275811     CT2 -C   -NH1 -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  138 CODE 5256701     CT1 -C   -NH1 -CT2 
+ PARRDR> Multiple terms for dihedral type: INDEX  128 CODE 4836281     CT1 -C   -NH1 -CT1 
+ PARRDR> Multiple terms for dihedral type: INDEX  125 CODE 4473191     HA  -C   -NH1 -CT1 
+*****  WARNING  ***** PARRDR no nonbond parameters for atom type:  61  NO  
+ NO nonbond interactions will be computed for this atom type.
+*****  WARNING  ***** PARRDR no nonbond parameters for atom type:  77  ON  
+ NO nonbond interactions will be computed for this atom type.
+ PARMIO> NONBOND, HBOND lists and IMAGE atoms cleared.
+  
+ CHARMM>    close      unit  1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    !###############################################
+ CHARMM>    !#                   Protein                   #
+ CHARMM>    !###############################################
+ CHARMM>    open   read     unit 1 card name "protein.pdb"
+ VOPEN> Attempting to open::protein.pdb::
+ OPNLGU> Unit  1 opened for READONLY access to protein.pdb
+  
+ CHARMM>    read   sequ pdb unit 1
+ MAINIO> Sequence information being read from unit   1.
+ TITLE>  *
+
+          RESIDUE SEQUENCE --   129 RESIDUES
+          LYS VAL PHE GLY ARG CYS GLU LEU ALA ALA ALA MET LYS ARG HIS GLY LEU ASP ASN TYR 
+          ARG GLY TYR SER LEU GLY ASN TRP VAL CYS ALA ALA LYS PHE GLU SER ASN PHE ASN THR 
+          GLN ALA THR ASN ARG ASN THR ASP GLY SER THR ASP TYR GLY ILE LEU GLN ILE ASN SER 
+          ARG TRP TRP CYS ASN ASP GLY ARG THR PRO GLY SER ARG ASN LEU CYS ASN ILE PRO CYS 
+          SER ALA LEU LEU SER SER ASP ILE THR ALA SER VAL ASN CYS ALA LYS LYS ILE VAL SER 
+          ASP GLY ASN GLY MET ASN ALA TRP VAL ALA TRP ARG ASN ARG CYS LYS GLY THR ASP VAL 
+          GLN ALA TRP ILE ARG GLY CYS ARG LEU 
+ ***** Message from SEQRDR ***** THE SYSTEM CONTAINS 19 TITRATABLE GROUPS
+ THE USER MUST PREDETERMINE THE PROTONATION STATE THROUGH THE SEQUENCE AND RTF
+ HIS -  1  ASP -  7  GLU -  2  LYS -  6  TYR -  3
+  
+ CHARMM>    gene   PRTA setup
+ THE PATCH 'NTER  ' WILL BE USED FOR THE FIRST RESIDUE
+ THE PATCH 'CTER  ' WILL BE USED FOR THE LAST  RESIDUE
+ GENPSF> Segment   1 has been generated. Its identifier is PRTA.
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =        1   Number of residues   =      129
+         Number of atoms         =     1969   Number of groups     =      586
+         Number of bonds         =     1989   Number of angles     =     3550
+         Number of dihedrals     =     5187   Number of impropers  =      350
+         Number of HB acceptors  =      186   Number of HB donors  =      272
+         Number of NB exclusions =        0   Total charge =    9.00000
+  
+ CHARMM>    rewind          unit 1
+                    REWINDING UNIT     1
+  
+ CHARMM>    read   coor pdb unit 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE>  *
+ ** WARNING ** After reading, there are no coordinates for selected atom:     2     1 LYS  H1  
+ ** WARNING ** After reading, there are no coordinates for selected atom:     3     1 LYS  H2  
+ ** WARNING ** After reading, there are no coordinates for selected atom:     4     1 LYS  H3  
+ ** WARNING ** After reading, there are no coordinates for selected atom:     6     1 LYS  HA  
+ ** WARNING ** After reading, there are no coordinates for selected atom:     8     1 LYS  HB1 
+ ** WARNING ** After reading, there are no coordinates for selected atom:     9     1 LYS  HB2 
+ ** WARNING ** After reading, there are no coordinates for selected atom:    11     1 LYS  HG1 
+ ** WARNING ** After reading, there are no coordinates for selected atom:    12     1 LYS  HG2 
+ ** WARNING ** After reading, there are no coordinates for selected atom:    14     1 LYS  HD1 
+ ** WARNING ** After reading, there are no coordinates for selected atom:    15     1 LYS  HD2 
+
+ ** A total of   969 selected atoms have no coordinates
+ *** LEVEL  2 WARNING *** BOMLEV IS    0
+  
+ CHARMM>    close           unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    ! open   read     unit 1 card name "waters.pdb"
+ CHARMM>    ! read   sequ pdb unit 1
+ CHARMM>    ! gene   WATA setup noan nodi
+ CHARMM>    ! rewind          unit 1
+ CHARMM>    ! read   coor pdb unit 1
+ CHARMM>    ! close           unit 1
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    !###############################################
+ CHARMM>    !#                Apply patches                #
+ CHARMM>    !###############################################
+ CHARMM>    patch DISU PRTA   6 PRTA 127 setup
+ ATOM  PRTA 6    CYS  HG1  AND ALL REFERENCES TO IT DELETED.
+ ATOM  PRTA 127  CYS  HG1  AND ALL REFERENCES TO IT DELETED.
+
+ Message from MAPIC: Atom numbers are changed.
+ DELTIC:    2 bonds deleted
+ DELTIC:    2 angles deleted
+ DELTIC:    6 dihedrals deleted
+ DELTIC:    2 donors deleted
+ DUPLICATE ACCEPTOR FOUND FOR  PRTA 129  LEU  O   
+ ACCEPTOR ANTECEDENT  PRTA 129  LEU  C    REMOVED.
+ ACCEPTOR ANTECEDENT  PRTA 129  LEU  C    REMOVED.
+ DUPLICATE ENTRY REMOVED.
+ DELTIC:    1 acceptors deleted
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =        1   Number of residues   =      129
+         Number of atoms         =     1967   Number of groups     =      586
+         Number of bonds         =     1988   Number of angles     =     3550
+         Number of dihedrals     =     5188   Number of impropers  =      350
+         Number of HB acceptors  =      185   Number of HB donors  =      270
+         Number of NB exclusions =        0   Total charge =    9.00000
+  
+ CHARMM>    patch DISU PRTA  30 PRTA 115 setup
+ ATOM  PRTA 30   CYS  HG1  AND ALL REFERENCES TO IT DELETED.
+ ATOM  PRTA 115  CYS  HG1  AND ALL REFERENCES TO IT DELETED.
+
+ Message from MAPIC: Atom numbers are changed.
+ DELTIC:    2 bonds deleted
+ DELTIC:    2 angles deleted
+ DELTIC:    6 dihedrals deleted
+ DELTIC:    2 donors deleted
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =        1   Number of residues   =      129
+         Number of atoms         =     1965   Number of groups     =      586
+         Number of bonds         =     1987   Number of angles     =     3550
+         Number of dihedrals     =     5189   Number of impropers  =      350
+         Number of HB acceptors  =      185   Number of HB donors  =      268
+         Number of NB exclusions =        0   Total charge =    9.00000
+  
+ CHARMM>    patch DISU PRTA  64 PRTA  80 setup
+ ATOM  PRTA 64   CYS  HG1  AND ALL REFERENCES TO IT DELETED.
+ ATOM  PRTA 80   CYS  HG1  AND ALL REFERENCES TO IT DELETED.
+
+ Message from MAPIC: Atom numbers are changed.
+ DELTIC:    2 bonds deleted
+ DELTIC:    2 angles deleted
+ DELTIC:    6 dihedrals deleted
+ DELTIC:    2 donors deleted
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =        1   Number of residues   =      129
+         Number of atoms         =     1963   Number of groups     =      586
+         Number of bonds         =     1986   Number of angles     =     3550
+         Number of dihedrals     =     5190   Number of impropers  =      350
+         Number of HB acceptors  =      185   Number of HB donors  =      266
+         Number of NB exclusions =        0   Total charge =    9.00000
+  
+ CHARMM>    patch DISU PRTA  76 PRTA  94 setup
+ ATOM  PRTA 76   CYS  HG1  AND ALL REFERENCES TO IT DELETED.
+ ATOM  PRTA 94   CYS  HG1  AND ALL REFERENCES TO IT DELETED.
+
+ Message from MAPIC: Atom numbers are changed.
+ DELTIC:    2 bonds deleted
+ DELTIC:    2 angles deleted
+ DELTIC:    6 dihedrals deleted
+ DELTIC:    2 donors deleted
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =        1   Number of residues   =      129
+         Number of atoms         =     1961   Number of groups     =      586
+         Number of bonds         =     1985   Number of angles     =     3550
+         Number of dihedrals     =     5191   Number of impropers  =      350
+         Number of HB acceptors  =      185   Number of HB donors  =      264
+         Number of NB exclusions =        0   Total charge =    9.00000
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    !###############################################
+ CHARMM>    !#              Add missing atoms              #
+ CHARMM>    !###############################################
+ CHARMM>    coor    init sele type h* end
+ SELRPN>    960 atoms have been selected out of   1961
+ SELECTED COORDINATES INITIALIZED IN THE MAIN SET.
+
+  
+ CHARMM>    ic      fill pres
+  
+ CHARMM>    ic      para
+  
+ CHARMM>    ! ic      build
+ CHARMM>    hbuild
+ PRNHBD: CUToff Hydrogen Bond  distance =    0.5000   Angle =   90.0000
+         CuT switching ON HB dist. =     3.5000  OFf HB dist. =    4.0000
+         CuT switching ON Hb Angle =    50.0000  OFf Hb Angle =   70.0000
+         ACCEptor antecedents included
+         All hydrogen bonds for each hydrogen will be found
+         Hydrogen bonds between excluded atoms will be kept
+
+
+ NONBOND OPTION FLAGS: 
+     ELEC     VDW      ATOMs    CDIElec  SHIFt    VATOm    VSWItch 
+     BYGRoup  NOEXtnd  NOEWald 
+ CUTNB  = 14.000 CTEXNB =999.000 CTONNB = 10.000 CTOFNB = 12.000
+ WMIN   =  1.500 WRNMXD =  0.500 E14FAC =  1.000 EPS    =  1.000
+ NBXMOD =      5
+ There are        0 atom  pairs and        0 atom  exclusions.
+ There are        0 group pairs and        0 group exclusions.
+ <MAKINB> with mode   5 found   5534 exclusions and   5110 interactions(1-4)
+ <MAKGRP> found   1681 group exclusions.
+
+ CUToff Hydrogen Bond  distance =    0.5000           Angle =   90.0000
+ CuT switching ON HB dist. =     3.5000 OFf HB dist. =    4.0000
+ CuT switching ON Hb Angle =    50.0000 OFf Hb Angle =   70.0000
+ ACCEptor antecedents included
+ dihedral PHI STePs for spin =   10.0000
+ cutoff for water acceptor search CUTWat=    7.5000
+
+ Place: HA  ,    ,    , constructed for donor PRTA 1    LYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 1    LYS  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 1    LYS  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 1    LYS  CD  .
+ Place: HE1 ,HE2 ,    , constructed for donor PRTA 1    LYS  CE  .
+ Place: H   ,    ,    , constructed for donor PRTA 2    VAL  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 2    VAL  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 2    VAL  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 3    PHE  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 3    PHE  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 3    PHE  CB  .
+ Place: HD1 ,    ,    , constructed for donor PRTA 3    PHE  CD1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 3    PHE  CE1 .
+ Place: HZ  ,    ,    , constructed for donor PRTA 3    PHE  CZ  .
+ Place: HD2 ,    ,    , constructed for donor PRTA 3    PHE  CD2 .
+ Place: HE2 ,    ,    , constructed for donor PRTA 3    PHE  CE2 .
+ Place: H   ,    ,    , constructed for donor PRTA 4    GLY  N   .
+ Place: HA1 ,HA2 ,    , constructed for donor PRTA 4    GLY  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 5    ARG  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 5    ARG  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 5    ARG  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 5    ARG  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 5    ARG  CD  .
+ Place: HE  ,    ,    , constructed for donor PRTA 5    ARG  NE  .
+ Place: H   ,    ,    , constructed for donor PRTA 6    CYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 6    CYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 6    CYS  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 7    GLU  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 7    GLU  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 7    GLU  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 7    GLU  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 8    LEU  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 8    LEU  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 8    LEU  CB  .
+ Place: HG  ,    ,    , constructed for donor PRTA 8    LEU  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 9    ALA  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 9    ALA  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 10   ALA  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 10   ALA  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 11   ALA  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 11   ALA  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 12   MET  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 12   MET  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 12   MET  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 12   MET  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 13   LYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 13   LYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 13   LYS  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 13   LYS  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 13   LYS  CD  .
+ Place: HE1 ,HE2 ,    , constructed for donor PRTA 13   LYS  CE  .
+ Place: H   ,    ,    , constructed for donor PRTA 14   ARG  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 14   ARG  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 14   ARG  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 14   ARG  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 14   ARG  CD  .
+ Place: HE  ,    ,    , constructed for donor PRTA 14   ARG  NE  .
+ Place: H   ,    ,    , constructed for donor PRTA 15   HIS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 15   HIS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 15   HIS  CB  .
+ Place: HD2 ,    ,    , constructed for donor PRTA 15   HIS  CD2 .
+ Place: HE2 ,    ,    , constructed for donor PRTA 15   HIS  NE2 .
+ Place: HD1 ,    ,    , constructed for donor PRTA 15   HIS  ND1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 15   HIS  CE1 .
+ Place: H   ,    ,    , constructed for donor PRTA 16   GLY  N   .
+ Place: HA1 ,HA2 ,    , constructed for donor PRTA 16   GLY  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 17   LEU  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 17   LEU  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 17   LEU  CB  .
+ Place: HG  ,    ,    , constructed for donor PRTA 17   LEU  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 18   ASP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 18   ASP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 18   ASP  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 19   ASN  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 19   ASN  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 19   ASN  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 20   TYR  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 20   TYR  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 20   TYR  CB  .
+ Place: HD1 ,    ,    , constructed for donor PRTA 20   TYR  CD1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 20   TYR  CE1 .
+ Place: HD2 ,    ,    , constructed for donor PRTA 20   TYR  CD2 .
+ Place: HE2 ,    ,    , constructed for donor PRTA 20   TYR  CE2 .
+ Place: H   ,    ,    , constructed for donor PRTA 21   ARG  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 21   ARG  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 21   ARG  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 21   ARG  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 21   ARG  CD  .
+ Place: HE  ,    ,    , constructed for donor PRTA 21   ARG  NE  .
+ Place: H   ,    ,    , constructed for donor PRTA 22   GLY  N   .
+ Place: HA1 ,HA2 ,    , constructed for donor PRTA 22   GLY  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 23   TYR  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 23   TYR  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 23   TYR  CB  .
+ Place: HD1 ,    ,    , constructed for donor PRTA 23   TYR  CD1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 23   TYR  CE1 .
+ Place: HD2 ,    ,    , constructed for donor PRTA 23   TYR  CD2 .
+ Place: HE2 ,    ,    , constructed for donor PRTA 23   TYR  CE2 .
+ Place: H   ,    ,    , constructed for donor PRTA 24   SER  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 24   SER  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 24   SER  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 25   LEU  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 25   LEU  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 25   LEU  CB  .
+ Place: HG  ,    ,    , constructed for donor PRTA 25   LEU  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 26   GLY  N   .
+ Place: HA1 ,HA2 ,    , constructed for donor PRTA 26   GLY  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 27   ASN  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 27   ASN  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 27   ASN  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 28   TRP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 28   TRP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 28   TRP  CB  .
+ Place: HD1 ,    ,    , constructed for donor PRTA 28   TRP  CD1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 28   TRP  NE1 .
+ Place: HE3 ,    ,    , constructed for donor PRTA 28   TRP  CE3 .
+ Place: HZ3 ,    ,    , constructed for donor PRTA 28   TRP  CZ3 .
+ Place: HZ2 ,    ,    , constructed for donor PRTA 28   TRP  CZ2 .
+ Place: HH2 ,    ,    , constructed for donor PRTA 28   TRP  CH2 .
+ Place: H   ,    ,    , constructed for donor PRTA 29   VAL  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 29   VAL  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 29   VAL  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 30   CYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 30   CYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 30   CYS  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 31   ALA  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 31   ALA  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 32   ALA  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 32   ALA  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 33   LYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 33   LYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 33   LYS  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 33   LYS  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 33   LYS  CD  .
+ Place: HE1 ,HE2 ,    , constructed for donor PRTA 33   LYS  CE  .
+ Place: H   ,    ,    , constructed for donor PRTA 34   PHE  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 34   PHE  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 34   PHE  CB  .
+ Place: HD1 ,    ,    , constructed for donor PRTA 34   PHE  CD1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 34   PHE  CE1 .
+ Place: HZ  ,    ,    , constructed for donor PRTA 34   PHE  CZ  .
+ Place: HD2 ,    ,    , constructed for donor PRTA 34   PHE  CD2 .
+ Place: HE2 ,    ,    , constructed for donor PRTA 34   PHE  CE2 .
+ Place: H   ,    ,    , constructed for donor PRTA 35   GLU  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 35   GLU  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 35   GLU  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 35   GLU  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 36   SER  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 36   SER  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 36   SER  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 37   ASN  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 37   ASN  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 37   ASN  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 38   PHE  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 38   PHE  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 38   PHE  CB  .
+ Place: HD1 ,    ,    , constructed for donor PRTA 38   PHE  CD1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 38   PHE  CE1 .
+ Place: HZ  ,    ,    , constructed for donor PRTA 38   PHE  CZ  .
+ Place: HD2 ,    ,    , constructed for donor PRTA 38   PHE  CD2 .
+ Place: HE2 ,    ,    , constructed for donor PRTA 38   PHE  CE2 .
+ Place: H   ,    ,    , constructed for donor PRTA 39   ASN  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 39   ASN  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 39   ASN  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 40   THR  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 40   THR  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 40   THR  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 41   GLN  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 41   GLN  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 41   GLN  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 41   GLN  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 42   ALA  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 42   ALA  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 43   THR  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 43   THR  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 43   THR  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 44   ASN  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 44   ASN  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 44   ASN  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 45   ARG  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 45   ARG  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 45   ARG  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 45   ARG  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 45   ARG  CD  .
+ Place: HE  ,    ,    , constructed for donor PRTA 45   ARG  NE  .
+ Place: H   ,    ,    , constructed for donor PRTA 46   ASN  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 46   ASN  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 46   ASN  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 47   THR  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 47   THR  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 47   THR  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 48   ASP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 48   ASP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 48   ASP  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 49   GLY  N   .
+ Place: HA1 ,HA2 ,    , constructed for donor PRTA 49   GLY  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 50   SER  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 50   SER  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 50   SER  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 51   THR  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 51   THR  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 51   THR  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 52   ASP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 52   ASP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 52   ASP  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 53   TYR  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 53   TYR  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 53   TYR  CB  .
+ Place: HD1 ,    ,    , constructed for donor PRTA 53   TYR  CD1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 53   TYR  CE1 .
+ Place: HD2 ,    ,    , constructed for donor PRTA 53   TYR  CD2 .
+ Place: HE2 ,    ,    , constructed for donor PRTA 53   TYR  CE2 .
+ Place: H   ,    ,    , constructed for donor PRTA 54   GLY  N   .
+ Place: HA1 ,HA2 ,    , constructed for donor PRTA 54   GLY  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 55   ILE  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 55   ILE  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 55   ILE  CB  .
+ Place: HG11,HG12,    , constructed for donor PRTA 55   ILE  CG1 .
+ Place: H   ,    ,    , constructed for donor PRTA 56   LEU  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 56   LEU  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 56   LEU  CB  .
+ Place: HG  ,    ,    , constructed for donor PRTA 56   LEU  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 57   GLN  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 57   GLN  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 57   GLN  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 57   GLN  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 58   ILE  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 58   ILE  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 58   ILE  CB  .
+ Place: HG11,HG12,    , constructed for donor PRTA 58   ILE  CG1 .
+ Place: H   ,    ,    , constructed for donor PRTA 59   ASN  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 59   ASN  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 59   ASN  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 60   SER  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 60   SER  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 60   SER  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 61   ARG  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 61   ARG  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 61   ARG  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 61   ARG  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 61   ARG  CD  .
+ Place: HE  ,    ,    , constructed for donor PRTA 61   ARG  NE  .
+ Place: H   ,    ,    , constructed for donor PRTA 62   TRP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 62   TRP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 62   TRP  CB  .
+ Place: HD1 ,    ,    , constructed for donor PRTA 62   TRP  CD1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 62   TRP  NE1 .
+ Place: HE3 ,    ,    , constructed for donor PRTA 62   TRP  CE3 .
+ Place: HZ3 ,    ,    , constructed for donor PRTA 62   TRP  CZ3 .
+ Place: HZ2 ,    ,    , constructed for donor PRTA 62   TRP  CZ2 .
+ Place: HH2 ,    ,    , constructed for donor PRTA 62   TRP  CH2 .
+ Place: H   ,    ,    , constructed for donor PRTA 63   TRP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 63   TRP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 63   TRP  CB  .
+ Place: HD1 ,    ,    , constructed for donor PRTA 63   TRP  CD1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 63   TRP  NE1 .
+ Place: HE3 ,    ,    , constructed for donor PRTA 63   TRP  CE3 .
+ Place: HZ3 ,    ,    , constructed for donor PRTA 63   TRP  CZ3 .
+ Place: HZ2 ,    ,    , constructed for donor PRTA 63   TRP  CZ2 .
+ Place: HH2 ,    ,    , constructed for donor PRTA 63   TRP  CH2 .
+ Place: H   ,    ,    , constructed for donor PRTA 64   CYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 64   CYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 64   CYS  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 65   ASN  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 65   ASN  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 65   ASN  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 66   ASP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 66   ASP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 66   ASP  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 67   GLY  N   .
+ Place: HA1 ,HA2 ,    , constructed for donor PRTA 67   GLY  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 68   ARG  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 68   ARG  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 68   ARG  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 68   ARG  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 68   ARG  CD  .
+ Place: HE  ,    ,    , constructed for donor PRTA 68   ARG  NE  .
+ Place: H   ,    ,    , constructed for donor PRTA 69   THR  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 69   THR  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 69   THR  CB  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 70   PRO  CD  .
+ Place: HA  ,    ,    , constructed for donor PRTA 70   PRO  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 70   PRO  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 70   PRO  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 71   GLY  N   .
+ Place: HA1 ,HA2 ,    , constructed for donor PRTA 71   GLY  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 72   SER  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 72   SER  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 72   SER  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 73   ARG  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 73   ARG  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 73   ARG  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 73   ARG  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 73   ARG  CD  .
+ Place: HE  ,    ,    , constructed for donor PRTA 73   ARG  NE  .
+ Place: H   ,    ,    , constructed for donor PRTA 74   ASN  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 74   ASN  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 74   ASN  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 75   LEU  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 75   LEU  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 75   LEU  CB  .
+ Place: HG  ,    ,    , constructed for donor PRTA 75   LEU  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 76   CYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 76   CYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 76   CYS  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 77   ASN  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 77   ASN  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 77   ASN  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 78   ILE  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 78   ILE  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 78   ILE  CB  .
+ Place: HG11,HG12,    , constructed for donor PRTA 78   ILE  CG1 .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 79   PRO  CD  .
+ Place: HA  ,    ,    , constructed for donor PRTA 79   PRO  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 79   PRO  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 79   PRO  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 80   CYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 80   CYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 80   CYS  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 81   SER  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 81   SER  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 81   SER  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 82   ALA  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 82   ALA  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 83   LEU  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 83   LEU  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 83   LEU  CB  .
+ Place: HG  ,    ,    , constructed for donor PRTA 83   LEU  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 84   LEU  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 84   LEU  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 84   LEU  CB  .
+ Place: HG  ,    ,    , constructed for donor PRTA 84   LEU  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 85   SER  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 85   SER  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 85   SER  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 86   SER  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 86   SER  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 86   SER  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 87   ASP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 87   ASP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 87   ASP  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 88   ILE  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 88   ILE  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 88   ILE  CB  .
+ Place: HG11,HG12,    , constructed for donor PRTA 88   ILE  CG1 .
+ Place: H   ,    ,    , constructed for donor PRTA 89   THR  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 89   THR  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 89   THR  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 90   ALA  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 90   ALA  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 91   SER  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 91   SER  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 91   SER  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 92   VAL  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 92   VAL  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 92   VAL  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 93   ASN  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 93   ASN  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 93   ASN  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 94   CYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 94   CYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 94   CYS  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 95   ALA  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 95   ALA  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 96   LYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 96   LYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 96   LYS  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 96   LYS  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 96   LYS  CD  .
+ Place: HE1 ,HE2 ,    , constructed for donor PRTA 96   LYS  CE  .
+ Place: H   ,    ,    , constructed for donor PRTA 97   LYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 97   LYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 97   LYS  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 97   LYS  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 97   LYS  CD  .
+ Place: HE1 ,HE2 ,    , constructed for donor PRTA 97   LYS  CE  .
+ Place: H   ,    ,    , constructed for donor PRTA 98   ILE  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 98   ILE  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 98   ILE  CB  .
+ Place: HG11,HG12,    , constructed for donor PRTA 98   ILE  CG1 .
+ Place: H   ,    ,    , constructed for donor PRTA 99   VAL  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 99   VAL  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 99   VAL  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 100  SER  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 100  SER  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 100  SER  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 101  ASP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 101  ASP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 101  ASP  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 102  GLY  N   .
+ Place: HA1 ,HA2 ,    , constructed for donor PRTA 102  GLY  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 103  ASN  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 103  ASN  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 103  ASN  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 104  GLY  N   .
+ Place: HA1 ,HA2 ,    , constructed for donor PRTA 104  GLY  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 105  MET  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 105  MET  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 105  MET  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 105  MET  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 106  ASN  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 106  ASN  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 106  ASN  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 107  ALA  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 107  ALA  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 108  TRP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 108  TRP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 108  TRP  CB  .
+ Place: HD1 ,    ,    , constructed for donor PRTA 108  TRP  CD1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 108  TRP  NE1 .
+ Place: HE3 ,    ,    , constructed for donor PRTA 108  TRP  CE3 .
+ Place: HZ3 ,    ,    , constructed for donor PRTA 108  TRP  CZ3 .
+ Place: HZ2 ,    ,    , constructed for donor PRTA 108  TRP  CZ2 .
+ Place: HH2 ,    ,    , constructed for donor PRTA 108  TRP  CH2 .
+ Place: H   ,    ,    , constructed for donor PRTA 109  VAL  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 109  VAL  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 109  VAL  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 110  ALA  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 110  ALA  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 111  TRP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 111  TRP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 111  TRP  CB  .
+ Place: HD1 ,    ,    , constructed for donor PRTA 111  TRP  CD1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 111  TRP  NE1 .
+ Place: HE3 ,    ,    , constructed for donor PRTA 111  TRP  CE3 .
+ Place: HZ3 ,    ,    , constructed for donor PRTA 111  TRP  CZ3 .
+ Place: HZ2 ,    ,    , constructed for donor PRTA 111  TRP  CZ2 .
+ Place: HH2 ,    ,    , constructed for donor PRTA 111  TRP  CH2 .
+ Place: H   ,    ,    , constructed for donor PRTA 112  ARG  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 112  ARG  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 112  ARG  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 112  ARG  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 112  ARG  CD  .
+ Place: HE  ,    ,    , constructed for donor PRTA 112  ARG  NE  .
+ Place: H   ,    ,    , constructed for donor PRTA 113  ASN  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 113  ASN  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 113  ASN  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 114  ARG  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 114  ARG  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 114  ARG  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 114  ARG  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 114  ARG  CD  .
+ Place: HE  ,    ,    , constructed for donor PRTA 114  ARG  NE  .
+ Place: H   ,    ,    , constructed for donor PRTA 115  CYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 115  CYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 115  CYS  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 116  LYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 116  LYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 116  LYS  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 116  LYS  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 116  LYS  CD  .
+ Place: HE1 ,HE2 ,    , constructed for donor PRTA 116  LYS  CE  .
+ Place: H   ,    ,    , constructed for donor PRTA 117  GLY  N   .
+ Place: HA1 ,HA2 ,    , constructed for donor PRTA 117  GLY  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 118  THR  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 118  THR  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 118  THR  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 119  ASP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 119  ASP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 119  ASP  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 120  VAL  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 120  VAL  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 120  VAL  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 121  GLN  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 121  GLN  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 121  GLN  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 121  GLN  CG  .
+ Place: H   ,    ,    , constructed for donor PRTA 122  ALA  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 122  ALA  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 123  TRP  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 123  TRP  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 123  TRP  CB  .
+ Place: HD1 ,    ,    , constructed for donor PRTA 123  TRP  CD1 .
+ Place: HE1 ,    ,    , constructed for donor PRTA 123  TRP  NE1 .
+ Place: HE3 ,    ,    , constructed for donor PRTA 123  TRP  CE3 .
+ Place: HZ3 ,    ,    , constructed for donor PRTA 123  TRP  CZ3 .
+ Place: HZ2 ,    ,    , constructed for donor PRTA 123  TRP  CZ2 .
+ Place: HH2 ,    ,    , constructed for donor PRTA 123  TRP  CH2 .
+ Place: H   ,    ,    , constructed for donor PRTA 124  ILE  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 124  ILE  CA  .
+ Place: HB  ,    ,    , constructed for donor PRTA 124  ILE  CB  .
+ Place: HG11,HG12,    , constructed for donor PRTA 124  ILE  CG1 .
+ Place: H   ,    ,    , constructed for donor PRTA 125  ARG  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 125  ARG  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 125  ARG  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 125  ARG  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 125  ARG  CD  .
+ Place: HE  ,    ,    , constructed for donor PRTA 125  ARG  NE  .
+ Place: H   ,    ,    , constructed for donor PRTA 126  GLY  N   .
+ Place: HA1 ,HA2 ,    , constructed for donor PRTA 126  GLY  CA  .
+ Place: H   ,    ,    , constructed for donor PRTA 127  CYS  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 127  CYS  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 127  CYS  CB  .
+ Place: H   ,    ,    , constructed for donor PRTA 128  ARG  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 128  ARG  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 128  ARG  CB  .
+ Place: HG1 ,HG2 ,    , constructed for donor PRTA 128  ARG  CG  .
+ Place: HD1 ,HD2 ,    , constructed for donor PRTA 128  ARG  CD  .
+ Place: HE  ,    ,    , constructed for donor PRTA 128  ARG  NE  .
+ Place: H   ,    ,    , constructed for donor PRTA 129  LEU  N   .
+ Place: HA  ,    ,    , constructed for donor PRTA 129  LEU  CA  .
+ Place: HB1 ,HB2 ,    , constructed for donor PRTA 129  LEU  CB  .
+ Place: HG  ,    ,    , constructed for donor PRTA 129  LEU  CG  .
+
+ NBONDX:      1116 atom and      0 group interactions within 14.00 A.
+ Spin: H1  ,H2  ,H3  , constructed for donor PRTA 1    LYS  N   .
+
+ NBONDX:      1011 atom and      0 group interactions within 14.00 A.
+ Spin: HZ1 ,HZ2 ,HZ3 , constructed for donor PRTA 1    LYS  NZ  .
+
+ NBONDX:      1092 atom and      0 group interactions within 14.00 A.
+ Spin: HG11,HG12,HG13, constructed for donor PRTA 2    VAL  CG1 .
+
+ NBONDX:      1107 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 2    VAL  CG2 .
+
+ NBONDX:       900 atom and      0 group interactions within 14.00 A.
+ Spin: HH11,HH12,    , constructed for donor PRTA 5    ARG  NH1 .
+
+ NBONDX:       754 atom and      0 group interactions within 14.00 A.
+ Spin: HH21,HH22,    , constructed for donor PRTA 5    ARG  NH2 .
+
+ NBONDX:      2274 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 8    LEU  CD1 .
+
+ NBONDX:      2304 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,HD23, constructed for donor PRTA 8    LEU  CD2 .
+
+ NBONDX:      1773 atom and      0 group interactions within 14.00 A.
+ Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 9    ALA  CB  .
+
+ NBONDX:      1326 atom and      0 group interactions within 14.00 A.
+ Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 10   ALA  CB  .
+
+ NBONDX:      1764 atom and      0 group interactions within 14.00 A.
+ Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 11   ALA  CB  .
+
+ NBONDX:      2784 atom and      0 group interactions within 14.00 A.
+ Spin: HE1 ,HE2 ,HE3 , constructed for donor PRTA 12   MET  CE  .
+
+ NBONDX:      1092 atom and      0 group interactions within 14.00 A.
+ Spin: HZ1 ,HZ2 ,HZ3 , constructed for donor PRTA 13   LYS  NZ  .
+
+ NBONDX:       622 atom and      0 group interactions within 14.00 A.
+ Spin: HH11,HH12,    , constructed for donor PRTA 14   ARG  NH1 .
+
+ NBONDX:       652 atom and      0 group interactions within 14.00 A.
+ Spin: HH21,HH22,    , constructed for donor PRTA 14   ARG  NH2 .
+
+ NBONDX:      2286 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 17   LEU  CD1 .
+
+ NBONDX:      2058 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,HD23, constructed for donor PRTA 17   LEU  CD2 .
+
+ NBONDX:       680 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,    , constructed for donor PRTA 19   ASN  ND2 .
+
+ NBONDX:       424 atom and      0 group interactions within 14.00 A.
+ Spin: HH  ,    ,    , constructed for donor PRTA 20   TYR  OH  .
+
+ NBONDX:       564 atom and      0 group interactions within 14.00 A.
+ Spin: HH11,HH12,    , constructed for donor PRTA 21   ARG  NH1 .
+
+ NBONDX:       532 atom and      0 group interactions within 14.00 A.
+ Spin: HH21,HH22,    , constructed for donor PRTA 21   ARG  NH2 .
+
+ NBONDX:       483 atom and      0 group interactions within 14.00 A.
+ Spin: HH  ,    ,    , constructed for donor PRTA 23   TYR  OH  .
+
+ NBONDX:       533 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 24   SER  OG  .
+
+ NBONDX:      1812 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 25   LEU  CD1 .
+
+ NBONDX:      2214 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,HD23, constructed for donor PRTA 25   LEU  CD2 .
+
+ NBONDX:      1174 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,    , constructed for donor PRTA 27   ASN  ND2 .
+
+ NBONDX:      2289 atom and      0 group interactions within 14.00 A.
+ Spin: HG11,HG12,HG13, constructed for donor PRTA 29   VAL  CG1 .
+
+ NBONDX:      2406 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 29   VAL  CG2 .
+
+ NBONDX:      2496 atom and      0 group interactions within 14.00 A.
+ Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 31   ALA  CB  .
+
+ NBONDX:      2718 atom and      0 group interactions within 14.00 A.
+ Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 32   ALA  CB  .
+
+ NBONDX:      1209 atom and      0 group interactions within 14.00 A.
+ Spin: HZ1 ,HZ2 ,HZ3 , constructed for donor PRTA 33   LYS  NZ  .
+
+ NBONDX:       720 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 36   SER  OG  .
+
+ NBONDX:       748 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,    , constructed for donor PRTA 37   ASN  ND2 .
+
+ NBONDX:       792 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,    , constructed for donor PRTA 39   ASN  ND2 .
+
+ NBONDX:       516 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 40   THR  OG1 .
+
+ NBONDX:      1890 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 40   THR  CG2 .
+
+ NBONDX:       600 atom and      0 group interactions within 14.00 A.
+ Spin: HE21,HE22,    , constructed for donor PRTA 41   GLN  NE2 .
+
+ NBONDX:      1569 atom and      0 group interactions within 14.00 A.
+ Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 42   ALA  CB  .
+
+ NBONDX:       399 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 43   THR  OG1 .
+
+ NBONDX:      1416 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 43   THR  CG2 .
+
+ NBONDX:      1020 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,    , constructed for donor PRTA 44   ASN  ND2 .
+
+ NBONDX:       602 atom and      0 group interactions within 14.00 A.
+ Spin: HH11,HH12,    , constructed for donor PRTA 45   ARG  NH1 .
+
+ NBONDX:       638 atom and      0 group interactions within 14.00 A.
+ Spin: HH21,HH22,    , constructed for donor PRTA 45   ARG  NH2 .
+
+ NBONDX:       812 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,    , constructed for donor PRTA 46   ASN  ND2 .
+
+ NBONDX:       223 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 47   THR  OG1 .
+
+ NBONDX:       504 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 47   THR  CG2 .
+
+ NBONDX:       459 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 50   SER  OG  .
+
+ NBONDX:       458 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 51   THR  OG1 .
+
+ NBONDX:      1638 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 51   THR  CG2 .
+
+ NBONDX:       529 atom and      0 group interactions within 14.00 A.
+ Spin: HH  ,    ,    , constructed for donor PRTA 53   TYR  OH  .
+
+ NBONDX:      2601 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 55   ILE  CG2 .
+
+ NBONDX:      2274 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 55   ILE  CD1 .
+
+ NBONDX:      3012 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 56   LEU  CD1 .
+
+ NBONDX:      3024 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,HD23, constructed for donor PRTA 56   LEU  CD2 .
+
+ NBONDX:      1400 atom and      0 group interactions within 14.00 A.
+ Spin: HE21,HE22,    , constructed for donor PRTA 57   GLN  NE2 .
+
+ NBONDX:      2490 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 58   ILE  CG2 .
+
+ NBONDX:      2592 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 58   ILE  CD1 .
+
+ NBONDX:      1220 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,    , constructed for donor PRTA 59   ASN  ND2 .
+
+ NBONDX:       578 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 60   SER  OG  .
+
+ NBONDX:       898 atom and      0 group interactions within 14.00 A.
+ Spin: HH11,HH12,    , constructed for donor PRTA 61   ARG  NH1 .
+
+ NBONDX:       830 atom and      0 group interactions within 14.00 A.
+ Spin: HH21,HH22,    , constructed for donor PRTA 61   ARG  NH2 .
+
+ NBONDX:       696 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,    , constructed for donor PRTA 65   ASN  ND2 .
+
+ NBONDX:       628 atom and      0 group interactions within 14.00 A.
+ Spin: HH11,HH12,    , constructed for donor PRTA 68   ARG  NH1 .
+
+ NBONDX:       774 atom and      0 group interactions within 14.00 A.
+ Spin: HH21,HH22,    , constructed for donor PRTA 68   ARG  NH2 .
+
+ NBONDX:       502 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 69   THR  OG1 .
+
+ NBONDX:      1449 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 69   THR  CG2 .
+
+ NBONDX:       435 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 72   SER  OG  .
+
+ NBONDX:       592 atom and      0 group interactions within 14.00 A.
+ Spin: HH11,HH12,    , constructed for donor PRTA 73   ARG  NH1 .
+
+ NBONDX:       426 atom and      0 group interactions within 14.00 A.
+ Spin: HH21,HH22,    , constructed for donor PRTA 73   ARG  NH2 .
+
+ NBONDX:       970 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,    , constructed for donor PRTA 74   ASN  ND2 .
+
+ NBONDX:      1149 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 75   LEU  CD1 .
+
+ NBONDX:      1344 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,HD23, constructed for donor PRTA 75   LEU  CD2 .
+
+ NBONDX:       512 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,    , constructed for donor PRTA 77   ASN  ND2 .
+
+ NBONDX:      1845 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 78   ILE  CG2 .
+
+ NBONDX:      1437 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 78   ILE  CD1 .
+
+ NBONDX:       435 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 81   SER  OG  .
+
+ NBONDX:      1503 atom and      0 group interactions within 14.00 A.
+ Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 82   ALA  CB  .
+
+ NBONDX:      2328 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 83   LEU  CD1 .
+
+ NBONDX:      2325 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,HD23, constructed for donor PRTA 83   LEU  CD2 .
+
+ NBONDX:      1719 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 84   LEU  CD1 .
+
+ NBONDX:      1971 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,HD23, constructed for donor PRTA 84   LEU  CD2 .
+
+ NBONDX:       487 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 85   SER  OG  .
+
+ NBONDX:       373 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 86   SER  OG  .
+
+ NBONDX:      2310 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 88   ILE  CG2 .
+
+ NBONDX:      2391 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 88   ILE  CD1 .
+
+ NBONDX:       460 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 89   THR  OG1 .
+
+ NBONDX:      1410 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 89   THR  CG2 .
+
+ NBONDX:      1878 atom and      0 group interactions within 14.00 A.
+ Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 90   ALA  CB  .
+
+ NBONDX:       875 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 91   SER  OG  .
+
+ NBONDX:      2106 atom and      0 group interactions within 14.00 A.
+ Spin: HG11,HG12,HG13, constructed for donor PRTA 92   VAL  CG1 .
+
+ NBONDX:      2469 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 92   VAL  CG2 .
+
+ NBONDX:       970 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,    , constructed for donor PRTA 93   ASN  ND2 .
+
+ NBONDX:      2811 atom and      0 group interactions within 14.00 A.
+ Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 95   ALA  CB  .
+
+ NBONDX:      1572 atom and      0 group interactions within 14.00 A.
+ Spin: HZ1 ,HZ2 ,HZ3 , constructed for donor PRTA 96   LYS  NZ  .
+
+ NBONDX:      1140 atom and      0 group interactions within 14.00 A.
+ Spin: HZ1 ,HZ2 ,HZ3 , constructed for donor PRTA 97   LYS  NZ  .
+
+ NBONDX:      2289 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 98   ILE  CG2 .
+
+ NBONDX:      2667 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 98   ILE  CD1 .
+
+ NBONDX:      1818 atom and      0 group interactions within 14.00 A.
+ Spin: HG11,HG12,HG13, constructed for donor PRTA 99   VAL  CG1 .
+
+ NBONDX:      2241 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 99   VAL  CG2 .
+
+ NBONDX:       453 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 100  SER  OG  .
+
+ NBONDX:       828 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,    , constructed for donor PRTA 103  ASN  ND2 .
+
+ NBONDX:      2586 atom and      0 group interactions within 14.00 A.
+ Spin: HE1 ,HE2 ,HE3 , constructed for donor PRTA 105  MET  CE  .
+
+ NBONDX:       756 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,    , constructed for donor PRTA 106  ASN  ND2 .
+
+ NBONDX:      2103 atom and      0 group interactions within 14.00 A.
+ Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 107  ALA  CB  .
+
+ NBONDX:      1518 atom and      0 group interactions within 14.00 A.
+ Spin: HG11,HG12,HG13, constructed for donor PRTA 109  VAL  CG1 .
+
+ NBONDX:      1344 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 109  VAL  CG2 .
+
+ NBONDX:      1881 atom and      0 group interactions within 14.00 A.
+ Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 110  ALA  CB  .
+
+ NBONDX:       660 atom and      0 group interactions within 14.00 A.
+ Spin: HH11,HH12,    , constructed for donor PRTA 112  ARG  NH1 .
+
+ NBONDX:       812 atom and      0 group interactions within 14.00 A.
+ Spin: HH21,HH22,    , constructed for donor PRTA 112  ARG  NH2 .
+
+ NBONDX:       568 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,    , constructed for donor PRTA 113  ASN  ND2 .
+
+ NBONDX:       586 atom and      0 group interactions within 14.00 A.
+ Spin: HH11,HH12,    , constructed for donor PRTA 114  ARG  NH1 .
+
+ NBONDX:       570 atom and      0 group interactions within 14.00 A.
+ Spin: HH21,HH22,    , constructed for donor PRTA 114  ARG  NH2 .
+
+ NBONDX:      1068 atom and      0 group interactions within 14.00 A.
+ Spin: HZ1 ,HZ2 ,HZ3 , constructed for donor PRTA 116  LYS  NZ  .
+
+ NBONDX:       464 atom and      0 group interactions within 14.00 A.
+ Spin: HG1 ,    ,    , constructed for donor PRTA 118  THR  OG1 .
+
+ NBONDX:      1182 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 118  THR  CG2 .
+
+ NBONDX:      1776 atom and      0 group interactions within 14.00 A.
+ Spin: HG11,HG12,HG13, constructed for donor PRTA 120  VAL  CG1 .
+
+ NBONDX:      1788 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 120  VAL  CG2 .
+
+ NBONDX:       596 atom and      0 group interactions within 14.00 A.
+ Spin: HE21,HE22,    , constructed for donor PRTA 121  GLN  NE2 .
+
+ NBONDX:      1131 atom and      0 group interactions within 14.00 A.
+ Spin: HB1 ,HB2 ,HB3 , constructed for donor PRTA 122  ALA  CB  .
+
+ NBONDX:      1917 atom and      0 group interactions within 14.00 A.
+ Spin: HG21,HG22,HG23, constructed for donor PRTA 124  ILE  CG2 .
+
+ NBONDX:      1569 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 124  ILE  CD1 .
+
+ NBONDX:       474 atom and      0 group interactions within 14.00 A.
+ Spin: HH11,HH12,    , constructed for donor PRTA 125  ARG  NH1 .
+
+ NBONDX:       570 atom and      0 group interactions within 14.00 A.
+ Spin: HH21,HH22,    , constructed for donor PRTA 125  ARG  NH2 .
+
+ NBONDX:       500 atom and      0 group interactions within 14.00 A.
+ Spin: HH11,HH12,    , constructed for donor PRTA 128  ARG  NH1 .
+
+ NBONDX:       626 atom and      0 group interactions within 14.00 A.
+ Spin: HH21,HH22,    , constructed for donor PRTA 128  ARG  NH2 .
+
+ NBONDX:      1626 atom and      0 group interactions within 14.00 A.
+ Spin: HD11,HD12,HD13, constructed for donor PRTA 129  LEU  CD1 .
+
+ NBONDX:      1554 atom and      0 group interactions within 14.00 A.
+ Spin: HD21,HD22,HD23, constructed for donor PRTA 129  LEU  CD2 .
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    !###############################################
+ CHARMM>    !#              Optimize and save              #
+ CHARMM>    !###############################################
+ CHARMM>    open  write         unit 1 card name @mol_pre.pdb
+ Parameter: MOL -> "LYSOZYME1977"
+ VOPEN> Attempting to open::lysozyme1977_pre.pdb::
+ OPNLGU> Unit  1 opened for WRITE access to lysozyme1977_pre.pdb
+  
+ CHARMM>    write coor pdb      unit 1
+ RDTITL> CLOSE               UNIT 1
+ RDTITL> No title read.
+  
+ CHARMM>    close               unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    ! Fix all but hydrogens, waters and some residues
+ CHARMM>    cons fix sele .not. (segid WAT* .or. hydrogen) show end
+ The following atoms are currently set:
+SEGId RESId RESName  .. TYPEs ..
+ PRTA 1    LYS  N    CA   CB   CG   CD   CE   NZ   C    O   
+ PRTA 2    VAL  N    CA   CB   CG1  CG2  C    O   
+ PRTA 3    PHE  N    CA   CB   CG   CD1  CE1  CZ   CD2  CE2  C    O   
+ PRTA 4    GLY  N    CA   C    O   
+ PRTA 5    ARG  N    CA   CB   CG   CD   NE   CZ   NH1  NH2  C    O   
+ PRTA 6    CYS  N    CA   CB   SG   C    O   
+ PRTA 7    GLU  N    CA   CB   CG   CD   OE1  OE2  C    O   
+ PRTA 8    LEU  N    CA   CB   CG   CD1  CD2  C    O   
+ PRTA 9    ALA  N    CA   CB   C    O   
+ PRTA 10   ALA  N    CA   CB   C    O   
+ PRTA 11   ALA  N    CA   CB   C    O   
+ PRTA 12   MET  N    CA   CB   CG   SD   CE   C    O   
+ PRTA 13   LYS  N    CA   CB   CG   CD   CE   NZ   C    O   
+ PRTA 14   ARG  N    CA   CB   CG   CD   NE   CZ   NH1  NH2  C    O   
+ PRTA 15   HIS  N    CA   CB   CD2  CG   NE2  ND1  CE1  C    O   
+ PRTA 16   GLY  N    CA   C    O   
+ PRTA 17   LEU  N    CA   CB   CG   CD1  CD2  C    O   
+ PRTA 18   ASP  N    CA   CB   CG   OD1  OD2  C    O   
+ PRTA 19   ASN  N    CA   CB   CG   OD1  ND2  C    O   
+ PRTA 20   TYR  N    CA   CB   CG   CD1  CE1  CZ   OH   CD2  CE2  C    O   
+ PRTA 21   ARG  N    CA   CB   CG   CD   NE   CZ   NH1  NH2  C    O   
+ PRTA 22   GLY  N    CA   C    O   
+ PRTA 23   TYR  N    CA   CB   CG   CD1  CE1  CZ   OH   CD2  CE2  C    O   
+ PRTA 24   SER  N    CA   CB   OG   C    O   
+ PRTA 25   LEU  N    CA   CB   CG   CD1  CD2  C    O   
+ PRTA 26   GLY  N    CA   C    O   
+ PRTA 27   ASN  N    CA   CB   CG   OD1  ND2  C    O   
+ PRTA 28   TRP  N    CA   CB   CG   CD1  NE1  CE2  CD2  CE3  CZ3  CZ2  CH2  C    O   
+ PRTA 29   VAL  N    CA   CB   CG1  CG2  C    O   
+ PRTA 30   CYS  N    CA   CB   SG   C    O   
+ PRTA 31   ALA  N    CA   CB   C    O   
+ PRTA 32   ALA  N    CA   CB   C    O   
+ PRTA 33   LYS  N    CA   CB   CG   CD   CE   NZ   C    O   
+ PRTA 34   PHE  N    CA   CB   CG   CD1  CE1  CZ   CD2  CE2  C    O   
+ PRTA 35   GLU  N    CA   CB   CG   CD   OE1  OE2  C    O   
+ PRTA 36   SER  N    CA   CB   OG   C    O   
+ PRTA 37   ASN  N    CA   CB   CG   OD1  ND2  C    O   
+ PRTA 38   PHE  N    CA   CB   CG   CD1  CE1  CZ   CD2  CE2  C    O   
+ PRTA 39   ASN  N    CA   CB   CG   OD1  ND2  C    O   
+ PRTA 40   THR  N    CA   CB   OG1  CG2  C    O   
+ PRTA 41   GLN  N    CA   CB   CG   CD   OE1  NE2  C    O   
+ PRTA 42   ALA  N    CA   CB   C    O   
+ PRTA 43   THR  N    CA   CB   OG1  CG2  C    O   
+ PRTA 44   ASN  N    CA   CB   CG   OD1  ND2  C    O   
+ PRTA 45   ARG  N    CA   CB   CG   CD   NE   CZ   NH1  NH2  C    O   
+ PRTA 46   ASN  N    CA   CB   CG   OD1  ND2  C    O   
+ PRTA 47   THR  N    CA   CB   OG1  CG2  C    O   
+ PRTA 48   ASP  N    CA   CB   CG   OD1  OD2  C    O   
+ PRTA 49   GLY  N    CA   C    O   
+ PRTA 50   SER  N    CA   CB   OG   C    O   
+ PRTA 51   THR  N    CA   CB   OG1  CG2  C    O   
+ PRTA 52   ASP  N    CA   CB   CG   OD1  OD2  C    O   
+ PRTA 53   TYR  N    CA   CB   CG   CD1  CE1  CZ   OH   CD2  CE2  C    O   
+ PRTA 54   GLY  N    CA   C    O   
+ PRTA 55   ILE  N    CA   CB   CG2  CG1  CD1  C    O   
+ PRTA 56   LEU  N    CA   CB   CG   CD1  CD2  C    O   
+ PRTA 57   GLN  N    CA   CB   CG   CD   OE1  NE2  C    O   
+ PRTA 58   ILE  N    CA   CB   CG2  CG1  CD1  C    O   
+ PRTA 59   ASN  N    CA   CB   CG   OD1  ND2  C    O   
+ PRTA 60   SER  N    CA   CB   OG   C    O   
+ PRTA 61   ARG  N    CA   CB   CG   CD   NE   CZ   NH1  NH2  C    O   
+ PRTA 62   TRP  N    CA   CB   CG   CD1  NE1  CE2  CD2  CE3  CZ3  CZ2  CH2  C    O   
+ PRTA 63   TRP  N    CA   CB   CG   CD1  NE1  CE2  CD2  CE3  CZ3  CZ2  CH2  C    O   
+ PRTA 64   CYS  N    CA   CB   SG   C    O   
+ PRTA 65   ASN  N    CA   CB   CG   OD1  ND2  C    O   
+ PRTA 66   ASP  N    CA   CB   CG   OD1  OD2  C    O   
+ PRTA 67   GLY  N    CA   C    O   
+ PRTA 68   ARG  N    CA   CB   CG   CD   NE   CZ   NH1  NH2  C    O   
+ PRTA 69   THR  N    CA   CB   OG1  CG2  C    O   
+ PRTA 70   PRO  N    CD   CA   CB   CG   C    O   
+ PRTA 71   GLY  N    CA   C    O   
+ PRTA 72   SER  N    CA   CB   OG   C    O   
+ PRTA 73   ARG  N    CA   CB   CG   CD   NE   CZ   NH1  NH2  C    O   
+ PRTA 74   ASN  N    CA   CB   CG   OD1  ND2  C    O   
+ PRTA 75   LEU  N    CA   CB   CG   CD1  CD2  C    O   
+ PRTA 76   CYS  N    CA   CB   SG   C    O   
+ PRTA 77   ASN  N    CA   CB   CG   OD1  ND2  C    O   
+ PRTA 78   ILE  N    CA   CB   CG2  CG1  CD1  C    O   
+ PRTA 79   PRO  N    CD   CA   CB   CG   C    O   
+ PRTA 80   CYS  N    CA   CB   SG   C    O   
+ PRTA 81   SER  N    CA   CB   OG   C    O   
+ PRTA 82   ALA  N    CA   CB   C    O   
+ PRTA 83   LEU  N    CA   CB   CG   CD1  CD2  C    O   
+ PRTA 84   LEU  N    CA   CB   CG   CD1  CD2  C    O   
+ PRTA 85   SER  N    CA   CB   OG   C    O   
+ PRTA 86   SER  N    CA   CB   OG   C    O   
+ PRTA 87   ASP  N    CA   CB   CG   OD1  OD2  C    O   
+ PRTA 88   ILE  N    CA   CB   CG2  CG1  CD1  C    O   
+ PRTA 89   THR  N    CA   CB   OG1  CG2  C    O   
+ PRTA 90   ALA  N    CA   CB   C    O   
+ PRTA 91   SER  N    CA   CB   OG   C    O   
+ PRTA 92   VAL  N    CA   CB   CG1  CG2  C    O   
+ PRTA 93   ASN  N    CA   CB   CG   OD1  ND2  C    O   
+ PRTA 94   CYS  N    CA   CB   SG   C    O   
+ PRTA 95   ALA  N    CA   CB   C    O   
+ PRTA 96   LYS  N    CA   CB   CG   CD   CE   NZ   C    O   
+ PRTA 97   LYS  N    CA   CB   CG   CD   CE   NZ   C    O   
+ PRTA 98   ILE  N    CA   CB   CG2  CG1  CD1  C    O   
+ PRTA 99   VAL  N    CA   CB   CG1  CG2  C    O   
+ PRTA 100  SER  N    CA   CB   OG   C    O   
+ PRTA 101  ASP  N    CA   CB   CG   OD1  OD2  C    O   
+ PRTA 102  GLY  N    CA   C    O   
+ PRTA 103  ASN  N    CA   CB   CG   OD1  ND2  C    O   
+ PRTA 104  GLY  N    CA   C    O   
+ PRTA 105  MET  N    CA   CB   CG   SD   CE   C    O   
+ PRTA 106  ASN  N    CA   CB   CG   OD1  ND2  C    O   
+ PRTA 107  ALA  N    CA   CB   C    O   
+ PRTA 108  TRP  N    CA   CB   CG   CD1  NE1  CE2  CD2  CE3  CZ3  CZ2  CH2  C    O   
+ PRTA 109  VAL  N    CA   CB   CG1  CG2  C    O   
+ PRTA 110  ALA  N    CA   CB   C    O   
+ PRTA 111  TRP  N    CA   CB   CG   CD1  NE1  CE2  CD2  CE3  CZ3  CZ2  CH2  C    O   
+ PRTA 112  ARG  N    CA   CB   CG   CD   NE   CZ   NH1  NH2  C    O   
+ PRTA 113  ASN  N    CA   CB   CG   OD1  ND2  C    O   
+ PRTA 114  ARG  N    CA   CB   CG   CD   NE   CZ   NH1  NH2  C    O   
+ PRTA 115  CYS  N    CA   CB   SG   C    O   
+ PRTA 116  LYS  N    CA   CB   CG   CD   CE   NZ   C    O   
+ PRTA 117  GLY  N    CA   C    O   
+ PRTA 118  THR  N    CA   CB   OG1  CG2  C    O   
+ PRTA 119  ASP  N    CA   CB   CG   OD1  OD2  C    O   
+ PRTA 120  VAL  N    CA   CB   CG1  CG2  C    O   
+ PRTA 121  GLN  N    CA   CB   CG   CD   OE1  NE2  C    O   
+ PRTA 122  ALA  N    CA   CB   C    O   
+ PRTA 123  TRP  N    CA   CB   CG   CD1  NE1  CE2  CD2  CE3  CZ3  CZ2  CH2  C    O   
+ PRTA 124  ILE  N    CA   CB   CG2  CG1  CD1  C    O   
+ PRTA 125  ARG  N    CA   CB   CG   CD   NE   CZ   NH1  NH2  C    O   
+ PRTA 126  GLY  N    CA   C    O   
+ PRTA 127  CYS  N    CA   CB   SG   C    O   
+ PRTA 128  ARG  N    CA   CB   CG   CD   NE   CZ   NH1  NH2  C    O   
+ PRTA 129  LEU  N    CA   CB   CG   CD1  CD2  C    O    OXT 
+ SELRPN>   1001 atoms have been selected out of   1961
+  
+ CHARMM>     
+  
+ CHARMM>    ! Optimize
+ CHARMM>    mini  sd    nstep  50 nprint 20 inbfrq 20
+
+ NONBOND OPTION FLAGS: 
+     ELEC     VDW      ATOMs    CDIElec  SHIFt    VATOm    VSWItch 
+     BYGRoup  NOEXtnd  NOEWald 
+ CUTNB  = 14.000 CTEXNB =999.000 CTONNB = 10.000 CTOFNB = 12.000
+ WMIN   =  1.500 WRNMXD =  0.500 E14FAC =  1.000 EPS    =  1.000
+ NBXMOD =      5
+ There are        0 atom  pairs and        0 atom  exclusions.
+ There are        0 group pairs and        0 group exclusions.
+ <MAKINB> with mode   5 found   5534 exclusions and   5110 interactions(1-4)
+ <MAKGRP> found   1681 group exclusions.
+ Generating nonbond list with Exclusion mode = 5
+ == PRIMARY == SPACE FOR   563496 ATOM PAIRS AND        0 GROUP PAIRS
+ NBONDA>>  Maximum group spatial extent (12A) exceeded.
+   Size is    10017.25 Angstroms and starts with atom:    1959
+   Please check group boundary definitions.
+
+ General atom nonbond list generation found:
+   422280 ATOM PAIRS WERE FOUND FOR ATOM LIST
+    27203 GROUP PAIRS REQUIRED ATOM SEARCHES
+
+
+
+ STEEPD> An energy minimization has been requested.
+
+ NSTEP  =           50   NPRINT =           20
+ STEP   =    0.0200000   TOLFUN =    0.0000000
+ TOLGRD =    0.0000000   TOLSTP =    0.0000000
+
+MINI MIN: Cycle      ENERgy      Delta-E         GRMS    Step-size
+MINI INTERN:          BONDs       ANGLes       UREY-b    DIHEdrals    IMPRopers
+MINI EXTERN:        VDWaals         ELEC       HBONds          ASP         USER
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>        0 -37168.52785      0.00000     26.02705      0.02000
+MINI INTERN>        0.17886     81.75448     11.95065    248.43764      0.00000
+MINI EXTERN>      425.51054 -37936.36002      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+ UPDECI: Nonbond update at step        20
+ Generating nonbond list with Exclusion mode = 5
+ == PRIMARY == SPACE FOR   563496 ATOM PAIRS AND        0 GROUP PAIRS
+ NBONDA>>  Maximum group spatial extent (12A) exceeded.
+   Size is    10017.25 Angstroms and starts with atom:    1959
+   Please check group boundary definitions.
+
+ General atom nonbond list generation found:
+   422479 ATOM PAIRS WERE FOUND FOR ATOM LIST
+    27217 GROUP PAIRS REQUIRED ATOM SEARCHES
+
+MINI>       20 -37648.59125    480.06340      0.61772      0.00167
+MINI INTERN>       19.96429    173.82887     21.62131    245.27691     10.59055
+MINI EXTERN>       36.23091 -38156.10408      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+ UPDECI: Nonbond update at step        40
+ Generating nonbond list with Exclusion mode = 5
+ == PRIMARY == SPACE FOR   563496 ATOM PAIRS AND        0 GROUP PAIRS
+ NBONDA>>  Maximum group spatial extent (12A) exceeded.
+   Size is    10017.25 Angstroms and starts with atom:    1959
+   Please check group boundary definitions.
+
+ General atom nonbond list generation found:
+   422492 ATOM PAIRS WERE FOUND FOR ATOM LIST
+    27226 GROUP PAIRS REQUIRED ATOM SEARCHES
+
+MINI>       40 -37655.10120      6.50995      0.47300      0.00080
+MINI INTERN>       17.40544    177.02332     21.85664    250.20495     12.46142
+MINI EXTERN>       35.16891 -38169.22189      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+
+ STEEPD> Minimization exiting with number of steps limit (        50) exceeded.
+
+STPD MIN: Cycle      ENERgy      Delta-E         GRMS    Step-size
+STPD INTERN:          BONDs       ANGLes       UREY-b    DIHEdrals    IMPRopers
+STPD EXTERN:        VDWaals         ELEC       HBONds          ASP         USER
+ ----------       ---------    ---------    ---------    ---------    ---------
+STPD>       50 -37656.58443      1.48323      0.58932      0.00043
+STPD INTERN>       17.61133    176.83948     21.72816    252.54205     12.67093
+STPD EXTERN>       33.31089 -38171.28726      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+  
+ CHARMM>    mini  conj  nstep 100 nprint 20 inbfrq 20
+
+ NONBOND OPTION FLAGS: 
+     ELEC     VDW      ATOMs    CDIElec  SHIFt    VATOm    VSWItch 
+     BYGRoup  NOEXtnd  NOEWald 
+ CUTNB  = 14.000 CTEXNB =999.000 CTONNB = 10.000 CTOFNB = 12.000
+ WMIN   =  1.500 WRNMXD =  0.500 E14FAC =  1.000 EPS    =  1.000
+ NBXMOD =      5
+ There are   422492 atom  pairs and    10644 atom  exclusions.
+ There are        0 group pairs and     1681 group exclusions.
+ Generating nonbond list with Exclusion mode = 5
+ == PRIMARY == SPACE FOR   563496 ATOM PAIRS AND        0 GROUP PAIRS
+ NBONDA>>  Maximum group spatial extent (12A) exceeded.
+   Size is    10017.25 Angstroms and starts with atom:    1959
+   Please check group boundary definitions.
+
+ General atom nonbond list generation found:
+   422483 ATOM PAIRS WERE FOUND FOR ATOM LIST
+    27218 GROUP PAIRS REQUIRED ATOM SEARCHES
+
+
+
+ CONJUG> An energy minimization has been requested.
+
+ NCGCYC =          100   NSTEP  =          100
+ PCUT   =    0.9999000   PRTMIN =            1
+ STEP   =    0.0200000   TOLFUN =    0.0000000
+ TOLGRD =    0.0000000   TOLITR =          100
+ TOLSTP =    0.0000000
+
+MINI MIN: Cycle      ENERgy      Delta-E         GRMS    Step-size
+MINI INTERN:          BONDs       ANGLes       UREY-b    DIHEdrals    IMPRopers
+MINI EXTERN:        VDWaals         ELEC       HBONds          ASP         USER
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>        0 -37656.73706      0.15263      0.27888      0.00000
+MINI INTERN>       15.53799    176.89283     21.75232    252.24908     12.65182
+MINI EXTERN>       33.47973 -38169.30083      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>       20 -37666.49807      9.76101      1.83986      0.07452
+MINI INTERN>       20.81875    180.11237     22.24063    268.62659     13.73327
+MINI EXTERN>       25.45088 -38197.48057      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>       40 -37672.36192      5.86384      0.45773      0.14071
+MINI INTERN>       16.07387    177.23824     21.58344    261.02393     13.03367
+MINI EXTERN>       32.80889 -38194.12395      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>       60 -37674.93352      2.57161      0.23333      0.07966
+MINI INTERN>       15.20914    175.40842     21.29161    261.49084     12.85812
+MINI EXTERN>       30.39404 -38191.58568      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>       80 -37676.08703      1.15351      0.14801      0.02149
+MINI INTERN>       15.26223    176.72317     21.50004    262.15212     12.94418
+MINI EXTERN>       30.40893 -38195.07770      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+MINI>      100 -37677.25324      1.16621      0.29629      0.04477
+MINI INTERN>       15.43308    177.34852     21.57033    263.55227     12.94510
+MINI EXTERN>       30.04092 -38198.14347      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+
+ CONJUG> Minimization exiting with number of steps limit (  100) exceeded.
+
+CONJ MIN: Cycle      ENERgy      Delta-E         GRMS    Step-size
+CONJ INTERN:          BONDs       ANGLes       UREY-b    DIHEdrals    IMPRopers
+CONJ EXTERN:        VDWaals         ELEC       HBONds          ASP         USER
+ ----------       ---------    ---------    ---------    ---------    ---------
+CONJ>      100 -37677.25324      1.16621      0.29629      0.02000
+CONJ INTERN>       15.43308    177.34852     21.57033    263.55227     12.94510
+CONJ EXTERN>       30.04092 -38198.14347      0.00000      0.00000      0.00000
+ ----------       ---------    ---------    ---------    ---------    ---------
+  
+ CHARMM>     
+  
+ CHARMM>    ! Release all constraints
+ CHARMM>    cons fix sele none end
+ SELRPN>      0 atoms have been selected out of   1961
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    ! stream "toppar/radii.str"
+ CHARMM>     
+  
+ CHARMM>    open  write         unit 1 card name @mol.pdb
+ Parameter: MOL -> "LYSOZYME1977"
+ VOPEN> Attempting to open::lysozyme1977.pdb::
+ OPNLGU> Unit  1 opened for WRITE access to lysozyme1977.pdb
+  
+ CHARMM>    write coor pdb      unit 1
+ RDTITL> CLOSE               UNIT 1
+ RDTITL> No title read.
+  
+ CHARMM>    close               unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open  write         unit 1 card name @mol.crd
+ Parameter: MOL -> "LYSOZYME1977"
+ VOPEN> Attempting to open::lysozyme1977.crd::
+ OPNLGU> Unit  1 opened for WRITE access to lysozyme1977.crd
+  
+ CHARMM>    write coor card     unit 1
+ RDTITL> CLOSE               UNIT 1
+ RDTITL> No title read.
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>    close               unit 1
+ CLOLGU>  *****  WARNING  ***** Attempt to close unit that was not open.
+  
+ CHARMM>     
+  
+ CHARMM>    open  write         unit 1 card name @mol.psf
+ Parameter: MOL -> "LYSOZYME1977"
+ VOPEN> Attempting to open::lysozyme1977.psf::
+ OPNLGU> Unit  1 opened for WRITE access to lysozyme1977.psf
+  
+ CHARMM>    write psf card      unit 1
+ RDTITL> CLOSE               UNIT 1
+ RDTITL> No title read.
+  
+ CHARMM>    close               unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open  write         unit 1 card name @mol_xplor.psf
+ Parameter: MOL -> "LYSOZYME1977"
+ VOPEN> Attempting to open::lysozyme1977_xplor.psf::
+ OPNLGU> Unit  1 opened for WRITE access to lysozyme1977_xplor.psf
+  
+ CHARMM>    write psf xplo card unit 1
+ RDTITL> CLOSE               UNIT 1
+ RDTITL> No title read.
+  
+ CHARMM>    close               unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    stop
+$$$$$$  New timer profile $$$$$
+               Nonbond force          21.80937 Other:    0.00000
+               Bond energy             0.05200 Other:    0.00000
+               Angle energy            0.39602 Other:    0.00000
+               Dihedral energy         0.64403 Other:    0.00000
+          Energy time            22.93743 Other:    0.03600
+     Dynamics total         22.93743 Other:    0.00000
+ Total time             27.10569 Other:    4.16826
+
+                    NORMAL TERMINATION BY NORMAL STOP
+                    MAXIMUM STACK SPACE USED IS   99024
+                    STACK CURRENTLY IN USE IS         0
+                    MOST SEVERE WARNING WAS AT LEVEL  2
+                    HEAP PRINTOUT-  HEAP SIZE  10240000
+                    SPACE CURRENTLY IN USE IS      4224
+                    MAXIMUM SPACE USED IS        710490
+                    FREE LIST
+            PRINHP> ADDRESS:         1 LENGTH:   9608322 NEXT:   9612547
+            PRINHP> ADDRESS:   9612547 LENGTH:    627454 NEXT:         0
+
+                    $$$$$ JOB ACCOUNTING INFORMATION $$$$$
+                     ELAPSED TIME:    27.16  SECONDS 
+                         CPU TIME:    27.08  SECONDS 

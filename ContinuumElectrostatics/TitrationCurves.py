@@ -172,7 +172,7 @@ class TitrationCurves (object):
             # Initialize output directory
             if not os.path.exists (directory):
                 try:
-                    os.mkdir (directory)
+                    os.makedirs (directory)
                 except:
                     raise ContinuumElectrostaticsError ("Cannot create directory %s" % directory)
 

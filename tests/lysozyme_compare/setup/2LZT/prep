@@ -1,0 +1,17 @@
+# Fit the new lysozyme to the old one (generates 2LZT_temp.pdb)
+vmd -eofexit -dispdev none -e fit_new_to_old.tcl
+
+# Fix the first column after fitting
+t=`mktemp`
+o=2LZT_fitted.pdb
+
+grep -E "^(ATOM|HETATM)" 2LZT.pdb       | cut -c -6 > $t
+grep    "^ATOM"          2LZT_temp.pdb  | cut -c 7- | paste -d "" $t - > $o
+echo "END" >> $o
+
+# Split segments
+grep ^ATOM    $o | ./segid PRTA > protein.pdb
+grep ^HETATM  $o | grep -v NO3 | ./pdb_recount 1 | ./segid WATA > waters.pdb
+
+# Clean up
+rm $t 2LZT_temp.pdb

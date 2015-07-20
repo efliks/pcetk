@@ -929,7 +929,7 @@ class MEADModel (object):
             # Prepare scratch space
             if not os.path.exists (self.pathScratch):
                 try:
-                    os.mkdir (self.pathScratch)
+                    os.makedirs (self.pathScratch)
                 except:
                     raise ContinuumElectrostaticsError ("Cannot create scratch directory %s" % self.pathScratch)
 
