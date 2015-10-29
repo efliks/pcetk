@@ -22,6 +22,11 @@ The key features of the module include:
   * Time-consuming parts of code written in C and Cython
   * Close integration with pDynamo
 
+More information about the theoretical methods and algorithms used by Pcetk can be found
+in our article:<br />
+Feliks, M.; Field, M. "*Pcetk*: A pDynamo-based Toolkit for Protonation State Calculations in Proteins."
+*J. Chem. Inf. Model.* **2015**, *55*, pp. 2288-2296 (http://dx.doi.org/10.1021/acs.jcim.5b00262)
+
 
 Auxiliary software:
  * pDynamo (Martin Field)
