@@ -2,12 +2,10 @@
 # . File      : Substate.py
 # . Program   : pDynamo-1.8.0                           (http://www.pdynamo.org)
 # . Copyright : CEA, CNRS, Martin  J. Field  (2007-2012),
-#                          Mikolaj J. Feliks (2014-2015)
+#                          Mikolaj J. Feliks (2014-2016)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
 """Substate is a class for calculating energies of substates of protonation states."""
-
-__lastchanged__ = "$Id$"
 
 from pCore           import logFile, LogFileActive
 from Error           import ContinuumElectrostaticsError
@@ -15,7 +13,7 @@ from StateVector     import StateVector
 from InputFileWriter import WriteInputFile
 
 
-class MEADSubstate (object):
+class Substate (object):
     """Substate of a protonation state."""
 
     def __init__ (self, meadModel, selectedSites, pH=7.0, log=logFile):
@@ -27,7 +25,7 @@ class MEADSubstate (object):
 
         for selectedSegment, selectedResidueName, selectedResidueSerial in selectedSites:
             foundSite = False
-            for siteIndex, site in enumerate (meadModel.meadSites):
+            for siteIndex, site in enumerate (meadModel.sites):
                 if site.segName == selectedSegment and site.resSerial == selectedResidueSerial:
                     indicesOfSites.append (siteIndex)
                     foundSite = True
@@ -74,7 +72,7 @@ class MEADSubstate (object):
         if meadModel.isProbability:
             energyModel   = meadModel.energyModel
             probabilities = [0.] * meadModel.ninstances
-            for site in meadModel.meadSites:
+            for site in meadModel.sites:
                 for instance in site.instances:
                     probabilities[instance._instIndexGlobal] = energyModel.GetProbability (instance._instIndexGlobal)
         return probabilities
@@ -85,7 +83,7 @@ class MEADSubstate (object):
         if probabilities:
             meadModel   = self.owner
             energyModel = meadModel.energyModel
-            for site in meadModel.meadSites:
+            for site in meadModel.sites:
                 for instance in site.instances:
                     energyModel.SetProbability (instance._instIndexGlobal, probabilities[instance._instIndexGlobal])
 
@@ -140,7 +138,7 @@ class MEADSubstate (object):
                 tab.Heading ("Protons")
 
                 for siteIndex in indicesOfSites:
-                    site = owner.meadSites[siteIndex]
+                    site = owner.sites[siteIndex]
                     tab.Heading ("%s %s %d" % (site.segName, site.resName, site.resSerial))
 
                 for stateIndex, (energy, indicesOfInstances) in enumerate (substates):
@@ -153,7 +151,7 @@ class MEADSubstate (object):
                     charge   = 0.
                     labels   = []
                     for siteIndex, instanceIndex in zip (indicesOfSites, indicesOfInstances):
-                        site     = owner.meadSites     [siteIndex]
+                        site     = owner.sites     [siteIndex]
                         instance = site.instances  [instanceIndex]
                         nprotons = nprotons + instance.protons
                         charge   = charge   + sum (instance.charges)
@@ -190,7 +188,7 @@ class MEADSubstate (object):
             lines  = ["\\begin{tabular}{@{\\extracolsep{2mm}}cc%sc}" % ("l" * nsites), ]
             header = "State & $\\Delta E$ (kcal/mol) & "
             for siteIndex in indicesOfSites:
-                site = owner.meadSites[siteIndex]
+                site = owner.sites[siteIndex]
                 if includeSegment:
                     header = "%s %s %s%d &" % (header, site.segName, site.resName.capitalize (), site.resSerial)
                 else:
@@ -206,7 +204,7 @@ class MEADSubstate (object):
                 nprotons = 0
 
                 for siteIndex, instanceIndex in zip (indicesOfSites, indicesOfInstances):
-                    site     = owner.meadSites     [siteIndex]
+                    site     = owner.sites     [siteIndex]
                     instance = site.instances  [instanceIndex]
                     if transl.has_key (site.resName):
                         dic  = transl[site.resName]
@@ -222,14 +220,20 @@ class MEADSubstate (object):
             WriteInputFile (filename, lines, addLineBreaks=True)
 
 
+#-------------------------------------------------------------------------------
+class MEADSubstate (Substate):
+    """A class to maintain backward compatibility."""
+    pass
+
+
 #===============================================================================
-# Helper functions
+# . Helper functions
 #===============================================================================
 def StateVector_FromProbabilities (meadModel):
     """Create a state vector from the previously calculated probabilities."""
     if meadModel.isProbability:
         vector = StateVector (meadModel)
-        for siteIndex, site in enumerate (meadModel.meadSites):
+        for siteIndex, site in enumerate (meadModel.sites):
             pairs = []
             for instanceIndex, instance in enumerate (site.instances):
                 pair = (instance.probability, instanceIndex)
@@ -243,6 +247,6 @@ def StateVector_FromProbabilities (meadModel):
 
 
 #===============================================================================
-# Testing
+# . Main program
 #===============================================================================
 if __name__ == "__main__": pass

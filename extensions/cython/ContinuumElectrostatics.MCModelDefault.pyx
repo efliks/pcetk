@@ -34,9 +34,9 @@ cdef class MCModelDefault:
             raise CLibraryError ("Cannot allocate Monte Carlo model.")
 
 
-    def Initialize (self, meadModel):
+    def Initialize (self, ceModel):
         """Link Monte Carlo and energy models."""
-        cdef EnergyModel energyModel = meadModel.energyModel
+        cdef EnergyModel energyModel = ceModel.energyModel
         cdef Status      status      = Status_Continue
         cdef Integer     npairs
 
@@ -50,7 +50,7 @@ cdef class MCModelDefault:
             if status != Status_Continue:
                 raise CLibraryError ("Cannot allocate pairs.")
         self.isOwner = False
-        self.owner   = meadModel
+        self.owner   = ceModel
 
 
     def CalculateOwnerProbabilities (self, Real pH=7.0, Integer logFrequency=500, log=logFile):
@@ -165,8 +165,8 @@ cdef class MCModelDefault:
 
         if LogFileActive (log):
             log.Text ("\nFound %d pair%s of strongly interacting sites:\n" % (npairs, "s" if npairs != 1 else ""))
-            meadModel = self.owner
-            sites     = meadModel.meadSites
+            ceModel = self.owner
+            sites   = ceModel.sites
 
             for indexPair from 0 <= indexPair < npairs:
                 StateVector_GetPair (self.cObject.vector, indexPair, &indexSiteA, &indexSiteB, &Wmax, &status)

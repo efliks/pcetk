@@ -2,7 +2,7 @@
 # . File      : TitrationCurves.py
 # . Program   : pDynamo-1.8.0                           (http://www.pdynamo.org)
 # . Copyright : CEA, CNRS, Martin  J. Field  (2007-2012),
-#                          Mikolaj J. Feliks (2014-2015)
+#                          Mikolaj J. Feliks (2014-2016)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
 """TitrationCurves is a class for calculating titration curves.
@@ -73,7 +73,7 @@ class TitrationCurves (object):
         energyModel   = meadModel.energyModel
         probabilities = [0.] * meadModel.ninstances
 
-        for site in meadModel.meadSites:
+        for site in meadModel.sites:
             for instance in site.instances:
                 probabilities[instance._instIndexGlobal] = energyModel.GetProbability (instance._instIndexGlobal)
         return probabilities
@@ -84,7 +84,7 @@ class TitrationCurves (object):
         meadModel   = self.owner
         energyModel = meadModel.energyModel
 
-        for site in meadModel.meadSites:
+        for site in meadModel.sites:
             for instance in site.instances:
                 energyModel.SetProbability (instance._instIndexGlobal, probabilities[instance._instIndexGlobal])
 
@@ -180,7 +180,7 @@ class TitrationCurves (object):
             meadModel = self.owner
             phdata    = self.steps
 
-            for site in meadModel.meadSites:
+            for site in meadModel.sites:
                 for instance in site.instances:
                     # Collect instance data
                     lines = []
@@ -202,7 +202,7 @@ class TitrationCurves (object):
             data    =  self.steps
             nsteps  =  self.nsteps
             halves  =  []
-            for site in owner.meadSites:
+            for site in owner.sites:
                 instances = []
                 for instance in site.instances:
                     pa  = data[0][site.siteIndex][instance.instIndex]
@@ -249,7 +249,7 @@ class TitrationCurves (object):
                 if not self.isHalves:
                     self.CalculateHalfpKs ()
 
-                for site in owner.meadSites:
+                for site in owner.sites:
                     entry  = self._GetEntry (site, decimalPlaces)
                     entries.append (entry)
                     length = len (entry)
@@ -262,7 +262,7 @@ class TitrationCurves (object):
                 form = "%%-%ds" % longest
 
                 table = []
-                for site, entry in zip (owner.meadSites, entries):
+                for site, entry in zip (owner.sites, entries):
                     table.append ([site.segName, site.resName, site.resSerial, entry])
                 if sortSites:
                     table.sort (key=lambda k: (k[0], k[1], k[2]))

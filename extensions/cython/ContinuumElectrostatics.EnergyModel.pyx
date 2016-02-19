@@ -69,7 +69,7 @@ cdef class EnergyModel:
         return deviate
 
 
-    def __init__ (self, meadModel, Integer totalSites, Integer totalInstances):
+    def __init__ (self, ceModel, Integer totalSites, Integer totalInstances):
         """Constructor."""
         cdef Status  status
         status        = Status_Continue
@@ -77,10 +77,10 @@ cdef class EnergyModel:
         if status != Status_Continue:
             raise CLibraryError ("Cannot allocate energy model.")
 
-        self.cObject.temperature = meadModel.temperature
+        self.cObject.temperature = ceModel.temperature
         self.cObject.ninstances  = totalInstances
         self.isOwner             = False
-        self.owner               = meadModel
+        self.owner               = ceModel
 
 
     def Initialize (self):
@@ -90,14 +90,14 @@ cdef class EnergyModel:
         cdef Status  status
         totalSites = self.cObject.vector.nsites
         status     = Status_Continue
-        meadModel  = self.owner
+        ceModel    = self.owner
         nstates    = 1
 
         for indexSite from 0 <= indexSite < totalSites:
             ninstances =  0
             indexUp    =  0
             indexDown  =  9999
-            site       =  meadModel.meadSites[indexSite]
+            site       =  ceModel.sites[indexSite]
             for instance in site.instances:
                 ninstances += 1
                 index = instance._instIndexGlobal
@@ -134,9 +134,9 @@ cdef class EnergyModel:
     def CalculateMicrostateEnergy (self, StateVector vector, Real pH=7.0):
         """Calculate energy of a protonation state (=microstate)."""
         cdef Real Gmicro
-        meadModel = self.owner
+        ceModel = self.owner
 
-        if not meadModel.isCalculated:
+        if not ceModel.isCalculated:
             raise CLibraryError ("First calculate electrostatic energies.")
         Gmicro = EnergyModel_CalculateMicrostateEnergy (self.cObject, vector.cObject, pH)
         return Gmicro
@@ -145,12 +145,12 @@ cdef class EnergyModel:
     def CalculateProbabilitiesAnalytically (self, Real pH=7.0):
         """Calculate probabilities of protonation states analytically."""
         cdef Status status
-        status     = Status_Continue
-        meadModel  = self.owner
+        status   = Status_Continue
+        ceModel  = self.owner
 
         if self.cObject.nstates > ANALYTIC_STATES:
             raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)
-        if not meadModel.isCalculated:
+        if not ceModel.isCalculated:
             raise CLibraryError ("First calculate electrostatic energies.")
 
         EnergyModel_CalculateProbabilitiesAnalytically (self.cObject, pH, &status)
@@ -162,12 +162,12 @@ cdef class EnergyModel:
     def CalculateProbabilitiesAnalyticallyUnfolded (self, Real pH=7.0):
         """Calculate probabilities of protonation states analytically (unfolded protein)."""
         cdef Status status
-        status     = Status_Continue
-        meadModel  = self.owner
+        status   = Status_Continue
+        ceModel  = self.owner
 
         if self.cObject.nstates > ANALYTIC_STATES:
             raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)
-        if not meadModel.isCalculated:
+        if not ceModel.isCalculated:
             raise CLibraryError ("First calculate electrostatic energies.")
 
         EnergyModel_CalculateProbabilitiesAnalyticallyUnfolded (self.cObject, pH, &status)
@@ -179,8 +179,8 @@ cdef class EnergyModel:
     def CalculateMicrostateEnergyUnfolded (self, StateVector vector, Real pH=7.0):
         """Calculate energy of a protonation state (=microstate) in an unfolded protein."""
         cdef Real Gmicro
-        meadModel = self.owner
-        if not meadModel.isCalculated:
+        ceModel = self.owner
+        if not ceModel.isCalculated:
             raise CLibraryError ("First calculate electrostatic energies.")
         Gmicro = EnergyModel_CalculateMicrostateEnergyUnfolded (self.cObject, vector.cObject, pH)
         return Gmicro

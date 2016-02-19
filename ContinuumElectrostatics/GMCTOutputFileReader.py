@@ -7,10 +7,8 @@
 #-------------------------------------------------------------------------------
 """Reading output files from GMCT."""
 
-__lastchanged__ = "$Id$"
-
 from pCore      import logFile, LogFileActive, TextFileReader
-from Constants  import *
+from Constants  import CONSTANT_MOLAR_GAS_KCAL_MOL, CONSTANT_LN10
 
 
 class GMCTOutputFileReader (TextFileReader):
@@ -21,36 +19,32 @@ class GMCTOutputFileReader (TextFileReader):
         TextFileReader.__init__ (self, name)
 
 
-    def Parse (self, temperature = 300.0, log = logFile):
+    def Parse (self, temperature=300., log=logFile):
         """Parse the data on the file."""
         if not self.QPARSED:
             if LogFileActive (log):
                 self.log = log
-
             self.Open ()
+
             convert       = -1.0 / (CONSTANT_MOLAR_GAS_KCAL_MOL * CONSTANT_LN10 * temperature)
             line          = None
             pHtable       = []
             probabilities = {}
-
             try:
                 while True:
                     if not line:
-                        line = self.GetLine (QWARNING = False)
-
+                        line = self.GetLine (QWARNING=False)
                     if line.startswith ("chemical potential"):
                         tokens = line.split ()
                         mu     = float (tokens[2])
                         pHtable.append (mu * convert)
 
-                        self.GetLine ()
-                        self.GetLine ()
-
+                        for i in range (2):
+                            self.GetLine ()
                         while True:
-                            line = self.GetLine (QWARNING = False)
+                            line = self.GetLine (QWARNING=False)
                             if line.startswith ("chemical potential"):
                                 break
-
                             tokens = line.split ()
                             label, probability, mu, protons, vlabel, vmemb = tokens
 
@@ -62,16 +56,16 @@ class GMCTOutputFileReader (TextFileReader):
                             probabilities[label] = entries
             except EOFError:
                 pass
-
+            self.log           = None
+            self.QPARSED       = True
             self.pHtable       = pHtable
             self.probabilities = probabilities
+
             self.WarningStop ()
             self.Close ()
-            self.log     = None
-            self.QPARSED = True
 
 
 #===============================================================================
-# Testing
+# . Main program
 #===============================================================================
 if __name__ == "__main__": pass

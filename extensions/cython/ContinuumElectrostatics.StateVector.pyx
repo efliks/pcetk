@@ -77,13 +77,13 @@ cdef class StateVector:
                 raise CLibraryError ("Invalid value (%d)." % value)
 
 
-    def __init__ (self, meadModel):
+    def __init__ (self, ceModel):
         """Constructor."""
         cdef Status  status
         cdef Integer numberOfSites
         cdef Integer indexSite, indexDown, indexUp, index
         status        = Status_Continue
-        numberOfSites = meadModel.nsites
+        numberOfSites = ceModel.nsites
         self.cObject  = StateVector_Allocate (numberOfSites, &status)
 
         if status != Status_Continue:
@@ -92,7 +92,7 @@ cdef class StateVector:
         for indexSite from 0 <= indexSite < numberOfSites:
             indexUp   = 0
             indexDown = 9999
-            site      = meadModel.meadSites[indexSite]
+            site      = ceModel.sites[indexSite]
             for instance in site.instances:
                 index = instance._instIndexGlobal
                 if index < indexDown : indexDown = index
@@ -100,7 +100,7 @@ cdef class StateVector:
             StateVector_SetSite (self.cObject, indexSite, indexDown, indexUp, &status)
 
         self.isOwner = False
-        self.owner = meadModel
+        self.owner   = ceModel
 
 
     def CopyTo (StateVector self, StateVector other):
@@ -145,8 +145,8 @@ cdef class StateVector:
             for indexSite from 0 <= indexSite < self.cObject.nsites:
                 indexActive = StateVector_GetItem (self.cObject, indexSite, &status)
                 isSubstate  = StateVector_IsSubstate (self.cObject, indexSite, &status)
-                meadModel   = self.owner
-                site        = meadModel.meadSites[indexSite]
+                ceModel     = self.owner
+                site        = ceModel.sites[indexSite]
                 instance    = site.instances[indexActive]
                 substate    = "@" if isSubstate == CTrue else " "
 
@@ -167,8 +167,8 @@ cdef class StateVector:
         cdef Integer siteIndex, substateSiteIndex, nselected, nsites
         cdef Boolean foundSite
         cdef Status  status
-        meadModel  = self.owner
-        nsites     = len (meadModel.meadSites)
+        ceModel    = self.owner
+        nsites     = len (ceModel.sites)
         nselected  = len (selectedSites)
         status     = Status_Continue
 
@@ -181,7 +181,7 @@ cdef class StateVector:
             foundSite = CFalse
 
             for siteIndex from 0 <= siteIndex < nsites:
-                site = meadModel.meadSites[siteIndex]
+                site = ceModel.sites[siteIndex]
                 if site.segName == selectedSegment and site.resSerial == selectedSerial:
                     StateVector_SetSubstateItem (self.cObject, siteIndex, substateSiteIndex, &status)
                     foundSite = CTrue

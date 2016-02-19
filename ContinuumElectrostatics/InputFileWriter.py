@@ -2,45 +2,42 @@
 # . File      : InputFileWriter.py
 # . Program   : pDynamo-1.8.0                           (http://www.pdynamo.org)
 # . Copyright : CEA, CNRS, Martin  J. Field  (2007-2012),
-#                          Mikolaj J. Feliks (2014)
+#                          Mikolaj J. Feliks (2014-2016)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
-"""A simple writer of text files from lists of strings."""
-
-__lastchanged__ = "$Id$"
-
-from pCore      import TextFileWriter
+from pCore  import TextFileWriter
 
 
 class InputFileWriter (TextFileWriter):
-    """A simple class for writing files from lists of strings."""
+    """A class for writing text files."""
 
     def __init__ (self, name):
         """Constructor."""
-        TextFileWriter.__init__ (self, name)
+        super (InputFileWriter, self).__init__ (name)
 
 
-    def Write (self, listOfStrings):
-        """Write a list of strings."""
-        self.Open ()
-
-        self.file.writelines (listOfStrings)
+    def Write (self, listOfLines):
+        """Write a list of lines."""
+        self.Open  ()
+        self.file.writelines (listOfLines)
         self.Close ()
 
 
 #===============================================================================
-# Helper functions
+# . Helper functions
 #===============================================================================
 def WriteInputFile (filename, listOfLines, addLineBreaks=False):
-    """Writing input files from previously generated lists of strings."""
-    out = InputFileWriter (filename)
+    """Write a file."""
+    output = InputFileWriter (filename)
     if addLineBreaks:
-        out.Write (map (lambda line: "%s\n" % line, listOfLines))
-    else:
-        out.Write (listOfLines)
+        templ = []
+        for line in listOfLines:        
+            templ.append ("%s\n" % line)
+        listOfLines = templ
+    output.Write (listOfLines)
 
 
 #===============================================================================
-# Testing
+# . Main program
 #===============================================================================
 if __name__ == "__main__": pass
