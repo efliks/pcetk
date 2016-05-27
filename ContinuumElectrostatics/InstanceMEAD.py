@@ -38,8 +38,15 @@ class InstanceMEAD (Instance):
             else:
                 instancePqr        , ext = os.path.splitext (self.sitePqr)
                 modelBackgroundPqr , ext = os.path.splitext (self.modelPqr)
-                command = [os.path.join (model.pathMEAD, "my_2diel_solver"), "-T", "%f" % model.temperature, "-ionicstr", "%f" % model.ionicStrength, "-epsin", "%f" % 4.0, instancePqr, modelBackgroundPqr]
-
+                command = [
+                    os.path.join (model.pathMEAD, "my_2diel_solver"), 
+                    "-T", "%f" % model.temperature, 
+                    "-ionicstr", "%f" % model.ionicStrength, 
+                    "-epsin", "%f" % model.epsilonProtein, 
+                    "-epsext", "%f" % model.epsilonWater, 
+                    instancePqr, 
+                    modelBackgroundPqr
+                    ]
                 try:
                     outFile = open (self.modelLog, "w")
                     subprocess.check_call (command, stderr=outFile, stdout=outFile)
@@ -75,9 +82,18 @@ class InstanceMEAD (Instance):
                 # . epsin1 is never used but must be given
 
                 # . eps2set defines the whole protein
-
-                command = [os.path.join (model.pathMEAD, "my_3diel_solver"), "-T", "%f" % model.temperature, "-ionicstr", "%f" % model.ionicStrength, "-epsin1", "%f" % 1.0, "-epsin2", "%f" % 4.0, "-eps2set", "%s" % proteinPqr, "-fpt", "%s" % sitesFpt, instancePqr, proteinBackgroundPqr]
-
+                command = [
+                    os.path.join (model.pathMEAD, "my_3diel_solver"), 
+                    "-T", "%f" % model.temperature, 
+                    "-ionicstr", "%f" % model.ionicStrength, 
+                    "-epsin1", "%f" % 1.0, 
+                    "-epsin2", "%f" % model.epsilonProtein, 
+                    "-epsext", "%f" % model.epsilonWater, 
+                    "-eps2set", "%s" % proteinPqr, 
+                    "-fpt", "%s" % sitesFpt, 
+                    instancePqr, 
+                    proteinBackgroundPqr
+                    ]
                 try:
                     outFile = open (self.siteLog, "w")
                     subprocess.check_call (command, stderr=outFile, stdout=outFile)

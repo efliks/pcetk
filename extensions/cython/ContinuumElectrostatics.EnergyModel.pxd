@@ -29,6 +29,7 @@ cdef extern from "EnergyModel.h":
     cdef Boolean       EnergyModel_CheckInteractionsSymmetric        (CEnergyModel *self, Real tolerance, Real *maxDeviation)
     cdef void          EnergyModel_SymmetrizeInteractions            (CEnergyModel *self, Status *status)
     cdef void          EnergyModel_ResetInteractions                 (CEnergyModel *self)
+    cdef void          EnergyModel_ScaleInteractions                 (CEnergyModel *self, Real scale)
     # Calculation of energies
     cdef Real          EnergyModel_CalculateMicrostateEnergy         (CEnergyModel *self, CStateVector *vector, Real pH)
     cdef Real          EnergyModel_CalculateMicrostateEnergyUnfolded (CEnergyModel *self, CStateVector *vector, Real pH)

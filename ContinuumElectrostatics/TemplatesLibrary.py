@@ -90,8 +90,18 @@ class TemplatesLibrary (object):
                     center      =  reader.siteCenter  ,
                     instances   =  collect            ,
                         )
-            # . Add entry
-            library.append (templateSite)
+            # . Add or replace entry
+            found = False
+            for index, site in enumerate (library):
+                if site.label == templateSite.label:
+                    found = True
+                    break
+            if found:
+                # . Entry exists in the library, overwrite it
+                library[index] = templateSite
+            else:
+                # . Add a new entry
+                library.append (templateSite)
         # . Finish up
         self.library = library
 

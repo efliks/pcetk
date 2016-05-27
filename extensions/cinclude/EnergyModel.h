@@ -68,6 +68,7 @@ extern void         EnergyModel_Deallocate (EnergyModel *self);
 extern void    EnergyModel_SymmetrizeInteractions       (const EnergyModel *self, Status *status);
 extern Boolean EnergyModel_CheckInteractionsSymmetric   (const EnergyModel *self, Real tolerance, Real *maxDeviation);
 extern void    EnergyModel_ResetInteractions            (const EnergyModel *self);
+extern void    EnergyModel_ScaleInteractions            (const EnergyModel *self, Real scale);
 extern void    EnergyModel_StateVectorFromProbabilities (const EnergyModel *self, StateVector *vector, Status *status);
 
 /* Calculation of energies */

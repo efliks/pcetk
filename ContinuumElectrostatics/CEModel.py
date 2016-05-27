@@ -19,10 +19,13 @@ from MCModelDefault    import MCModelDefault
 import os
 
 
-_DEFAULT_TEMPERATURE       =  300.
-_DEFAULT_IONIC_STRENGTH    =     .1
 _DEFAULT_FOCUSING_STEPS    =  ((121, 2.),  (101, 1.),  (101, .5),  (101, .25))
 _DEFAULT_EXCLUDE_SEGMENTS  =  ("WATA", "WATB", "WATC", "WATD", )
+
+_DEFAULT_TEMPERATURE       =  300.      # 300 K
+_DEFAULT_IONIC_STRENGTH    =     .1     # 100 mM = 0.1 M
+_DEFAULT_EPSILON_WATER     =   80.
+_DEFAULT_EPSILON_PROTEIN   =    4.
 
 # CEAtom = collections.namedtuple ("CEAtom", "label  x  y  z  charge  radii")
 
@@ -35,16 +38,20 @@ class CEModel (object):
         "temperature"      :   _DEFAULT_TEMPERATURE      ,
         "ionicStrength"    :   _DEFAULT_IONIC_STRENGTH   ,
         "focusingSteps"    :   _DEFAULT_FOCUSING_STEPS   ,
+        "epsilonWater"     :   _DEFAULT_EPSILON_WATER    ,
+        "epsilonProtein"   :   _DEFAULT_EPSILON_PROTEIN  ,
         }
 
     defaultAttributeNames = {
-        "Temperature"       :   "temperature"     ,
-        "Ionic Strength"    :   "ionicStrength"   ,
-        "Initialized"       :   "isInitialized"   ,
-        "Files Written"     :   "isFilesWritten"  ,
-        "Calculated"        :   "isCalculated"    ,
-        "Calculated Prob."  :   "isProbability"   ,
-        "Focusing Steps"    :   "focusingSteps"   ,
+        "Temperature"           :   "temperature"     ,
+        "Ionic Strength"        :   "ionicStrength"   ,
+        "Initialized"           :   "isInitialized"   ,
+        "Files Written"         :   "isFilesWritten"  ,
+        "Calculated"            :   "isCalculated"    ,
+        "Calculated Prob."      :   "isProbability"   ,
+        "Focusing Steps"        :   "focusingSteps"   ,
+        "Water   Diel. Const."  :   "epsilonWater"    ,
+        "Protein Diel. Const."  :   "epsilonProtein"  ,
         }
 
     @property
@@ -322,6 +329,34 @@ class CEModel (object):
         # . Summarize
         if LogFileActive (log):
             log.Text ("\nWrote file: %s\n" % filename)
+
+
+    #-------------------------------------------------------------------------------
+    def PrintInteractions (self, log=logFile):
+        """Print the matrix of interactions in a readable form.
+
+        It only remains readable as long as there are a few titratable sites with two instances each."""
+        if self.isCalculated:
+            if LogFileActive (log):
+                header = "%16s" % ""
+                for asite in self.sites:
+                    header = "%s%16s" % (header, asite.label.center (8))
+                logFile.Text (header + "\n")
+                header = "%16s" % ""
+                for asite in self.sites:
+                    for ainstance in asite.instances:
+                        header = "%s%8s" % (header, ainstance.label.center (8))
+                logFile.Text (header + "\n")
+                # . Outer loop
+                for asite in self.sites:
+                    for ainstance in asite.instances:
+                        line = "%16s" % (asite.label + " " + ainstance.label)
+                        # . Inner loop
+                        for bsite in self.sites:
+                            for binstance in bsite.instances:
+                                Wij  = self.energyModel.GetInteractionSymmetric (ainstance._instIndexGlobal, binstance._instIndexGlobal)
+                                line = "%s%8.2f" % (line, Wij)
+                        logFile.Text (line + "\n")
 
 
     #-------------------------------------------------------------------------------

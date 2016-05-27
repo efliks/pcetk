@@ -131,6 +131,11 @@ cdef class EnergyModel:
         EnergyModel_ResetInteractions (self.cObject)
 
 
+    def ScaleInteractions (self, Real scale):
+        """Scale interactions."""
+        EnergyModel_ScaleInteractions (self.cObject, scale)
+
+
     def CalculateMicrostateEnergy (self, StateVector vector, Real pH=7.0):
         """Calculate energy of a protonation state (=microstate)."""
         cdef Real Gmicro

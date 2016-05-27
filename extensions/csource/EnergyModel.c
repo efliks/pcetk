@@ -95,6 +95,13 @@ void EnergyModel_ResetInteractions (const EnergyModel *self) {
 }
 
 /*
+ * Scale interactions.
+ */
+void EnergyModel_ScaleInteractions (const EnergyModel *self, Real scale) {
+    SymmetricMatrix_Scale (self->symmetricmatrix, scale);
+}
+
+/*
  * Generate the lowest energy state vector.
  * If "vector" is NULL, use the EnergyModel's private vector.
  */
