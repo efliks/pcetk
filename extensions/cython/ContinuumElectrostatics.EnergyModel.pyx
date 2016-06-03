@@ -136,6 +136,22 @@ cdef class EnergyModel:
         EnergyModel_ScaleInteractions (self.cObject, scale)
 
 
+    def CalculateComponents (self, StateVector vector, Real pH=7.0):
+        """Calculate components of the microstate energy."""
+        cdef Real Gintr, potentials, W
+
+        EnergyModel_CalculateComponents (self.cObject, vector.cObject, pH, &Gintr, &potentials, &W)
+        return (Gintr, potentials, W)
+
+
+    def CalculateComponentsDictionary (self, StateVector vector, Real pH=7.0):
+        """Calculate components of the microstate energy and return a dictionary."""
+        cdef Real Gintr, potentials, W
+
+        EnergyModel_CalculateComponents (self.cObject, vector.cObject, pH, &Gintr, &potentials, &W)
+        return {"Gintr" : Gintr, "potentials" : potentials, "W" : W}
+
+
     def CalculateMicrostateEnergy (self, StateVector vector, Real pH=7.0):
         """Calculate energy of a protonation state (=microstate)."""
         cdef Real Gmicro

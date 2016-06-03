@@ -22,21 +22,22 @@ cdef extern from "EnergyModel.h":
         CStateVector  *vector
         CReal1DArray  *probabilities
 
-    # Allocation and deallocation
+    # . Allocation and deallocation
     cdef CEnergyModel *EnergyModel_Allocate                          (Integer nsites, Integer ninstances, Status *status)
     cdef void          EnergyModel_Deallocate                        (CEnergyModel *self)
-    # Handling of the interactions matrix
+    # . Handling of the interactions matrix
     cdef Boolean       EnergyModel_CheckInteractionsSymmetric        (CEnergyModel *self, Real tolerance, Real *maxDeviation)
     cdef void          EnergyModel_SymmetrizeInteractions            (CEnergyModel *self, Status *status)
     cdef void          EnergyModel_ResetInteractions                 (CEnergyModel *self)
     cdef void          EnergyModel_ScaleInteractions                 (CEnergyModel *self, Real scale)
-    # Calculation of energies
+    # . Calculation of energies
+    cdef void          EnergyModel_CalculateComponents               (CEnergyModel *self, CStateVector *vector, Real pH, Real *intrinsic, Real *potentials, Real *interactions)
     cdef Real          EnergyModel_CalculateMicrostateEnergy         (CEnergyModel *self, CStateVector *vector, Real pH)
     cdef Real          EnergyModel_CalculateMicrostateEnergyUnfolded (CEnergyModel *self, CStateVector *vector, Real pH)
-    # Calculation of partition functions
+    # . Calculation of partition functions
     cdef Real          EnergyModel_CalculateZunfolded                (CEnergyModel *self, Real pH, Real Gzero, Status *status)
     cdef Real          EnergyModel_CalculateZfolded                  (CEnergyModel *self, Real pH, Real Gzero, Status *status)
-    # Functions for getting items
+    # . Functions for getting items
     cdef Real          EnergyModel_GetGmodel                         (CEnergyModel *self, Integer instIndexGlobal)
     cdef Real          EnergyModel_GetGintr                          (CEnergyModel *self, Integer instIndexGlobal)
     cdef Integer       EnergyModel_GetProtons                        (CEnergyModel *self, Integer instIndexGlobal)
@@ -44,14 +45,14 @@ cdef extern from "EnergyModel.h":
     cdef Real          EnergyModel_GetInteraction                    (CEnergyModel *self, Integer instIndexGlobalA, Integer instIndexGlobalB)
     cdef Real          EnergyModel_GetInterSymmetric                 (CEnergyModel *self, Integer instIndexGlobalA, Integer instIndexGlobalB)
     cdef Real          EnergyModel_GetDeviation                      (CEnergyModel *self, Integer instIndexGlobalA, Integer instIndexGlobalB)
-    # Functions for setting items
+    # . Functions for setting items
     cdef void          EnergyModel_SetGmodel                         (CEnergyModel *self, Integer instIndexGlobal, Real value)
     cdef void          EnergyModel_SetGintr                          (CEnergyModel *self, Integer instIndexGlobal, Real value)
     cdef void          EnergyModel_SetProtons                        (CEnergyModel *self, Integer instIndexGlobal, Integer value)
     cdef void          EnergyModel_SetProbability                    (CEnergyModel *self, Integer instIndexGlobal, Real value)
     cdef void          EnergyModel_SetInteraction                    (CEnergyModel *self, Integer instIndexGlobalA, Integer instIndexGlobalB, Real value)
 
-    # Calculation of probabilities
+    # . Calculation of probabilities
     cdef void EnergyModel_CalculateProbabilitiesAnalytically (CEnergyModel *self, Real pH, Status *status)
     cdef void EnergyModel_CalculateProbabilitiesAnalyticallyUnfolded (CEnergyModel *self, Real pH, Status *status)
 

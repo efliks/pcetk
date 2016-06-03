@@ -508,7 +508,7 @@ struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector {
 };
 
 
-/* "ContinuumElectrostatics.EnergyModel.pxd":60
+/* "ContinuumElectrostatics.EnergyModel.pxd":61
  * 
  * #-------------------------------------------------------------------------------
  * cdef class EnergyModel:             # <<<<<<<<<<<<<<
@@ -757,12 +757,14 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
 static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_34SymmetrizeInteractions(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, PyObject *__pyx_v_log); /* proto */
 static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_36ResetInteractions(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_38ScaleInteractions(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, Real __pyx_v_scale); /* proto */
-static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_40CalculateMicrostateEnergy(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *__pyx_v_vector, Real __pyx_v_pH); /* proto */
-static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_42CalculateProbabilitiesAnalytically(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, Real __pyx_v_pH); /* proto */
-static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_44CalculateProbabilitiesAnalyticallyUnfolded(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, Real __pyx_v_pH); /* proto */
-static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_46CalculateMicrostateEnergyUnfolded(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *__pyx_v_vector, Real __pyx_v_pH); /* proto */
-static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_48CalculateZfolded(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, Real __pyx_v_Gzero, Real __pyx_v_pH); /* proto */
-static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_50CalculateZunfolded(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, Real __pyx_v_Gzero, Real __pyx_v_pH); /* proto */
+static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_40CalculateComponents(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *__pyx_v_vector, Real __pyx_v_pH); /* proto */
+static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_42CalculateComponentsDictionary(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *__pyx_v_vector, Real __pyx_v_pH); /* proto */
+static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_44CalculateMicrostateEnergy(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *__pyx_v_vector, Real __pyx_v_pH); /* proto */
+static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_46CalculateProbabilitiesAnalytically(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, Real __pyx_v_pH); /* proto */
+static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_48CalculateProbabilitiesAnalyticallyUnfolded(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, Real __pyx_v_pH); /* proto */
+static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_50CalculateMicrostateEnergyUnfolded(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *__pyx_v_vector, Real __pyx_v_pH); /* proto */
+static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_52CalculateZfolded(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, Real __pyx_v_Gzero, Real __pyx_v_pH); /* proto */
+static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_54CalculateZunfolded(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, Real __pyx_v_Gzero, Real __pyx_v_pH); /* proto */
 static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_7isOwner___get__(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self); /* proto */
 static int __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_7isOwner_2__set__(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
 static int __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_7isOwner_4__del__(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self); /* proto */
@@ -770,12 +772,14 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
 static int __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_5owner_2__set__(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
 static int __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_5owner_4__del__(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_23ContinuumElectrostatics_11EnergyModel_EnergyModel(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static char __pyx_k_W[] = "W";
 static char __pyx_k_Id[] = "$Id: $";
 static char __pyx_k_pH[] = "pH";
 static char __pyx_k_log[] = "log";
 static char __pyx_k_Text[] = "Text";
 static char __pyx_k_main[] = "__main__";
 static char __pyx_k_test[] = "__test__";
+static char __pyx_k_Gintr[] = "Gintr";
 static char __pyx_k_Gzero[] = "Gzero";
 static char __pyx_k_pCore[] = "pCore";
 static char __pyx_k_sites[] = "sites";
@@ -786,6 +790,7 @@ static char __pyx_k_ceModel[] = "ceModel";
 static char __pyx_k_logFile[] = "logFile";
 static char __pyx_k_instances[] = "instances";
 static char __pyx_k_tolerance[] = "tolerance";
+static char __pyx_k_potentials[] = "potentials";
 static char __pyx_k_totalSites[] = "totalSites";
 static char __pyx_k_StateVector[] = "StateVector";
 static char __pyx_k_lastchanged[] = "__lastchanged__";
@@ -809,6 +814,7 @@ static PyObject *__pyx_kp_s_Cannot_allocate_Boltzmann_factor;
 static PyObject *__pyx_kp_s_Cannot_allocate_energy_model;
 static PyObject *__pyx_kp_s_ContinuumElectrostatics_EnergyMo;
 static PyObject *__pyx_kp_s_First_calculate_electrostatic_en;
+static PyObject *__pyx_n_s_Gintr;
 static PyObject *__pyx_n_s_Gzero;
 static PyObject *__pyx_kp_s_Id;
 static PyObject *__pyx_n_s_LogFileActive;
@@ -816,6 +822,7 @@ static PyObject *__pyx_kp_s_Maximum_number_of_states_for_ana;
 static PyObject *__pyx_n_s_StateVector;
 static PyObject *__pyx_kp_s_Symmetrizing_interactions_compl;
 static PyObject *__pyx_n_s_Text;
+static PyObject *__pyx_n_s_W;
 static PyObject *__pyx_n_s_ceModel;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_instIndexGlobal;
@@ -830,6 +837,7 @@ static PyObject *__pyx_n_s_logFile;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_pCore;
 static PyObject *__pyx_n_s_pH;
+static PyObject *__pyx_n_s_potentials;
 static PyObject *__pyx_n_s_sites;
 static PyObject *__pyx_n_s_temperature;
 static PyObject *__pyx_n_s_test;
@@ -3111,15 +3119,320 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
 /* "ContinuumElectrostatics.EnergyModel.pyx":139
  * 
  * 
+ *     def CalculateComponents (self, StateVector vector, Real pH=7.0):             # <<<<<<<<<<<<<<
+ *         """Calculate components of the microstate energy."""
+ *         cdef Real Gintr, potentials, W
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_41CalculateComponents(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_40CalculateComponents[] = "Calculate components of the microstate energy.";
+static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_41CalculateComponents(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *__pyx_v_vector = 0;
+  Real __pyx_v_pH;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("CalculateComponents (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_vector,&__pyx_n_s_pH,0};
+    PyObject* values[2] = {0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_vector)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_pH);
+          if (value) { values[1] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "CalculateComponents") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      }
+    } else {
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_vector = ((struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *)values[0]);
+    if (values[1]) {
+      __pyx_v_pH = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_pH == (Real)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    } else {
+      __pyx_v_pH = ((Real)7.0);
+    }
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("CalculateComponents", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("ContinuumElectrostatics.EnergyModel.EnergyModel.CalculateComponents", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_vector), __pyx_ptype_23ContinuumElectrostatics_11StateVector_StateVector, 1, "vector", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_40CalculateComponents(((struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *)__pyx_v_self), __pyx_v_vector, __pyx_v_pH);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_40CalculateComponents(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *__pyx_v_vector, Real __pyx_v_pH) {
+  Real __pyx_v_Gintr;
+  Real __pyx_v_potentials;
+  Real __pyx_v_W;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("CalculateComponents", 0);
+
+  /* "ContinuumElectrostatics.EnergyModel.pyx":143
+ *         cdef Real Gintr, potentials, W
+ * 
+ *         EnergyModel_CalculateComponents (self.cObject, vector.cObject, pH, &Gintr, &potentials, &W)             # <<<<<<<<<<<<<<
+ *         return (Gintr, potentials, W)
+ * 
+ */
+  EnergyModel_CalculateComponents(__pyx_v_self->cObject, __pyx_v_vector->cObject, __pyx_v_pH, (&__pyx_v_Gintr), (&__pyx_v_potentials), (&__pyx_v_W));
+
+  /* "ContinuumElectrostatics.EnergyModel.pyx":144
+ * 
+ *         EnergyModel_CalculateComponents (self.cObject, vector.cObject, pH, &Gintr, &potentials, &W)
+ *         return (Gintr, potentials, W)             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_Gintr); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_potentials); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_W); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_3);
+  __pyx_t_1 = 0;
+  __pyx_t_2 = 0;
+  __pyx_t_3 = 0;
+  __pyx_r = __pyx_t_4;
+  __pyx_t_4 = 0;
+  goto __pyx_L0;
+
+  /* "ContinuumElectrostatics.EnergyModel.pyx":139
+ * 
+ * 
+ *     def CalculateComponents (self, StateVector vector, Real pH=7.0):             # <<<<<<<<<<<<<<
+ *         """Calculate components of the microstate energy."""
+ *         cdef Real Gintr, potentials, W
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_AddTraceback("ContinuumElectrostatics.EnergyModel.EnergyModel.CalculateComponents", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "ContinuumElectrostatics.EnergyModel.pyx":147
+ * 
+ * 
+ *     def CalculateComponentsDictionary (self, StateVector vector, Real pH=7.0):             # <<<<<<<<<<<<<<
+ *         """Calculate components of the microstate energy and return a dictionary."""
+ *         cdef Real Gintr, potentials, W
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_43CalculateComponentsDictionary(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_42CalculateComponentsDictionary[] = "Calculate components of the microstate energy and return a dictionary.";
+static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_43CalculateComponentsDictionary(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *__pyx_v_vector = 0;
+  Real __pyx_v_pH;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("CalculateComponentsDictionary (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_vector,&__pyx_n_s_pH,0};
+    PyObject* values[2] = {0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_vector)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_pH);
+          if (value) { values[1] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "CalculateComponentsDictionary") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 147; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      }
+    } else {
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_vector = ((struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *)values[0]);
+    if (values[1]) {
+      __pyx_v_pH = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_pH == (Real)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 147; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    } else {
+      __pyx_v_pH = ((Real)7.0);
+    }
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("CalculateComponentsDictionary", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 147; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("ContinuumElectrostatics.EnergyModel.EnergyModel.CalculateComponentsDictionary", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_vector), __pyx_ptype_23ContinuumElectrostatics_11StateVector_StateVector, 1, "vector", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 147; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_42CalculateComponentsDictionary(((struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *)__pyx_v_self), __pyx_v_vector, __pyx_v_pH);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_42CalculateComponentsDictionary(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *__pyx_v_vector, Real __pyx_v_pH) {
+  Real __pyx_v_Gintr;
+  Real __pyx_v_potentials;
+  Real __pyx_v_W;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("CalculateComponentsDictionary", 0);
+
+  /* "ContinuumElectrostatics.EnergyModel.pyx":151
+ *         cdef Real Gintr, potentials, W
+ * 
+ *         EnergyModel_CalculateComponents (self.cObject, vector.cObject, pH, &Gintr, &potentials, &W)             # <<<<<<<<<<<<<<
+ *         return {"Gintr" : Gintr, "potentials" : potentials, "W" : W}
+ * 
+ */
+  EnergyModel_CalculateComponents(__pyx_v_self->cObject, __pyx_v_vector->cObject, __pyx_v_pH, (&__pyx_v_Gintr), (&__pyx_v_potentials), (&__pyx_v_W));
+
+  /* "ContinuumElectrostatics.EnergyModel.pyx":152
+ * 
+ *         EnergyModel_CalculateComponents (self.cObject, vector.cObject, pH, &Gintr, &potentials, &W)
+ *         return {"Gintr" : Gintr, "potentials" : potentials, "W" : W}             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_Gintr); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_Gintr, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_potentials); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_potentials, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_W); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_W, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "ContinuumElectrostatics.EnergyModel.pyx":147
+ * 
+ * 
+ *     def CalculateComponentsDictionary (self, StateVector vector, Real pH=7.0):             # <<<<<<<<<<<<<<
+ *         """Calculate components of the microstate energy and return a dictionary."""
+ *         cdef Real Gintr, potentials, W
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("ContinuumElectrostatics.EnergyModel.EnergyModel.CalculateComponentsDictionary", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "ContinuumElectrostatics.EnergyModel.pyx":155
+ * 
+ * 
  *     def CalculateMicrostateEnergy (self, StateVector vector, Real pH=7.0):             # <<<<<<<<<<<<<<
  *         """Calculate energy of a protonation state (=microstate)."""
  *         cdef Real Gmicro
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_41CalculateMicrostateEnergy(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_40CalculateMicrostateEnergy[] = "Calculate energy of a protonation state (=microstate).";
-static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_41CalculateMicrostateEnergy(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_45CalculateMicrostateEnergy(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_44CalculateMicrostateEnergy[] = "Calculate energy of a protonation state (=microstate).";
+static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_45CalculateMicrostateEnergy(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *__pyx_v_vector = 0;
   Real __pyx_v_pH;
   int __pyx_lineno = 0;
@@ -3152,7 +3465,7 @@ static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "CalculateMicrostateEnergy") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "CalculateMicrostateEnergy") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3164,21 +3477,21 @@ static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
     }
     __pyx_v_vector = ((struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *)values[0]);
     if (values[1]) {
-      __pyx_v_pH = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_pH == (Real)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_v_pH = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_pH == (Real)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     } else {
       __pyx_v_pH = ((Real)7.0);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("CalculateMicrostateEnergy", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("CalculateMicrostateEnergy", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("ContinuumElectrostatics.EnergyModel.EnergyModel.CalculateMicrostateEnergy", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_vector), __pyx_ptype_23ContinuumElectrostatics_11StateVector_StateVector, 1, "vector", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_40CalculateMicrostateEnergy(((struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *)__pyx_v_self), __pyx_v_vector, __pyx_v_pH);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_vector), __pyx_ptype_23ContinuumElectrostatics_11StateVector_StateVector, 1, "vector", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_44CalculateMicrostateEnergy(((struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *)__pyx_v_self), __pyx_v_vector, __pyx_v_pH);
 
   /* function exit code */
   goto __pyx_L0;
@@ -3189,7 +3502,7 @@ static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_40CalculateMicrostateEnergy(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *__pyx_v_vector, Real __pyx_v_pH) {
+static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_44CalculateMicrostateEnergy(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *__pyx_v_vector, Real __pyx_v_pH) {
   Real __pyx_v_Gmicro;
   PyObject *__pyx_v_ceModel = NULL;
   PyObject *__pyx_r = NULL;
@@ -3203,7 +3516,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("CalculateMicrostateEnergy", 0);
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":142
+  /* "ContinuumElectrostatics.EnergyModel.pyx":158
  *         """Calculate energy of a protonation state (=microstate)."""
  *         cdef Real Gmicro
  *         ceModel = self.owner             # <<<<<<<<<<<<<<
@@ -3215,38 +3528,38 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   __pyx_v_ceModel = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":144
+  /* "ContinuumElectrostatics.EnergyModel.pyx":160
  *         ceModel = self.owner
  * 
  *         if not ceModel.isCalculated:             # <<<<<<<<<<<<<<
  *             raise CLibraryError ("First calculate electrostatic energies.")
  *         Gmicro = EnergyModel_CalculateMicrostateEnergy (self.cObject, vector.cObject, pH)
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_ceModel, __pyx_n_s_isCalculated); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_ceModel, __pyx_n_s_isCalculated); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = ((!__pyx_t_2) != 0);
   if (__pyx_t_3) {
 
-    /* "ContinuumElectrostatics.EnergyModel.pyx":145
+    /* "ContinuumElectrostatics.EnergyModel.pyx":161
  * 
  *         if not ceModel.isCalculated:
  *             raise CLibraryError ("First calculate electrostatic energies.")             # <<<<<<<<<<<<<<
  *         Gmicro = EnergyModel_CalculateMicrostateEnergy (self.cObject, vector.cObject, pH)
  *         return Gmicro
  */
-    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":146
+  /* "ContinuumElectrostatics.EnergyModel.pyx":162
  *         if not ceModel.isCalculated:
  *             raise CLibraryError ("First calculate electrostatic energies.")
  *         Gmicro = EnergyModel_CalculateMicrostateEnergy (self.cObject, vector.cObject, pH)             # <<<<<<<<<<<<<<
@@ -3255,7 +3568,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  */
   __pyx_v_Gmicro = EnergyModel_CalculateMicrostateEnergy(__pyx_v_self->cObject, __pyx_v_vector->cObject, __pyx_v_pH);
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":147
+  /* "ContinuumElectrostatics.EnergyModel.pyx":163
  *             raise CLibraryError ("First calculate electrostatic energies.")
  *         Gmicro = EnergyModel_CalculateMicrostateEnergy (self.cObject, vector.cObject, pH)
  *         return Gmicro             # <<<<<<<<<<<<<<
@@ -3263,13 +3576,13 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_Gmicro); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 147; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_Gmicro); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":139
+  /* "ContinuumElectrostatics.EnergyModel.pyx":155
  * 
  * 
  *     def CalculateMicrostateEnergy (self, StateVector vector, Real pH=7.0):             # <<<<<<<<<<<<<<
@@ -3290,7 +3603,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   return __pyx_r;
 }
 
-/* "ContinuumElectrostatics.EnergyModel.pyx":150
+/* "ContinuumElectrostatics.EnergyModel.pyx":166
  * 
  * 
  *     def CalculateProbabilitiesAnalytically (self, Real pH=7.0):             # <<<<<<<<<<<<<<
@@ -3299,9 +3612,9 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_43CalculateProbabilitiesAnalytically(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_42CalculateProbabilitiesAnalytically[] = "Calculate probabilities of protonation states analytically.";
-static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_43CalculateProbabilitiesAnalytically(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_47CalculateProbabilitiesAnalytically(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_46CalculateProbabilitiesAnalytically[] = "Calculate probabilities of protonation states analytically.";
+static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_47CalculateProbabilitiesAnalytically(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   Real __pyx_v_pH;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -3329,7 +3642,7 @@ static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "CalculateProbabilitiesAnalytically") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "CalculateProbabilitiesAnalytically") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 166; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3339,27 +3652,27 @@ static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
       }
     }
     if (values[0]) {
-      __pyx_v_pH = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_pH == (Real)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_v_pH = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_pH == (Real)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 166; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     } else {
       __pyx_v_pH = ((Real)7.0);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("CalculateProbabilitiesAnalytically", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("CalculateProbabilitiesAnalytically", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 166; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("ContinuumElectrostatics.EnergyModel.EnergyModel.CalculateProbabilitiesAnalytically", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_42CalculateProbabilitiesAnalytically(((struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *)__pyx_v_self), __pyx_v_pH);
+  __pyx_r = __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_46CalculateProbabilitiesAnalytically(((struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *)__pyx_v_self), __pyx_v_pH);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_42CalculateProbabilitiesAnalytically(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, Real __pyx_v_pH) {
+static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_46CalculateProbabilitiesAnalytically(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, Real __pyx_v_pH) {
   Status __pyx_v_status;
   PyObject *__pyx_v_ceModel = NULL;
   PyObject *__pyx_r = NULL;
@@ -3376,7 +3689,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("CalculateProbabilitiesAnalytically", 0);
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":153
+  /* "ContinuumElectrostatics.EnergyModel.pyx":169
  *         """Calculate probabilities of protonation states analytically."""
  *         cdef Status status
  *         status   = Status_Continue             # <<<<<<<<<<<<<<
@@ -3385,7 +3698,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  */
   __pyx_v_status = Status_Continue;
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":154
+  /* "ContinuumElectrostatics.EnergyModel.pyx":170
  *         cdef Status status
  *         status   = Status_Continue
  *         ceModel  = self.owner             # <<<<<<<<<<<<<<
@@ -3397,7 +3710,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   __pyx_v_ceModel = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":156
+  /* "ContinuumElectrostatics.EnergyModel.pyx":172
  *         ceModel  = self.owner
  * 
  *         if self.cObject.nstates > ANALYTIC_STATES:             # <<<<<<<<<<<<<<
@@ -3407,16 +3720,16 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   __pyx_t_2 = ((__pyx_v_self->cObject->nstates > 67108864) != 0);
   if (__pyx_t_2) {
 
-    /* "ContinuumElectrostatics.EnergyModel.pyx":157
+    /* "ContinuumElectrostatics.EnergyModel.pyx":173
  * 
  *         if self.cObject.nstates > ANALYTIC_STATES:
  *             raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)             # <<<<<<<<<<<<<<
  *         if not ceModel.isCalculated:
  *             raise CLibraryError ("First calculate electrostatic energies.")
  */
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Maximum_number_of_states_for_ana, __pyx_int_67108864); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Maximum_number_of_states_for_ana, __pyx_int_67108864); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -3429,58 +3742,58 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
       }
     }
     if (!__pyx_t_5) {
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else {
-      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __Pyx_GIVEREF(__pyx_t_5); __pyx_t_5 = NULL;
       PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_4);
       __pyx_t_4 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":158
+  /* "ContinuumElectrostatics.EnergyModel.pyx":174
  *         if self.cObject.nstates > ANALYTIC_STATES:
  *             raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)
  *         if not ceModel.isCalculated:             # <<<<<<<<<<<<<<
  *             raise CLibraryError ("First calculate electrostatic energies.")
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_ceModel, __pyx_n_s_isCalculated); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 158; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_ceModel, __pyx_n_s_isCalculated); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 158; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_7 = ((!__pyx_t_2) != 0);
   if (__pyx_t_7) {
 
-    /* "ContinuumElectrostatics.EnergyModel.pyx":159
+    /* "ContinuumElectrostatics.EnergyModel.pyx":175
  *             raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)
  *         if not ceModel.isCalculated:
  *             raise CLibraryError ("First calculate electrostatic energies.")             # <<<<<<<<<<<<<<
  * 
  *         EnergyModel_CalculateProbabilitiesAnalytically (self.cObject, pH, &status)
  */
-    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 159; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 175; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 159; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 175; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 159; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 175; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":161
+  /* "ContinuumElectrostatics.EnergyModel.pyx":177
  *             raise CLibraryError ("First calculate electrostatic energies.")
  * 
  *         EnergyModel_CalculateProbabilitiesAnalytically (self.cObject, pH, &status)             # <<<<<<<<<<<<<<
@@ -3489,7 +3802,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  */
   EnergyModel_CalculateProbabilitiesAnalytically(__pyx_v_self->cObject, __pyx_v_pH, (&__pyx_v_status));
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":162
+  /* "ContinuumElectrostatics.EnergyModel.pyx":178
  * 
  *         EnergyModel_CalculateProbabilitiesAnalytically (self.cObject, pH, &status)
  *         if status != Status_Continue:             # <<<<<<<<<<<<<<
@@ -3499,24 +3812,24 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   __pyx_t_7 = ((__pyx_v_status != Status_Continue) != 0);
   if (__pyx_t_7) {
 
-    /* "ContinuumElectrostatics.EnergyModel.pyx":163
+    /* "ContinuumElectrostatics.EnergyModel.pyx":179
  *         EnergyModel_CalculateProbabilitiesAnalytically (self.cObject, pH, &status)
  *         if status != Status_Continue:
  *             raise CLibraryError ("Cannot allocate Boltzmann factors.")             # <<<<<<<<<<<<<<
  *         return self.cObject.nstates
  * 
  */
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 179; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 179; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 179; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":164
+  /* "ContinuumElectrostatics.EnergyModel.pyx":180
  *         if status != Status_Continue:
  *             raise CLibraryError ("Cannot allocate Boltzmann factors.")
  *         return self.cObject.nstates             # <<<<<<<<<<<<<<
@@ -3524,13 +3837,13 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_Integer(__pyx_v_self->cObject->nstates); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 164; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_From_Integer(__pyx_v_self->cObject->nstates); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 180; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":150
+  /* "ContinuumElectrostatics.EnergyModel.pyx":166
  * 
  * 
  *     def CalculateProbabilitiesAnalytically (self, Real pH=7.0):             # <<<<<<<<<<<<<<
@@ -3554,7 +3867,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   return __pyx_r;
 }
 
-/* "ContinuumElectrostatics.EnergyModel.pyx":167
+/* "ContinuumElectrostatics.EnergyModel.pyx":183
  * 
  * 
  *     def CalculateProbabilitiesAnalyticallyUnfolded (self, Real pH=7.0):             # <<<<<<<<<<<<<<
@@ -3563,9 +3876,9 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_45CalculateProbabilitiesAnalyticallyUnfolded(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_44CalculateProbabilitiesAnalyticallyUnfolded[] = "Calculate probabilities of protonation states analytically (unfolded protein).";
-static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_45CalculateProbabilitiesAnalyticallyUnfolded(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_49CalculateProbabilitiesAnalyticallyUnfolded(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_48CalculateProbabilitiesAnalyticallyUnfolded[] = "Calculate probabilities of protonation states analytically (unfolded protein).";
+static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_49CalculateProbabilitiesAnalyticallyUnfolded(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   Real __pyx_v_pH;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -3593,7 +3906,7 @@ static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "CalculateProbabilitiesAnalyticallyUnfolded") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "CalculateProbabilitiesAnalyticallyUnfolded") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3603,27 +3916,27 @@ static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
       }
     }
     if (values[0]) {
-      __pyx_v_pH = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_pH == (Real)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_v_pH = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_pH == (Real)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     } else {
       __pyx_v_pH = ((Real)7.0);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("CalculateProbabilitiesAnalyticallyUnfolded", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("CalculateProbabilitiesAnalyticallyUnfolded", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("ContinuumElectrostatics.EnergyModel.EnergyModel.CalculateProbabilitiesAnalyticallyUnfolded", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_44CalculateProbabilitiesAnalyticallyUnfolded(((struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *)__pyx_v_self), __pyx_v_pH);
+  __pyx_r = __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_48CalculateProbabilitiesAnalyticallyUnfolded(((struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *)__pyx_v_self), __pyx_v_pH);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_44CalculateProbabilitiesAnalyticallyUnfolded(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, Real __pyx_v_pH) {
+static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_48CalculateProbabilitiesAnalyticallyUnfolded(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, Real __pyx_v_pH) {
   Status __pyx_v_status;
   PyObject *__pyx_v_ceModel = NULL;
   PyObject *__pyx_r = NULL;
@@ -3640,7 +3953,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("CalculateProbabilitiesAnalyticallyUnfolded", 0);
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":170
+  /* "ContinuumElectrostatics.EnergyModel.pyx":186
  *         """Calculate probabilities of protonation states analytically (unfolded protein)."""
  *         cdef Status status
  *         status   = Status_Continue             # <<<<<<<<<<<<<<
@@ -3649,7 +3962,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  */
   __pyx_v_status = Status_Continue;
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":171
+  /* "ContinuumElectrostatics.EnergyModel.pyx":187
  *         cdef Status status
  *         status   = Status_Continue
  *         ceModel  = self.owner             # <<<<<<<<<<<<<<
@@ -3661,7 +3974,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   __pyx_v_ceModel = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":173
+  /* "ContinuumElectrostatics.EnergyModel.pyx":189
  *         ceModel  = self.owner
  * 
  *         if self.cObject.nstates > ANALYTIC_STATES:             # <<<<<<<<<<<<<<
@@ -3671,16 +3984,16 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   __pyx_t_2 = ((__pyx_v_self->cObject->nstates > 67108864) != 0);
   if (__pyx_t_2) {
 
-    /* "ContinuumElectrostatics.EnergyModel.pyx":174
+    /* "ContinuumElectrostatics.EnergyModel.pyx":190
  * 
  *         if self.cObject.nstates > ANALYTIC_STATES:
  *             raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)             # <<<<<<<<<<<<<<
  *         if not ceModel.isCalculated:
  *             raise CLibraryError ("First calculate electrostatic energies.")
  */
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 190; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Maximum_number_of_states_for_ana, __pyx_int_67108864); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Maximum_number_of_states_for_ana, __pyx_int_67108864); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 190; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -3693,58 +4006,58 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
       }
     }
     if (!__pyx_t_5) {
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 190; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else {
-      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 190; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __Pyx_GIVEREF(__pyx_t_5); __pyx_t_5 = NULL;
       PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_4);
       __pyx_t_4 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 190; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 190; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":175
+  /* "ContinuumElectrostatics.EnergyModel.pyx":191
  *         if self.cObject.nstates > ANALYTIC_STATES:
  *             raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)
  *         if not ceModel.isCalculated:             # <<<<<<<<<<<<<<
  *             raise CLibraryError ("First calculate electrostatic energies.")
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_ceModel, __pyx_n_s_isCalculated); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 175; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_ceModel, __pyx_n_s_isCalculated); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 191; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 175; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 191; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_7 = ((!__pyx_t_2) != 0);
   if (__pyx_t_7) {
 
-    /* "ContinuumElectrostatics.EnergyModel.pyx":176
+    /* "ContinuumElectrostatics.EnergyModel.pyx":192
  *             raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)
  *         if not ceModel.isCalculated:
  *             raise CLibraryError ("First calculate electrostatic energies.")             # <<<<<<<<<<<<<<
  * 
  *         EnergyModel_CalculateProbabilitiesAnalyticallyUnfolded (self.cObject, pH, &status)
  */
-    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 176; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 192; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 176; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 192; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 176; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 192; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":178
+  /* "ContinuumElectrostatics.EnergyModel.pyx":194
  *             raise CLibraryError ("First calculate electrostatic energies.")
  * 
  *         EnergyModel_CalculateProbabilitiesAnalyticallyUnfolded (self.cObject, pH, &status)             # <<<<<<<<<<<<<<
@@ -3753,7 +4066,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  */
   EnergyModel_CalculateProbabilitiesAnalyticallyUnfolded(__pyx_v_self->cObject, __pyx_v_pH, (&__pyx_v_status));
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":179
+  /* "ContinuumElectrostatics.EnergyModel.pyx":195
  * 
  *         EnergyModel_CalculateProbabilitiesAnalyticallyUnfolded (self.cObject, pH, &status)
  *         if status != Status_Continue:             # <<<<<<<<<<<<<<
@@ -3763,24 +4076,24 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   __pyx_t_7 = ((__pyx_v_status != Status_Continue) != 0);
   if (__pyx_t_7) {
 
-    /* "ContinuumElectrostatics.EnergyModel.pyx":180
+    /* "ContinuumElectrostatics.EnergyModel.pyx":196
  *         EnergyModel_CalculateProbabilitiesAnalyticallyUnfolded (self.cObject, pH, &status)
  *         if status != Status_Continue:
  *             raise CLibraryError ("Cannot allocate Boltzmann factors.")             # <<<<<<<<<<<<<<
  *         return self.cObject.nstates
  * 
  */
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 180; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 196; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 180; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 196; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 180; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 196; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":181
+  /* "ContinuumElectrostatics.EnergyModel.pyx":197
  *         if status != Status_Continue:
  *             raise CLibraryError ("Cannot allocate Boltzmann factors.")
  *         return self.cObject.nstates             # <<<<<<<<<<<<<<
@@ -3788,13 +4101,13 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_Integer(__pyx_v_self->cObject->nstates); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_From_Integer(__pyx_v_self->cObject->nstates); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":167
+  /* "ContinuumElectrostatics.EnergyModel.pyx":183
  * 
  * 
  *     def CalculateProbabilitiesAnalyticallyUnfolded (self, Real pH=7.0):             # <<<<<<<<<<<<<<
@@ -3818,7 +4131,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   return __pyx_r;
 }
 
-/* "ContinuumElectrostatics.EnergyModel.pyx":184
+/* "ContinuumElectrostatics.EnergyModel.pyx":200
  * 
  * 
  *     def CalculateMicrostateEnergyUnfolded (self, StateVector vector, Real pH=7.0):             # <<<<<<<<<<<<<<
@@ -3827,9 +4140,9 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_47CalculateMicrostateEnergyUnfolded(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_46CalculateMicrostateEnergyUnfolded[] = "Calculate energy of a protonation state (=microstate) in an unfolded protein.";
-static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_47CalculateMicrostateEnergyUnfolded(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_51CalculateMicrostateEnergyUnfolded(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_50CalculateMicrostateEnergyUnfolded[] = "Calculate energy of a protonation state (=microstate) in an unfolded protein.";
+static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_51CalculateMicrostateEnergyUnfolded(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *__pyx_v_vector = 0;
   Real __pyx_v_pH;
   int __pyx_lineno = 0;
@@ -3862,7 +4175,7 @@ static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "CalculateMicrostateEnergyUnfolded") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 184; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "CalculateMicrostateEnergyUnfolded") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3874,21 +4187,21 @@ static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
     }
     __pyx_v_vector = ((struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *)values[0]);
     if (values[1]) {
-      __pyx_v_pH = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_pH == (Real)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 184; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_v_pH = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_pH == (Real)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     } else {
       __pyx_v_pH = ((Real)7.0);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("CalculateMicrostateEnergyUnfolded", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 184; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("CalculateMicrostateEnergyUnfolded", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("ContinuumElectrostatics.EnergyModel.EnergyModel.CalculateMicrostateEnergyUnfolded", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_vector), __pyx_ptype_23ContinuumElectrostatics_11StateVector_StateVector, 1, "vector", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 184; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_46CalculateMicrostateEnergyUnfolded(((struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *)__pyx_v_self), __pyx_v_vector, __pyx_v_pH);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_vector), __pyx_ptype_23ContinuumElectrostatics_11StateVector_StateVector, 1, "vector", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_50CalculateMicrostateEnergyUnfolded(((struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *)__pyx_v_self), __pyx_v_vector, __pyx_v_pH);
 
   /* function exit code */
   goto __pyx_L0;
@@ -3899,7 +4212,7 @@ static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_46CalculateMicrostateEnergyUnfolded(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *__pyx_v_vector, Real __pyx_v_pH) {
+static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_50CalculateMicrostateEnergyUnfolded(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, struct __pyx_obj_23ContinuumElectrostatics_11StateVector_StateVector *__pyx_v_vector, Real __pyx_v_pH) {
   Real __pyx_v_Gmicro;
   PyObject *__pyx_v_ceModel = NULL;
   PyObject *__pyx_r = NULL;
@@ -3913,7 +4226,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("CalculateMicrostateEnergyUnfolded", 0);
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":187
+  /* "ContinuumElectrostatics.EnergyModel.pyx":203
  *         """Calculate energy of a protonation state (=microstate) in an unfolded protein."""
  *         cdef Real Gmicro
  *         ceModel = self.owner             # <<<<<<<<<<<<<<
@@ -3925,38 +4238,38 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   __pyx_v_ceModel = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":188
+  /* "ContinuumElectrostatics.EnergyModel.pyx":204
  *         cdef Real Gmicro
  *         ceModel = self.owner
  *         if not ceModel.isCalculated:             # <<<<<<<<<<<<<<
  *             raise CLibraryError ("First calculate electrostatic energies.")
  *         Gmicro = EnergyModel_CalculateMicrostateEnergyUnfolded (self.cObject, vector.cObject, pH)
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_ceModel, __pyx_n_s_isCalculated); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 188; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_ceModel, __pyx_n_s_isCalculated); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 188; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = ((!__pyx_t_2) != 0);
   if (__pyx_t_3) {
 
-    /* "ContinuumElectrostatics.EnergyModel.pyx":189
+    /* "ContinuumElectrostatics.EnergyModel.pyx":205
  *         ceModel = self.owner
  *         if not ceModel.isCalculated:
  *             raise CLibraryError ("First calculate electrostatic energies.")             # <<<<<<<<<<<<<<
  *         Gmicro = EnergyModel_CalculateMicrostateEnergyUnfolded (self.cObject, vector.cObject, pH)
  *         return Gmicro
  */
-    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 189; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 205; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 189; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 205; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 189; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 205; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":190
+  /* "ContinuumElectrostatics.EnergyModel.pyx":206
  *         if not ceModel.isCalculated:
  *             raise CLibraryError ("First calculate electrostatic energies.")
  *         Gmicro = EnergyModel_CalculateMicrostateEnergyUnfolded (self.cObject, vector.cObject, pH)             # <<<<<<<<<<<<<<
@@ -3965,7 +4278,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  */
   __pyx_v_Gmicro = EnergyModel_CalculateMicrostateEnergyUnfolded(__pyx_v_self->cObject, __pyx_v_vector->cObject, __pyx_v_pH);
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":191
+  /* "ContinuumElectrostatics.EnergyModel.pyx":207
  *             raise CLibraryError ("First calculate electrostatic energies.")
  *         Gmicro = EnergyModel_CalculateMicrostateEnergyUnfolded (self.cObject, vector.cObject, pH)
  *         return Gmicro             # <<<<<<<<<<<<<<
@@ -3973,13 +4286,13 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_Gmicro); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 191; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_Gmicro); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 207; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":184
+  /* "ContinuumElectrostatics.EnergyModel.pyx":200
  * 
  * 
  *     def CalculateMicrostateEnergyUnfolded (self, StateVector vector, Real pH=7.0):             # <<<<<<<<<<<<<<
@@ -4000,7 +4313,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   return __pyx_r;
 }
 
-/* "ContinuumElectrostatics.EnergyModel.pyx":194
+/* "ContinuumElectrostatics.EnergyModel.pyx":210
  * 
  * 
  *     def CalculateZfolded (self, Real Gzero=0.0, Real pH=7.0):             # <<<<<<<<<<<<<<
@@ -4009,9 +4322,9 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_49CalculateZfolded(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_48CalculateZfolded[] = "Calculate partition function of a folded protein.";
-static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_49CalculateZfolded(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_53CalculateZfolded(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_52CalculateZfolded[] = "Calculate partition function of a folded protein.";
+static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_53CalculateZfolded(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   Real __pyx_v_Gzero;
   Real __pyx_v_pH;
   int __pyx_lineno = 0;
@@ -4046,7 +4359,7 @@ static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "CalculateZfolded") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 194; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "CalculateZfolded") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 210; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -4057,32 +4370,32 @@ static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
       }
     }
     if (values[0]) {
-      __pyx_v_Gzero = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_Gzero == (Real)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 194; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_v_Gzero = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_Gzero == (Real)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 210; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     } else {
       __pyx_v_Gzero = ((Real)0.0);
     }
     if (values[1]) {
-      __pyx_v_pH = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_pH == (Real)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 194; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_v_pH = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_pH == (Real)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 210; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     } else {
       __pyx_v_pH = ((Real)7.0);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("CalculateZfolded", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 194; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("CalculateZfolded", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 210; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("ContinuumElectrostatics.EnergyModel.EnergyModel.CalculateZfolded", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_48CalculateZfolded(((struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *)__pyx_v_self), __pyx_v_Gzero, __pyx_v_pH);
+  __pyx_r = __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_52CalculateZfolded(((struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *)__pyx_v_self), __pyx_v_Gzero, __pyx_v_pH);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_48CalculateZfolded(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, Real __pyx_v_Gzero, Real __pyx_v_pH) {
+static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_52CalculateZfolded(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, Real __pyx_v_Gzero, Real __pyx_v_pH) {
   Status __pyx_v_status;
   Real __pyx_v_Zfolded;
   PyObject *__pyx_r = NULL;
@@ -4098,7 +4411,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("CalculateZfolded", 0);
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":196
+  /* "ContinuumElectrostatics.EnergyModel.pyx":212
  *     def CalculateZfolded (self, Real Gzero=0.0, Real pH=7.0):
  *         """Calculate partition function of a folded protein."""
  *         cdef Status  status = Status_Continue             # <<<<<<<<<<<<<<
@@ -4107,7 +4420,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  */
   __pyx_v_status = Status_Continue;
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":198
+  /* "ContinuumElectrostatics.EnergyModel.pyx":214
  *         cdef Status  status = Status_Continue
  *         cdef Real    Zfolded
  *         if self.cObject.nstates > ANALYTIC_STATES:             # <<<<<<<<<<<<<<
@@ -4117,16 +4430,16 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   __pyx_t_1 = ((__pyx_v_self->cObject->nstates > 67108864) != 0);
   if (__pyx_t_1) {
 
-    /* "ContinuumElectrostatics.EnergyModel.pyx":199
+    /* "ContinuumElectrostatics.EnergyModel.pyx":215
  *         cdef Real    Zfolded
  *         if self.cObject.nstates > ANALYTIC_STATES:
  *             raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)             # <<<<<<<<<<<<<<
  * 
  *         Zfolded = EnergyModel_CalculateZfolded (self.cObject, pH, Gzero, &status)
  */
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 215; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Maximum_number_of_states_for_ana, __pyx_int_67108864); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Maximum_number_of_states_for_ana, __pyx_int_67108864); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 215; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -4139,27 +4452,27 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
       }
     }
     if (!__pyx_t_5) {
-      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 215; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else {
-      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 215; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __Pyx_GIVEREF(__pyx_t_5); __pyx_t_5 = NULL;
       PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_4);
       __pyx_t_4 = 0;
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 215; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 215; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":201
+  /* "ContinuumElectrostatics.EnergyModel.pyx":217
  *             raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)
  * 
  *         Zfolded = EnergyModel_CalculateZfolded (self.cObject, pH, Gzero, &status)             # <<<<<<<<<<<<<<
@@ -4168,7 +4481,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  */
   __pyx_v_Zfolded = EnergyModel_CalculateZfolded(__pyx_v_self->cObject, __pyx_v_pH, __pyx_v_Gzero, (&__pyx_v_status));
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":202
+  /* "ContinuumElectrostatics.EnergyModel.pyx":218
  * 
  *         Zfolded = EnergyModel_CalculateZfolded (self.cObject, pH, Gzero, &status)
  *         if status != Status_Continue:             # <<<<<<<<<<<<<<
@@ -4178,24 +4491,24 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   __pyx_t_1 = ((__pyx_v_status != Status_Continue) != 0);
   if (__pyx_t_1) {
 
-    /* "ContinuumElectrostatics.EnergyModel.pyx":203
+    /* "ContinuumElectrostatics.EnergyModel.pyx":219
  *         Zfolded = EnergyModel_CalculateZfolded (self.cObject, pH, Gzero, &status)
  *         if status != Status_Continue:
  *             raise CLibraryError ("Cannot allocate Boltzmann factors.")             # <<<<<<<<<<<<<<
  *         return Zfolded
  * 
  */
-    __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 219; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__10, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__10, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 219; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 219; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":204
+  /* "ContinuumElectrostatics.EnergyModel.pyx":220
  *         if status != Status_Continue:
  *             raise CLibraryError ("Cannot allocate Boltzmann factors.")
  *         return Zfolded             # <<<<<<<<<<<<<<
@@ -4203,13 +4516,13 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_Zfolded); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_Zfolded); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 220; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":194
+  /* "ContinuumElectrostatics.EnergyModel.pyx":210
  * 
  * 
  *     def CalculateZfolded (self, Real Gzero=0.0, Real pH=7.0):             # <<<<<<<<<<<<<<
@@ -4232,7 +4545,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   return __pyx_r;
 }
 
-/* "ContinuumElectrostatics.EnergyModel.pyx":207
+/* "ContinuumElectrostatics.EnergyModel.pyx":223
  * 
  * 
  *     def CalculateZunfolded (self, Real Gzero=0.0, Real pH=7.0):             # <<<<<<<<<<<<<<
@@ -4241,9 +4554,9 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_51CalculateZunfolded(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_50CalculateZunfolded[] = "Calculate partition function of an unfolded protein.";
-static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_51CalculateZunfolded(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_55CalculateZunfolded(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_54CalculateZunfolded[] = "Calculate partition function of an unfolded protein.";
+static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_55CalculateZunfolded(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   Real __pyx_v_Gzero;
   Real __pyx_v_pH;
   int __pyx_lineno = 0;
@@ -4278,7 +4591,7 @@ static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "CalculateZunfolded") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 207; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "CalculateZunfolded") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 223; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -4289,32 +4602,32 @@ static PyObject *__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
       }
     }
     if (values[0]) {
-      __pyx_v_Gzero = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_Gzero == (Real)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 207; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_v_Gzero = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_Gzero == (Real)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 223; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     } else {
       __pyx_v_Gzero = ((Real)0.0);
     }
     if (values[1]) {
-      __pyx_v_pH = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_pH == (Real)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 207; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_v_pH = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_pH == (Real)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 223; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     } else {
       __pyx_v_pH = ((Real)7.0);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("CalculateZunfolded", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 207; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("CalculateZunfolded", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 223; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("ContinuumElectrostatics.EnergyModel.EnergyModel.CalculateZunfolded", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_50CalculateZunfolded(((struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *)__pyx_v_self), __pyx_v_Gzero, __pyx_v_pH);
+  __pyx_r = __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_54CalculateZunfolded(((struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *)__pyx_v_self), __pyx_v_Gzero, __pyx_v_pH);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_50CalculateZunfolded(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, Real __pyx_v_Gzero, Real __pyx_v_pH) {
+static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_54CalculateZunfolded(struct __pyx_obj_23ContinuumElectrostatics_11EnergyModel_EnergyModel *__pyx_v_self, Real __pyx_v_Gzero, Real __pyx_v_pH) {
   Status __pyx_v_status;
   Real __pyx_v_Zunfolded;
   PyObject *__pyx_r = NULL;
@@ -4330,7 +4643,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("CalculateZunfolded", 0);
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":209
+  /* "ContinuumElectrostatics.EnergyModel.pyx":225
  *     def CalculateZunfolded (self, Real Gzero=0.0, Real pH=7.0):
  *         """Calculate partition function of an unfolded protein."""
  *         cdef Status  status = Status_Continue             # <<<<<<<<<<<<<<
@@ -4339,7 +4652,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  */
   __pyx_v_status = Status_Continue;
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":211
+  /* "ContinuumElectrostatics.EnergyModel.pyx":227
  *         cdef Status  status = Status_Continue
  *         cdef Real    Zunfolded
  *         if self.cObject.nstates > ANALYTIC_STATES:             # <<<<<<<<<<<<<<
@@ -4349,16 +4662,16 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   __pyx_t_1 = ((__pyx_v_self->cObject->nstates > 67108864) != 0);
   if (__pyx_t_1) {
 
-    /* "ContinuumElectrostatics.EnergyModel.pyx":212
+    /* "ContinuumElectrostatics.EnergyModel.pyx":228
  *         cdef Real    Zunfolded
  *         if self.cObject.nstates > ANALYTIC_STATES:
  *             raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)             # <<<<<<<<<<<<<<
  * 
  *         Zunfolded = EnergyModel_CalculateZunfolded (self.cObject, pH, Gzero, &status)
  */
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Maximum_number_of_states_for_ana, __pyx_int_67108864); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Maximum_number_of_states_for_ana, __pyx_int_67108864); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -4371,27 +4684,27 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
       }
     }
     if (!__pyx_t_5) {
-      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else {
-      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __Pyx_GIVEREF(__pyx_t_5); __pyx_t_5 = NULL;
       PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_4);
       __pyx_t_4 = 0;
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":214
+  /* "ContinuumElectrostatics.EnergyModel.pyx":230
  *             raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)
  * 
  *         Zunfolded = EnergyModel_CalculateZunfolded (self.cObject, pH, Gzero, &status)             # <<<<<<<<<<<<<<
@@ -4400,7 +4713,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
  */
   __pyx_v_Zunfolded = EnergyModel_CalculateZunfolded(__pyx_v_self->cObject, __pyx_v_pH, __pyx_v_Gzero, (&__pyx_v_status));
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":215
+  /* "ContinuumElectrostatics.EnergyModel.pyx":231
  * 
  *         Zunfolded = EnergyModel_CalculateZunfolded (self.cObject, pH, Gzero, &status)
  *         if status != Status_Continue:             # <<<<<<<<<<<<<<
@@ -4410,35 +4723,35 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   __pyx_t_1 = ((__pyx_v_status != Status_Continue) != 0);
   if (__pyx_t_1) {
 
-    /* "ContinuumElectrostatics.EnergyModel.pyx":216
+    /* "ContinuumElectrostatics.EnergyModel.pyx":232
  *         Zunfolded = EnergyModel_CalculateZunfolded (self.cObject, pH, Gzero, &status)
  *         if status != Status_Continue:
  *             raise CLibraryError ("Cannot allocate Boltzmann factors.")             # <<<<<<<<<<<<<<
  *         return Zunfolded
  */
-    __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_CLibraryError); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 232; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 232; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 232; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":217
+  /* "ContinuumElectrostatics.EnergyModel.pyx":233
  *         if status != Status_Continue:
  *             raise CLibraryError ("Cannot allocate Boltzmann factors.")
  *         return Zunfolded             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_Zunfolded); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_Zunfolded); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 233; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":207
+  /* "ContinuumElectrostatics.EnergyModel.pyx":223
  * 
  * 
  *     def CalculateZunfolded (self, Real Gzero=0.0, Real pH=7.0):             # <<<<<<<<<<<<<<
@@ -4461,7 +4774,7 @@ static PyObject *__pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_
   return __pyx_r;
 }
 
-/* "ContinuumElectrostatics.EnergyModel.pxd":62
+/* "ContinuumElectrostatics.EnergyModel.pxd":63
  * cdef class EnergyModel:
  *     cdef CEnergyModel  *cObject
  *     cdef public object  isOwner             # <<<<<<<<<<<<<<
@@ -4555,7 +4868,7 @@ static int __pyx_pf_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_7isOwn
   return __pyx_r;
 }
 
-/* "ContinuumElectrostatics.EnergyModel.pxd":63
+/* "ContinuumElectrostatics.EnergyModel.pxd":64
  *     cdef CEnergyModel  *cObject
  *     cdef public object  isOwner
  *     cdef public object  owner             # <<<<<<<<<<<<<<
@@ -4753,12 +5066,14 @@ static PyMethodDef __pyx_methods_23ContinuumElectrostatics_11EnergyModel_EnergyM
   {"SymmetrizeInteractions", (PyCFunction)__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_35SymmetrizeInteractions, METH_VARARGS|METH_KEYWORDS, __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_34SymmetrizeInteractions},
   {"ResetInteractions", (PyCFunction)__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_37ResetInteractions, METH_NOARGS, __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_36ResetInteractions},
   {"ScaleInteractions", (PyCFunction)__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_39ScaleInteractions, METH_O, __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_38ScaleInteractions},
-  {"CalculateMicrostateEnergy", (PyCFunction)__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_41CalculateMicrostateEnergy, METH_VARARGS|METH_KEYWORDS, __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_40CalculateMicrostateEnergy},
-  {"CalculateProbabilitiesAnalytically", (PyCFunction)__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_43CalculateProbabilitiesAnalytically, METH_VARARGS|METH_KEYWORDS, __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_42CalculateProbabilitiesAnalytically},
-  {"CalculateProbabilitiesAnalyticallyUnfolded", (PyCFunction)__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_45CalculateProbabilitiesAnalyticallyUnfolded, METH_VARARGS|METH_KEYWORDS, __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_44CalculateProbabilitiesAnalyticallyUnfolded},
-  {"CalculateMicrostateEnergyUnfolded", (PyCFunction)__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_47CalculateMicrostateEnergyUnfolded, METH_VARARGS|METH_KEYWORDS, __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_46CalculateMicrostateEnergyUnfolded},
-  {"CalculateZfolded", (PyCFunction)__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_49CalculateZfolded, METH_VARARGS|METH_KEYWORDS, __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_48CalculateZfolded},
-  {"CalculateZunfolded", (PyCFunction)__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_51CalculateZunfolded, METH_VARARGS|METH_KEYWORDS, __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_50CalculateZunfolded},
+  {"CalculateComponents", (PyCFunction)__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_41CalculateComponents, METH_VARARGS|METH_KEYWORDS, __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_40CalculateComponents},
+  {"CalculateComponentsDictionary", (PyCFunction)__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_43CalculateComponentsDictionary, METH_VARARGS|METH_KEYWORDS, __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_42CalculateComponentsDictionary},
+  {"CalculateMicrostateEnergy", (PyCFunction)__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_45CalculateMicrostateEnergy, METH_VARARGS|METH_KEYWORDS, __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_44CalculateMicrostateEnergy},
+  {"CalculateProbabilitiesAnalytically", (PyCFunction)__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_47CalculateProbabilitiesAnalytically, METH_VARARGS|METH_KEYWORDS, __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_46CalculateProbabilitiesAnalytically},
+  {"CalculateProbabilitiesAnalyticallyUnfolded", (PyCFunction)__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_49CalculateProbabilitiesAnalyticallyUnfolded, METH_VARARGS|METH_KEYWORDS, __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_48CalculateProbabilitiesAnalyticallyUnfolded},
+  {"CalculateMicrostateEnergyUnfolded", (PyCFunction)__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_51CalculateMicrostateEnergyUnfolded, METH_VARARGS|METH_KEYWORDS, __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_50CalculateMicrostateEnergyUnfolded},
+  {"CalculateZfolded", (PyCFunction)__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_53CalculateZfolded, METH_VARARGS|METH_KEYWORDS, __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_52CalculateZfolded},
+  {"CalculateZunfolded", (PyCFunction)__pyx_pw_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_55CalculateZunfolded, METH_VARARGS|METH_KEYWORDS, __pyx_doc_23ContinuumElectrostatics_11EnergyModel_11EnergyModel_54CalculateZunfolded},
   {0, 0, 0, 0}
 };
 
@@ -4853,6 +5168,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_Cannot_allocate_energy_model, __pyx_k_Cannot_allocate_energy_model, sizeof(__pyx_k_Cannot_allocate_energy_model), 0, 0, 1, 0},
   {&__pyx_kp_s_ContinuumElectrostatics_EnergyMo, __pyx_k_ContinuumElectrostatics_EnergyMo, sizeof(__pyx_k_ContinuumElectrostatics_EnergyMo), 0, 0, 1, 0},
   {&__pyx_kp_s_First_calculate_electrostatic_en, __pyx_k_First_calculate_electrostatic_en, sizeof(__pyx_k_First_calculate_electrostatic_en), 0, 0, 1, 0},
+  {&__pyx_n_s_Gintr, __pyx_k_Gintr, sizeof(__pyx_k_Gintr), 0, 0, 1, 1},
   {&__pyx_n_s_Gzero, __pyx_k_Gzero, sizeof(__pyx_k_Gzero), 0, 0, 1, 1},
   {&__pyx_kp_s_Id, __pyx_k_Id, sizeof(__pyx_k_Id), 0, 0, 1, 0},
   {&__pyx_n_s_LogFileActive, __pyx_k_LogFileActive, sizeof(__pyx_k_LogFileActive), 0, 0, 1, 1},
@@ -4860,6 +5176,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_StateVector, __pyx_k_StateVector, sizeof(__pyx_k_StateVector), 0, 0, 1, 1},
   {&__pyx_kp_s_Symmetrizing_interactions_compl, __pyx_k_Symmetrizing_interactions_compl, sizeof(__pyx_k_Symmetrizing_interactions_compl), 0, 0, 1, 0},
   {&__pyx_n_s_Text, __pyx_k_Text, sizeof(__pyx_k_Text), 0, 0, 1, 1},
+  {&__pyx_n_s_W, __pyx_k_W, sizeof(__pyx_k_W), 0, 0, 1, 1},
   {&__pyx_n_s_ceModel, __pyx_k_ceModel, sizeof(__pyx_k_ceModel), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_instIndexGlobal, __pyx_k_instIndexGlobal, sizeof(__pyx_k_instIndexGlobal), 0, 0, 1, 1},
@@ -4874,6 +5191,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_pCore, __pyx_k_pCore, sizeof(__pyx_k_pCore), 0, 0, 1, 1},
   {&__pyx_n_s_pH, __pyx_k_pH, sizeof(__pyx_k_pH), 0, 0, 1, 1},
+  {&__pyx_n_s_potentials, __pyx_k_potentials, sizeof(__pyx_k_potentials), 0, 0, 1, 1},
   {&__pyx_n_s_sites, __pyx_k_sites, sizeof(__pyx_k_sites), 0, 0, 1, 1},
   {&__pyx_n_s_temperature, __pyx_k_temperature, sizeof(__pyx_k_temperature), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
@@ -4914,90 +5232,90 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":145
+  /* "ContinuumElectrostatics.EnergyModel.pyx":161
  * 
  *         if not ceModel.isCalculated:
  *             raise CLibraryError ("First calculate electrostatic energies.")             # <<<<<<<<<<<<<<
  *         Gmicro = EnergyModel_CalculateMicrostateEnergy (self.cObject, vector.cObject, pH)
  *         return Gmicro
  */
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_First_calculate_electrostatic_en); if (unlikely(!__pyx_tuple__4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_First_calculate_electrostatic_en); if (unlikely(!__pyx_tuple__4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":159
+  /* "ContinuumElectrostatics.EnergyModel.pyx":175
  *             raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)
  *         if not ceModel.isCalculated:
  *             raise CLibraryError ("First calculate electrostatic energies.")             # <<<<<<<<<<<<<<
  * 
  *         EnergyModel_CalculateProbabilitiesAnalytically (self.cObject, pH, &status)
  */
-  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_s_First_calculate_electrostatic_en); if (unlikely(!__pyx_tuple__5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 159; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_s_First_calculate_electrostatic_en); if (unlikely(!__pyx_tuple__5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 175; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":163
+  /* "ContinuumElectrostatics.EnergyModel.pyx":179
  *         EnergyModel_CalculateProbabilitiesAnalytically (self.cObject, pH, &status)
  *         if status != Status_Continue:
  *             raise CLibraryError ("Cannot allocate Boltzmann factors.")             # <<<<<<<<<<<<<<
  *         return self.cObject.nstates
  * 
  */
-  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_s_Cannot_allocate_Boltzmann_factor); if (unlikely(!__pyx_tuple__6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_s_Cannot_allocate_Boltzmann_factor); if (unlikely(!__pyx_tuple__6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 179; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":176
+  /* "ContinuumElectrostatics.EnergyModel.pyx":192
  *             raise CLibraryError ("Maximum number of states for analytic treatment (%d) exceeded." % ANALYTIC_STATES)
  *         if not ceModel.isCalculated:
  *             raise CLibraryError ("First calculate electrostatic energies.")             # <<<<<<<<<<<<<<
  * 
  *         EnergyModel_CalculateProbabilitiesAnalyticallyUnfolded (self.cObject, pH, &status)
  */
-  __pyx_tuple__7 = PyTuple_Pack(1, __pyx_kp_s_First_calculate_electrostatic_en); if (unlikely(!__pyx_tuple__7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 176; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__7 = PyTuple_Pack(1, __pyx_kp_s_First_calculate_electrostatic_en); if (unlikely(!__pyx_tuple__7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 192; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":180
+  /* "ContinuumElectrostatics.EnergyModel.pyx":196
  *         EnergyModel_CalculateProbabilitiesAnalyticallyUnfolded (self.cObject, pH, &status)
  *         if status != Status_Continue:
  *             raise CLibraryError ("Cannot allocate Boltzmann factors.")             # <<<<<<<<<<<<<<
  *         return self.cObject.nstates
  * 
  */
-  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_kp_s_Cannot_allocate_Boltzmann_factor); if (unlikely(!__pyx_tuple__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 180; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_kp_s_Cannot_allocate_Boltzmann_factor); if (unlikely(!__pyx_tuple__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 196; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__8);
   __Pyx_GIVEREF(__pyx_tuple__8);
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":189
+  /* "ContinuumElectrostatics.EnergyModel.pyx":205
  *         ceModel = self.owner
  *         if not ceModel.isCalculated:
  *             raise CLibraryError ("First calculate electrostatic energies.")             # <<<<<<<<<<<<<<
  *         Gmicro = EnergyModel_CalculateMicrostateEnergyUnfolded (self.cObject, vector.cObject, pH)
  *         return Gmicro
  */
-  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_s_First_calculate_electrostatic_en); if (unlikely(!__pyx_tuple__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 189; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_s_First_calculate_electrostatic_en); if (unlikely(!__pyx_tuple__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 205; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":203
+  /* "ContinuumElectrostatics.EnergyModel.pyx":219
  *         Zfolded = EnergyModel_CalculateZfolded (self.cObject, pH, Gzero, &status)
  *         if status != Status_Continue:
  *             raise CLibraryError ("Cannot allocate Boltzmann factors.")             # <<<<<<<<<<<<<<
  *         return Zfolded
  * 
  */
-  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_kp_s_Cannot_allocate_Boltzmann_factor); if (unlikely(!__pyx_tuple__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_kp_s_Cannot_allocate_Boltzmann_factor); if (unlikely(!__pyx_tuple__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 219; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__10);
   __Pyx_GIVEREF(__pyx_tuple__10);
 
-  /* "ContinuumElectrostatics.EnergyModel.pyx":216
+  /* "ContinuumElectrostatics.EnergyModel.pyx":232
  *         Zunfolded = EnergyModel_CalculateZunfolded (self.cObject, pH, Gzero, &status)
  *         if status != Status_Continue:
  *             raise CLibraryError ("Cannot allocate Boltzmann factors.")             # <<<<<<<<<<<<<<
  *         return Zunfolded
  */
-  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_kp_s_Cannot_allocate_Boltzmann_factor); if (unlikely(!__pyx_tuple__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_kp_s_Cannot_allocate_Boltzmann_factor); if (unlikely(!__pyx_tuple__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 232; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
   __Pyx_RefNannyFinishContext();
