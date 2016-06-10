@@ -72,7 +72,6 @@ extern void    EnergyModel_ScaleInteractions            (const EnergyModel *self
 extern void    EnergyModel_StateVectorFromProbabilities (const EnergyModel *self, StateVector *vector, Status *status);
 
 /* Calculation of energies */
-extern void EnergyModel_CalculateComponents               (const EnergyModel *self, const StateVector *vector, const Real pH, Real *intrinsic, Real *potentials, Real *interactions);
 extern Real EnergyModel_CalculateMicrostateEnergy         (const EnergyModel *self, const StateVector *vector, const Real pH);
 extern Real EnergyModel_CalculateMicrostateEnergyUnfolded (const EnergyModel *self, const StateVector *vector, const Real pH);
 

@@ -199,9 +199,9 @@ void EnergyModel_SetInteraction (const EnergyModel *self, const Integer instInde
 }
 
 /*
- * Calculate components of the microstate energy.
+ * Calculate the energy of a microstate defined by the state vector.
  */
-void EnergyModel_CalculateComponents (const EnergyModel *self, const StateVector *vector, const Real pH, Real *intrinsic, Real *potentials, Real *interactions) {
+Real EnergyModel_CalculateMicrostateEnergy (const EnergyModel *self, const StateVector *vector, const Real pH) {
     Real      Gintr, W, *interact;
     Integer   nprotons, i, j;
     TitrSite *site, *siteInner;
@@ -220,20 +220,7 @@ void EnergyModel_CalculateComponents (const EnergyModel *self, const StateVector
             W += *(interact + (siteInner->indexActive));
         }
     }
-    *intrinsic    = Gintr;
-    *potentials   = -nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * self->temperature * CONSTANT_LN10 * pH);
-    *interactions = W;
-}
-
-/*
- * Calculate the energy of a microstate defined by a state vector.
- */
-Real EnergyModel_CalculateMicrostateEnergy (const EnergyModel *self, const StateVector *vector, const Real pH) {
-    Real      Gintr, potentials, W, Gmicro;
-
-    EnergyModel_CalculateComponents (self, vector, pH, &Gintr, &potentials, &W);
-    Gmicro = Gintr + potentials + W;
-    return Gmicro;
+    return (Gintr - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * self->temperature * CONSTANT_LN10 * pH) + W);
 }
 
 /*
