@@ -30,7 +30,7 @@ Feliks, M.; Field, M. "*Pcetk*: A pDynamo-based Toolkit for Protonation State Ca
 
 Auxiliary software:
  * pDynamo (Martin Field)
-    http://www.pdynamo.org
+    https://sites.google.com/site/pdynamomodeling
 
  * Extended-MEAD (Donald Bashford, Timm Essigke, Thomas R. Ullmann)
     http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=extended-mead
