@@ -67,6 +67,7 @@ extern Real    MCModelDefault_MCScan                 (const MCModelDefault *self
 extern void    MCModelDefault_UpdateProbabilities    (const MCModelDefault *self);
 extern Real    MCModelDefault_FindMaxInteraction     (const MCModelDefault *self, const TitrSite *site, const TitrSite *other);
 extern Integer MCModelDefault_FindPairs              (const MCModelDefault *self, const Integer npairs, Status *status);
-extern void    MCModelDefault_CalculateProbabilities (const MCModelDefault *self, const Real pH, const Boolean equil);
+extern void    MCModelDefault_Equilibration          (const MCModelDefault *self, const Real pH);
+extern void    MCModelDefault_Production             (const MCModelDefault *self, const Real pH);
 
 #endif

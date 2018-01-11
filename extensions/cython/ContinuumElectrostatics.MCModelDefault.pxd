@@ -31,7 +31,8 @@ cdef extern from "MCModelDefault.h":
     cdef Real             MCModelDefault_MCScan                 (CMCModelDefault *self, Real pH, Integer nmoves, Integer *movesDone, Integer *movesAccepted, Integer *flipsDone, Integer *flipsAccepted)
     cdef Integer          MCModelDefault_FindPairs              (CMCModelDefault *self, Integer npairs, Status *status)
     cdef void             MCModelDefault_UpdateProbabilities    (CMCModelDefault *self)
-    cdef void             MCModelDefault_CalculateProbabilities (CMCModelDefault *self, Real pH, Boolean equil)
+    cdef void             MCModelDefault_Equilibration          (CMCModelDefault *self, Real pH)
+    cdef void             MCModelDefault_Production             (CMCModelDefault *self, Real pH, Boolean trajectoryWriting)
 
 #-------------------------------------------------------------------------------
 cdef class MCModelDefault:

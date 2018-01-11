@@ -65,10 +65,10 @@ cdef class MCModelDefault:
             raise CLibraryError ("First calculate electrostatic energies.")
 
         if logFrequency < 0:
-            MCModelDefault_CalculateProbabilities (self.cObject, pH, CTrue)
+            MCModelDefault_Equilibration (self.cObject, pH)
             if LogFileActive (log):
                 log.Text ("\nCompleted %d equilibration scans.\n" % self.cObject.nequil)
-            MCModelDefault_CalculateProbabilities (self.cObject, pH, CFalse)
+            MCModelDefault_Production (self.cObject, pH)
             if LogFileActive (log):
                 log.Text ("\nCompleted %d production scans.\n" % self.cObject.nprod)
             return

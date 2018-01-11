@@ -14,8 +14,9 @@ MCModelDefault *MCModelDefault_Allocate (const Real limit, const Integer nequil,
     MCModelDefault *self = NULL;
 
     MEMORY_ALLOCATE (self, MCModelDefault);
-    if (self == NULL)
+    if (self == NULL) {
         goto failSet;
+    }
     self->limit       = limit  ;
     self->nprod       = nprod  ;
     self->nequil      = nequil ;
@@ -23,12 +24,15 @@ MCModelDefault *MCModelDefault_Allocate (const Real limit, const Integer nequil,
     self->energyModel = NULL   ;
 
     self->generator   = RandomNumberGenerator_Allocate (RandomNumberGeneratorType_MersenneTwister);
-    if (self->generator == NULL)
+    if (self->generator == NULL) {
         goto failSetDealloc;
-    if (randomSeed <= 0)
+    }
+    if (randomSeed <= 0) {
         RandomNumberGenerator_SetSeed (self->generator, (Cardinal) time (NULL));
-    else
+    }
+    else {
         RandomNumberGenerator_SetSeed (self->generator, (Cardinal) randomSeed);
+    }
     return self;
 
 failSetDealloc:
@@ -62,19 +66,18 @@ void MCModelDefault_LinkToEnergyModel (MCModelDefault *self, EnergyModel *energy
  * Function adopted from GMCT. RT-units of energy are used, instead of the usual kcal/mol.
  */
 Boolean MCModelDefault_Metropolis (const Real GdeltaRT, const RandomNumberGenerator *generator) {
-    Boolean metropolis;
-
-    if (GdeltaRT < 0.)
-        metropolis = True;
-    else {
-        if (-GdeltaRT < TOO_SMALL)
-            metropolis = False;
-        else if (RandomNumberGenerator_NextReal (generator) < exp (-GdeltaRT))
-            metropolis = True;
-        else
-            metropolis = False;
+    if (GdeltaRT < 0.) {
+        return True;
     }
-    return metropolis;
+    else {
+        if (-GdeltaRT < TOO_SMALL) {
+            return False;
+        }
+        else if (RandomNumberGenerator_NextReal (generator) < exp (-GdeltaRT)) {
+            return True;
+        }
+    }
+    return False;
 }
 
 /*
@@ -246,12 +249,15 @@ Integer MCModelDefault_FindPairs (const MCModelDefault *self, const Integer npai
     Real Wmax;
 
     if (npairs > 0) {
-        if (self->vector->npairs > 0)
+        if (self->vector->npairs > 0) {
             StateVector_ReallocatePairs (self->vector, npairs, status);
-        else
+        }
+        else {
             StateVector_AllocatePairs (self->vector, npairs, status);
-        if (*status != Status_Continue)
+        }
+        if (*status != Status_Continue) {
             return -1;
+        }
     }
 
     nfound = 0;
@@ -274,35 +280,40 @@ Integer MCModelDefault_FindPairs (const MCModelDefault *self, const Integer npai
 }
 
 /*
- * Run a Monte Carlo simulation.
- *
- * If equil is true, only the equilibration run is performed.
- *
- * Otherwise, the production run is done. The resulting state vectors are not accumulated.
- * Instead, they are immediately used to update the probabilities.
+ * Run a Monte Carlo production.
  *
  * The number of moves during each scan is proportional to the number of sites and pairs.
+ *
+ * The resulting state vectors are not accumulated. Instead, they are immediately 
+ * used to update the probabilities.
  */
-void MCModelDefault_CalculateProbabilities (const MCModelDefault *self, const Real pH, const Boolean equil) {
+void MCModelDefault_Production (const MCModelDefault *self, const Real pH) {
     Integer  nmoves, nscans, moves, movesAcc, flips, flipsAcc;
     Real     scale, Gfinal;
 
+    Real1DArray_Set (self->energyModel->probabilities, 0.);
     nmoves = self->vector->nsites + self->vector->npairs;
-    if (equil) {
-        StateVector_Randomize (self->vector, self->generator);
-        nscans = self->nequil;
-        for (; nscans > 0; nscans--)
-            Gfinal = MCModelDefault_MCScan (self, pH, nmoves, &moves, &movesAcc, &flips, &flipsAcc);
-    }
-    else {
-        Real1DArray_Set (self->energyModel->probabilities, 0.);
-        nscans = self->nprod;
+    nscans = self->nprod;
 
-        for (; nscans > 0; nscans--) {
-            Gfinal = MCModelDefault_MCScan (self, pH, nmoves, &moves, &movesAcc, &flips, &flipsAcc);
-            MCModelDefault_UpdateProbabilities (self);
-        }
-        scale = 1. / self->nprod;
-        Real1DArray_Scale (self->energyModel->probabilities, scale);
+    for (; nscans > 0; nscans--) {
+        Gfinal = MCModelDefault_MCScan (self, pH, nmoves, &moves, &movesAcc, &flips, &flipsAcc);
+        MCModelDefault_UpdateProbabilities (self);
+    }
+    scale = 1. / self->nprod;
+    Real1DArray_Scale (self->energyModel->probabilities, scale);
+}
+
+/*
+ * Run a Monte Carlo equilibration.
+ */
+void MCModelDefault_Equilibration (const MCModelDefault *self, const Real pH) {
+    Integer  nmoves, nscans, moves, movesAcc, flips, flipsAcc;
+
+    StateVector_Randomize (self->vector, self->generator);
+    nmoves = self->vector->nsites + self->vector->npairs;
+    nscans = self->nequil;
+
+    for (; nscans > 0; nscans--) {
+        MCModelDefault_MCScan (self, pH, nmoves, &moves, &movesAcc, &flips, &flipsAcc);
     }
 }
