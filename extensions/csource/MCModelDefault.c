@@ -10,7 +10,9 @@
 /*
  * Allocate the default Monte Carlo model and initialize its random number generator.
  */
-MCModelDefault *MCModelDefault_Allocate (const Real limit, const Integer nequil, const Integer nprod, const Integer randomSeed, Status *status) {
+MCModelDefault *MCModelDefault_Allocate (const Real limit, const Integer nequil, 
+                                         const Integer nprod, const Integer randomSeed, 
+                                         Status *status) {
     MCModelDefault *self = NULL;
 
     MEMORY_ALLOCATE (self, MCModelDefault);
@@ -55,7 +57,8 @@ void MCModelDefault_Deallocate (MCModelDefault *self) {
 /*
  * Link Monte Carlo and energy models.
  */
-void MCModelDefault_LinkToEnergyModel (MCModelDefault *self, EnergyModel *energyModel, Status *status) {
+void MCModelDefault_LinkToEnergyModel (MCModelDefault *self, EnergyModel *energyModel, 
+                                       Status *status) {
     self->energyModel = energyModel;
     self->vector      = StateVector_Clone (energyModel->vector, status);
 }
@@ -65,8 +68,9 @@ void MCModelDefault_LinkToEnergyModel (MCModelDefault *self, EnergyModel *energy
  *
  * Function adopted from GMCT. RT-units of energy are used, instead of the usual kcal/mol.
  */
-Boolean MCModelDefault_Metropolis (const Real GdeltaRT, const RandomNumberGenerator *generator) {
-    if (GdeltaRT < 0.) {
+Boolean MCModelDefault_Metropolis (const Real GdeltaRT, 
+                                   const RandomNumberGenerator *generator) {
+    if (GdeltaRT < 0.0f) {
         return True;
     }
     else {
@@ -83,7 +87,8 @@ Boolean MCModelDefault_Metropolis (const Real GdeltaRT, const RandomNumberGenera
 /*
  * Choose a random site and change its "active" instance.
  */
-Boolean MCModelDefault_Move (const MCModelDefault *self, const Real pH, const Real G, Real *Gnew) {
+Boolean MCModelDefault_Move (const MCModelDefault *self, const Real pH, 
+                             const Real G, Real *Gnew) {
     Integer    site, instance, nprotons, i;
     Real       Gintr, W, Gdelta, GdeltaRT, beta;
     TitrSite  *ts, *tsOther;
@@ -98,7 +103,7 @@ Boolean MCModelDefault_Move (const MCModelDefault *self, const Real pH, const Re
     Gintr    =    Real1DArray_Item (self->energyModel->intrinsic , instance) -    Real1DArray_Item (self->energyModel->intrinsic , ts->indexActive);
     nprotons = Integer1DArray_Item (self->energyModel->protons   , instance) - Integer1DArray_Item (self->energyModel->protons   , ts->indexActive);
 
-    W       = 0.;
+    W       = 0.0f;
     i       = self->vector->nsites ;
     tsOther = self->vector->sites  ;
     for (; i > 0; i--, tsOther++) {
@@ -106,7 +111,7 @@ Boolean MCModelDefault_Move (const MCModelDefault *self, const Real pH, const Re
     }
 
     Gdelta   = Gintr - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * self->energyModel->temperature * CONSTANT_LN10 * pH) + W;
-    beta     = 1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * self->energyModel->temperature);
+    beta     = 1.0f / (CONSTANT_MOLAR_GAS_KCAL_MOL * self->energyModel->temperature);
     GdeltaRT = Gdelta * beta;
     accept   = MCModelDefault_Metropolis (GdeltaRT, self->generator);
     if (accept) {
@@ -119,7 +124,8 @@ Boolean MCModelDefault_Move (const MCModelDefault *self, const Real pH, const Re
 /*
  * Choose a random pair of sites and change their "active" instances.
  */
-Boolean MCModelDefault_DoubleMove (const MCModelDefault *self, const Real pH, const Real G, Real *Gnew) {
+Boolean MCModelDefault_DoubleMove (const MCModelDefault *self, const Real pH, 
+                                   const Real G, Real *Gnew) {
     Integer    newPair, indexSa, indexSb, nprotons, i;
     Real       Gintr, W, Gdelta, GdeltaRT, beta;
     TitrSite  *sa, *sb, *tsOther;
@@ -153,7 +159,7 @@ Boolean MCModelDefault_DoubleMove (const MCModelDefault *self, const Real pH, co
     }
 
     Gdelta   = Gintr - nprotons * (-CONSTANT_MOLAR_GAS_KCAL_MOL * self->energyModel->temperature * CONSTANT_LN10 * pH) + W;
-    beta     = 1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * self->energyModel->temperature);
+    beta     = 1.0f / (CONSTANT_MOLAR_GAS_KCAL_MOL * self->energyModel->temperature);
     GdeltaRT = Gdelta * beta;
     accept   = MCModelDefault_Metropolis (GdeltaRT, self->generator);
 
@@ -169,7 +175,9 @@ Boolean MCModelDefault_DoubleMove (const MCModelDefault *self, const Real pH, co
  * Generate a state vector representing a low-energy, statistically relevant protonation state.
  * The energy of the vector is returned only for information.
  */
-Real MCModelDefault_MCScan (const MCModelDefault *self, const Real pH, Integer nmoves, Integer *movesDone, Integer *movesAccepted, Integer *flipsDone, Integer *flipsAccepted) {
+Real MCModelDefault_MCScan (const MCModelDefault *self, const Real pH, Integer nmoves, 
+                            Integer *movesDone, Integer *movesAccepted, Integer *flipsDone, 
+                            Integer *flipsAccepted) {
     Integer  selection, select;
     Real     G, Gnew;
     Boolean  accept, move;
@@ -220,11 +228,12 @@ void MCModelDefault_UpdateProbabilities (const MCModelDefault *self) {
 /*
  * Find maximum absolute interaction energy between two sites.
  */
-Real MCModelDefault_FindMaxInteraction (const MCModelDefault *self, const TitrSite *site, const TitrSite *other) {
+Real MCModelDefault_FindMaxInteraction (const MCModelDefault *self, 
+                                        const TitrSite *site, const TitrSite *other) {
     Integer index, indexOther;
     Real W, Wmax;
 
-    Wmax  = 0.;
+    Wmax  = 0.0f;
     index = site->indexFirst;
     for (; index <= site->indexLast; index++) {
 
@@ -243,7 +252,8 @@ Real MCModelDefault_FindMaxInteraction (const MCModelDefault *self, const TitrSi
  * If npairs < 1, dry run is assumed and only nfound is returned.
  * The value of npairs is used in the second run to allocate and fill out the pairs.
  */
-Integer MCModelDefault_FindPairs (const MCModelDefault *self, const Integer npairs, Status *status) {
+Integer MCModelDefault_FindPairs (const MCModelDefault *self, const Integer npairs, 
+                                  Status *status) {
     TitrSite *site, *siteInner;
     Integer i, j, nfound;
     Real Wmax;
@@ -291,7 +301,7 @@ void MCModelDefault_Production (const MCModelDefault *self, const Real pH) {
     Integer  nmoves, nscans, moves, movesAcc, flips, flipsAcc;
     Real     scale, Gfinal;
 
-    Real1DArray_Set (self->energyModel->probabilities, 0.);
+    Real1DArray_Set (self->energyModel->probabilities, 0.0f);
     nmoves = self->vector->nsites + self->vector->npairs;
     nscans = self->nprod;
 
@@ -299,7 +309,7 @@ void MCModelDefault_Production (const MCModelDefault *self, const Real pH) {
         Gfinal = MCModelDefault_MCScan (self, pH, nmoves, &moves, &movesAcc, &flips, &flipsAcc);
         MCModelDefault_UpdateProbabilities (self);
     }
-    scale = 1. / self->nprod;
+    scale = 1.0f / self->nprod;
     Real1DArray_Scale (self->energyModel->probabilities, scale);
 }
 
