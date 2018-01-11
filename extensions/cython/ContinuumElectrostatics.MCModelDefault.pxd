@@ -2,7 +2,7 @@
 # . File      : ContinuumElectrostatics.MCModelDefault.pxd
 # . Program   : pDynamo-1.8.0                           (http://www.pdynamo.org)
 # . Copyright : CEA, CNRS, Martin  J. Field  (2007-2012),
-#                          Mikolaj J. Feliks (2014-2015)
+#                          Mikolaj J. Feliks (2014-2018)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
 from pCore.cDefinitions                  cimport Boolean, CFalse, CTrue, Integer, Real
@@ -32,7 +32,7 @@ cdef extern from "MCModelDefault.h":
     cdef Integer          MCModelDefault_FindPairs              (CMCModelDefault *self, Integer npairs, Status *status)
     cdef void             MCModelDefault_UpdateProbabilities    (CMCModelDefault *self)
     cdef void             MCModelDefault_Equilibration          (CMCModelDefault *self, Real pH)
-    cdef void             MCModelDefault_Production             (CMCModelDefault *self, Real pH, Boolean trajectoryWriting)
+    cdef void             MCModelDefault_Production             (CMCModelDefault *self, Real pH)
 
 #-------------------------------------------------------------------------------
 cdef class MCModelDefault:

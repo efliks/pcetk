@@ -258,6 +258,10 @@ Real EnergyModel_CalculateZ (const EnergyModel *self, Real (*EnergyFunction)(con
     bfactor = Real1DArray_Data (bfactors);
     Gmin    = EnergyFunction (self, self->vector, pH) - Gzero;
     for (; i > 0; i--, bfactor++) {
+        /* TODO
+         * Optimize: do not calculate Gmicro after every increment of the state 
+         * vector, calculate deltas like in MC moves.
+         */
         G = EnergyFunction (self, self->vector, pH) - Gzero;
         if (G < Gmin) {
             Gmin = G;
