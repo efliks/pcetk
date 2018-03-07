@@ -236,11 +236,12 @@ Real MCModelDefault_FindMaxInteraction (const MCModelDefault *self,
     Wmax  = 0.0f;
     index = site->indexFirst;
     for (; index <= site->indexLast; index++) {
-
         indexOther = other->indexFirst;
         for (; indexOther <= other->indexLast; indexOther++) {
             W = fabs (EnergyModel_GetW (self->energyModel, index, indexOther));
-            if (W > Wmax) Wmax = W;
+            if (W > Wmax) {
+                Wmax = W;
+            }
         }
     }
     return Wmax;
@@ -269,14 +270,11 @@ Integer MCModelDefault_FindPairs (const MCModelDefault *self, const Integer npai
             return -1;
         }
     }
-
     nfound = 0;
     site   = self->vector->sites;
     for (i = 0; i < self->vector->nsites; i++, site++) {
-
         siteInner = self->vector->sites;
         for (j = 0; j < i; j++, siteInner++) {
-
             Wmax = MCModelDefault_FindMaxInteraction (self, site, siteInner);
             if (Wmax >= self->limit) {
                 if (npairs > 0) {
