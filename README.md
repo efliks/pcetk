@@ -1,4 +1,5 @@
-# Pcetk
+<img src="./logo.png" alt="Pcetk logo" width="400" />
+
 Pcetk (a pDynamo-based continuum electrostatic toolkit) is a Python module
 extending the pDynamo library with a Poisson-Boltzmann continuum electrostatic
 model that allows for protonation state calculations in proteins.
@@ -9,7 +10,7 @@ energy terms. The calculation of protonation states and titration curves is
 done by using the module's own analytic or Monte Carlo routines or through
 an interface to the external sampling program, GMCT.
 
-The key features of the module include:
+**Key features of the module include:**
   * Improved treatment of multiprotic sites, such as histidines or multiprotic 
         ligands
   * Energy model that allows for independent treatment of sites
@@ -23,9 +24,10 @@ The key features of the module include:
   * Close integration with pDynamo
 
 More information about the theoretical methods and algorithms used by Pcetk can be found
-in our article:<br />
-Feliks, M.; Field, M. "*Pcetk*: A pDynamo-based Toolkit for Protonation State Calculations in Proteins."
-*J. Chem. Inf. Model.* **2015**, *55*, pp. 2288-2296 (http://dx.doi.org/10.1021/acs.jcim.5b00262)
+in our article:
+> Feliks, M.; Field, M. "*Pcetk*: A pDynamo-based Toolkit for Protonation State Calculations in Proteins."
+> *J. Chem. Inf. Model.* **2015**, *55*, pp. 2288-2296
+> (http://dx.doi.org/10.1021/acs.jcim.5b00262)
 
 
 Auxiliary software:
