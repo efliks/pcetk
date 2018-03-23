@@ -24,7 +24,6 @@ StateVector *StateVector_Allocate (const Integer nsites, Status *status) {
     self->nsites        = 0     ;
     self->nssites       = 0     ;
     self->npairs        = 0     ;
-
     if (nsites > 0) {
         MEMORY_ALLOCATEARRAY (self->sites, nsites, TitrSite);
         if (self->sites == NULL) {
@@ -49,10 +48,12 @@ void StateVector_AllocateSubstate (StateVector *self, const Integer nssites, Sta
     }
     else {
         MEMORY_ALLOCATEARRAY_POINTERS (self->substateSites, nssites, TitrSite);
-        if (self->substateSites != NULL)
+        if (self->substateSites != NULL) {
             self->nssites = nssites;
-        else
+        }
+        else {
             Status_Set (status, Status_MemoryAllocationFailure);
+        }
     }
 }
 
@@ -66,10 +67,12 @@ void StateVector_AllocatePairs (StateVector *self, const Integer npairs, Status 
     }
     else {
         MEMORY_ALLOCATEARRAY (self->pairs, npairs, PairSite);
-        if (self->pairs != NULL)
+        if (self->pairs != NULL) {
             self->npairs = npairs;
-        else
+        }
+        else {
             Status_Set (status, Status_MemoryAllocationFailure);
+        }
     }
 }
 
@@ -103,8 +106,9 @@ StateVector *StateVector_Clone (const StateVector *self, Status *status) {
 
     if (self != NULL) {
         clone = StateVector_Allocate (self->nsites, status);
-        if (*status == Status_Continue)
+        if (*status == Status_Continue) {
             StateVector_CopyTo (self, clone, status);
+        }
     }
     return clone;
 }
@@ -168,7 +172,8 @@ void StateVector_Randomize (const StateVector *self, const RandomNumberGenerator
 /*
  * Set a state vector site.
  */
-void StateVector_SetSite (const StateVector *self, const Integer indexSite, const Integer indexFirst, const Integer indexLast, Status *status) {
+void StateVector_SetSite (const StateVector *self, const Integer indexSite, 
+                          const Integer indexFirst, const Integer indexLast, Status *status) {
     TitrSite *site;
 
     if (indexSite < 0 || indexSite >= self->nsites) {
@@ -187,7 +192,9 @@ void StateVector_SetSite (const StateVector *self, const Integer indexSite, cons
 /*
  * Set a pair of strongly interacting sites.
  */
-void StateVector_SetPair (const StateVector *self, const Integer indexPair, const Integer indexFirstSite, const Integer indexSecondSite, const Real Wmax, Status *status) {
+void StateVector_SetPair (const StateVector *self, const Integer indexPair, 
+                          const Integer indexFirstSite, const Integer indexSecondSite, 
+                          const Real Wmax, Status *status) {
     PairSite *pair;
 
     if (indexPair < 0 || indexPair >= self->npairs) {
@@ -204,7 +211,9 @@ void StateVector_SetPair (const StateVector *self, const Integer indexPair, cons
 /*
  * Get indices and maximum interaction energy of a pair of strongly interacting sites.
  */
-void StateVector_GetPair (const StateVector *self, const Integer indexPair, Integer *indexFirstSite, Integer *indexSecondSite, Real *Wmax, Status *status) {
+void StateVector_GetPair (const StateVector *self, const Integer indexPair, 
+                          Integer *indexFirstSite, Integer *indexSecondSite, Real *Wmax, 
+                          Status *status) {
     PairSite *pair;
     TitrSite *site;
 
@@ -255,7 +264,8 @@ Integer StateVector_GetItem (const StateVector *self, const Integer siteIndex, S
 /*
  * Set the protonation of a site by defining a local index of its "active" instance.
  */
-void StateVector_SetItem (const StateVector *self, const Integer siteIndex, const Integer instanceLocalIndex, Status *status) {
+void StateVector_SetItem (const StateVector *self, const Integer siteIndex, const Integer instanceLocalIndex, 
+                          Status *status) {
     TitrSite *site;
     Integer instanceGlobalIndex;
 
@@ -296,7 +306,8 @@ Integer StateVector_GetActualItem (const StateVector *self, const Integer siteIn
 /*
  * Set the protonation of a site by defining a global index of its "active" instance.
  */
-void StateVector_SetActualItem (const StateVector *self, const Integer siteIndex, const Integer instanceGlobalIndex, Status *status) {
+void StateVector_SetActualItem (const StateVector *self, const Integer siteIndex, const Integer instanceGlobalIndex, 
+                                Status *status) {
     TitrSite *site;
 
     if (siteIndex < 0 || siteIndex >= self->nsites) {
@@ -330,7 +341,8 @@ Integer StateVector_GetSubstateItem (const StateVector *self, const Integer inde
 /*
  * Attach the selected site to a substate by passing its index.
  */
-void StateVector_SetSubstateItem (const StateVector *self, const Integer selectedSiteIndex, const Integer index, Status *status) {
+void StateVector_SetSubstateItem (const StateVector *self, const Integer selectedSiteIndex, const Integer index, 
+                                  Status *status) {
     TitrSite *site;
 
     if (index < 0 || index >= self->nssites) {

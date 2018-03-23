@@ -463,17 +463,25 @@ class CEModel (object):
 
 
     #-------------------------------------------------------------------------------
-    def CalculateProbabilities (self, pH=7.0, unfolded=False, isCalculateCurves=False, logFrequency=-1, log=logFile):
-        """Calculate probabilities."""
+    def CalculateProbabilities (self, pH=7.0, unfolded=False, isCalculateCurves=False, logFrequency=-1, trajectoryFilename="", log=logFile):
+        """Calculate probabilities.
+
+        Setting |trajectoryFilename| will cause writing energies of sampled states to a file."""
         nstates = -1
         sites   = None
+
         if       hasattr (self, "sampler")  and     unfolded:
             raise ContinuumElectrostaticsError ("Monte Carlo sampling of unfolded proteins unsupported.")
         elif     hasattr (self, "sampler")  and not unfolded:
-            self.sampler.CalculateOwnerProbabilities (pH=pH, logFrequency=logFrequency, log=log)
+            self.sampler.CalculateOwnerProbabilities (pH=pH, logFrequency=logFrequency, trajectoryFilename=trajectoryFilename, log=log)
         elif not hasattr (self, "sampler")  and     unfolded:
+            if (trajectoryFilename != ""):
+                raise ContinuumElectrostaticsError ("Writing trajectories of unfolded proteins unsupported.")
             nstates = self.energyModel.CalculateProbabilitiesAnalyticallyUnfolded (pH=pH)
         elif not hasattr (self, "sampler")  and not unfolded:
+            # TODO !!!
+            if (trajectoryFilename != ""):
+                raise ContinuumElectrostaticsError ("Writing trajectories unsupported.")
             nstates = self.energyModel.CalculateProbabilitiesAnalytically (pH=pH)
 
         if isCalculateCurves:

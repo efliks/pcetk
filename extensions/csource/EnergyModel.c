@@ -15,9 +15,9 @@ EnergyModel *EnergyModel_Allocate (const Integer nsites, const Integer ninstance
     EnergyModel *self = NULL;
 
     MEMORY_ALLOCATE (self, EnergyModel);
-    if (self == NULL)
+    if (self == NULL) {
         goto failSet;
-
+    }
     self->vector           =  NULL  ;
     self->models           =  NULL  ;
     self->protons          =  NULL  ;
@@ -28,8 +28,9 @@ EnergyModel *EnergyModel_Allocate (const Integer nsites, const Integer ninstance
 
     if (nsites > 0) {
         self->vector = StateVector_Allocate (nsites, status);
-        if (*status != Status_Continue)
+        if (*status != Status_Continue) {
             goto failDealloc;
+        }
     }
     if (ninstances > 0) {
         self->models          = Real1DArray_Allocate     (ninstances, status)  ;
@@ -37,23 +38,21 @@ EnergyModel *EnergyModel_Allocate (const Integer nsites, const Integer ninstance
         self->intrinsic       = Real1DArray_Allocate     (ninstances, status)  ;
         self->interactions    = Real2DArray_Allocate     (ninstances, ninstances, status) ;
         self->probabilities   = Real1DArray_Allocate     (ninstances, status)  ;
-        if (*status != Status_Continue)
+        if (*status != Status_Continue) {
             goto failDealloc;
-
+        }
         self->symmetricmatrix = SymmetricMatrix_Allocate (ninstances);
-        if (self->symmetricmatrix == NULL)
+        if (self->symmetricmatrix == NULL) {
             goto failSetDealloc;
+        }
     }
     return self;
 
-
 failSetDealloc:
     Status_Set (status, Status_MemoryAllocationFailure);
-
 failDealloc:
     EnergyModel_Deallocate (self);
     return NULL;
-
 failSet:
     Status_Set (status, Status_MemoryAllocationFailure);
     return NULL;
@@ -91,7 +90,7 @@ void EnergyModel_SymmetrizeInteractions (const EnergyModel *self, Status *status
  * Set all interactions to zero.
  */
 void EnergyModel_ResetInteractions (const EnergyModel *self) {
-    SymmetricMatrix_Set (self->symmetricmatrix, 0.);
+    SymmetricMatrix_Set (self->symmetricmatrix, 0.0f);
 }
 
 /*
@@ -113,8 +112,9 @@ void EnergyModel_StateVectorFromProbabilities (const EnergyModel *self, StateVec
     if (vector != NULL) {
         ts = vector->sites  ;
         i  = vector->nsites ;
-        if (i != self->vector->nsites)
+        if (i != self->vector->nsites) {
             goto fail;
+        }
     }
     else {
         ts = self->vector->sites  ;
@@ -123,7 +123,7 @@ void EnergyModel_StateVectorFromProbabilities (const EnergyModel *self, StateVec
     for (; i >= 0; i--, ts++) {
         index = ts->indexFirst;
         maxi  = index;
-        maxp  = -1.;
+        maxp  = -1.0f;
         do {
             probability = Real1DArray_Item (self->probabilities, index);
             if (probability > maxp) {
@@ -206,9 +206,9 @@ Real EnergyModel_CalculateMicrostateEnergy (const EnergyModel *self, const State
     Integer   nprotons, i, j;
     TitrSite *site, *siteInner;
 
-    W        = 0. ;
-    Gintr    = 0. ;
-    nprotons = 0  ;
+    W        = 0.0f;
+    Gintr    = 0.0f;
+    nprotons = 0;
     site     = vector->sites;
     for (i = 0; i < vector->nsites; i++, site++) {
         Gintr     +=    Real1DArray_Item (self->intrinsic , site->indexActive);
@@ -234,8 +234,8 @@ Real EnergyModel_CalculateMicrostateEnergyUnfolded (const EnergyModel *self, con
     TitrSite *site;
     Real      Gmodel;
 
-    Gmodel   = 0. ;
-    nprotons = 0  ;
+    Gmodel   = 0.0f;
+    nprotons = 0;
     site     = vector->sites;
     for (i = 0; i < vector->nsites; i++, site++) {
         Gmodel    +=    Real1DArray_Item (self->models  , site->indexActive);
@@ -249,7 +249,10 @@ Real EnergyModel_CalculateMicrostateEnergyUnfolded (const EnergyModel *self, con
  *
  * Note: bfactors should be allocated beforehand.
  */
-Real EnergyModel_CalculateZ (const EnergyModel *self, Real (*EnergyFunction)(const EnergyModel*, const StateVector*, const Real), const Real pH, const Real Gzero, Real1DArray *bfactors) {
+Real EnergyModel_CalculateZ (const EnergyModel *self, 
+                             Real (*EnergyFunction)(const EnergyModel*, const StateVector*, const Real), 
+                             const Real pH, const Real Gzero, 
+                             Real1DArray *bfactors) {
     Real     *bfactor, G, Gmin, Z;
     Integer   i;
 
@@ -258,6 +261,10 @@ Real EnergyModel_CalculateZ (const EnergyModel *self, Real (*EnergyFunction)(con
     bfactor = Real1DArray_Data (bfactors);
     Gmin    = EnergyFunction (self, self->vector, pH) - Gzero;
     for (; i > 0; i--, bfactor++) {
+        /* TODO: Optimize.
+         * Do not calculate Gmicro after every increment of the state vector, 
+         * calculate deltas like in MC moves.
+         */
         G = EnergyFunction (self, self->vector, pH) - Gzero;
         if (G < Gmin) {
             Gmin = G;
@@ -266,7 +273,7 @@ Real EnergyModel_CalculateZ (const EnergyModel *self, Real (*EnergyFunction)(con
         StateVector_Increment (self->vector);
     }
     Real1DArray_AddScalar (bfactors, -Gmin);
-    Real1DArray_Scale (bfactors, -1. / (CONSTANT_MOLAR_GAS_KCAL_MOL * self->temperature));
+    Real1DArray_Scale (bfactors, -1.0f / (CONSTANT_MOLAR_GAS_KCAL_MOL * self->temperature));
     Real1DArray_Exp (bfactors);
 
     Z = Real1DArray_Sum (bfactors);
@@ -282,7 +289,7 @@ Real EnergyModel_CalculateZunfolded (const EnergyModel *self, const Real pH, con
 
     bfactors = Real1DArray_Allocate (self->nstates, status);
     if (*status != Status_Continue) {
-        return -1.;
+        return -1.0f;
     }
     Z = EnergyModel_CalculateZ (self, EnergyModel_CalculateMicrostateEnergyUnfolded, pH, Gzero, bfactors);
     Real1DArray_Deallocate (&bfactors);
@@ -298,7 +305,7 @@ Real EnergyModel_CalculateZfolded (const EnergyModel *self, const Real pH, const
 
     bfactors = Real1DArray_Allocate (self->nstates, status);
     if (*status != Status_Continue) {
-        return -1.;
+        return -1.0f;
     }
     Z = EnergyModel_CalculateZ (self, EnergyModel_CalculateMicrostateEnergy, pH, Gzero, bfactors);
     Real1DArray_Deallocate (&bfactors);
@@ -313,7 +320,7 @@ void EnergyModel_CalculateProbabilitiesFromZ (const EnergyModel *self, const Rea
     Integer    i, j;
     TitrSite  *ts;
 
-    Real1DArray_Set (self->probabilities, 0.);
+    Real1DArray_Set (self->probabilities, 0.0f);
     StateVector_Reset (self->vector);
 
     i = self->nstates;
@@ -326,7 +333,7 @@ void EnergyModel_CalculateProbabilitiesFromZ (const EnergyModel *self, const Rea
         }
         StateVector_Increment (self->vector);
     }
-    Real1DArray_Scale (self->probabilities, 1. / Z);
+    Real1DArray_Scale (self->probabilities, 1.0f / Z);
 }
 
 /*
@@ -340,7 +347,7 @@ void EnergyModel_CalculateProbabilitiesAnalytically (const EnergyModel *self, co
     if (*status != Status_Continue) {
         return;
     }
-    Z = EnergyModel_CalculateZ (self, EnergyModel_CalculateMicrostateEnergy, pH, 0., bfactors);
+    Z = EnergyModel_CalculateZ (self, EnergyModel_CalculateMicrostateEnergy, pH, 0.0f, bfactors);
     EnergyModel_CalculateProbabilitiesFromZ (self, Z, bfactors);
 
     Real1DArray_Deallocate (&bfactors);
@@ -357,7 +364,7 @@ void EnergyModel_CalculateProbabilitiesAnalyticallyUnfolded (const EnergyModel *
     if (*status != Status_Continue) {
         return;
     }
-    Z = EnergyModel_CalculateZ (self, EnergyModel_CalculateMicrostateEnergyUnfolded, pH, 0., bfactors);
+    Z = EnergyModel_CalculateZ (self, EnergyModel_CalculateMicrostateEnergyUnfolded, pH, 0.0f, bfactors);
     EnergyModel_CalculateProbabilitiesFromZ (self, Z, bfactors);
 
     Real1DArray_Deallocate (&bfactors);

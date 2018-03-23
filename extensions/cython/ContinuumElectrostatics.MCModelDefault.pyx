@@ -2,7 +2,7 @@
 # . File      : ContinuumElectrostatics.MCModelDefault.pyx
 # . Program   : pDynamo-1.8.0                           (http://www.pdynamo.org)
 # . Copyright : CEA, CNRS, Martin  J. Field  (2007-2012),
-#                          Mikolaj J. Feliks (2014-2015)
+#                          Mikolaj J. Feliks (2014-2018)
 # . License   : CeCILL French Free Software License     (http://www.cecill.info)
 #-------------------------------------------------------------------------------
 from pCore  import logFile, LogFileActive, CLibraryError
@@ -53,91 +53,110 @@ cdef class MCModelDefault:
         self.owner   = ceModel
 
 
-    def CalculateOwnerProbabilities (self, Real pH=7.0, Integer logFrequency=500, log=logFile):
+    def CalculateOwnerProbabilities (self, Real pH=7.0, Integer logFrequency=0, trajectoryFilename="", log=logFile):
         """Calculate probabilities of the owner."""
         cdef CMCModelDefault   *mcModel
         cdef Integer  moves, movesAcc, flips, flipsAcc
         cdef Integer  nmoves, i, j
-        cdef Real     scale, Ginit
-        cdef Boolean  active
-        owner   = self.owner
-        if not owner.isCalculated:
+        cdef Real     scale, Gmicro
+        cdef Boolean  active, writing
+
+        owner = self.owner
+        if (not owner.isCalculated):
             raise CLibraryError ("First calculate electrostatic energies.")
 
-        if logFrequency < 0:
-            MCModelDefault_CalculateProbabilities (self.cObject, pH, CTrue)
-            if LogFileActive (log):
+        if (logFrequency <= 0) and (trajectoryFilename == ""):
+            # . Do a quiet run
+            active = CTrue if (LogFileActive (log)) else CFalse
+
+            MCModelDefault_Equilibration (self.cObject, pH)
+            if active:
                 log.Text ("\nCompleted %d equilibration scans.\n" % self.cObject.nequil)
-            MCModelDefault_CalculateProbabilities (self.cObject, pH, CFalse)
-            if LogFileActive (log):
+
+            MCModelDefault_Production (self.cObject, pH)
+            if active:
                 log.Text ("\nCompleted %d production scans.\n" % self.cObject.nprod)
-            return
-
-        active  = CFalse
-        mcModel = self.cObject
-        nmoves  = mcModel.vector.nsites + mcModel.vector.npairs
-        StateVector_Randomize (mcModel.vector, mcModel.generator)
-
-        if LogFileActive (log):
-            active    =  CTrue
-            j         =  0
-            moves     =  0
-            flips     =  0
-            movesAcc  =  0
-            flipsAcc  =  0
-            table  = log.GetTable (columns=[8, 10, 10, 10, 10])
-            table.Start ()
-            table.Heading ("%8s"   % "Scan"  )
-            table.Heading ("%10s"  % "Moves" )
-            table.Heading ("%10s"  % "M-Acc" )
-            table.Heading ("%10s"  % "Flips" )
-            table.Heading ("%10s"  % "F-Acc" )
-
-        for i from 0 <= i < mcModel.nequil:
-            MCModelDefault_MCScan (mcModel, pH, nmoves, &moves, &movesAcc, &flips, &flipsAcc)
+        else:
+            # . Do logging or trajectory writing
+            mcModel = self.cObject
+            nmoves  = mcModel.vector.nsites + mcModel.vector.npairs
+            active  = CTrue if (LogFileActive (log) and (logFrequency > 0)) else CFalse
+    
             if active:
-                j += 1
-                if j >= logFrequency:
-                    table.Entry ("%8d"    % (i + 1)   )
-                    table.Entry ("%10d"   % moves     )
-                    table.Entry ("%10d"   % movesAcc  )
-                    table.Entry ("%10d"   % flips     )
-                    table.Entry ("%10d"   % flipsAcc  )
-                    j         =  0
-                    moves     =  0
-                    flips     =  0
-                    movesAcc  =  0
-                    flipsAcc  =  0
-        if active:
-            j        =  0
-            moves    =  0
-            flips    =  0
-            movesAcc =  0
-            flipsAcc =  0
-            table.Entry ("** Equilibration phase done **".center (8 + 10 * 4), columnSpan=5)
+                j         =  0
+                moves     =  0
+                flips     =  0
+                movesAcc  =  0
+                flipsAcc  =  0
+                table  = log.GetTable (columns=[8, 10, 10, 10, 10])
+                table.Start ()
+                table.Heading ("%8s"   % "Scan"  )
+                table.Heading ("%10s"  % "Moves" )
+                table.Heading ("%10s"  % "M-Acc" )
+                table.Heading ("%10s"  % "Flips" )
+                table.Heading ("%10s"  % "F-Acc" )
+    
+            # . Do equilibration phase
+            StateVector_Randomize (mcModel.vector, mcModel.generator)
 
-        Real1DArray_Set (mcModel.energyModel.probabilities, 0.)
-        for i from 0 <= i < mcModel.nprod:
-            MCModelDefault_MCScan (mcModel, pH, nmoves, &moves, &movesAcc, &flips, &flipsAcc)
-            MCModelDefault_UpdateProbabilities (mcModel)
+            for i from 0 <= i < mcModel.nequil:
+                MCModelDefault_MCScan (mcModel, pH, nmoves, &moves, &movesAcc, &flips, &flipsAcc)
+                if active:
+                    j += 1
+                    if j >= logFrequency:
+                        table.Entry ("%8d"    % (i + 1)   )
+                        table.Entry ("%10d"   % moves     )
+                        table.Entry ("%10d"   % movesAcc  )
+                        table.Entry ("%10d"   % flips     )
+                        table.Entry ("%10d"   % flipsAcc  )
+                        j         =  0
+                        moves     =  0
+                        flips     =  0
+                        movesAcc  =  0
+                        flipsAcc  =  0
             if active:
-                j += 1
-                if j >= logFrequency:
-                    table.Entry ("%8d"    % (i + 1)   )
-                    table.Entry ("%10d"   % moves     )
-                    table.Entry ("%10d"   % movesAcc  )
-                    table.Entry ("%10d"   % flips     )
-                    table.Entry ("%10d"   % flipsAcc  )
-                    j         =  0
-                    moves     =  0
-                    flips     =  0
-                    movesAcc  =  0
-                    flipsAcc  =  0
-        if active:
-            table.Entry ("** Production phase done **".center (8 + 10 * 4), columnSpan=5)
-            table.Stop ()
-        scale = 1. / mcModel.nprod
-        Real1DArray_Scale (mcModel.energyModel.probabilities, scale)
+                j        =  0
+                moves    =  0
+                flips    =  0
+                movesAcc =  0
+                flipsAcc =  0
+                table.Entry ("** Equilibration phase done **".center (8 + 10 * 4), columnSpan=5)
+   
+            # . Do production phase
+            writing = CFalse
+            if (trajectoryFilename != ""):
+                writing = CTrue
+                output = open (trajectoryFilename, "w")
+            Real1DArray_Set (mcModel.energyModel.probabilities, 0.)
+ 
+            for i from 0 <= i < mcModel.nprod:
+                Gmicro = MCModelDefault_MCScan (mcModel, pH, nmoves, &moves, &movesAcc, &flips, &flipsAcc)
+                if writing:
+                    output.write ("%f\n" % Gmicro)
+
+                MCModelDefault_UpdateProbabilities (mcModel)
+                if active:
+                    j += 1
+                    if j >= logFrequency:
+                        table.Entry ("%8d"    % (i + 1)   )
+                        table.Entry ("%10d"   % moves     )
+                        table.Entry ("%10d"   % movesAcc  )
+                        table.Entry ("%10d"   % flips     )
+                        table.Entry ("%10d"   % flipsAcc  )
+                        j         =  0
+                        moves     =  0
+                        flips     =  0
+                        movesAcc  =  0
+                        flipsAcc  =  0
+            if active:
+                table.Entry ("** Production phase done **".center (8 + 10 * 4), columnSpan=5)
+                table.Stop ()
+
+            # . Finalize
+            if writing:
+                output.close ()
+            scale = 1. / mcModel.nprod
+            Real1DArray_Scale (mcModel.energyModel.probabilities, scale)
 
 
     def Summary (self, log=logFile):
