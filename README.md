@@ -1,3 +1,9 @@
+:warning: **IMPORTANT NOTE** :warning:
+
+**Pcetk has now been integrated into pDynamo 3.
+This Pcetk version is a legacy one and will not be updated moving forward.**
+
+
 <img src="./logo.png" alt="Pcetk logo" width="400" />
 
 Pcetk (a pDynamo-based continuum electrostatic toolkit) is a Python module
