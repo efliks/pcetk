@@ -1,8 +1,7 @@
 :warning: **IMPORTANT NOTE** :warning:
 
 **Pcetk has now been integrated into [pDynamo 3](https://www.pdynamo.org).
-This Pcetk version is a legacy one and only compatible with pDynamo 2. It 
-is here for archival purposes.**
+This Pcetk version is a legacy one and is here only for archival purposes.**
 
 
 <img src="./logo.png" alt="Pcetk logo" width="400" />
