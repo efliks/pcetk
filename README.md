@@ -1,25 +1,26 @@
 :warning: **IMPORTANT NOTE** :warning:
 
-**Pcetk has now been integrated into pDynamo 3.
-This Pcetk version is a legacy one and will not be updated moving forward.**
+**Pcetk has now been integrated into [pDynamo 3](https://www.pdynamo.org).
+This Pcetk version is a legacy one and only compatible with pDynamo 2. It 
+is here for archival purposes.**
 
 
 <img src="./logo.png" alt="Pcetk logo" width="400" />
 
 Pcetk (a pDynamo-based continuum electrostatic toolkit) is a Python module
-extending the [pDynamo](https://sites.google.com/site/pdynamomodeling) library 
+extending the [pDynamo](https://www.pdynamo.org) library 
 with a microstate model for the calculation of proton binding energetics in proteins.
 
 The module links pDynamo to the external solver of the Poisson-Boltzmann
 equation, 
-[extended-MEAD](http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=extended-mead), 
+[extended-MEAD](http://rtullmann.de/index.php?name=extended-mead), 
 which is used for the calculation of electrostatic energy terms. 
 The calculation of protonation states and titration curves is done with 
 custom analytic or Monte Carlo routines or, optionally, through an interface 
 to the external sampling program, 
-[GMCT](http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=gmct-gcem).
+[GMCT](http://rtullmann.de/index.php?name=gmct-gcem).
 
-Author: Mikolaj Feliks \<<mikolaj.feliks@gmail.com>\>
+Author: Mikolaj Feliks
 
 Released under the CeCILL Free Software License, a French equivalent of the GNU General 
 Public License. More information can be found in [Licence_CeCILL_V2-en.txt](Licence_CeCILL_V2-en.txt) 
@@ -57,14 +58,14 @@ url     = {http://dx.doi.org/10.1021/acs.jcim.5b00262},
 ## Installation instructions
 Required software and libraries:
  - [pDynamo 1.8.0](https://sites.google.com/site/pdynamomodeling)
- - [Extended-MEAD 2.3.0](http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=extended-mead)
+ - [Extended-MEAD 2.3.5](http://rtullmann.de/index.php?name=extended-mead)
  - Python 2.7 (including header files; python2.7-dev package in Debian)
  - PyYAML 3.10 (python-yaml package in Debian)
  - GNU toolchain (GCC, make)
  
  Optionally:
  - Cython 0.15.1 (for recompiling Cython sources)
- - [GMCT 1.2.3](http://www.bisb.uni-bayreuth.de/People/ullmannt/index.php?name=gmct-gcem)
+ - [GMCT 1.2.5](http://rtullmann.de/index.php?name=gmct-gcem)
 
 For proper functioning, Pcetk requires two programs from the Extended-MEAD package, namely 
 my_2diel_solver and my_3diel_solver. Download Extended-MEAD and follow its installation 
@@ -72,7 +73,7 @@ instructions. In the future, the toolkit may switch to a custom Poisson-Boltzman
 
 In the next step, clone the newest repository of Pcetk from GitHub:
 ```
-$ git clone https://github.com/mfx9/pcetk.git
+$ git clone https://github.com/efliks/pcetk.git
 ```
 
 Some modules are written in C/Cython and have to be compiled before they can be used. 
